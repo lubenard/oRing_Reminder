@@ -22,6 +22,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
     private static class ViewHolder {
         TextView weared_from;
         TextView weared_to;
+        TextView weared_during;
     }
 
     public CustomListAdapter(ArrayList<RingModel> data, Context context) {
@@ -54,6 +55,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
             convertView = inflater.inflate(R.layout.custom_contact_list_element, parent, false);
             viewHolder.weared_from = (TextView) convertView.findViewById(R.id.custom_view_date_weared_from);
             viewHolder.weared_to = (TextView) convertView.findViewById(R.id.custom_view_date_weared_to);
+            viewHolder.weared_during = (TextView) convertView.findViewById(R.id.custom_view_date_time_weared);
 
             result = convertView;
             convertView.setTag(viewHolder);
@@ -68,6 +70,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
 */
         viewHolder.weared_from.setText(dataModel.getDatePut());
         viewHolder.weared_to.setText(dataModel.getDateRemoved());
+        viewHolder.weared_during.setText(String.valueOf(dataModel.getTimeWeared()));
 
         /*viewHolder.info.setOnClickListener(this);
         viewHolder.info.setTag(position);*/

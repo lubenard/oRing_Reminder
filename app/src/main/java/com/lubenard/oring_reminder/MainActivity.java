@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNewContact();
+                createNewEntry();
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
             }
@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void updateContactList() {
-        LinkedHashMap<Integer, RingModel> contactsdatas = dbManager.getAllContactsForMainList();
+    private void updateElementList() {
+        LinkedHashMap<Integer, RingModel> contactsdatas = dbManager.getAllDatasForMainList();
         for (LinkedHashMap.Entry<Integer, RingModel> oneElemDatas : contactsdatas.entrySet()) {
             dataModels.add(oneElemDatas.getValue());
         }
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Start the EditContact activity, with no user datas to load
-    private void createNewContact() {
+    private void createNewEntry() {
         Intent intent = new Intent(this, CreateNewEntry.class);
         //intent.putExtra("elementId", -1);
         startActivity(intent);
@@ -106,6 +106,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         dataModels.clear();
-        updateContactList();
+        updateElementList();
     }
 }
