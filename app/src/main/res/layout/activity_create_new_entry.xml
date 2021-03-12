@@ -11,16 +11,30 @@
         android:textSize="30dp"
         android:text="From" />
 
-    <EditText
-        android:id="@+id/new_entry_date_from"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="date" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/new_entry_date_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_weight="1"
+            android:inputType="date" />
+
+        <Button
+            android:id="@+id/new_entry_auto_date_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Set auto Date and Time" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/new_entry_time_from"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="time" />
@@ -32,16 +46,30 @@
         android:textSize="30dp"
         android:text="To" />
 
-    <EditText
-        android:id="@+id/new_entry_date_to"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="date" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/new_entry_date_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_weight="1"
+            android:inputType="date" />
+
+        <Button
+            android:id="@+id/new_entry_auto_date_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Set auto Date and Time" />
+    </LinearLayout>
 
     <EditText
         android:id="@+id/new_entry_time_to"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="time" />

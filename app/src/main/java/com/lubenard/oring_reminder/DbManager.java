@@ -121,7 +121,7 @@ public class DbManager extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
         cv.put(ringTableRemoved, dateRemoved);
-        cv.put(ringTableTimeWeared, getDateDiff(datePut, dateRemoved, TimeUnit.HOURS));
+        cv.put(ringTableTimeWeared, getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
 
         writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
