@@ -83,7 +83,7 @@ public class DbManager extends SQLiteOpenHelper {
         LinkedHashMap<Integer, RingModel> contactDatas = new LinkedHashMap<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
-        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, null);
+        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, ringTableId + " DESC");
 
         while (cursor.moveToNext()) {
             contactDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)), new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
@@ -96,21 +96,6 @@ public class DbManager extends SQLiteOpenHelper {
         return contactDatas;
     }
 
-    public static long getDateDiff(String sDate1, String sDate2, TimeUnit timeUnit)
-    {
-        try {
-            Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate1);
-            Date date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate2);
-
-            long diffInMillies = date2.getTime() - date1.getTime();
-            Log.d(TAG, "User weared protection during " + timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS));
-            return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
     /**
      * Create a new contact only if non existent:
      * Example: The contact named Toto does not exist, so let's create it
@@ -121,7 +106,7 @@ public class DbManager extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
         cv.put(ringTableRemoved, dateRemoved);
-        cv.put(ringTableTimeWeared, getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+        cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
 
         writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }

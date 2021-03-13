@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class CreateNewEntry extends AppCompatActivity {
 
@@ -76,11 +78,15 @@ public class CreateNewEntry extends AppCompatActivity {
             String formattedDatePut = String.format("%s %s", datePut, timePut);
             String formattedDateRemoved = String.format("%s %s", dateRemoved, timeRemoved);
 
-            Log.d("Create new entry", "Formatted string Put is = " + formattedDatePut);
-            Log.d("Create new entry", "Formatted string removed is = " + formattedDateRemoved);
+            if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
 
-            dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved);
-            finish();
+                Log.d("Create new entry", "Formatted string Put is = " + formattedDatePut);
+                Log.d("Create new entry", "Formatted string removed is = " + formattedDateRemoved);
+                dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved);
+                finish();
+            } else {
+                Toast.makeText(this, "Error, diff time is not correct: " + Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES), Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

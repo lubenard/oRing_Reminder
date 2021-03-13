@@ -1,7 +1,5 @@
 package com.lubenard.oring_reminder;
 
-import android.media.Image;
-
 public class RingModel {
     private int id;
     private String datePut;

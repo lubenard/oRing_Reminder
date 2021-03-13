@@ -52,11 +52,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 RingModel dataModel= dataModels.get(i);
                 Log.d("ONCLICK", "Element " + dataModel.getId());
-                //Intent intent = new Intent(getApplicationContext(), ContactDetails.class);
+                //Intent intent = new Intent(getApplicationContext(), EntryDetails.class);
                 //intent.putExtra("contactId", dataModel.getId());
                 //startActivity(intent);
             }
-
         });
     }
 
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //Launch settings page
             /*getSupportFragmentManager().beginTransaction()
@@ -98,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                     .addToBackStack(null).commit();*/
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

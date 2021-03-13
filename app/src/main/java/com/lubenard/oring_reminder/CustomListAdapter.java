@@ -40,6 +40,16 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
 
     private int lastPosition = -1;
 
+    private String convertTimeWeared(int timeWeared) {
+        if (timeWeared < 60) {
+            return String.valueOf(timeWeared) + " Minutes";
+        } else if (timeWeared <= 1440) {
+            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
+        } else {
+            return "> 1 day";
+        }
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
@@ -47,33 +57,17 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 
-        final View result;
+        viewHolder = new ViewHolder();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        convertView = inflater.inflate(R.layout.custom_contact_list_element, parent, false);
+        viewHolder.weared_from = (TextView) convertView.findViewById(R.id.custom_view_date_weared_from);
+        viewHolder.weared_to = (TextView) convertView.findViewById(R.id.custom_view_date_weared_to);
+        viewHolder.weared_during = (TextView) convertView.findViewById(R.id.custom_view_date_time_weared);
 
-        if (convertView == null) {
-            viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.custom_contact_list_element, parent, false);
-            viewHolder.weared_from = (TextView) convertView.findViewById(R.id.custom_view_date_weared_from);
-            viewHolder.weared_to = (TextView) convertView.findViewById(R.id.custom_view_date_weared_to);
-            viewHolder.weared_during = (TextView) convertView.findViewById(R.id.custom_view_date_time_weared);
-
-            result = convertView;
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-            result = convertView;
-        }
-
-        /*Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        result.startAnimation(animation);
-        lastPosition = position;
-*/
         viewHolder.weared_from.setText(dataModel.getDatePut());
         viewHolder.weared_to.setText(dataModel.getDateRemoved());
-        viewHolder.weared_during.setText(String.valueOf(dataModel.getTimeWeared()));
+        viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
 
-        /*viewHolder.info.setOnClickListener(this);
-        viewHolder.info.setTag(position);*/
         // Return the completed view to render on screen
         return convertView;
     }
