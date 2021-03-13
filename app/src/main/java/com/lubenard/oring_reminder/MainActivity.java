@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 RingModel dataModel= dataModels.get(i);
                 Log.d("ONCLICK", "Element " + dataModel.getId());
-                //Intent intent = new Intent(getApplicationContext(), EntryDetails.class);
-                //intent.putExtra("contactId", dataModel.getId());
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), EntryDetails.class);
+                intent.putExtra("entryId", dataModel.getId());
+                startActivity(intent);
             }
         });
     }
@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Start the EditContact activity, with no user datas to load
     private void createNewEntry() {
-        Intent intent = new Intent(this, CreateNewEntry.class);
-        //intent.putExtra("elementId", -1);
+        Intent intent = new Intent(this, EditEntry.class);
+        intent.putExtra("entryId", -1);
         startActivity(intent);
     }
 

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">oRing - Reminder</string>
     <string name="action_settings">Settings</string>
+    <string name="action_edit">Edit this entry</string>
+    <string name="action_delete">Delete this entry</string>
+    <string name="alertdialog_delete_entry">Delete this entry ?</string>
+    <string name="alertdialog_delete_contact_body">Are you sure ? This cannot be undone !</string>
 </resources>

@@ -75,25 +75,25 @@ public class DbManager extends SQLiteOpenHelper {
 
     }
 
-    /**
+    /**EditEntry
      * Get the datas list for a the main List
      * @return The datas fetched from the DB as a LinkedHashMap
      */
     public LinkedHashMap<Integer, RingModel> getAllDatasForMainList() {
-        LinkedHashMap<Integer, RingModel> contactDatas = new LinkedHashMap<>();
+        LinkedHashMap<Integer, RingModel> entryDatas = new LinkedHashMap<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
         Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, ringTableId + " DESC");
 
         while (cursor.moveToNext()) {
-            contactDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)), new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+            entryDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)), new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
                     cursor.getString(cursor.getColumnIndex(ringTablePut)),
                     cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
         }
         cursor.close();
-        return contactDatas;
+        return entryDatas;
     }
 
     /**
@@ -111,8 +111,20 @@ public class DbManager extends SQLiteOpenHelper {
         writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void updateDatesRing(int id, String name, String phoneNumber, String email, String address, String birthday) {
+    public void updateDatesRing(int id, String datePut, String dateRemoved) {
+        ContentValues cv = new ContentValues();
+        cv.put(ringTablePut, datePut);
+        cv.put(ringTableRemoved, dateRemoved);
+        cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
 
+        int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(id)});
+        if (u == 0) {
+            Log.d(TAG, "ringUpdate: update does not seems to work, insert data: (for id = " + id);
+            cv.put(ringTablePut, datePut);
+            cv.put(ringTableRemoved, dateRemoved);
+            cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+            writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
     }
 
     /**
@@ -121,6 +133,34 @@ public class DbManager extends SQLiteOpenHelper {
     public void closeDb() {
         if (writableDB != null) { writableDB.close();}
         if (readableDB != null) { readableDB.close();}
+    }
+
+    public ArrayList<String> getEntryDetails(int entryId) {
+
+        ArrayList<String> entryDatas = new ArrayList<>();
+
+        String[] columns = new String[]{ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
+        Cursor cursor = readableDB.query(ringTable, columns,ringTableId + "=?",
+                new String[]{String.valueOf(entryId)}, null, null, null);
+
+        cursor.moveToFirst();
+        //Log.d(TAG, "cursor = " + cursor.getString(cursor.getColumnIndex(contactsTableName)));
+        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTablePut)));
+        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableRemoved)));
+        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableTimeWeared)));
+        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableIsRunning)));
+        cursor.close();
+        return entryDatas;
+    }
+
+    /**
+     * Delete a contact
+     * @param entryId the id of the contact we want to delete
+     */
+    public void deleteEntry(int entryId)
+    {
+        if (entryId > 0)
+            writableDB.delete(ringTable,ringTableId + "=?", new String[]{String.valueOf(entryId)});
     }
 }
 

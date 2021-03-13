@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,12 +13,17 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class CreateNewEntry extends AppCompatActivity {
+public class EditEntry extends AppCompatActivity {
+
+    private DbManager dbManager;
+    private int entryId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +38,22 @@ public class CreateNewEntry extends AppCompatActivity {
 
         Button auto_from_button = findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = findViewById(R.id.new_entry_auto_date_to);
+
+        dbManager = new DbManager(this);
+
+        Intent intent = getIntent();
+        entryId = intent.getIntExtra("entryId", -1);
+
+        if (entryId != -1) {
+            ArrayList<String> datas = dbManager.getEntryDetails(entryId);
+            String[] fullDate = datas.get(0).split(" ");
+            new_entry_date_from.setText(fullDate[0]);
+            new_entry_time_from.setText(fullDate[1]);
+
+            String[] fullDate2 = datas.get(1).split(" ");
+            new_entry_date_to.setText(fullDate2[0]);
+            new_entry_time_to.setText(fullDate2[1]);
+        }
 
         auto_from_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +104,11 @@ public class CreateNewEntry extends AppCompatActivity {
 
                 Log.d("Create new entry", "Formatted string Put is = " + formattedDatePut);
                 Log.d("Create new entry", "Formatted string removed is = " + formattedDateRemoved);
-                dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved);
+
+                if (entryId != -1)
+                    dbManager.updateDatesRing(id, formattedDatePut, formattedDateRemoved);
+                else
+                    dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved);
                 finish();
             } else {
                 Toast.makeText(this, "Error, diff time is not correct: " + Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES), Toast.LENGTH_SHORT).show();
