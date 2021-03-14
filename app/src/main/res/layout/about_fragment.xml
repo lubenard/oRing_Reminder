@@ -29,7 +29,7 @@
         <TextView
             style="@style/base_text_centered"
             android:layout_marginTop="35dp"
-            android:text="Licenses"
+            android:text="@string/licenses"
             android:textSize="30sp"/>
 
         <TextView

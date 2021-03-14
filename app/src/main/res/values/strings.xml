@@ -41,5 +41,22 @@
     <string name="settings_other_see_licenses_title">See about and licences</string>
     <string name="notif_channel_name">Send a erasable notification</string>
     <string name="notif_normal_channel_desc">This channel is used to send notifications when you can remove your protection</string>
+    <string name="minute_with_M_uppercase">Minutes</string>
+    <string name="more_than_one_day"><![CDATA[> 1 day]]></string>
+    <string name="error_edit_entry_date">Error, end time is not correct, please check it</string>
+    <string name="not_set_yet">Not set yet</string>
+    <string name="session_is_running">Session is running</string>
+    <string name="_message_able_to_get_it_off">You should be able to get it off at: \n</string>
+    <string name="session_finished">Session is finished!</string>
+    <string name="error_bad_id_entry_details">Error: Bad id.</string>
+    <string name="notif_get_it_off_title">Reminder:</string>
+    <string name="notif_get_it_off_body">You can take your protection off !</string>
+    <string name="licenses">Licenses</string>
+    <string name="set_auto_date_and_time">Auto fill date and time</string>
+    <string name="to">To:</string>
+    <string name="from">From:</string>
+    <string name="you_weared_your_protection_from">You weared your protection from:</string>
+    <string name="that_make_about">That make about:</string>
+    <string name="worn_for">Worn for</string>
 
 </resources>

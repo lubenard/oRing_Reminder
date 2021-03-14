@@ -9,7 +9,7 @@
         android:textSize="20dp"
         android:layout_marginTop="30dp"
         android:textStyle="bold"
-        android:text="You weared your protection from: " />
+        android:text="@string/you_weared_your_protection_from" />
 
     <TextView
         style="@style/base_text_centered"
@@ -22,7 +22,7 @@
         android:layout_marginTop="30dp"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:text="To:" />
+        android:text="@string/to" />
 
     <TextView
         android:id="@+id/details_entry_removed"
@@ -38,7 +38,7 @@
         android:layout_marginTop="30dp"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:text="That make about:" />
+        android:text="@string/that_make_about" />
 
     <TextView
         style="@style/base_text_centered"

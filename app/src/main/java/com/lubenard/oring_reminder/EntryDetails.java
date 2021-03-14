@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -93,11 +94,11 @@ public class EntryDetails extends AppCompatActivity {
             removed.setText(contactDetails.get(1));
 
             if (contactDetails.get(2).equals("NOT SET YET"))
-                timeWeared.setText("Not set yet");
+                timeWeared.setText(R.string.not_set_yet);
             else {
                 int time_spent_wearing = Integer.parseInt(contactDetails.get(2));
                 if (time_spent_wearing < 60) {
-                    timeWeared.setText(contactDetails.get(2) + " Minutes");
+                    timeWeared.setText(contactDetails.get(2) + getString(R.string.minute_with_M_uppercase));
                 } else {
                     timeWeared.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
                 }
@@ -105,7 +106,7 @@ public class EntryDetails extends AppCompatActivity {
 
             if (Integer.parseInt(contactDetails.get(3)) == 1) {
                 isRunning.setTextColor(getResources().getColor(R.color.yellow));
-                isRunning.setText("Session is running");
+                isRunning.setText(R.string.session_is_running);
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -116,15 +117,15 @@ public class EntryDetails extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                ableToGetItOff.setText("You should be able to get it off at: \n" + dateFormat.format(calendar.getTime()));
+                ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + dateFormat.format(calendar.getTime()));
             } else {
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                isRunning.setText("Session is over !");
+                isRunning.setText(R.string.session_finished);
                 ableToGetItOff.setVisibility(View.INVISIBLE);
             }
         }
         else {
-            // trigger error, show toast and exit
+            Toast.makeText(this, R.string.error_bad_id_entry_details, Toast.LENGTH_SHORT);
             finish();
         }
     }

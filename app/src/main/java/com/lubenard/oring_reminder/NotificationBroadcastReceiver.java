@@ -8,8 +8,8 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         DbManager dbManager = new DbManager(context);
-        Utils.sendNotification(context, "Reminder:",
-                "You can take your protection off! ",
+        Utils.sendNotification(context, context.getString(R.string.notif_get_it_off_title),
+                context.getString(R.string.notif_get_it_off_body),
                 android.R.drawable.checkbox_on_background);
     }
 }

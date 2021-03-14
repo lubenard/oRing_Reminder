@@ -15,7 +15,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FROM" />
+                    android:text="@string/from" />
 
                 <TextView
                 android:id="@+id/custom_view_date_weared_from"
@@ -34,7 +34,7 @@
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TO" />
+                    android:text="@string/to" />
 
                 <TextView
                     android:id="@+id/custom_view_date_weared_to"
@@ -53,12 +53,12 @@
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="WEARED DURING" />
+                    android:text="@string/worn_for" />
 
                 <TextView
                     android:id="@+id/custom_view_date_time_weared"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="weared_during" />
+                    android:text="weared_for" />
         </LinearLayout>
 </LinearLayout>

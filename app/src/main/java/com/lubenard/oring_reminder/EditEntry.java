@@ -40,6 +40,7 @@ public class EditEntry extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private int weared_time;
+
     /**
      * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
      * @param alarmDate
@@ -157,7 +158,7 @@ public class EditEntry extends AppCompatActivity {
                     dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
                 finish();
             } else {
-                Toast.makeText(this, "Error, end time is not correct, please check it", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);

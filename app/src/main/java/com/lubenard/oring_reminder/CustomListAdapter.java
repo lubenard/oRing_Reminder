@@ -33,11 +33,11 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
 
     private String convertTimeWeared(int timeWeared) {
         if (timeWeared < 60) {
-            return timeWeared + " Minutes";
+            return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
         } else if (timeWeared <= 1440) {
             return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
         } else {
-            return "> 1 day";
+            return getContext().getString(R.string.more_than_one_day);
         }
     }
 

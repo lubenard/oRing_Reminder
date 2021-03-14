@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30dp"
-        android:text="From" />
+        android:text="@string/from" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Set auto Date and Time" />
+            android:text="@string/set_auto_date_and_time" />
     </LinearLayout>
 
     <EditText
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30dp"
-        android:text="To" />
+        android:text="@string/to" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Set auto Date and Time" />
+            android:text="@string/set_auto_date_and_time" />
     </LinearLayout>
 
     <EditText
