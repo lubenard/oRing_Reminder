@@ -13,10 +13,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -100,19 +100,28 @@ public class EditEntry extends AppCompatActivity {
             String formattedDatePut = String.format("%s %s", datePut, timePut);
             String formattedDateRemoved = String.format("%s %s", dateRemoved, timeRemoved);
 
-            if (formattedDateRemoved.isEmpty()) {
-                
-            }
+            Log.d("Create new entry", "Is empty ? " + dateRemoved.isEmpty() + " " + timeRemoved.isEmpty());
+            if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
+                Log.d("Create new entry", "Only started wearing it");
 
-            if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
+
+
+                if (entryId != -1)
+                    dbManager.updateDatesRing(id, formattedDatePut, "NOT SET YET", 1);
+                else
+                    dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
+
+                finish();
+
+            } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
 
                 Log.d("Create new entry", "Formatted string Put is = " + formattedDatePut);
                 Log.d("Create new entry", "Formatted string removed is = " + formattedDateRemoved);
 
                 if (entryId != -1)
-                    dbManager.updateDatesRing(id, formattedDatePut, formattedDateRemoved);
+                    dbManager.updateDatesRing(id, formattedDatePut, formattedDateRemoved, 0);
                 else
-                    dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved);
+                    dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
                 finish();
             } else {
                 Toast.makeText(this, "Error, diff time is not correct: " + Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES), Toast.LENGTH_SHORT).show();

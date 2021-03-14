@@ -101,21 +101,24 @@ public class DbManager extends SQLiteOpenHelper {
      * Example: The contact named Toto does not exist, so let's create it
      * @param dateRemoved date at which user has removed the protection
      * @param datePut date at which user has put the protection
+     * @param isRunning if the current session is running
      */
-    public void createNewDatesRing(String datePut, String dateRemoved) {
+    public void createNewDatesRing(String datePut, String dateRemoved, int isRunning) {
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
         cv.put(ringTableRemoved, dateRemoved);
         cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+        cv.put(ringTableIsRunning, isRunning);
 
         writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void updateDatesRing(int id, String datePut, String dateRemoved) {
+    public void updateDatesRing(int id, String datePut, String dateRemoved, int isRunning) {
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
         cv.put(ringTableRemoved, dateRemoved);
         cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+        cv.put(ringTableIsRunning, isRunning);
 
         int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(id)});
         if (u == 0) {
@@ -123,6 +126,7 @@ public class DbManager extends SQLiteOpenHelper {
             cv.put(ringTablePut, datePut);
             cv.put(ringTableRemoved, dateRemoved);
             cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+            cv.put(ringTableIsRunning, isRunning);
             writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         }
     }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -11,7 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class EntryDetails extends AppCompatActivity {
     private int entryId = -1;
@@ -69,8 +74,9 @@ public class EntryDetails extends AppCompatActivity {
             TextView removed = findViewById(R.id.details_entry_removed);
             TextView timeWeared = findViewById(R.id.details_entry_time_weared);
             TextView isRunning = findViewById(R.id.details_entry_isRunning);
+            TextView ableToGetItOff = findViewById(R.id.details_entry_able_to_get_it_off);
 
-            if (Integer.valueOf(contactDetails.get(2)) / 60 > 15)
+            if (Integer.parseInt(contactDetails.get(2)) / 60 > 15)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             else
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
@@ -78,14 +84,37 @@ public class EntryDetails extends AppCompatActivity {
             put.setText(contactDetails.get(0));
             removed.setText(contactDetails.get(1));
 
-            if (Integer.valueOf(contactDetails.get(2)) < 60) {
+            if (Integer.parseInt(contactDetails.get(2)) < 60) {
                 timeWeared.setText(contactDetails.get(2) + " Minutes");
-            } else if (Integer.valueOf(contactDetails.get(2)) <= 1440) {
-                timeWeared.setText(String.format("%dh%02dm", Integer.valueOf(contactDetails.get(2)) / 60, Integer.valueOf(contactDetails.get(2)) % 60));
+            } else if (Integer.parseInt(contactDetails.get(2)) <= 1440) {
+                timeWeared.setText(String.format("%dh%02dm", Integer.parseInt(contactDetails.get(2)) / 60, Integer.parseInt(contactDetails.get(2)) % 60));
             }
 
+            if (Integer.parseInt(contactDetails.get(3)) == 1) {
+                isRunning.setTextColor(getResources().getColor(R.color.yellow));
+                isRunning.setText("Session is running");
 
-            isRunning.setText(contactDetails.get(3));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                Date oldDate = null;
+                try {
+                    oldDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(contactDetails.get(0));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("Create new entry", "User has put it at  " + dateFormat.format(oldDate.getTime()));
+
+                Date newDate = new Date(oldDate.getTime() + TimeUnit.HOURS.toMillis(15)); // Add 15 hours
+
+                Log.d("Create new entry", "User will get it off at " + dateFormat.format(newDate.getTime()));
+
+                ableToGetItOff.setText("You should be able to get it off at: \n" + dateFormat.format(newDate.getTime()));
+
+            } else {
+                isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                isRunning.setText("Session is over !");
+            }
         }
         else {
             // trigger error, show toast and exit

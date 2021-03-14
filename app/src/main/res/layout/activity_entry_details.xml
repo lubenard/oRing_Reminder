@@ -62,8 +62,17 @@
         android:id="@+id/details_entry_isRunning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:textAlignment="center"
         android:textSize="17dp"
         android:text="is_running" />
+
+    <TextView
+        android:id="@+id/details_entry_able_to_get_it_off"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textAlignment="center"
+        android:textSize="17dp"
+        android:text="able_to_get_it_off_to" />
 </LinearLayout>
