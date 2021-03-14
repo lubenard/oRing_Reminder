@@ -83,7 +83,7 @@ public class EntryDetails extends AppCompatActivity {
             TextView isRunning = findViewById(R.id.details_entry_isRunning);
             TextView ableToGetItOff = findViewById(R.id.details_entry_able_to_get_it_off);
 
-            if (Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
+            if (!contactDetails.get(2).equals("NOT SET YET") && Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             else
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
@@ -91,7 +91,9 @@ public class EntryDetails extends AppCompatActivity {
             put.setText(contactDetails.get(0));
             removed.setText(contactDetails.get(1));
 
-            if (Integer.parseInt(contactDetails.get(2)) < 60) {
+            if (contactDetails.get(2).equals("NOT SET YET")){
+                timeWeared.setText("Not set yet");
+            } else if (Integer.parseInt(contactDetails.get(2)) < 60) {
                 timeWeared.setText(contactDetails.get(2) + " Minutes");
             } else {
                 timeWeared.setText(String.format("%dh%02dm", Integer.parseInt(contactDetails.get(2)) / 60, Integer.parseInt(contactDetails.get(2)) % 60));
@@ -117,7 +119,6 @@ public class EntryDetails extends AppCompatActivity {
                 Log.d("Create new entry", "User will get it off at " + dateFormat.format(newDate.getTime()));
 
                 ableToGetItOff.setText("You should be able to get it off at: \n" + dateFormat.format(newDate.getTime()));
-
             } else {
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 isRunning.setText("Session is over !");

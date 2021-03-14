@@ -25,6 +25,7 @@
         <activity android:name=".EntryDetails"
             android:parentActivityName=".MainActivity">
         </activity>
+        <receiver android:name=".NotificationBroadcastReceiver"/>
     </application>
 
 </manifest>

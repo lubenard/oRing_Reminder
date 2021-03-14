@@ -14,4 +14,32 @@
     <string name="ui_theme_title">Theme</string>
     <string name="settings_other_feedback_title">Feedback the app</string>
     <string name="settings_other_feedback_description">Feel free to send a mail !</string>
+    <string name="app_description">oRing is an app that help you managing your contraception</string>
+
+    <string name="license_app_title">This app use Apache 2 Licence.</string>
+
+    <string name="license_app_licence" translatable="false">
+            Copyright 2021 lubenard\n\n
+
+        Licensed under the Apache License, Version 2.0 (the "License");\n
+        you may not use this file except in compliance with the License.\n
+        You may obtain a copy of the License at\n\n
+
+            http://www.apache.org/licenses/LICENSE-2.0\n\n
+
+        Unless required by applicable law or agreed to in writing, software\n
+        distributed under the License is distributed on an "AS IS" BASIS,\n
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+        See the License for the specific language governing permissions and\n
+        limitations under the License.\n
+    </string>
+
+    <string name="license_app_source">You can see the source code of this app here :\n
+        https://github.com/lubenard/oRing_Reminder
+    </string>
+    <string name="about_additional_software_licenses">About and Licenses</string>
+    <string name="settings_other_see_licenses_title">See about and licences</string>
+    <string name="notif_channel_name">Send a erasable notification</string>
+    <string name="notif_normal_channel_desc">This channel is used to send notifications when you can remove your protection</string>
+
 </resources>

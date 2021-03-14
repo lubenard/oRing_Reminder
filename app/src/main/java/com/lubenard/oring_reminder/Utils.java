@@ -1,5 +1,13 @@
 package com.lubenard.oring_reminder;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
+import androidx.core.app.NotificationCompat;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,5 +27,33 @@ public class Utils {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    public static void sendNotification(Context context, String title, String content, int drawable) {
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("NORMAL_CHANNEL",
+                    context.getString(R.string.notif_channel_name), NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(context.getString(R.string.notif_normal_channel_desc));
+            // Do not show badge
+            channel.setShowBadge(false);
+            mNotificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, "NORMAL_CHANNEL");
+        // Set icon
+        permNotifBuilder.setSmallIcon(drawable);
+        // Set main notif name
+        permNotifBuilder.setContentTitle(title);
+        // Set more description of the notif
+        permNotifBuilder.setContentText(content);
+        // Do not show time on the notif
+        //permNotifBuilder.setShowWhen(false);
+
+        Intent intent = new Intent(context, SettingsFragment.class);
+        PendingIntent pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        permNotifBuilder.setContentIntent(pi);
+        mNotificationManager.notify(0, permNotifBuilder.build());
     }
 }

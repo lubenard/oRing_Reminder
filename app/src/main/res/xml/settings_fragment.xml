@@ -38,6 +38,11 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="Wearing time" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="myring_send_notif_when_session_over"
+            android:title="Send a notification when you can take off your protection" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -48,6 +53,10 @@
             app:key="other_feedback"
             app:title="@string/settings_other_feedback_title"
             app:summary="@string/settings_other_feedback_description"/>
+
+        <Preference
+            app:key="other_about_licenses"
+            app:title="@string/settings_other_see_licenses_title"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

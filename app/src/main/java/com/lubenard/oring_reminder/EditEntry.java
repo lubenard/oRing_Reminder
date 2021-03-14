@@ -1,6 +1,10 @@
 package com.lubenard.oring_reminder;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import static android.os.Build.VERSION.SDK_INT;
 
 public class EditEntry extends AppCompatActivity {
 
@@ -104,13 +111,38 @@ public class EditEntry extends AppCompatActivity {
             if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
                 Log.d("Create new entry", "Only started wearing it");
 
-
-
                 if (entryId != -1)
                     dbManager.updateDatesRing(id, formattedDatePut, "NOT SET YET", 1);
                 else
                     dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
 
+                Boolean shouldSendNotif = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("myring_send_notif_when_session_over", true);
+
+                if (shouldSendNotif) {
+
+                    Calendar calendar = Calendar.getInstance();
+
+                    try {
+                        calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(formattedDatePut));
+                        calendar.add(Calendar.HOUR_OF_DAY, 15);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.d("Create new entry", "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
+
+                    Intent intent = new Intent(this, NotificationBroadcastReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+                    AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+
+                    if (SDK_INT < Build.VERSION_CODES.KITKAT)
+                        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    else if (Build.VERSION_CODES.KITKAT <= SDK_INT && SDK_INT < Build.VERSION_CODES.M)
+                        am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    else if (SDK_INT >= Build.VERSION_CODES.M) {
+                        am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    }
+                }
                 finish();
 
             } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {

@@ -114,6 +114,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+
+        // feedback preference click listener
+        Preference aboutLicenses = findPreference("other_about_licenses");
+        aboutLicenses.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new AboutFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            }
+        });
     }
 
     public static void restartActivity() {
