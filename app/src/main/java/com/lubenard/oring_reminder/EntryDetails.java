@@ -18,6 +18,7 @@ import androidx.preference.PreferenceManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -91,12 +92,15 @@ public class EntryDetails extends AppCompatActivity {
             put.setText(contactDetails.get(0));
             removed.setText(contactDetails.get(1));
 
-            if (contactDetails.get(2).equals("NOT SET YET")){
+            if (contactDetails.get(2).equals("NOT SET YET"))
                 timeWeared.setText("Not set yet");
-            } else if (Integer.parseInt(contactDetails.get(2)) < 60) {
-                timeWeared.setText(contactDetails.get(2) + " Minutes");
-            } else {
-                timeWeared.setText(String.format("%dh%02dm", Integer.parseInt(contactDetails.get(2)) / 60, Integer.parseInt(contactDetails.get(2)) % 60));
+            else {
+                int time_spent_wearing = Integer.parseInt(contactDetails.get(2));
+                if (time_spent_wearing < 60) {
+                    timeWeared.setText(contactDetails.get(2) + " Minutes");
+                } else {
+                    timeWeared.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
+                }
             }
 
             if (Integer.parseInt(contactDetails.get(3)) == 1) {
@@ -105,20 +109,14 @@ public class EntryDetails extends AppCompatActivity {
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                Date oldDate = null;
+                Calendar calendar = Calendar.getInstance();
                 try {
-                    oldDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(contactDetails.get(0));
+                    calendar.setTime(dateFormat.parse(contactDetails.get(0)));
+                    calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-                Log.d("Create new entry", "User has put it at  " + dateFormat.format(oldDate.getTime()));
-
-                Date newDate = new Date(oldDate.getTime() + TimeUnit.HOURS.toMillis(weared_time)); // Add 15 hours
-
-                Log.d("Create new entry", "User will get it off at " + dateFormat.format(newDate.getTime()));
-
-                ableToGetItOff.setText("You should be able to get it off at: \n" + dateFormat.format(newDate.getTime()));
+                ableToGetItOff.setText("You should be able to get it off at: \n" + dateFormat.format(calendar.getTime()));
             } else {
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 isRunning.setText("Session is over !");

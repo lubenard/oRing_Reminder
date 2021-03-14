@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,16 +33,62 @@ public class EditEntry extends AppCompatActivity {
     private DbManager dbManager;
     private int entryId;
 
+    private EditText new_entry_date_from;
+    private EditText new_entry_time_from;
+    private EditText new_entry_date_to;
+    private EditText new_entry_time_to;
+
+    private SharedPreferences sharedPreferences;
+    private int weared_time;
+    /**
+     * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
+     * @param alarmDate
+     */
+    private void setAlarm(String alarmDate) {
+        Calendar calendar = Calendar.getInstance();
+        try {
+            calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(alarmDate));
+            calendar.add(Calendar.HOUR_OF_DAY, 15);
+            Log.d("Create new entry", "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
+
+            Intent intent = new Intent(this, NotificationBroadcastReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+            AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+
+            if (SDK_INT < Build.VERSION_CODES.KITKAT)
+                am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            else if (Build.VERSION_CODES.KITKAT <= SDK_INT && SDK_INT < Build.VERSION_CODES.M)
+                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            else if (SDK_INT >= Build.VERSION_CODES.M) {
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fill_entry_from(String date) {
+        String[] slittedDate = date.split(" ");
+        new_entry_date_from.setText(slittedDate[0]);
+        new_entry_time_from.setText(slittedDate[1]);
+    }
+
+    private void fill_entry_to(String date) {
+        String[] slittedDate = date.split(" ");
+        new_entry_date_to.setText(slittedDate[0]);
+        new_entry_time_to.setText(slittedDate[1]);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_entry);
 
-        EditText new_entry_date_from = findViewById(R.id.new_entry_date_from);
-        EditText new_entry_time_from = findViewById(R.id.new_entry_time_from);
+        new_entry_date_from = findViewById(R.id.new_entry_date_from);
+        new_entry_time_from = findViewById(R.id.new_entry_time_from);
 
-        EditText new_entry_date_to = findViewById(R.id.new_entry_date_to);
-        EditText new_entry_time_to = findViewById(R.id.new_entry_time_to);
+        new_entry_date_to = findViewById(R.id.new_entry_date_to);
+        new_entry_time_to = findViewById(R.id.new_entry_time_to);
 
         Button auto_from_button = findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = findViewById(R.id.new_entry_auto_date_to);
@@ -51,36 +98,28 @@ public class EditEntry extends AppCompatActivity {
         Intent intent = getIntent();
         entryId = intent.getIntExtra("entryId", -1);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+
         if (entryId != -1) {
             ArrayList<String> datas = dbManager.getEntryDetails(entryId);
-            String[] fullDate = datas.get(0).split(" ");
-            new_entry_date_from.setText(fullDate[0]);
-            new_entry_time_from.setText(fullDate[1]);
-
-            String[] fullDate2 = datas.get(1).split(" ");
-            new_entry_date_to.setText(fullDate2[0]);
-            new_entry_time_to.setText(fullDate2[1]);
+            fill_entry_from(datas.get(0));
+            fill_entry_to(datas.get(1));
         }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         auto_from_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date();
-                String[] fullDate = dateFormat.format(date).split(" ");
-                new_entry_date_from.setText(fullDate[0]);
-                new_entry_time_from.setText(fullDate[1]);
+                fill_entry_from(dateFormat.format(new Date()));
             }
         });
 
         new_entry_auto_date_to.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date();
-                String[] fullDate = dateFormat.format(date).split(" ");
-                new_entry_date_to.setText(fullDate[0]);
-                new_entry_time_to.setText(fullDate[1]);
+                fill_entry_to(dateFormat.format(new Date()));
             }
         });
     }
@@ -95,68 +134,30 @@ public class EditEntry extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        DbManager dbManager = new DbManager(this);
-
         if (id == R.id.action_validate) {
-            String datePut = ((EditText)findViewById(R.id.new_entry_date_from)).getText().toString();
-            String timePut = ((EditText)findViewById(R.id.new_entry_time_from)).getText().toString();
+            String dateRemoved = new_entry_date_to.getText().toString();
+            String timeRemoved = new_entry_time_to.getText().toString();
 
-            String dateRemoved = ((EditText)findViewById(R.id.new_entry_date_to)).getText().toString();
-            String timeRemoved = ((EditText)findViewById(R.id.new_entry_time_to)).getText().toString();
-
-            String formattedDatePut = String.format("%s %s", datePut, timePut);
+            String formattedDatePut = String.format("%s %s", new_entry_date_from.getText(), new_entry_time_from.getText());
             String formattedDateRemoved = String.format("%s %s", dateRemoved, timeRemoved);
 
-            Log.d("Create new entry", "Is empty ? " + dateRemoved.isEmpty() + " " + timeRemoved.isEmpty());
             if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
-                Log.d("Create new entry", "Only started wearing it");
-
                 if (entryId != -1)
                     dbManager.updateDatesRing(id, formattedDatePut, "NOT SET YET", 1);
                 else
                     dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
 
-                Boolean shouldSendNotif = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("myring_send_notif_when_session_over", true);
-
-                if (shouldSendNotif) {
-
-                    Calendar calendar = Calendar.getInstance();
-
-                    try {
-                        calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(formattedDatePut));
-                        calendar.add(Calendar.HOUR_OF_DAY, 15);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                    Log.d("Create new entry", "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
-
-                    Intent intent = new Intent(this, NotificationBroadcastReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-                    AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-
-                    if (SDK_INT < Build.VERSION_CODES.KITKAT)
-                        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                    else if (Build.VERSION_CODES.KITKAT <= SDK_INT && SDK_INT < Build.VERSION_CODES.M)
-                        am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                    else if (SDK_INT >= Build.VERSION_CODES.M) {
-                        am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                    }
-                }
+                if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
+                    setAlarm(formattedDatePut);
                 finish();
-
             } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-
-                Log.d("Create new entry", "Formatted string Put is = " + formattedDatePut);
-                Log.d("Create new entry", "Formatted string removed is = " + formattedDateRemoved);
-
                 if (entryId != -1)
                     dbManager.updateDatesRing(id, formattedDatePut, formattedDateRemoved, 0);
                 else
                     dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
                 finish();
             } else {
-                Toast.makeText(this, "Error, diff time is not correct: " + Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error, end time is not correct, please check it", Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);

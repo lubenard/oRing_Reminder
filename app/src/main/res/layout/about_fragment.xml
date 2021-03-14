@@ -17,51 +17,35 @@
             app:srcCompat="@mipmap/ic_launcher_round" />
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/base_text_centered"
             android:text="@string/app_name"
-            android:gravity="center"
             android:textSize="50sp"/>
 
         <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/base_text_centered"
             android:text="@string/app_description"
-            android:gravity="center"
             android:textSize="20sp"/>
 
         <TextView
-            android:id="@+id/textView9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/base_text_centered"
             android:layout_marginTop="35dp"
-            android:textAlignment="center"
             android:text="Licenses"
             android:textSize="30sp"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/base_text_centered"
             android:layout_marginTop="35dp"
-            android:textAlignment="center"
             android:textSize="20sp"
             android:text="@string/license_app_title"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/base_text_centered"
             android:layout_marginTop="35dp"
-            android:textAlignment="center"
             android:text="@string/license_app_licence"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/base_text_centered"
             android:layout_marginTop="35dp"
-            android:textAlignment="center"
             android:text="@string/license_app_source"/>
-
     </LinearLayout>
 </ScrollView>

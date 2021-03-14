@@ -5,35 +5,28 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/base_text_centered"
         android:textSize="20dp"
         android:layout_marginTop="30dp"
-        android:textAlignment="center"
         android:textStyle="bold"
         android:text="You weared your protection from: " />
 
     <TextView
+        style="@style/base_text_centered"
         android:id="@+id/details_entry_put"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:textSize="17dp"
-        android:textAlignment="center"
         android:text="datetime_start_wearing" />
 
     <TextView
-        android:id="@+id/textView7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/base_text_centered"
         android:layout_marginTop="30dp"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:textAlignment="center"
         android:text="To:" />
 
     <TextView
         android:id="@+id/details_entry_removed"
+        style="@style/base_text_centered"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -41,38 +34,29 @@
         android:text="datetime_stop_wearing" />
 
     <TextView
-        android:id="@+id/textView8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/base_text_centered"
         android:layout_marginTop="30dp"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:textAlignment="center"
         android:text="That make about:" />
 
     <TextView
+        style="@style/base_text_centered"
         android:id="@+id/details_entry_time_weared"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:textSize="17dp"
-        android:textAlignment="center"
         android:text="time_weared" />
 
     <TextView
         android:id="@+id/details_entry_isRunning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/base_text_centered"
         android:layout_marginTop="30dp"
-        android:textAlignment="center"
         android:textSize="17dp"
         android:text="is_running" />
 
     <TextView
         android:id="@+id/details_entry_able_to_get_it_off"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/base_text_centered"
         android:layout_marginTop="15dp"
-        android:textAlignment="center"
         android:textSize="17dp"
         android:text="able_to_get_it_off_to" />
 </LinearLayout>

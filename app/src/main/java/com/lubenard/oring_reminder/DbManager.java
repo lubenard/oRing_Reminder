@@ -134,14 +134,6 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
-    /**
-     * Close the db when finished using it.
-     */
-    public void closeDb() {
-        if (writableDB != null) { writableDB.close();}
-        if (readableDB != null) { readableDB.close();}
-    }
-
     public ArrayList<String> getEntryDetails(int entryId) {
 
         ArrayList<String> entryDatas = new ArrayList<>();
@@ -151,7 +143,6 @@ public class DbManager extends SQLiteOpenHelper {
                 new String[]{String.valueOf(entryId)}, null, null, null);
 
         cursor.moveToFirst();
-        //Log.d(TAG, "cursor = " + cursor.getString(cursor.getColumnIndex(contactsTableName)));
         entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTablePut)));
         entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableRemoved)));
         entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableTimeWeared)));
@@ -168,6 +159,14 @@ public class DbManager extends SQLiteOpenHelper {
     {
         if (entryId > 0)
             writableDB.delete(ringTable,ringTableId + "=?", new String[]{String.valueOf(entryId)});
+    }
+
+    /**
+     * Close the db when finished using it.
+     */
+    public void closeDb() {
+        if (writableDB != null) { writableDB.close();}
+        if (readableDB != null) { readableDB.close();}
     }
 }
 

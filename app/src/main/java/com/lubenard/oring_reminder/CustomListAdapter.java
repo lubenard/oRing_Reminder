@@ -13,10 +13,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.OnClickListener{
+public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.OnClickListener {
 
-    private ArrayList<RingModel> dataSet;
-    Context mContext;
+    @Override
+    public void onClick(View view) {
+    }
 
     // View lookup cache
     private static class ViewHolder {
@@ -27,22 +28,12 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
 
     public CustomListAdapter(ArrayList<RingModel> data, Context context) {
         super(context, R.layout.custom_contact_list_element, data);
-        this.dataSet = data;
-        this.mContext = context;
     }
 
-    @Override
-    public void onClick(View v) {
-        int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        RingModel dataModel = (RingModel) object;
-    }
-
-    private int lastPosition = -1;
 
     private String convertTimeWeared(int timeWeared) {
         if (timeWeared < 60) {
-            return String.valueOf(timeWeared) + " Minutes";
+            return timeWeared + " Minutes";
         } else if (timeWeared <= 1440) {
             return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
         } else {
@@ -54,21 +45,19 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         RingModel dataModel = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
+        ViewHolder viewHolder;
 
         viewHolder = new ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(getContext());
         convertView = inflater.inflate(R.layout.custom_contact_list_element, parent, false);
-        viewHolder.weared_from = (TextView) convertView.findViewById(R.id.custom_view_date_weared_from);
-        viewHolder.weared_to = (TextView) convertView.findViewById(R.id.custom_view_date_weared_to);
-        viewHolder.weared_during = (TextView) convertView.findViewById(R.id.custom_view_date_time_weared);
+        viewHolder.weared_from = convertView.findViewById(R.id.custom_view_date_weared_from);
+        viewHolder.weared_to = convertView.findViewById(R.id.custom_view_date_weared_to);
+        viewHolder.weared_during = convertView.findViewById(R.id.custom_view_date_time_weared);
 
         viewHolder.weared_from.setText(dataModel.getDatePut());
         viewHolder.weared_to.setText(dataModel.getDateRemoved());
         viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
 
-        // Return the completed view to render on screen
         return convertView;
     }
 }

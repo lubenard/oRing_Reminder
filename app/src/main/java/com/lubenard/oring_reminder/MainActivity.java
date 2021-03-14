@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createNewEntry();
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
             }
         });
 
@@ -68,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-    // Start the EditContact activity, with no user datas to load
     private void createNewEntry() {
         Intent intent = new Intent(this, EditEntry.class);
         intent.putExtra("entryId", -1);
