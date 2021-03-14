@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Following this page https://developer.android.com/guide/topics/ui/settings,
+     this file need to be in this folder -->
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white">
+
+    <PreferenceCategory
+        app:key="cat_ui"
+        app:title="UI">
+
+        <ListPreference
+            android:key="ui_language"
+            android:title="@string/ui_language_title"
+            app:summary="Actually, %s"
+            android:entries="@array/ui_language_titles"
+            android:entryValues="@array/ui_language_values"
+            android:defaultValue="system"/>
+
+        <ListPreference
+            android:key="ui_theme"
+            android:title="@string/ui_theme_title"
+            app:summary="Actually, %s"
+            android:entries="@array/ui_theme_titles"
+            android:entryValues="@array/ui_theme_values"
+            android:defaultValue="dark"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="cat_myring"
+        app:title="MY RING">
+
+        <EditTextPreference
+            android:defaultValue="15"
+            android:key="myring_wearing_time"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Wearing time" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="cat_other"
+        app:title="OTHER">
+
+        <Preference
+            app:key="other_feedback"
+            app:title="@string/settings_other_feedback_title"
+            app:summary="@string/settings_other_feedback_description"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

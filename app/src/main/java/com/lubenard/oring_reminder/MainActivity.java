@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             //Launch settings page
-            /*getSupportFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(android.R.id.content, new SettingsFragment(), null)
-                    .addToBackStack(null).commit();*/
+                    .addToBackStack(null).commit();
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -5,4 +5,13 @@
     <string name="action_delete">Delete this entry</string>
     <string name="alertdialog_delete_entry">Delete this entry ?</string>
     <string name="alertdialog_delete_contact_body">Are you sure ? This cannot be undone !</string>
+    <string name="settings_ui_theme_clear">Clear</string>
+    <string name="settings_ui_theme_dark">Dark</string>
+    <string name="settings_ui_theme_black">Black</string>
+    <string name="settings_ui_theme_battery_saver">Battery saver</string>
+    <string name="settings_ui_system">System</string>
+    <string name="ui_language_title">Language</string>
+    <string name="ui_theme_title">Theme</string>
+    <string name="settings_other_feedback_title">Feedback the app</string>
+    <string name="settings_other_feedback_description">Feel free to send a mail !</string>
 </resources>

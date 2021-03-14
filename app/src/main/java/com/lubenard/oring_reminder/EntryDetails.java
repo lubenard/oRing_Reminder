@@ -3,14 +3,17 @@ package com.lubenard.oring_reminder;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class EntryDetails extends AppCompatActivity {
     private int entryId = -1;
     private DbManager dbManager;
+    private int weared_time;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +35,9 @@ public class EntryDetails extends AppCompatActivity {
 
         Intent intent = getIntent();
         entryId = intent.getIntExtra("entryId", -1);
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
     }
 
     @Override
@@ -76,7 +83,7 @@ public class EntryDetails extends AppCompatActivity {
             TextView isRunning = findViewById(R.id.details_entry_isRunning);
             TextView ableToGetItOff = findViewById(R.id.details_entry_able_to_get_it_off);
 
-            if (Integer.parseInt(contactDetails.get(2)) / 60 > 15)
+            if (Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             else
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
@@ -86,7 +93,7 @@ public class EntryDetails extends AppCompatActivity {
 
             if (Integer.parseInt(contactDetails.get(2)) < 60) {
                 timeWeared.setText(contactDetails.get(2) + " Minutes");
-            } else if (Integer.parseInt(contactDetails.get(2)) <= 1440) {
+            } else {
                 timeWeared.setText(String.format("%dh%02dm", Integer.parseInt(contactDetails.get(2)) / 60, Integer.parseInt(contactDetails.get(2)) % 60));
             }
 
@@ -105,7 +112,7 @@ public class EntryDetails extends AppCompatActivity {
 
                 Log.d("Create new entry", "User has put it at  " + dateFormat.format(oldDate.getTime()));
 
-                Date newDate = new Date(oldDate.getTime() + TimeUnit.HOURS.toMillis(15)); // Add 15 hours
+                Date newDate = new Date(oldDate.getTime() + TimeUnit.HOURS.toMillis(weared_time)); // Add 15 hours
 
                 Log.d("Create new entry", "User will get it off at " + dateFormat.format(newDate.getTime()));
 
@@ -114,6 +121,7 @@ public class EntryDetails extends AppCompatActivity {
             } else {
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 isRunning.setText("Session is over !");
+                ableToGetItOff.setVisibility(View.INVISIBLE);
             }
         }
         else {
