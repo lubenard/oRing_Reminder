@@ -70,7 +70,6 @@ public class EntryDetails extends AppCompatActivity {
             TextView timeWeared = findViewById(R.id.details_entry_time_weared);
             TextView isRunning = findViewById(R.id.details_entry_isRunning);
 
-
             if (Integer.valueOf(contactDetails.get(2)) / 60 > 15)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             else
@@ -78,7 +77,14 @@ public class EntryDetails extends AppCompatActivity {
 
             put.setText(contactDetails.get(0));
             removed.setText(contactDetails.get(1));
-            timeWeared.setText(contactDetails.get(2) + " Minutes");
+
+            if (Integer.valueOf(contactDetails.get(2)) < 60) {
+                timeWeared.setText(contactDetails.get(2) + " Minutes");
+            } else if (Integer.valueOf(contactDetails.get(2)) <= 1440) {
+                timeWeared.setText(String.format("%dh%02dm", Integer.valueOf(contactDetails.get(2)) / 60, Integer.valueOf(contactDetails.get(2)) % 60));
+            }
+
+
             isRunning.setText(contactDetails.get(3));
         }
         else {

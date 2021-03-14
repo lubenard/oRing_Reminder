@@ -100,6 +100,10 @@ public class EditEntry extends AppCompatActivity {
             String formattedDatePut = String.format("%s %s", datePut, timePut);
             String formattedDateRemoved = String.format("%s %s", dateRemoved, timeRemoved);
 
+            if (formattedDateRemoved.isEmpty()) {
+                
+            }
+
             if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
 
                 Log.d("Create new entry", "Formatted string Put is = " + formattedDatePut);
