@@ -27,6 +27,6 @@
         <item>battery_saver</item>
         <item>system</item>
     </string-array>
-    <string name="settings_ui_language_EN">English</string>
-    <string name="settings_ui_language_FR">Francais</string>
+    <string name="settings_ui_language_FR" translatable="false">Francais</string>
+    <string name="settings_ui_language_EN" translatable="false">English</string>
 </resources>

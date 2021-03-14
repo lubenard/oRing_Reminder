@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_edit">Editer cette entrée</string>
+    <string name="action_delete">Supprimer cette entrée</string>
+    <string name="alertdialog_delete_entry">Supprimer cette entrée ?</string>
+    <string name="alertdialog_delete_contact_body">Êtes vous sure ? Cette operation ne peut pas être annulée !</string>
+    <string name="settings_ui_theme_clear">Clair</string>
+    <string name="settings_ui_theme_dark">Foncé</string>
+    <string name="settings_ui_theme_black">Noir</string>
+    <string name="settings_ui_theme_battery_saver">Batterie faible</string>
+    <string name="settings_ui_system">Systeme</string>
+    <string name="ui_language_title">Langage</string>
+    <string name="ui_theme_title">Thème</string>
+    <string name="settings_other_feedback_title">Faire un retour sur l\'application</string>
+    <string name="settings_other_feedback_description">Envoyez moi un mail !</string>
+    <string name="app_description">oRing est une application qui vous aide à gerer votre contraception masculine</string>
+
+    <string name="license_app_title">Cette application est sous license Apache 2 Licence.</string>
+
+    <string name="license_app_licence" translatable="false">
+            Copyright 2021 lubenard\n\n
+
+        Licensed under the Apache License, Version 2.0 (the "License");\n
+        you may not use this file except in compliance with the License.\n
+        You may obtain a copy of the License at\n\n
+
+            http://www.apache.org/licenses/LICENSE-2.0\n\n
+
+        Unless required by applicable law or agreed to in writing, software\n
+        distributed under the License is distributed on an "AS IS" BASIS,\n
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+        See the License for the specific language governing permissions and\n
+        limitations under the License.\n
+    </string>
+
+    <string name="license_app_source">Vous pouvez voir le code source à cette addresse :\n
+        https://github.com/lubenard/oRing_Reminder
+    </string>
+    <string name="about_additional_software_licenses">A propos et licenses</string>
+    <string name="settings_other_see_licenses_title">Voir l\'a propos et les licenses</string>
+    <string name="notif_channel_name">Envoie une notification effacable</string>
+    <string name="notif_normal_channel_desc">Ce canal est utilisé pour vous prevenir que vous pouvez retirer votre protection</string>
+    <string name="minute_with_M_uppercase">&#160;Minutes</string>
+    <string name="more_than_one_day"><![CDATA[> 1 journée]]></string>
+    <string name="error_edit_entry_date">Erreur, le temps de fin est incorrect, merci de le verifier</string>
+    <string name="not_set_yet">Pas encore défini</string>
+    <string name="session_is_running">Session en cours</string>
+    <string name="_message_able_to_get_it_off">Vous devriez pouvoir l\'enlever à: \n</string>
+    <string name="session_finished">Session terminée!</string>
+    <string name="error_bad_id_entry_details">Erreur, mauvais ic.</string>
+    <string name="notif_get_it_off_title">Rappel:</string>
+    <string name="notif_get_it_off_body">Vous pouvez votre protection !</string>
+    <string name="licenses">Licenses</string>
+    <string name="set_auto_date_and_time">Pré remplir la date et l\'heure</string>
+    <string name="to">Jusqu\'a:</string>
+    <string name="from">Depuis:</string>
+    <string name="you_weared_your_protection_from">Vous portez votre protectiond depuis:</string>
+    <string name="that_make_about">Cela fait environ:</string>
+    <string name="worn_for">Porté pendant</string>
+
+</resources>

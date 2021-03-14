@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">oRing - Reminder</string>
+    <string name="app_name" translatable="false">oRing - Reminder</string>
     <string name="action_settings">Settings</string>
     <string name="action_edit">Edit this entry</string>
     <string name="action_delete">Delete this entry</string>
@@ -41,7 +41,7 @@
     <string name="settings_other_see_licenses_title">See about and licences</string>
     <string name="notif_channel_name">Send a erasable notification</string>
     <string name="notif_normal_channel_desc">This channel is used to send notifications when you can remove your protection</string>
-    <string name="minute_with_M_uppercase">Minutes</string>
+    <string name="minute_with_M_uppercase">&#160;Minutes</string>
     <string name="more_than_one_day"><![CDATA[> 1 day]]></string>
     <string name="error_edit_entry_date">Error, end time is not correct, please check it</string>
     <string name="not_set_yet">Not set yet</string>
@@ -54,9 +54,11 @@
     <string name="licenses">Licenses</string>
     <string name="set_auto_date_and_time">Auto fill date and time</string>
     <string name="to">To:</string>
-    <string name="from">From:</string>
-    <string name="you_weared_your_protection_from">You weared your protection from:</string>
+    <string name="from">Since:</string>
+    <string name="you_weared_your_protection_from">You weared your protection since:</string>
     <string name="that_make_about">That make about:</string>
     <string name="worn_for">Worn for</string>
+    <string name="alertdialog_dangerous_wearing_time">Are you sure ?</string>
+    <string name="alertdialog_dangerous_wearing_body">Not wearing your protection can make you fertile again. Wearing it too often is not good either. If in doubt, have a spermogram and go see your doctor.</string>
 
 </resources>
