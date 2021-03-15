@@ -19,12 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditEntry"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        <activity android:name=".EntryDetails"
-            android:parentActivityName=".MainActivity">
-        </activity>
         <receiver android:name=".NotificationBroadcastReceiver"/>
     </application>
 

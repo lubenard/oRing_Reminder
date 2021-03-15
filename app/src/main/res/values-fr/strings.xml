@@ -50,13 +50,17 @@
     <string name="session_finished">Session terminée!</string>
     <string name="error_bad_id_entry_details">Erreur, mauvais ic.</string>
     <string name="notif_get_it_off_title">Rappel:</string>
-    <string name="notif_get_it_off_body">Vous pouvez votre protection !</string>
+    <string name="notif_get_it_off_body">Vous pouvez enlever votre protection !</string>
     <string name="licenses">Licenses</string>
-    <string name="set_auto_date_and_time">Pré remplir la date et l\'heure</string>
+    <string name="set_auto_date_and_time">Pré-remplir la date et l\'heure</string>
     <string name="to">Jusqu\'a:</string>
     <string name="from">Depuis:</string>
-    <string name="you_weared_your_protection_from">Vous portez votre protectiond depuis:</string>
+    <string name="you_weared_your_protection_from">Vous portez votre protection depuis:</string>
     <string name="that_make_about">Cela fait environ:</string>
     <string name="worn_for">Porté pendant</string>
-
+    <string name="alertdialog_dangerous_wearing_time">Êtes vous sur ?</string>
+    <string name="alertdialog_dangerous_wearing_body">Ne pas porter votre protection peut vous rendre de nouveau fertile. La porter trop souvent n\'est pas bon non plus. En cas de doute, faite un spermogramme et allez voir votre medecin traitant.</string>
+    <string name="wering_time">Temps de port</string>
+    <string name="settings_send_notif_when_done_wearing">Envoyer une notification quand vous pouver enlever votre protection</string>
+    <string name="settings_actually_value">Actuellement, %s</string>
 </resources>

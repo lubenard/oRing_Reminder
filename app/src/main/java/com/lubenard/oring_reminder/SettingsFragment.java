@@ -1,6 +1,8 @@
 package com.lubenard.oring_reminder;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -14,7 +16,10 @@ import android.view.ViewGroup;
 
 
 import androidx.annotation.IntegerRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceFragmentCompat;
@@ -32,16 +37,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        view.setBackgroundColor(getResources().getColor(android.R.color.white));
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.settings_fragment, rootKey);
         activity = getActivity();
-        activity.setTitle(R.string.action_settings);
 
         // Language change listener
         final Preference language = findPreference("ui_language");
@@ -51,14 +53,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Log.d(TAG, "Language value has changed for " + newValue);
                 switch (newValue.toString()) {
                     case "en":
-                        setAppLocale("en-us");
+                        Utils.setAppLocale(activity, "en-us");
                         break;
                     case "fr":
-                        setAppLocale("fr");
+                        Utils.setAppLocale(activity, "fr");
                         break;
                     case "system":
                         break;
                 }
+                // Reload fragment to apply changes
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new SettingsFragment(), null).commit();
                 return true;
             }
         });
@@ -93,10 +98,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 int newTimeWeared = Integer.parseInt(newValue.toString());
-                if (newTimeWeared < 13) {
-                    // Show alert saying this can be dangerous
-                } else if (newTimeWeared > 18) {
-                    // Show alert saying this can be dangerous
+                if (newTimeWeared < 13 || newTimeWeared > 18) {
+                    new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_dangerous_wearing_time)
+                            .setMessage(R.string.alertdialog_dangerous_wearing_body)
+                            .setPositiveButton(android.R.string.yes, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
                 return true;
             }
@@ -127,22 +133,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
     }
 
-    public static void restartActivity() {
-        activity.recreate();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Toolbar toolbar = view.findViewById(R.id.settings_toolbar);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStackImmediate();
+            }
+        });
     }
 
-    private final void setAppLocale(String localeCode) {
-        Locale myLocale = new Locale(localeCode);
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        Configuration conf = res.getConfiguration();
-        conf.locale = myLocale;
-        res.updateConfiguration(conf, dm);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        SettingsFragment fragment = new SettingsFragment();
-        fragmentTransaction.replace(android.R.id.content, fragment);
-        fragmentTransaction.commit();
+    public static void restartActivity() {
+        activity.recreate();
     }
 }
 

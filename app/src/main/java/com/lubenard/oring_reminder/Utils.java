@@ -1,16 +1,25 @@
 package com.lubenard.oring_reminder;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 
 import androidx.core.app.NotificationCompat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
@@ -27,6 +36,15 @@ public class Utils {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    static void setAppLocale(Activity activity, String localeCode) {
+        Locale myLocale = new Locale(localeCode);
+        Resources res = activity.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
     }
 
     public static void sendNotification(Context context, String title, String content, int drawable) {

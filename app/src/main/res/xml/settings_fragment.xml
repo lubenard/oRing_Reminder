@@ -14,7 +14,7 @@
         <ListPreference
             android:key="ui_language"
             android:title="@string/ui_language_title"
-            app:summary="Actually, %s"
+            app:summary="@string/settings_actually_value"
             android:entries="@array/ui_language_titles"
             android:entryValues="@array/ui_language_values"
             android:defaultValue="system"/>
@@ -22,7 +22,7 @@
         <ListPreference
             android:key="ui_theme"
             android:title="@string/ui_theme_title"
-            app:summary="Actually, %s"
+            app:summary="@string/settings_actually_value"
             android:entries="@array/ui_theme_titles"
             android:entryValues="@array/ui_theme_values"
             android:defaultValue="dark"/>
@@ -37,12 +37,12 @@
             android:key="myring_wearing_time"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="Wearing time" />
+            android:title="@string/wering_time" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="myring_send_notif_when_session_over"
-            android:title="Send a notification when you can take off your protection" />
+            android:title="@string/settings_send_notif_when_done_wearing" />
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -59,6 +59,9 @@
     <string name="that_make_about">That make about:</string>
     <string name="worn_for">Worn for</string>
     <string name="alertdialog_dangerous_wearing_time">Are you sure ?</string>
-    <string name="alertdialog_dangerous_wearing_body">Not wearing your protection can make you fertile again. Wearing it too often is not good either. If in doubt, have a spermogram and go see your doctor.</string>
-
+    <string name="alertdialog_dangerous_wearing_body">Not wearing your protection enough can make you fertile again. Wearing it too often is not good either. If in doubt, have a spermogram and go see your doctor.</string>
+    <string name="wering_time">Wearing time</string>
+    <string name="settings_send_notif_when_done_wearing">Send a notification when you can take off your protection</string>
+    <string name="settings_actually_value">Actually, %s</string>
+    <string name="action_validate">Save this entry</string>
 </resources>
