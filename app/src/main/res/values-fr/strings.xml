@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="action_settings">Paramètres</string>
-    <string name="action_edit">Editer cette entrée</string>
+    <string name="action_edit">Éditer cette entrée</string>
     <string name="action_delete">Supprimer cette entrée</string>
     <string name="alertdialog_delete_entry">Supprimer cette entrée ?</string>
-    <string name="alertdialog_delete_contact_body">Êtes vous sure ? Cette operation ne peut pas être annulée !</string>
+    <string name="alertdialog_delete_contact_body">Êtes-vous sûr ? Cette opération ne peut pas être annulée !</string>
     <string name="settings_ui_theme_clear">Clair</string>
     <string name="settings_ui_theme_dark">Foncé</string>
     <string name="settings_ui_theme_black">Noir</string>
     <string name="settings_ui_theme_battery_saver">Batterie faible</string>
-    <string name="settings_ui_system">Systeme</string>
-    <string name="ui_language_title">Langage</string>
+    <string name="settings_ui_system">Système</string>
+    <string name="ui_language_title">Langues</string>
     <string name="ui_theme_title">Thème</string>
     <string name="settings_other_feedback_title">Faire un retour sur l\'application</string>
-    <string name="settings_other_feedback_description">Envoyez moi un mail !</string>
-    <string name="app_description">oRing est une application qui vous aide à gerer votre contraception masculine</string>
+    <string name="settings_other_feedback_description">Envoyez-moi un mail !</string>
+    <string name="app_description">oRing est une application qui vous aide à gérer votre contraception masculine</string>
 
     <string name="license_app_title">Cette application est sous license Apache 2 Licence.</string>
 
