@@ -12,10 +12,10 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="preferenceTheme">@style/YourTheme.PreferenceThemeOverlay</item>
+        <item name="preferenceTheme">@style/Preference.PreferenceThemeOverlay</item>
     </style>
 
-    <style name="YourTheme.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
+    <style name="Preference.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
         <item name="android:layout">@layout/settings_wrapper_fragment</item>
     </style>
 </resources>

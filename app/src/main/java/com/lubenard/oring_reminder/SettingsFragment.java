@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceFragmentCompat;
@@ -34,6 +36,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     public static final String TAG = "SettingsActivity";
     private static Activity activity;
+    private Fragment thisFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +48,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.settings_fragment, rootKey);
         activity = getActivity();
 
+        thisFragment = this;
         // Language change listener
         final Preference language = findPreference("ui_language");
         language.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -61,9 +65,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     case "system":
                         break;
                 }
-                // Reload fragment to apply changes
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new SettingsFragment(), null).commit();
+                getActivity().getSupportFragmentManager().popBackStackImmediate();
                 return true;
             }
         });
@@ -88,6 +90,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                         break;
                 }
+                restartActivity();
                 return true;
             }
         });
@@ -136,17 +139,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         Toolbar toolbar = view.findViewById(R.id.settings_toolbar);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-            }
-        });
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getActivity().getSupportFragmentManager().popBackStackImmediate();
+                }
+            });
+        }
     }
 
-    public static void restartActivity() {
+    public void restartActivity() {
         activity.recreate();
     }
 }

@@ -13,13 +13,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.OnClickListener {
+public class CustomListAdapter extends ArrayAdapter<RingModel> {
 
-    @Override
-    public void onClick(View view) {
-    }
-
-    // View lookup cache
     private static class ViewHolder {
         TextView weared_from;
         TextView weared_to;
@@ -30,15 +25,18 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
         super(context, R.layout.custom_contact_list_element, data);
     }
 
-
+    /**
+     * Convert the timeWeared from a int into a readable hour:minutes format
+     * @param timeWeared timeWeared is in minutes
+     * @return a string containing the time the user weared the protection
+     */
     private String convertTimeWeared(int timeWeared) {
-        if (timeWeared < 60) {
+        if (timeWeared < 60)
             return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
-        } else if (timeWeared <= 1440) {
+        else if (timeWeared <= 1440)
             return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
-        } else {
+        else
             return getContext().getString(R.string.more_than_one_day);
-        }
     }
 
     @Override
@@ -47,6 +45,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
         RingModel dataModel = getItem(position);
         ViewHolder viewHolder;
 
+        // Get our layout and Textview.
         viewHolder = new ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(getContext());
         convertView = inflater.inflate(R.layout.custom_contact_list_element, parent, false);
@@ -54,8 +53,16 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> implements View.O
         viewHolder.weared_to = convertView.findViewById(R.id.custom_view_date_weared_to);
         viewHolder.weared_during = convertView.findViewById(R.id.custom_view_date_time_weared);
 
-        viewHolder.weared_from.setText(dataModel.getDatePut());
-        viewHolder.weared_to.setText(dataModel.getDateRemoved());
+        // Forced to split with a space because the date format is YYYY-MM-dd hh:MM:ss
+        String[] datePut = dataModel.getDatePut().split(" ");
+        viewHolder.weared_from.setText(datePut[0] + "\n" + datePut[1]);
+
+        if (!dataModel.getDateRemoved().equals("NOT SET YET")) {
+            String[] dateRemoved = dataModel.getDateRemoved().split(" ");
+            viewHolder.weared_to.setText(dateRemoved[0] + "\n" + dateRemoved[1]);
+        } else {
+            viewHolder.weared_to.setText(dataModel.getDateRemoved());
+        }
         viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
 
         return convertView;
