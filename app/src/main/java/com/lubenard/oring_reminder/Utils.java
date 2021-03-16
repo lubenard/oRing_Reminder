@@ -24,6 +24,14 @@ import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
+    /**
+     * Compute the diff between two given dates
+     * The formula is date2 - date1
+     * @param sDate1 First date in the form of a string
+     * @param sDate2 Second date in the form of a string
+     * @param timeUnit The timeUnit we want to return (Mostly minutes)
+     * @return the time in minutes between two dates
+     */
     public static long getDateDiff(String sDate1, String sDate2, TimeUnit timeUnit)
     {
         try {
@@ -38,6 +46,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Set App language
+     * @param activity current actvity
+     * @param localeCode the locale we want to apply (ex: fr)
+     */
     static void setAppLocale(Activity activity, String localeCode) {
         Locale myLocale = new Locale(localeCode);
         Resources res = activity.getResources();
@@ -47,6 +60,13 @@ public class Utils {
         res.updateConfiguration(conf, dm);
     }
 
+    /**
+     * Send a notification on the 'normal' channel
+     * @param context current Context
+     * @param title Notification title
+     * @param content notification body
+     * @param drawable drawable icon
+     */
     public static void sendNotification(Context context, String title, String content, int drawable) {
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 

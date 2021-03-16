@@ -46,6 +46,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         ViewHolder viewHolder;
 
         // Get our layout and Textview.
+        // Inflate it and get all elements
         viewHolder = new ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(getContext());
         convertView = inflater.inflate(R.layout.custom_contact_list_element, parent, false);

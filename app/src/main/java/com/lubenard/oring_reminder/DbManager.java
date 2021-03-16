@@ -38,7 +38,6 @@ public class DbManager extends SQLiteOpenHelper {
     private SQLiteDatabase writableDB;
     private SQLiteDatabase readableDB;
 
-
     public DbManager(Context context) {
         super(context, dbName , null,1);
         this.writableDB = this.getWritableDatabase();
@@ -59,6 +58,10 @@ public class DbManager extends SQLiteOpenHelper {
         Log.d(TAG, "The db has been created, this message should only appear once.");
     }
 
+    /**
+     * Get the dbName
+     * @return the dbName
+     */
     public static String getDBName() {
         return dbName;
     }
@@ -116,6 +119,13 @@ public class DbManager extends SQLiteOpenHelper {
         writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
+    /**
+     * Updated the datas contained in a entry
+     * @param id the entry we want to update
+     * @param datePut the new datePut
+     * @param dateRemoved the new dateRemoved
+     * @param isRunning the new isRunning
+     */
     public void updateDatesRing(int id, String datePut, String dateRemoved, int isRunning) {
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
@@ -134,6 +144,12 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Get the details for a entry
+     * @param entryId the id we want to have details for
+     * @return the following fields -> ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning
+     * in the form of a ArrayList
+     */
     public ArrayList<String> getEntryDetails(int entryId) {
 
         ArrayList<String> entryDatas = new ArrayList<>();
@@ -152,7 +168,7 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Delete a contact
+     * Delete a entry
      * @param entryId the id of the contact we want to delete
      */
     public void deleteEntry(int entryId)

@@ -48,7 +48,7 @@
     <string name="session_is_running">Session is running</string>
     <string name="_message_able_to_get_it_off">You should be able to get it off at: \n</string>
     <string name="session_finished">Session is finished!</string>
-    <string name="error_bad_id_entry_details">Error: Bad id.</string>
+    <string name="error_bad_id_entry_details">Error: Bad id: </string>
     <string name="notif_get_it_off_title">Reminder:</string>
     <string name="notif_get_it_off_body">You can take your protection off !</string>
     <string name="licenses">Licenses</string>

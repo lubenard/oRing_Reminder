@@ -82,6 +82,9 @@ public class MainFragment extends Fragment {
         });
     }
 
+    /**
+     * Update the listView by fetching all elements from the db
+     */
     private void updateElementList() {
         LinkedHashMap<Integer, RingModel> contactsdatas = dbManager.getAllDatasForMainList();
         for (LinkedHashMap.Entry<Integer, RingModel> oneElemDatas : contactsdatas.entrySet()) {
@@ -91,6 +94,9 @@ public class MainFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
+    /**
+     * Launch the new Entry fragment, and specify we do not want to update a entry
+     */
     private void createNewEntry() {
         EditEntryFragment fragment = new EditEntryFragment();
         Bundle bundle = new Bundle();
@@ -101,25 +107,9 @@ public class MainFragment extends Fragment {
                 .addToBackStack(null).commit();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        Log.d("MainFragment", "Called ??");
-
-        if (id == R.id.action_settings) {
-            //Launch settings page
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, new SettingsFragment(), null)
-                    .addToBackStack(null).commit();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    /**
+     * Each time the app is resumed, fetch new entry
+     */
     @Override
     public void onResume() {
         super.onResume();

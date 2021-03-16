@@ -48,7 +48,7 @@
     <string name="session_is_running">Session en cours</string>
     <string name="_message_able_to_get_it_off">Vous devriez pouvoir l\'enlever à: \n</string>
     <string name="session_finished">Session terminée!</string>
-    <string name="error_bad_id_entry_details">Erreur, mauvais ic.</string>
+    <string name="error_bad_id_entry_details">Erreur, mauvais id:</string>
     <string name="notif_get_it_off_title">Rappel:</string>
     <string name="notif_get_it_off_body">Vous pouvez enlever votre protection !</string>
     <string name="licenses">Licenses</string>

@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
+
     private void checkConfig() {
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -45,9 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Check the UI config (Theme and language) and apply them
         checkConfig();
         super.onCreate(savedInstanceState);
 
+        // Then switch to the main Fragment
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(android.R.id.content, new MainFragment());
         fragmentTransaction.commit();

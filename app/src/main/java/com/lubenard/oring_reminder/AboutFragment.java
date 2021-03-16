@@ -27,6 +27,7 @@ public class AboutFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Get back to last fragment in the stack
                 getActivity().getSupportFragmentManager().popBackStackImmediate();
             }
         });

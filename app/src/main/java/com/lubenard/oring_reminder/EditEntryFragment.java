@@ -69,12 +69,20 @@ public class EditEntryFragment extends Fragment {
         }
     }
 
+    /**
+     * Fill the entry "from" with the right datas
+     * @param date the date to set in input
+     */
     private void fill_entry_from(String date) {
         String[] slittedDate = date.split(" ");
         new_entry_date_from.setText(slittedDate[0]);
         new_entry_time_from.setText(slittedDate[1]);
     }
 
+    /**
+     * Fill the entry "to" with the right datas
+     * @param date the date to set in input
+     */
     private void fill_entry_to(String date) {
         String[] slittedDate = date.split(" ");
         new_entry_date_to.setText(slittedDate[0]);
@@ -151,7 +159,6 @@ public class EditEntryFragment extends Fragment {
 
                     if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
                         //TODO: Check if a already session is running, and if so, avert user
-
                         if (entryId != -1)
                             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
                         else
@@ -169,6 +176,7 @@ public class EditEntryFragment extends Fragment {
                         // Get back to the last element in the fragment stack
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     } else {
+                        // If the diff time is too short, trigger this error
                         Toast.makeText(getContext(), R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
                     }
                     return true;

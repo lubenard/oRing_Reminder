@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,7 @@ public class EntryDetailsFragment extends Fragment {
                             .addToBackStack(null).commit();
                     return true;
                 case R.id.action_delete_entry:
+                    // Warn user then delete entry in the db
                     new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_delete_entry)
                             .setMessage(R.string.alertdialog_delete_contact_body)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -88,6 +90,7 @@ public class EntryDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (entryId > 0) {
+            // Load datas from the db and put them at the right place
             ArrayList<String> contactDetails = dbManager.getEntryDetails(entryId);
             TextView put = view.findViewById(R.id.details_entry_put);
             TextView removed = view.findViewById(R.id.details_entry_removed);
@@ -95,6 +98,8 @@ public class EntryDetailsFragment extends Fragment {
             TextView isRunning = view.findViewById(R.id.details_entry_isRunning);
             TextView ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
 
+            // Choose color if the timeWeared is enough or not
+            // Depending of the timeweared set in the settings
             if (!contactDetails.get(2).equals("NOT SET YET") && Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             else
@@ -103,6 +108,9 @@ public class EntryDetailsFragment extends Fragment {
             put.setText(contactDetails.get(0));
             removed.setText(contactDetails.get(1));
 
+            // Check if the session is finished and displqy the corresponding text
+            // Either 'Not set yet', saying the session is not over
+            // Or the endSession date
             if (contactDetails.get(2).equals("NOT SET YET"))
                 timeWeared.setText(R.string.not_set_yet);
             else {
@@ -114,6 +122,7 @@ public class EntryDetailsFragment extends Fragment {
                 }
             }
 
+            // Display the datas relative to the session
             if (Integer.parseInt(contactDetails.get(3)) == 1) {
                 isRunning.setTextColor(getResources().getColor(R.color.yellow));
                 isRunning.setText(R.string.session_is_running);
@@ -129,13 +138,17 @@ public class EntryDetailsFragment extends Fragment {
                 }
                 ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + dateFormat.format(calendar.getTime()));
             } else {
+                // If the session is finished, no need to show the ableToGetItOff textView.
+                // This textview is only used to warn user when he will be able to get it off
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 isRunning.setText(R.string.session_finished);
                 ableToGetItOff.setVisibility(View.INVISIBLE);
             }
         }
         else {
-            Toast.makeText(getContext(), R.string.error_bad_id_entry_details, Toast.LENGTH_SHORT);
+            // Trigger an error if the entryId is wrong, then go back to main list
+            Toast.makeText(getContext(), getContext().getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
+            Log.d("EntryDetails", "Error: Wrong Id: " + entryId);
             getActivity().getSupportFragmentManager().popBackStackImmediate();
         }
     }
