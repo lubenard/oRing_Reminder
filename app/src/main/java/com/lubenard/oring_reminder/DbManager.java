@@ -120,6 +120,25 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     /**
+     * Check if there is running sessions.
+     * Return the one running
+     * @return
+     */
+    public HashMap<Integer, String> getRunningSessions() {
+        HashMap <Integer, String> entryDatas = new HashMap<>();
+
+        String[] columns = new String[]{ringTableId, ringTablePut};
+        Cursor cursor = readableDB.query(ringTable,  columns, ringTableIsRunning + "=?",
+                new String[]{"1"}, null, null, null);
+
+        while (cursor.moveToNext())
+            entryDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                            cursor.getString(cursor.getColumnIndex(ringTablePut)));
+        cursor.close();
+        return entryDatas;
+    }
+
+    /**
      * Updated the datas contained in a entry
      * @param id the entry we want to update
      * @param datePut the new datePut

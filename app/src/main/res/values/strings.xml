@@ -64,4 +64,6 @@
     <string name="settings_send_notif_when_done_wearing">Send a notification when you can take off your protection</string>
     <string name="settings_actually_value">Actually, %s</string>
     <string name="action_validate">Save this entry</string>
+    <string name="alertdialog_multiple_running_session_title">Warning: Multiple running sessions detected !</string>
+    <string name="alertdialog_multiple_running_session_body">Multiple session have been detected. It is recommended to have one session running at the same time. Do you want to end them ?</string>
 </resources>

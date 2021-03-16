@@ -2,7 +2,9 @@ package com.lubenard.oring_reminder;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -25,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static android.os.Build.VERSION.SDK_INT;
@@ -96,6 +100,18 @@ public class EditEntryFragment extends Fragment {
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
     }
 
+    private void saveEntry(String formattedDatePut) {
+        if (entryId != -1)
+            dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
+        else
+            dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
+
+        if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
+            setAlarm(formattedDatePut);
+        // Get back to the last element in the fragment stack
+        getActivity().getSupportFragmentManager().popBackStackImmediate();
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -116,6 +132,8 @@ public class EditEntryFragment extends Fragment {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+
+        HashMap <Integer, String> runningSessions = dbManager.getRunningSessions();
 
         if (entryId != -1) {
             ArrayList<String> datas = dbManager.getEntryDetails(entryId);
@@ -158,16 +176,28 @@ public class EditEntryFragment extends Fragment {
                     String formattedDateRemoved = String.format("%s %s", dateRemoved, timeRemoved);
 
                     if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
-                        //TODO: Check if a already session is running, and if so, avert user
-                        if (entryId != -1)
-                            dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-                        else
-                            dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
-
-                        if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
-                            setAlarm(formattedDatePut);
-                        // Get back to the last element in the fragment stack
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        if (!runningSessions.isEmpty()) {
+                            new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_multiple_running_session_title)
+                                    .setMessage(R.string.alertdialog_multiple_running_session_body)
+                                    .setPositiveButton("End them all !", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                           String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                                            for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
+                                                Log.d("EditEntry", "Set session " + sessions.getKey() + " to finished");
+                                                dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), currentDate, 0);
+                                            }
+                                            saveEntry(formattedDatePut);
+                                        }
+                                    })
+                                    .setNegativeButton("Still insert my entry", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                           saveEntry(formattedDatePut);
+                                        }
+                                    })
+                                    .setIcon(android.R.drawable.ic_dialog_alert).show();
+                        } else {
+                            saveEntry(formattedDatePut);
+                        }
                     } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
                         if (entryId != -1)
                             dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
