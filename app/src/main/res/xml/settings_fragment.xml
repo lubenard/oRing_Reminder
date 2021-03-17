@@ -43,6 +43,11 @@
             android:defaultValue="true"
             android:key="myring_send_notif_when_session_over"
             android:title="@string/settings_send_notif_when_done_wearing" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="myring_prevent_me_when_started_session"
+            android:title="@string/settings_prevent_me_when_started_session" />
     </PreferenceCategory>
 
     <PreferenceCategory
