@@ -75,6 +75,9 @@ public class MainFragment extends Fragment {
                             .replace(android.R.id.content, new SettingsFragment(), null)
                             .addToBackStack(null).commit();
                     return true;
+                case R.id.action_reload_datas:
+                    dataModels.clear();
+                    updateElementList();
                 default:
                     return false;
             }
