@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.lang.reflect.Array;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,12 +28,15 @@ public class DbManager extends SQLiteOpenHelper {
 
     static final String dbName = "dataDB";
 
-    // Contact table
+    // Ring table
     private static final String ringTable = "ringTable";
     private static final String ringTableId = "id";
+    // If isRunning is 1, the session is running.
+    // Otherwise, the session is finished
     private static final String ringTableIsRunning = "isRunning";
     private static final String ringTablePut = "datetimePut";
     private static final String ringTableRemoved = "datetimeRemoved";
+    // Computed by doing dateTimeRemoved - dateTimePut
     private static final String ringTableTimeWeared = "timeWeared";
 
     private SQLiteDatabase writableDB;
@@ -146,6 +150,8 @@ public class DbManager extends SQLiteOpenHelper {
      * @param isRunning the new isRunning
      */
     public void updateDatesRing(int id, String datePut, String dateRemoved, int isRunning) {
+        if (id <= 0)
+            return;
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
         cv.put(ringTableRemoved, dateRemoved);
@@ -170,7 +176,8 @@ public class DbManager extends SQLiteOpenHelper {
      * in the form of a ArrayList
      */
     public ArrayList<String> getEntryDetails(int entryId) {
-
+        if (entryId <= 0)
+            return null;
         ArrayList<String> entryDatas = new ArrayList<>();
 
         String[] columns = new String[]{ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
@@ -194,6 +201,34 @@ public class DbManager extends SQLiteOpenHelper {
     {
         if (entryId > 0)
             writableDB.delete(ringTable,ringTableId + "=?", new String[]{String.valueOf(entryId)});
+    }
+
+    public void endSession(int entryId) {
+        if (entryId < 0)
+            return;
+
+        // First we catch the dateTablePut date
+        String[] columns = new String[]{ringTablePut};
+        Cursor cursor = readableDB.query(ringTable, columns,ringTableId + "=?",
+                new String[]{String.valueOf(entryId)}, null, null, null);
+        cursor.moveToFirst();
+
+        // Then we set our values:
+        // We need to recompute the date
+        // And set the isRunning to 0
+        String dateRemoved = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        ContentValues cv = new ContentValues();
+        cv.put(ringTableRemoved, dateRemoved);
+        cv.put(ringTableTimeWeared, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));
+        cv.put(ringTableIsRunning, 0);
+
+        int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(entryId)});
+        if (u == 0) {
+            Log.d(TAG, "ringUpdate: update does not seems to work, insert data: (for id = " + entryId);
+            cv.put(ringTableRemoved, dateRemoved);
+            cv.put(ringTableTimeWeared, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));
+            writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
     }
 
     /**

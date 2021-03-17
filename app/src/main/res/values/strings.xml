@@ -66,4 +66,6 @@
     <string name="action_validate">Save this entry</string>
     <string name="alertdialog_multiple_running_session_title">Warning: Multiple running sessions detected !</string>
     <string name="alertdialog_multiple_running_session_body">Multiple session have been detected. It is recommended to have one session running at the same time. Do you want to end them ?</string>
+    <string name="settings_prevent_me_when_started_session">Prevent me when a session has already started</string>
+    <string name="toast_session_ended">Session with the following id has been set as finished:</string>
 </resources>

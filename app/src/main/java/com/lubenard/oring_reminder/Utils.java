@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -67,31 +68,33 @@ public class Utils {
      * @param content notification body
      * @param drawable drawable icon
      */
-    public static void sendNotification(Context context, String title, String content, int drawable) {
+    public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, int entryId) {
+        // First let's create the intent
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //Pending intent for a notification button when user removed protection
+        PendingIntent removedProtection =
+                PendingIntent.getBroadcast(context, 1, new Intent(context, NotificationReceiverBroadcastReceiver.class)
+                                .putExtra("action", 1)
+                                .putExtra("entryId", entryId),
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //Pending intent for a notification button when user dismissed notification
+        PendingIntent dismissedNotif =
+                PendingIntent.getBroadcast(context, 2, new Intent(context, NotificationReceiverBroadcastReceiver.class)
+                                .putExtra("action", 0)
+                                .putExtra("entryId", entryId),
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Get the notification manager and build it
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("NORMAL_CHANNEL",
-                    context.getString(R.string.notif_channel_name), NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription(context.getString(R.string.notif_normal_channel_desc));
-            // Do not show badge
-            channel.setShowBadge(false);
-            mNotificationManager.createNotificationChannel(channel);
-        }
-
         NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, "NORMAL_CHANNEL");
-        // Set icon
-        permNotifBuilder.setSmallIcon(drawable);
-        // Set main notif name
-        permNotifBuilder.setContentTitle(title);
-        // Set more description of the notif
-        permNotifBuilder.setContentText(content);
-        // Do not show time on the notif
-        //permNotifBuilder.setShowWhen(false);
-
-        Intent intent = new Intent(context, SettingsFragment.class);
-        PendingIntent pi = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        permNotifBuilder.setContentIntent(pi);
+        permNotifBuilder.setSmallIcon(drawable)
+                .setContentTitle(title)
+                .setContentText(content)
+                .addAction(android.R.drawable.checkbox_on_background, "Okay, i did it", removedProtection)
+                .addAction(android.R.drawable.checkbox_on_background, "Dismiss", dismissedNotif)
+                .setContentIntent(pi);
         mNotificationManager.notify(0, permNotifBuilder.build());
     }
 }

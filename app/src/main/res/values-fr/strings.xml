@@ -63,4 +63,5 @@
     <string name="wering_time">Temps de port</string>
     <string name="settings_send_notif_when_done_wearing">Envoyer une notification quand vous pouver enlever votre protection</string>
     <string name="settings_actually_value">Actuellement, %s</string>
+    <string name="settings_prevent_me_when_started_session">Me prévenir quand une session à déjà commencé</string>
 </resources>

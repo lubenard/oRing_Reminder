@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -45,19 +44,20 @@ public class EditEntryFragment extends Fragment {
 
     private SharedPreferences sharedPreferences;
     private int weared_time;
+    private boolean should_warn_user;
 
     /**
      * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
      * @param alarmDate
      */
-    private void setAlarm(String alarmDate) {
+    private void setAlarm(String alarmDate, int entryId) {
         Calendar calendar = Calendar.getInstance();
         try {
             calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(alarmDate));
-            calendar.add(Calendar.HOUR_OF_DAY, 15);
+            calendar.add(Calendar.HOUR_OF_DAY, weared_time);
             Log.d("Create new entry", "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
 
-            Intent intent = new Intent(getContext(), NotificationBroadcastReceiver.class);
+            Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
 
@@ -107,7 +107,7 @@ public class EditEntryFragment extends Fragment {
             dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
 
         if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
-            setAlarm(formattedDatePut);
+            setAlarm(formattedDatePut, entryId);
         // Get back to the last element in the fragment stack
         getActivity().getSupportFragmentManager().popBackStackImmediate();
     }
@@ -132,6 +132,7 @@ public class EditEntryFragment extends Fragment {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+        should_warn_user = sharedPreferences.getBoolean("myring_prevent_me_when_started_session", true);
 
         HashMap <Integer, String> runningSessions = dbManager.getRunningSessions();
 
@@ -176,7 +177,7 @@ public class EditEntryFragment extends Fragment {
                     String formattedDateRemoved = String.format("%s %s", dateRemoved, timeRemoved);
 
                     if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
-                        if (!runningSessions.isEmpty()) {
+                        if (!runningSessions.isEmpty() && should_warn_user) {
                             new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_multiple_running_session_title)
                                     .setMessage(R.string.alertdialog_multiple_running_session_body)
                                     .setPositiveButton("End them all !", new DialogInterface.OnClickListener() {

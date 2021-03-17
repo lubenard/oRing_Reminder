@@ -26,7 +26,6 @@ public class MainFragment extends Fragment {
     private CustomListAdapter adapter;
     private ListView listView;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
