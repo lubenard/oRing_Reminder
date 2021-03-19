@@ -19,6 +19,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class EntryDetailsFragment extends Fragment {
 
@@ -136,7 +138,11 @@ public class EntryDetailsFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + dateFormat.format(calendar.getTime()));
+
+                long timeBeforeRemove = Utils.getDateDiff(dateFormat.format(new Date()), dateFormat.format(calendar.getTime()), TimeUnit.MINUTES);
+                Log.d("EntryDetails", "timeBeforeRemove = " + timeBeforeRemove);
+                ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + dateFormat.format(calendar.getTime())
+                        + "\n" + String.format("(in about %dh%02dm)", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
                 // If the session is finished, no need to show the ableToGetItOff textView.
                 // This textview is only used to warn user when he will be able to get it off
