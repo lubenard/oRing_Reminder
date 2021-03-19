@@ -55,6 +55,11 @@
         app:title="OTHER">
 
         <Preference
+            app:key="other_debug_menu"
+            app:title="@string/debug_menu_title"
+            app:summary="@string/debug_menu_description"/>
+
+        <Preference
             app:key="other_feedback"
             app:title="@string/settings_other_feedback_title"
             app:summary="@string/settings_other_feedback_description"/>

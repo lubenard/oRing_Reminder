@@ -69,4 +69,6 @@
     <string name="settings_prevent_me_when_started_session">Prevent me when a session has already started</string>
     <string name="toast_session_ended">Session with the following id has been set as finished:</string>
     <string name="action_reload_datas">Reload datas</string>
+    <string name="debug_menu_title">Debug menu</string>
+    <string name="debug_menu_description">If you need to debug this app, this is the right place !</string>
 </resources>

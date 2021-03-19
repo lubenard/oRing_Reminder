@@ -112,6 +112,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         // feedback preference click listener
+        Preference debugMenu = findPreference("other_debug_menu");
+        debugMenu.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new DebugFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            }
+        });
+
+        // feedback preference click listener
         Preference feedback = findPreference("other_feedback");
         feedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
