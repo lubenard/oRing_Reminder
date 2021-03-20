@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 
 import androidx.annotation.IntegerRes;
@@ -107,6 +109,41 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             .setPositiveButton(android.R.string.yes, null)
                             .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
+                return true;
+            }
+        });
+
+        Preference exportXML = findPreference("datas_export_data_xml");
+        exportXML.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.custom_backup_title_alertdialog);
+                final View customLayout = getLayoutInflater().inflate(R.layout.custom_view_backup_dialog, null);
+                builder.setView(customLayout);
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!Utils.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                            return;
+                        Intent intent = new Intent(getContext(), BackupRestore.class);
+                        intent.putExtra("mode", 1);
+
+                        boolean isDatasChecked =
+                                ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_datas)).isChecked();
+                        boolean isSettingsChecked =
+                                ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).isChecked();
+
+                        if (!isDatasChecked && !isSettingsChecked)
+                            return;
+
+                        intent.putExtra("shouldBackupRestoreDatas", isDatasChecked);
+                        intent.putExtra("shouldBackupRestoreSettings", isSettingsChecked);
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel,null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
             }
         });

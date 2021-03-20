@@ -30,13 +30,15 @@
 
     <PreferenceCategory
         app:key="cat_myring"
-        app:title="MY RING">
+        app:title="MY PROTECTION">
 
         <EditTextPreference
             android:defaultValue="15"
             android:key="myring_wearing_time"
             android:selectAllOnFocus="true"
             android:singleLine="true"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
             android:title="@string/wering_time" />
 
         <SwitchPreference
@@ -48,6 +50,16 @@
             android:defaultValue="true"
             android:key="myring_prevent_me_when_started_session"
             android:title="@string/settings_prevent_me_when_started_session" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="cat_datas"
+        app:title="DATAS">
+
+        <Preference
+            app:key="datas_export_data_xml"
+            app:title="Export your datas in XML"
+            app:summary="Export your data in XML format"/>
     </PreferenceCategory>
 
     <PreferenceCategory

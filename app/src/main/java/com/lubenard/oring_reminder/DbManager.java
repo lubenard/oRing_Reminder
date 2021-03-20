@@ -238,5 +238,22 @@ public class DbManager extends SQLiteOpenHelper {
         if (writableDB != null) { writableDB.close();}
         if (readableDB != null) { readableDB.close();}
     }
+
+    public ArrayList<EntryClass> getAllDatasForAllEntrys() {
+        ArrayList<EntryClass> datas = new ArrayList<>();
+
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
+        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            datas.add(new EntryClass(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
+                    cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                    cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+        }
+        cursor.close();
+        return datas;
+    }
 }
 

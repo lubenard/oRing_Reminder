@@ -71,4 +71,9 @@
     <string name="action_reload_datas">Reload datas</string>
     <string name="debug_menu_title">Debug menu</string>
     <string name="debug_menu_description">If you need to debug this app, this is the right place !</string>
+    <string name="custom_backup_title_alertdialog">What do you plan to backup ?</string>
+    <string name="custom_backup_alertdialog_save_datas">Save my datas</string>
+    <string name="custom_backup_alertdialog_save_settings">Save my settings</string>
+    <string name="toast_error_custom_path_backup_restore_fail">Failed to open a Intent. Save will be done at default location.</string>
+    <string name="toast_error_custom_path_backup_restore_android_too_old">Your android version is pretty old. Save will be done at default location.</string>
 </resources>
