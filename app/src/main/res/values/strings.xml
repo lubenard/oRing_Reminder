@@ -76,4 +76,8 @@
     <string name="custom_backup_alertdialog_save_settings">Save my settings</string>
     <string name="toast_error_custom_path_backup_restore_fail">Failed to open a Intent. Save will be done at default location.</string>
     <string name="toast_error_custom_path_backup_restore_android_too_old">Your android version is pretty old. Save will be done at default location.</string>
+    <string name="custom_restore_title_alertdialog">Choose what do you want to restore</string>
+    <string name="custom_restore_alertdialog_save_datas">Restore my datas</string>
+    <string name="custom_restore_alertdialog_save_settings">Restore my settings</string>
+    <string name="settings_alertdialog_erase_title">Erase all your datas</string>
 </resources>

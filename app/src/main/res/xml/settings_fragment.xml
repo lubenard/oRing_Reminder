@@ -60,6 +60,16 @@
             app:key="datas_export_data_xml"
             app:title="Export your datas in XML"
             app:summary="Export your data in XML format"/>
+
+        <Preference
+            app:key="datas_import_data_xml"
+            app:title="Import your data in XML"
+            app:summary="Import your data in XML format"/>
+
+        <Preference
+            app:key="datas_erase_data"
+            app:title="Erase all your data"
+            app:summary="This will delete all your data"/>
     </PreferenceCategory>
 
     <PreferenceCategory

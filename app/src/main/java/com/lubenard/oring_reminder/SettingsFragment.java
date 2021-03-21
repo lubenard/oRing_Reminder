@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
+import androidx.preference.SwitchPreference;
 
 import java.util.Locale;
 
@@ -148,6 +149,66 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+        Preference importXML = findPreference("datas_import_data_xml");
+        importXML.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                if (!Utils.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.READ_EXTERNAL_STORAGE))
+                    return false;
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.custom_restore_title_alertdialog);
+                final View customLayout = getLayoutInflater().inflate(R.layout.custom_view_backup_dialog, null);
+
+                ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_datas)).setText(R.string.custom_restore_alertdialog_save_datas);
+                ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).setText(R.string.custom_restore_alertdialog_save_settings);
+
+                builder.setView(customLayout);
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getContext(), BackupRestore.class);
+                        intent.putExtra("mode", 2);
+
+                        boolean isDatasChecked =
+                                ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_datas)).isChecked();
+                        boolean isSettingsChecked =
+                                ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).isChecked();
+
+                        if (!isDatasChecked && !isSettingsChecked)
+                            return;
+
+                        intent.putExtra("shouldBackupRestoreDatas", isDatasChecked);
+                        intent.putExtra("shouldBackupRestoreSettings", isSettingsChecked);
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel,null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            }
+        });
+
+        // reset preference click listener
+        Preference reset = findPreference("datas_erase_data");
+        reset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.settings_alertdialog_erase_title)
+                        .setMessage("Are you sure you want to delete all your data ? All losses are definitive. Once completed, the app will shut down.")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Delete DB
+                                getContext().deleteDatabase(DbManager.getDBName());
+                                getActivity().finish();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
+            }
+        });
+
         // feedback preference click listener
         Preference debugMenu = findPreference("other_debug_menu");
         debugMenu.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -190,6 +251,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         Toolbar toolbar = view.findViewById(R.id.settings_toolbar);
 
+
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -200,7 +262,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
-    public void restartActivity() {
+    public static void restartActivity() {
         activity.recreate();
     }
 }
