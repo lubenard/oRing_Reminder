@@ -103,14 +103,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         wearing_time.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                int newTimeWeared = Integer.parseInt(newValue.toString());
-                if (newTimeWeared < 13 || newTimeWeared > 18) {
-                    new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_dangerous_wearing_time)
-                            .setMessage(R.string.alertdialog_dangerous_wearing_body)
+                if (newValue.toString().matches("[0-9]")) {
+                    int newTimeWeared = Integer.parseInt(newValue.toString());
+                    if (newTimeWeared < 13 || newTimeWeared > 18) {
+                        new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_dangerous_wearing_time)
+                                .setMessage(R.string.alertdialog_dangerous_wearing_body)
+                                .setPositiveButton(android.R.string.yes, null)
+                                .setIcon(android.R.drawable.ic_dialog_alert).show();
+                    }
+                    return true;
+                } else {
+                    new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_please_enter_digits_title)
+                            .setMessage(R.string.alertdialog_please_enter_digits_body)
                             .setPositiveButton(android.R.string.yes, null)
                             .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
-                return true;
+                return false;
             }
         });
 

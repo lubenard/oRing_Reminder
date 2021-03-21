@@ -80,4 +80,6 @@
     <string name="custom_restore_alertdialog_save_datas">Restore my datas</string>
     <string name="custom_restore_alertdialog_save_settings">Restore my settings</string>
     <string name="settings_alertdialog_erase_title">Erase all your datas</string>
+    <string name="alertdialog_please_enter_digits_title">Please enter only digits</string>
+    <string name="alertdialog_please_enter_digits_body">Could you please enter only digits ? Thanks</string>
 </resources>
