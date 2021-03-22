@@ -65,7 +65,6 @@
     <string name="settings_actually_value">Actually, %s</string>
     <string name="action_validate">Save this entry</string>
     <string name="alertdialog_multiple_running_session_title">Warning: Multiple running sessions detected !</string>
-    <string name="alertdialog_multiple_running_session_body">Multiple session have been detected. It is recommended to have one session running at the same time. Do you want to end them ?</string>
     <string name="settings_prevent_me_when_started_session">Prevent me when a session has already started</string>
     <string name="toast_session_ended">Session with the following id has been set as finished:</string>
     <string name="action_reload_datas">Reload datas</string>
@@ -82,4 +81,52 @@
     <string name="settings_alertdialog_erase_title">Erase all your datas</string>
     <string name="alertdialog_please_enter_digits_title">Please enter only digits</string>
     <string name="alertdialog_please_enter_digits_body">Could you please enter only digits ? Thanks</string>
+    <string name="datas_export_data_xml_title">Export your datas in XML</string>
+    <string name="datas_export_data_xml_summary">Export your data in XML format</string>
+    <string name="datas_import_data_xml_title">Import your data in XML</string>
+    <string name="datas_erase_data_title">Erase all your data</string>
+    <string name="datas_erase_datas_summary">This will delete all your data</string>
+    <string name="cat_ui">UI</string>
+    <string name="cat_my_protection">MY PROTECTION</string>
+    <string name="cat_datas">DATAS</string>
+    <string name="cat_other">OTHER</string>
+    <string name="datas_import_data_xml">Import your data in XML format</string>
+    <string name="alertdialog_multiple_running_session_body">Multiple sessions running have been found ! What do you want to do ?</string>
+    <string name="alertdialog_multiple_running_session_choice1">End them all !</string>
+    <string name="alertdialog_multiple_running_session_choice2">Still incert my entry</string>
+
+    <string name="license_XmlWriter_title">This app use parts of <b>Java-very-tiny-XmlWriter</b>.</string>
+
+    <string name="license_XmlWriter_licence" translatable="false">Copyright (c) 2010, Menny Even Danan\n
+       All rights reserved.\n
+       Redistribution and use in source and binary forms, with or without modification, are permitted provided that the \n
+       following conditions are met:\n
+       Redistributions of source code must retain the above copyright notice,\n
+       this list of conditions and the following disclaimer.\n
+       Redistributions in binary form must reproduce the above copyright notice,\n
+       this list of conditions and the following disclaimer in the documentation\n
+       and/or other materials provided with the distribution.\n Neither the name of XmlWriter nor the names of its contributors\n
+       may be used to endorse or promote products derived from this software\n
+       without specific prior written permission.\n
+       THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n
+       AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n
+       IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n
+       ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE\n
+       LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n
+       CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n
+       SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n
+       INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n
+       CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n
+       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n
+       POSSIBILITY OF SUCH DAMAGE.\n</string>
+
+    <string name="license_XmlWriter_source">"You can see the source code of this library here :\n
+        https://github.com/menny/Java-very-tiny-XmlWriter"</string>
+    <string name="toast_success_restore_datas">Success to restore the datas</string>
+    <string name="toast_success_save_datas">Success to save the datas</string>
+    <string name="settings_alertdialog_erase_datas_body">Are you sure you want to delete all your data ? All losses are definitive. Once completed, the app will shut down.</string>
+    <string name="notif_choice_do_it">Okay, i did it</string>
+    <string name="notif_choice_dismiss">Dismiss</string>
+    <string name="please_wait">Please wait...</string>
+
 </resources>

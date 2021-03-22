@@ -180,7 +180,7 @@ public class EditEntryFragment extends Fragment {
                         if (!runningSessions.isEmpty() && should_warn_user) {
                             new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_multiple_running_session_title)
                                     .setMessage(R.string.alertdialog_multiple_running_session_body)
-                                    .setPositiveButton("End them all !", new DialogInterface.OnClickListener() {
+                                    .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                            String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                                             for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
@@ -190,7 +190,7 @@ public class EditEntryFragment extends Fragment {
                                             saveEntry(formattedDatePut);
                                         }
                                     })
-                                    .setNegativeButton("Still insert my entry", new DialogInterface.OnClickListener() {
+                                    .setNegativeButton(R.string.alertdialog_multiple_running_session_choice2, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                            saveEntry(formattedDatePut);
                                         }

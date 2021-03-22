@@ -18,6 +18,6 @@
         android:layout_marginLeft="20dp"
         android:shadowColor="@android:color/black"
         android:shadowRadius="4"
-        android:text="Please wait..."
+        android:text="@string/please_wait"
         android:textColor="@android:color/white" />
 </LinearLayout>

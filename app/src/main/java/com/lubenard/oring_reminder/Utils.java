@@ -123,8 +123,8 @@ public class Utils {
         permNotifBuilder.setSmallIcon(drawable)
                 .setContentTitle(title)
                 .setContentText(content)
-                .addAction(android.R.drawable.checkbox_on_background, "Okay, i did it", removedProtection)
-                .addAction(android.R.drawable.checkbox_on_background, "Dismiss", dismissedNotif)
+                .addAction(android.R.drawable.checkbox_on_background, context.getString(R.string.notif_choice_do_it), removedProtection)
+                .addAction(android.R.drawable.checkbox_on_background, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
                 .setContentIntent(pi);
         mNotificationManager.notify(0, permNotifBuilder.build());
     }

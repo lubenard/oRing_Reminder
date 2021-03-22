@@ -202,7 +202,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             public boolean onPreferenceClick(Preference preference) {
                 new AlertDialog.Builder(getContext())
                         .setTitle(R.string.settings_alertdialog_erase_title)
-                        .setMessage("Are you sure you want to delete all your data ? All losses are definitive. Once completed, the app will shut down.")
+                        .setMessage(R.string.settings_alertdialog_erase_datas_body)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // Delete DB

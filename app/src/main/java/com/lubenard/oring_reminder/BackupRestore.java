@@ -242,7 +242,7 @@ public class BackupRestore extends Activity{
                     Log.d(TAG, "something failed during the save of the datas");
                     e.printStackTrace();
                 }
-                Toast.makeText(this, "Success to save the datas", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.toast_success_save_datas), Toast.LENGTH_LONG).show();
             } else if (typeOfDatas == 2) {
                 Log.d(TAG, "ActivityResult restore from path: " + data.getDataString());
                 try {
@@ -255,6 +255,7 @@ public class BackupRestore extends Activity{
                     Log.d(TAG, "something failed during the restore of the datas");
                     e.printStackTrace();
                 }
+                Toast.makeText(this, getString(R.string.toast_success_restore_datas), Toast.LENGTH_LONG).show();
             }
             dialog.dismiss();
             finish();

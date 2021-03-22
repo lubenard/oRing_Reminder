@@ -9,7 +9,7 @@
 
     <PreferenceCategory
         app:key="cat_ui"
-        app:title="UI">
+        app:title="@string/cat_ui">
 
         <ListPreference
             android:key="ui_language"
@@ -30,7 +30,7 @@
 
     <PreferenceCategory
         app:key="cat_myring"
-        app:title="MY PROTECTION">
+        app:title="@string/cat_my_protection">
 
         <EditTextPreference
             android:defaultValue="15"
@@ -54,27 +54,27 @@
 
     <PreferenceCategory
         app:key="cat_datas"
-        app:title="DATAS">
+        app:title="@string/cat_datas">
 
         <Preference
             app:key="datas_export_data_xml"
-            app:title="Export your datas in XML"
-            app:summary="Export your data in XML format"/>
+            app:title="@string/datas_export_data_xml_title"
+            app:summary="@string/datas_export_data_xml_summary"/>
 
         <Preference
             app:key="datas_import_data_xml"
-            app:title="Import your data in XML"
-            app:summary="Import your data in XML format"/>
+            app:title="@string/datas_import_data_xml_title"
+            app:summary="@string/datas_import_data_xml"/>
 
         <Preference
             app:key="datas_erase_data"
-            app:title="Erase all your data"
-            app:summary="This will delete all your data"/>
+            app:title="@string/datas_erase_data_title"
+            app:summary="@string/datas_erase_datas_summary"/>
     </PreferenceCategory>
 
     <PreferenceCategory
         app:key="cat_other"
-        app:title="OTHER">
+        app:title="@string/cat_other">
 
         <Preference
             app:key="other_debug_menu"
@@ -90,5 +90,4 @@
             app:key="other_about_licenses"
             app:title="@string/settings_other_see_licenses_title"/>
     </PreferenceCategory>
-
 </PreferenceScreen>

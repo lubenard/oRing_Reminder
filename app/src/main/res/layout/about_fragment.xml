@@ -64,6 +64,22 @@
             style="@style/base_text_centered"
             android:layout_marginTop="35dp"
             android:text="@string/license_app_source"/>
-    </LinearLayout>
+
+        <View
+            style="@style/Divider" />
+
+        <TextView
+            style="@style/base_text_centered"
+            android:text="@string/license_XmlWriter_title"/>
+
+        <TextView
+            style="@style/base_text_centered"
+            android:text="@string/license_XmlWriter_licence"/>
+
+        <TextView
+            style="@style/base_text_centered"
+            android:text="@string/license_XmlWriter_source"/>
+
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>
