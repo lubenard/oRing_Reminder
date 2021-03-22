@@ -11,7 +11,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class CustomListAdapter extends ArrayAdapter<RingModel> {
 
@@ -64,12 +67,17 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         } else {
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
         }
-        if (dataModel.getIsRunning() == 0)
+        if (dataModel.getIsRunning() == 0) {
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-        else
+            viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
+        }
+        else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            long timeBeforeRemove = Utils.getDateDiff(dataModel.getDatePut(), dateFormat.format(new Date()), TimeUnit.MINUTES);
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(R.color.yellow));
+            viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+        }
 
-        viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
 
         return convertView;
     }
