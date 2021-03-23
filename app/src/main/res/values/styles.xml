@@ -4,8 +4,19 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+    <style name="base_text_all_wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
     <style name="base_text_centered" parent="base_text">
         <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="basic_toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
     </style>
 
     <style name="Divider">

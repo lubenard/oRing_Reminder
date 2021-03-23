@@ -7,11 +7,7 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/about_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        style="@style/basic_toolbar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/baseline_arrow_back_white_36"
@@ -28,7 +24,6 @@
             android:gravity="center">
 
             <ImageView
-                android:id="@+id/imageView_app_icon"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 app:srcCompat="@mipmap/ic_launcher_round" />
@@ -79,7 +74,6 @@
         <TextView
             style="@style/base_text_centered"
             android:text="@string/license_XmlWriter_source"/>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
