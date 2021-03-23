@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.lubenard.oring_reminder.custom_components.EntryClass;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -239,17 +238,17 @@ public class DbManager extends SQLiteOpenHelper {
         if (readableDB != null) { readableDB.close();}
     }
 
-    public ArrayList<EntryClass> getAllDatasForAllEntrys() {
-        ArrayList<EntryClass> datas = new ArrayList<>();
+    public ArrayList<RingModel> getAllDatasForAllEntrys() {
+        ArrayList<RingModel> datas = new ArrayList<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
         Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
-            datas.add(new EntryClass(cursor.getInt(cursor.getColumnIndex(ringTableId)),
-                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
+            datas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
                     cursor.getString(cursor.getColumnIndex(ringTablePut)),
                     cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
         }
         cursor.close();

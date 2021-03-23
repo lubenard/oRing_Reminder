@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceManager;
 
-import com.lubenard.oring_reminder.custom_components.EntryClass;
+import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.ui.SettingsFragment;
 import com.lubenard.oring_reminder.utils.XmlWriter;
 
@@ -139,14 +139,14 @@ public class BackupRestore extends Activity{
         try {
             xmlWriter.writeEntity("datas");
             // Contain number of unlocks
-            ArrayList<EntryClass> datas = dbManager.getAllDatasForAllEntrys();
+            ArrayList<RingModel> datas = dbManager.getAllDatasForAllEntrys();
 
             for (int i = 0; i < datas.size(); i++) {
                 xmlWriter.writeEntity("entry");
                 xmlWriter.writeAttribute("id", String.valueOf(datas.get(i).getId()));
                 xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning()));
-                xmlWriter.writeAttribute("dateTimePut", datas.get(i).getDateTimePut());
-                xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateTimeRemoved());
+                xmlWriter.writeAttribute("dateTimePut", datas.get(i).getDatePut());
+                xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
                 xmlWriter.endEntity();
             }
