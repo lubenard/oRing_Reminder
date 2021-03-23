@@ -66,7 +66,7 @@
     <string name="action_validate">Save this entry</string>
     <string name="alertdialog_multiple_running_session_title">Warning: Multiple running sessions detected !</string>
     <string name="settings_prevent_me_when_started_session">Prevent me when a session has already started</string>
-    <string name="toast_session_ended">Session with the following id has been set as finished:</string>
+    <string name="toast_session_ended">Session with the following id has been set as finished:&#160;</string>
     <string name="action_reload_datas">Reload datas</string>
     <string name="debug_menu_title">Debug menu</string>
     <string name="debug_menu_description">If you need to debug this app, this is the right place !</string>
@@ -93,7 +93,7 @@
     <string name="datas_import_data_xml">Import your data in XML format</string>
     <string name="alertdialog_multiple_running_session_body">Multiple sessions running have been found ! What do you want to do ?</string>
     <string name="alertdialog_multiple_running_session_choice1">End them all !</string>
-    <string name="alertdialog_multiple_running_session_choice2">Still incert my entry</string>
+    <string name="alertdialog_multiple_running_session_choice2">Still insert my entry</string>
 
     <string name="license_XmlWriter_title">This app use parts of <b>Java-very-tiny-XmlWriter</b>.</string>
 
@@ -128,5 +128,6 @@
     <string name="notif_choice_do_it">Okay, i did it</string>
     <string name="notif_choice_dismiss">Dismiss</string>
     <string name="please_wait">Please wait...</string>
+    <string name="toast_session_bad_id">"There was an error: we could not end session with id: "</string>
 
 </resources>

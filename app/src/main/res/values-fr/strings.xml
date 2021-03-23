@@ -66,7 +66,7 @@
     <string name="settings_prevent_me_when_started_session">Me prévenir quand une session à déjà commencé</string>
     <string name="action_validate">Sauvegarder cette entrée</string>
     <string name="alertdialog_multiple_running_session_title">Attention: Plusieurs sessions en cours détéctées !</string>
-    <string name="toast_session_ended">La session avec l\'id suivants ont été marquée comme terminée:</string>
+    <string name="toast_session_ended">La session avec l\'id suivants ont été marquée comme terminée:&#160;</string>
     <string name="action_reload_datas">Recharger les données</string>
     <string name="debug_menu_title">Menu de debug</string>
     <string name="debug_menu_description">Si vous avez besoin de debug cette app, vous êtes au bon endroid !</string>

@@ -50,13 +50,13 @@ public class EditEntryFragment extends Fragment {
      * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
      * @param alarmDate
      */
-    private void setAlarm(String alarmDate, int entryId) {
+    private void setAlarm(String alarmDate, long entryId) {
         Calendar calendar = Calendar.getInstance();
         try {
             calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(alarmDate));
             calendar.add(Calendar.HOUR_OF_DAY, weared_time);
             Log.d("Create new entry", "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
-
+            Log.d("Create new entry", "setAlarm receive id: " + entryId);
             Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
@@ -103,11 +103,13 @@ public class EditEntryFragment extends Fragment {
     private void saveEntry(String formattedDatePut) {
         if (entryId != -1)
             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-        else
-            dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
+        else {
+            long newlyInsertedEntry = dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
 
-        if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
-            setAlarm(formattedDatePut, entryId);
+            // Set alarm only for new entry
+            if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
+                setAlarm(formattedDatePut, newlyInsertedEntry);
+        }
         // Get back to the last element in the fragment stack
         getActivity().getSupportFragmentManager().popBackStackImmediate();
     }

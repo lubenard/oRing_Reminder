@@ -110,7 +110,7 @@ public class DbManager extends SQLiteOpenHelper {
      * @param datePut date at which user has put the protection
      * @param isRunning if the current session is running
      */
-    public void createNewDatesRing(String datePut, String dateRemoved, int isRunning) {
+    public long createNewDatesRing(String datePut, String dateRemoved, int isRunning) {
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
         cv.put(ringTableRemoved, dateRemoved);
@@ -120,7 +120,7 @@ public class DbManager extends SQLiteOpenHelper {
             cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
         cv.put(ringTableIsRunning, isRunning);
 
-        writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        return writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     /**
@@ -203,7 +203,7 @@ public class DbManager extends SQLiteOpenHelper {
             writableDB.delete(ringTable,ringTableId + "=?", new String[]{String.valueOf(entryId)});
     }
 
-    public void endSession(int entryId) {
+    public void endSession(long entryId) {
         if (entryId < 0)
             return;
 
