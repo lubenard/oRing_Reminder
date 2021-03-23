@@ -66,7 +66,7 @@
     <string name="settings_prevent_me_when_started_session">Me prévenir quand une session à déjà commencé</string>
     <string name="action_validate">Sauvegarder cette entrée</string>
     <string name="alertdialog_multiple_running_session_title">Attention: Plusieurs sessions en cours détéctées !</string>
-    <string name="toast_session_ended">La session avec l\'id suivants ont été marquée co</string>
+    <string name="toast_session_ended">La session avec l\'id suivants ont été marquée comme terminée:</string>
     <string name="action_reload_datas">Recharger les données</string>
     <string name="debug_menu_title">Menu de debug</string>
     <string name="debug_menu_description">Si vous avez besoin de debug cette app, vous êtes au bon endroid !</string>
@@ -95,7 +95,8 @@
     <string name="alertdialog_multiple_running_session_choice1">Toutes les terminer !</string>
     <string name="alertdialog_multiple_running_session_choice2">Inserer tout de même mon entrée</string>
     <string name="license_XmlWriter_title">Cette app utilise <b>Java-very-tiny-XmlWriter</b>.</string>
-    <string name="license_XmlWriter_source">"Vouv pouvez voir le code de cette librairie ici :      https://github.com/menny/Java-very-tiny-XmlWriter     "</string>
+    <string name="license_XmlWriter_source">"Vouv pouvez voir le code de cette librairie ici :\n
+        https://github.com/menny/Java-very-tiny-XmlWriter"</string>
     <string name="toast_success_restore_datas">Les données ont été restaurées avec succès</string>
     <string name="toast_success_save_datas">Les données ont été sauvegardé avec succès</string>
     <string name="settings_alertdialog_erase_datas_body">Êtes-vous sur de vouloir supprimer toutes vos données ? Toute perte est definitive. Une fois completée, cette app va s\'eteindre.</string>
