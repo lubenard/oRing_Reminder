@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder.ui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.DbManager;
@@ -23,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +37,8 @@ public class EntryDetailsFragment extends Fragment {
     private DbManager dbManager;
     private int weared_time;
     private View view;
+    private Context context;
+    private FragmentManager fragmentManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,21 +51,26 @@ public class EntryDetailsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dbManager = new DbManager(getContext());
+        context = getContext();
+        fragmentManager = getActivity().getSupportFragmentManager();
+        this.view = view;
+
+        dbManager = new DbManager(context);
 
         Bundle bundle = this.getArguments();
         entryId = bundle.getInt("entryId", -1);
+
         SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(getContext());
+                PreferenceManager.getDefaultSharedPreferences(context);
+
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
-        this.view = view;
 
         Toolbar toolbar = view.findViewById(R.id.entry_details_toolbar);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
+                fragmentManager.popBackStackImmediate();
             }
         });
 
@@ -71,18 +81,18 @@ public class EntryDetailsFragment extends Fragment {
                     Bundle bundle2 = new Bundle();
                     bundle2.putInt("entryId", entryId);
                     fragment.setArguments(bundle2);
-                    getActivity().getSupportFragmentManager().beginTransaction()
+                    fragmentManager.beginTransaction()
                             .replace(android.R.id.content, fragment, null)
                             .addToBackStack(null).commit();
                     return true;
                 case R.id.action_delete_entry:
                     // Warn user then delete entry in the db
-                    new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_delete_entry)
+                    new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
                             .setMessage(R.string.alertdialog_delete_contact_body)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dbManager.deleteEntry(entryId);
-                                    getActivity().getSupportFragmentManager().popBackStackImmediate();
+                                    fragmentManager.popBackStackImmediate();
                                 }
                             })
                             .setNegativeButton(android.R.string.no, null)
@@ -107,7 +117,7 @@ public class EntryDetailsFragment extends Fragment {
             TextView ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
 
             // Choose color if the timeWeared is enough or not
-            // Depending of the timeweared set in the settings
+            // Depending of the timeWeared set in the settings
             if (!contactDetails.get(2).equals("NOT SET YET") && Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
             else
@@ -116,18 +126,17 @@ public class EntryDetailsFragment extends Fragment {
             put.setText(contactDetails.get(0));
             removed.setText(contactDetails.get(1));
 
-            // Check if the session is finished and displqy the corresponding text
+            // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
             if (contactDetails.get(2).equals("NOT SET YET"))
                 timeWeared.setText(R.string.not_set_yet);
             else {
                 int time_spent_wearing = Integer.parseInt(contactDetails.get(2));
-                if (time_spent_wearing < 60) {
+                if (time_spent_wearing < 60)
                     timeWeared.setText(contactDetails.get(2) + getString(R.string.minute_with_M_uppercase));
-                } else {
+                else
                     timeWeared.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
-                }
             }
 
             // Display the datas relative to the session
@@ -135,19 +144,13 @@ public class EntryDetailsFragment extends Fragment {
                 isRunning.setTextColor(getResources().getColor(R.color.yellow));
                 isRunning.setText(R.string.session_is_running);
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
                 Calendar calendar = Calendar.getInstance();
-                try {
-                    calendar.setTime(dateFormat.parse(contactDetails.get(0)));
-                    calendar.add(Calendar.HOUR_OF_DAY, weared_time);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                calendar.setTime(Utils.getdateParsed(contactDetails.get(0)));
+                calendar.add(Calendar.HOUR_OF_DAY, weared_time);
 
-                long timeBeforeRemove = Utils.getDateDiff(dateFormat.format(new Date()), dateFormat.format(calendar.getTime()), TimeUnit.MINUTES);
+                long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
                 Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
-                ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + dateFormat.format(calendar.getTime())
+                ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.getdateFormatted(calendar.getTime())
                         + "\n" + String.format("(in about %dh%02dm)", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
                 // If the session is finished, no need to show the ableToGetItOff textView.
@@ -159,9 +162,9 @@ public class EntryDetailsFragment extends Fragment {
         }
         else {
             // Trigger an error if the entryId is wrong, then go back to main list
-            Toast.makeText(getContext(), getContext().getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
-            Log.d(TAG, "Error: Wrong Id: " + entryId);
-            getActivity().getSupportFragmentManager().popBackStackImmediate();
+            Toast.makeText(context, context.getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
+            Log.e(TAG, "Error: Wrong Id: " + entryId);
+            fragmentManager.popBackStackImmediate();
         }
     }
 }

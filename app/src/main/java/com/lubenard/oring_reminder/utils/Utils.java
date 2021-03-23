@@ -27,6 +27,29 @@ import java.util.concurrent.TimeUnit;
 public class Utils {
 
     /**
+     * Format date from Date to string using "yyyy-MM-dd HH:mm:ss" format
+     * @param date The date to format
+     * @return The string formatted
+     */
+    public static String getdateFormatted(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+    }
+
+    /**
+     * Parse a string date into a Date object
+     * @param date the string date to parse
+     * @return The Date format parsed
+     */
+    public static Date getdateParsed(String date) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * Compute the diff between two given dates
      * The formula is date2 - date1
      * @param sDate1 First date in the form of a string
@@ -36,16 +59,11 @@ public class Utils {
      */
     public static long getDateDiff(String sDate1, String sDate2, TimeUnit timeUnit)
     {
-        try {
-            Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate1);
-            Date date2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(sDate2);
+        Date date1 = getdateParsed(sDate1);
+        Date date2 = getdateParsed(sDate2);
 
-            long diffInMillies = date2.getTime() - date1.getTime();
-            return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -122,7 +140,7 @@ public class Utils {
                 .setContentTitle(title)
                 .setContentText(content)
                 .addAction(android.R.drawable.checkbox_on_background, context.getString(R.string.notif_choice_do_it), removedProtection)
-                .addAction(android.R.drawable.checkbox_on_background, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
+                .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
                 .setContentIntent(pi);
         mNotificationManager.notify(0, permNotifBuilder.build());
     }

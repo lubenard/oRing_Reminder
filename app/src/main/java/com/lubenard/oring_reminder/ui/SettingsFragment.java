@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
 
@@ -34,10 +34,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     public static final String TAG = "SettingsFragment";
     private static Activity activity;
-    private Fragment thisFragment;
+    private FragmentManager fragmentManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -45,10 +46,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.settings_fragment, rootKey);
         activity = getActivity();
+        fragmentManager = getActivity().getSupportFragmentManager();
 
-        thisFragment = this;
         // Language change listener
-        final Preference language = findPreference("ui_language");
+        Preference language = findPreference("ui_language");
         language.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -63,13 +64,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     case "system":
                         break;
                 }
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
+                fragmentManager.popBackStackImmediate();
                 return true;
             }
         });
 
         // Theme change listener
-        final Preference theme = findPreference("ui_theme");
+        Preference theme = findPreference("ui_theme");
         theme.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -216,7 +217,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference debugMenu = findPreference("other_debug_menu");
         debugMenu.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                getActivity().getSupportFragmentManager().beginTransaction()
+                fragmentManager.beginTransaction()
                         .replace(android.R.id.content, new DebugFragment(), null)
                         .addToBackStack(null).commit();
                 return true;
@@ -240,7 +241,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference aboutLicenses = findPreference("other_about_licenses");
         aboutLicenses.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                getActivity().getSupportFragmentManager().beginTransaction()
+                fragmentManager.beginTransaction()
                         .replace(android.R.id.content, new AboutFragment(), null)
                         .addToBackStack(null).commit();
                 return true;
@@ -254,12 +255,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         Toolbar toolbar = view.findViewById(R.id.settings_toolbar);
 
-
         if (toolbar != null) {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    fragmentManager.popBackStackImmediate();
                 }
             });
         }

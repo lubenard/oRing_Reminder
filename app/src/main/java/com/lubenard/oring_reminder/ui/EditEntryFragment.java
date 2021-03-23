@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,31 +54,27 @@ public class EditEntryFragment extends Fragment {
     private int weared_time;
     private boolean should_warn_user;
 
+    private Context context;
+
     /**
      * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
-     * @param alarmDate
+     * @param alarmDate The date of the alarm in the form 2020-12-30 10:42:00
+     * @param entryId the id entry of the entry to update
      */
     private void setAlarm(String alarmDate, long entryId) {
         Calendar calendar = Calendar.getInstance();
-        try {
-            calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(alarmDate));
-            calendar.add(Calendar.HOUR_OF_DAY, weared_time);
-            Log.d(TAG, "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
-            Log.d(TAG, "setAlarm receive id: " + entryId);
-            Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
-            AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+        calendar.setTime(Utils.getdateParsed(alarmDate));
+        calendar.add(Calendar.HOUR_OF_DAY, weared_time);
+        Log.d(TAG, "Setting the alarm for this timstamp in millis " + calendar.getTimeInMillis());
+        Log.d(TAG, "setAlarm receive id: " + entryId);
+        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
-            if (SDK_INT < Build.VERSION_CODES.KITKAT)
-                am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            else if (Build.VERSION_CODES.KITKAT <= SDK_INT && SDK_INT < Build.VERSION_CODES.M)
-                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            else if (SDK_INT >= Build.VERSION_CODES.M) {
-                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+            am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        else if (SDK_INT >= Build.VERSION_CODES.M)
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     /**
@@ -134,12 +131,14 @@ public class EditEntryFragment extends Fragment {
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
 
-        dbManager = new DbManager(getContext());
+        context = getContext();
+
+        dbManager = new DbManager(context);
 
         Bundle bundle = this.getArguments();
         entryId = bundle.getInt("entryId", -1);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
         should_warn_user = sharedPreferences.getBoolean("myring_prevent_me_when_started_session", true);
 
@@ -151,19 +150,17 @@ public class EditEntryFragment extends Fragment {
             fill_entry_to(datas.get(1));
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
         auto_from_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fill_entry_from(dateFormat.format(new Date()));
+                fill_entry_from(Utils.getdateFormatted(new Date()));
             }
         });
 
         new_entry_auto_date_to.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fill_entry_to(dateFormat.format(new Date()));
+                fill_entry_to(Utils.getdateFormatted(new Date()));
             }
         });
 
@@ -187,14 +184,13 @@ public class EditEntryFragment extends Fragment {
 
                     if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
                         if (!runningSessions.isEmpty() && should_warn_user) {
-                            new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_multiple_running_session_title)
+                            new AlertDialog.Builder(context).setTitle(R.string.alertdialog_multiple_running_session_title)
                                     .setMessage(R.string.alertdialog_multiple_running_session_body)
                                     .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
-                                           String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                                             for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
                                                 Log.d(TAG, "Set session " + sessions.getKey() + " to finished");
-                                                dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), currentDate, 0);
+                                                dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), Utils.getdateFormatted(new Date()), 0);
                                             }
                                             saveEntry(formattedDatePut);
                                         }
@@ -217,7 +213,7 @@ public class EditEntryFragment extends Fragment {
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     } else {
                         // If the diff time is too short, trigger this error
-                        Toast.makeText(getContext(), R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 default:

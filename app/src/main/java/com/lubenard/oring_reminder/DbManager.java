@@ -215,7 +215,7 @@ public class DbManager extends SQLiteOpenHelper {
         // Then we set our values:
         // We need to recompute the date
         // And set the isRunning to 0
-        String dateRemoved = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        String dateRemoved = Utils.getdateFormatted(new Date());
         ContentValues cv = new ContentValues();
         cv.put(ringTableRemoved, dateRemoved);
         cv.put(ringTableTimeWeared, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));

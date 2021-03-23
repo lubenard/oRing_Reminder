@@ -63,21 +63,18 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         if (!dataModel.getDateRemoved().equals("NOT SET YET")) {
             String[] dateRemoved = dataModel.getDateRemoved().split(" ");
             viewHolder.weared_to.setText(dateRemoved[0] + "\n" + dateRemoved[1]);
-        } else {
+        } else
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
-        }
+
         if (dataModel.getIsRunning() == 0) {
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
         }
         else {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            long timeBeforeRemove = Utils.getDateDiff(dataModel.getDatePut(), dateFormat.format(new Date()), TimeUnit.MINUTES);
+            long timeBeforeRemove = Utils.getDateDiff(dataModel.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(R.color.yellow));
             viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         }
-
-
         return convertView;
     }
 }
