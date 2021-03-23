@@ -1,16 +1,12 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.ui;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,26 +14,25 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 
-import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
-import androidx.preference.SwitchPreference;
 
-import java.util.Locale;
+import com.lubenard.oring_reminder.BackupRestore;
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.utils.Utils;
 
 /**
  * Settings page.
  */
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    public static final String TAG = "SettingsActivity";
+    public static final String TAG = "SettingsFragment";
     private static Activity activity;
     private Fragment thisFragment;
 

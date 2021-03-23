@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.utils;
 
 /*
  * Copyright (c) 2003, Henri Yandell

@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.custom_components;
 
 public class RingModel {
     private int id;

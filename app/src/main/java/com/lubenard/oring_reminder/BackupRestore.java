@@ -15,6 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.custom_components.EntryClass;
+import com.lubenard.oring_reminder.ui.SettingsFragment;
+import com.lubenard.oring_reminder.utils.XmlWriter;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -23,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class BackupRestore extends Activity{
 

@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.custom_components;
 
 public class EntryClass {
     private int id;
@@ -18,7 +18,6 @@ public class EntryClass {
     public int getId() {
         return id;
     }
-
     public int getIsRunning() {
         return isRunning;
     }

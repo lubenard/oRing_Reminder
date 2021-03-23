@@ -7,9 +7,11 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
+
+import com.lubenard.oring_reminder.ui.MainFragment;
+import com.lubenard.oring_reminder.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 

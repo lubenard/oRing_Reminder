@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,6 +15,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.utils.Utils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class EntryDetailsFragment extends Fragment {
+
+    public static final String TAG = "EntryDetailsFragment";
 
     private int entryId = -1;
     private DbManager dbManager;
@@ -140,7 +146,7 @@ public class EntryDetailsFragment extends Fragment {
                 }
 
                 long timeBeforeRemove = Utils.getDateDiff(dateFormat.format(new Date()), dateFormat.format(calendar.getTime()), TimeUnit.MINUTES);
-                Log.d("EntryDetails", "timeBeforeRemove = " + timeBeforeRemove);
+                Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
                 ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + dateFormat.format(calendar.getTime())
                         + "\n" + String.format("(in about %dh%02dm)", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
@@ -154,7 +160,7 @@ public class EntryDetailsFragment extends Fragment {
         else {
             // Trigger an error if the entryId is wrong, then go back to main list
             Toast.makeText(getContext(), getContext().getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
-            Log.d("EntryDetails", "Error: Wrong Id: " + entryId);
+            Log.d(TAG, "Error: Wrong Id: " + entryId);
             getActivity().getSupportFragmentManager().popBackStackImmediate();
         }
     }

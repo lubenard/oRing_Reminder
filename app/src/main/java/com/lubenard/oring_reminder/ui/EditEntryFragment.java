@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.ui;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -21,6 +21,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.NotificationSenderBroadcastReceiver;
+import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.utils.Utils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +38,8 @@ import java.util.concurrent.TimeUnit;
 import static android.os.Build.VERSION.SDK_INT;
 
 public class EditEntryFragment extends Fragment {
+
+    public static final String TAG = "EditEntryFragment";
 
     private DbManager dbManager;
     private int entryId;
@@ -55,8 +62,8 @@ public class EditEntryFragment extends Fragment {
         try {
             calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(alarmDate));
             calendar.add(Calendar.HOUR_OF_DAY, weared_time);
-            Log.d("Create new entry", "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
-            Log.d("Create new entry", "setAlarm receive id: " + entryId);
+            Log.d(TAG, "Setting the alarm for this timstamp in millins " + calendar.getTimeInMillis());
+            Log.d(TAG, "setAlarm receive id: " + entryId);
             Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 1, intent, 0);
             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
@@ -186,7 +193,7 @@ public class EditEntryFragment extends Fragment {
                                         public void onClick(DialogInterface dialog, int which) {
                                            String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                                             for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
-                                                Log.d("EditEntry", "Set session " + sessions.getKey() + " to finished");
+                                                Log.d(TAG, "Set session " + sessions.getKey() + " to finished");
                                                 dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), currentDate, 0);
                                             }
                                             saveEntry(formattedDatePut);

@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.lang.reflect.Array;
-import java.sql.Time;
-import java.text.ParseException;
+import com.lubenard.oring_reminder.custom_components.EntryClass;
+import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.utils.Utils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

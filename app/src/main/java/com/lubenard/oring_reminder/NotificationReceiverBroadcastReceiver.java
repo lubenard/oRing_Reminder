@@ -13,7 +13,6 @@ public class NotificationReceiverBroadcastReceiver extends BroadcastReceiver {
         int action = intent.getIntExtra("action", 0);
         long entryId = intent.getLongExtra("entryId", 0);
 
-        Log.d("Test", "Extra is " + action);
         // If action == 1, set all session as finished
         // Else, do nothing
         if (action == 1) {

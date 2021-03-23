@@ -1,8 +1,12 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.ui;
 
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.RingModel;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -11,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,6 +23,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class MainFragment extends Fragment {
+
+    public static final String TAG = "MainFragment";
 
     private ArrayList<RingModel> dataModels;
     private DbManager dbManager;
@@ -56,7 +61,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 RingModel dataModel= dataModels.get(i);
-                Log.d("ONCLICK", "Element " + dataModel.getId());
+                Log.d(TAG, "Element " + dataModel.getId());
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("entryId", dataModel.getId());

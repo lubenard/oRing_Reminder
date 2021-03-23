@@ -1,24 +1,22 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+
+import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.NotificationReceiverBroadcastReceiver;
+import com.lubenard.oring_reminder.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,7 +53,7 @@ public class Utils {
      * @param activity current actvity
      * @param localeCode the locale we want to apply (ex: fr)
      */
-    static void setAppLocale(Activity activity, String localeCode) {
+    public static void setAppLocale(Activity activity, String localeCode) {
         Locale myLocale = new Locale(localeCode);
         Resources res = activity.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();

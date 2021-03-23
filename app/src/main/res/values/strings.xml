@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">oRing - Reminder</string>
     <string name="action_settings">Settings</string>
     <string name="action_edit">Edit this entry</string>
     <string name="action_delete">Delete this entry</string>
@@ -18,25 +17,7 @@
 
     <string name="license_app_title">This app use Apache 2 Licence.</string>
 
-    <string name="license_app_licence" translatable="false">
-            Copyright 2021 lubenard\n\n
-
-        Licensed under the Apache License, Version 2.0 (the "License");\n
-        you may not use this file except in compliance with the License.\n
-        You may obtain a copy of the License at\n\n
-
-            http://www.apache.org/licenses/LICENSE-2.0\n\n
-
-        Unless required by applicable law or agreed to in writing, software\n
-        distributed under the License is distributed on an "AS IS" BASIS,\n
-        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
-        See the License for the specific language governing permissions and\n
-        limitations under the License.\n
-    </string>
-
-    <string name="license_app_source">You can see the source code of this app here :\n
-        https://github.com/lubenard/oRing_Reminder
-    </string>
+    <string name="license_app_source">You can see the source code of this app here :\n https://github.com/lubenard/oRing_Reminder</string>
     <string name="about_additional_software_licenses">About and Licenses</string>
     <string name="settings_other_see_licenses_title">See about and licences</string>
     <string name="notif_channel_name">Send a erasable notification</string>
@@ -94,34 +75,8 @@
     <string name="alertdialog_multiple_running_session_body">Multiple sessions running have been found ! What do you want to do ?</string>
     <string name="alertdialog_multiple_running_session_choice1">End them all !</string>
     <string name="alertdialog_multiple_running_session_choice2">Still insert my entry</string>
-
     <string name="license_XmlWriter_title">This app use parts of <b>Java-very-tiny-XmlWriter</b>.</string>
-
-    <string name="license_XmlWriter_licence" translatable="false">Copyright (c) 2010, Menny Even Danan\n
-       All rights reserved.\n
-       Redistribution and use in source and binary forms, with or without modification, are permitted provided that the \n
-       following conditions are met:\n
-       Redistributions of source code must retain the above copyright notice,\n
-       this list of conditions and the following disclaimer.\n
-       Redistributions in binary form must reproduce the above copyright notice,\n
-       this list of conditions and the following disclaimer in the documentation\n
-       and/or other materials provided with the distribution.\n Neither the name of XmlWriter nor the names of its contributors\n
-       may be used to endorse or promote products derived from this software\n
-       without specific prior written permission.\n
-       THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n
-       AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n
-       IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n
-       ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE\n
-       LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n
-       CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n
-       SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n
-       INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n
-       CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n
-       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n
-       POSSIBILITY OF SUCH DAMAGE.\n</string>
-
-    <string name="license_XmlWriter_source">"You can see the source code of this library here :\n
-        https://github.com/menny/Java-very-tiny-XmlWriter"</string>
+    <string name="license_XmlWriter_source">"You can see the source code of this library here :\n https://github.com/menny/Java-very-tiny-XmlWriter"</string>
     <string name="toast_success_restore_datas">Success to restore the datas</string>
     <string name="toast_success_save_datas">Success to save the datas</string>
     <string name="settings_alertdialog_erase_datas_body">Are you sure you want to delete all your data ? All losses are definitive. Once completed, the app will shut down.</string>
