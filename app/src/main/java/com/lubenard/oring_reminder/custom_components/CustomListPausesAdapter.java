@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder.custom_components;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class CustomListAdapter extends ArrayAdapter<RingModel> {
+public class CustomListPausesAdapter extends ArrayAdapter<RingModel> {
 
     private static class ViewHolder {
         TextView weared_from;
@@ -22,8 +23,8 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         TextView weared_during;
     }
 
-    public CustomListAdapter(ArrayList<RingModel> data, Context context) {
-        super(context, R.layout.custom_entry_list_element, data);
+    public CustomListPausesAdapter(ArrayList<RingModel> data, Context context) {
+        super(context, R.layout.custom_pauses_list_element, data);
     }
 
     /**
@@ -32,6 +33,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
      * @return a string containing the time the user weared the protection
      */
     private String convertTimeWeared(int timeWeared) {
+        Log.d("Test", "TimeWeared = " + timeWeared);
         if (timeWeared < 60)
             return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
         else if (timeWeared <= 1440)
@@ -50,7 +52,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         // Inflate it and get all elements
         viewHolder = new ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        convertView = inflater.inflate(R.layout.custom_entry_list_element, parent, false);
+        convertView = inflater.inflate(R.layout.custom_pauses_list_element, parent, false);
         viewHolder.weared_from = convertView.findViewById(R.id.custom_view_date_weared_from);
         viewHolder.weared_to = convertView.findViewById(R.id.custom_view_date_weared_to);
         viewHolder.weared_during = convertView.findViewById(R.id.custom_view_date_time_weared);
@@ -68,9 +70,8 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         if (dataModel.getIsRunning() == 0) {
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
-        }
-        else {
-            long timeBeforeRemove = Utils.getDateDiff(dataModel.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        } else {
+            long timeBeforeRemove = Utils.getDateDiff(dataModel.getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(R.color.yellow));
             viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         }

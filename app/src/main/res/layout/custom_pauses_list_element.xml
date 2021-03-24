@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/rounded_corners">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:text="To" />
+
+        <TextView
+            android:id="@+id/custom_view_date_weared_to"
+            style="@style/base_text_all_wrap"
+            android:text="date_from" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:text="From" />
+
+        <TextView
+            android:id="@+id/custom_view_date_weared_from"
+            style="@style/base_text_all_wrap"
+            android:text="date_from" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:text="Removed during" />
+
+        <TextView
+            android:id="@+id/custom_view_date_time_weared"
+            style="@style/base_text_all_wrap"
+            android:text="weared_for" />
+    </LinearLayout>
+</LinearLayout>

@@ -267,11 +267,10 @@ public class DbManager extends SQLiteOpenHelper {
         if (datePut.equals("NOT SET YET"))
             cv.put(pauseTableTimeRemoved, datePut);
         else
-            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
         cv.put(pauseTableIsRunning, isRunning);
 
         return writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
-        //return 1;
     }
 
     /**
@@ -290,6 +289,24 @@ public class DbManager extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+        }
+        cursor.close();
+        return datas;
+    }
+
+    public ArrayList<RingModel> getAllPausesForId(long entryId, boolean isDesc) {
+        ArrayList<RingModel> datas = new ArrayList<>();
+
+        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved};
+        Cursor cursor = readableDB.query(pausesTable,  columns, pauseTableEntryId + "=?", new String[]{String.valueOf(entryId)}, null, null,
+                (isDesc) ? pauseTableId + " DESC": null);
+
+        while (cursor.moveToNext()) {
+            datas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
+                    cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved))));
         }
         cursor.close();
         return datas;

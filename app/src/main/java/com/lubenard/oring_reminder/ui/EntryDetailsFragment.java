@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,11 +25,15 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
+import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
+import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class EntryDetailsFragment extends Fragment {
@@ -40,6 +46,9 @@ public class EntryDetailsFragment extends Fragment {
     private View view;
     private Context context;
     private FragmentManager fragmentManager;
+    private ListView listView;
+    private CustomListPausesAdapter adapter;
+    private ArrayList<RingModel> dataModels;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +66,7 @@ public class EntryDetailsFragment extends Fragment {
         this.view = view;
 
         dbManager = new DbManager(context);
+        dataModels = new ArrayList<>();
 
         Bundle bundle = this.getArguments();
         entryId = bundle.getLong("entryId", -1);
@@ -67,6 +77,20 @@ public class EntryDetailsFragment extends Fragment {
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
 
         Toolbar toolbar = view.findViewById(R.id.entry_details_toolbar);
+
+        listView = view.findViewById(R.id.listview_pauses);
+
+        // This can block the listview from scrolling, but i cannot integrate listview inside
+        // scrollview without it acting weird (only showing one row)
+        /*listView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    return true; // Indicates that this has been handled by you and will not be forwarded further.
+                }
+                return false;
+            }
+        });*/
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,17 +161,32 @@ public class EntryDetailsFragment extends Fragment {
                 save_entry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d(TAG, "click validate !");
-                        if (pause_ending.getText().toString().isEmpty())
+                        int isRunning = 0;
+                        if (pause_ending.getText().toString().isEmpty()) {
                             pause_ending.setText("NOT SET YET");
+                            isRunning = 1;
+                        }
                         Log.d(TAG, "pauseTablePut = " + pause_ending.getText());
-                        dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), 0);
+                        dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
                         alertDialog.dismiss();
+                        updatePauseList();
                     }
                 });
                 alertDialog.show();
             }
         });
+    }
+
+    /**
+     * Update the listView by fetching all elements from the db
+     */
+    private void updatePauseList() {
+       dataModels.clear();
+       ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+
+       dataModels.addAll(pausesDatas);
+       adapter = new CustomListPausesAdapter(dataModels, getContext());
+       listView.setAdapter(adapter);
     }
 
     @Override
@@ -205,8 +244,8 @@ public class EntryDetailsFragment extends Fragment {
                 isRunning.setText(R.string.session_finished);
                 ableToGetItOff.setVisibility(View.INVISIBLE);
             }
-        }
-        else {
+            updatePauseList();
+        } else {
             // Trigger an error if the entryId is wrong, then go back to main list
             Toast.makeText(context, context.getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
             Log.e(TAG, "Error: Wrong Id: " + entryId);
