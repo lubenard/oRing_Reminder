@@ -64,7 +64,7 @@ public class MainFragment extends Fragment {
                 Log.d(TAG, "Element " + dataModel.getId());
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
                 Bundle bundle = new Bundle();
-                bundle.putInt("entryId", dataModel.getId());
+                bundle.putLong("entryId", dataModel.getId());
                 fragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, fragment, null)

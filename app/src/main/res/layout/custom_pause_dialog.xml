@@ -11,13 +11,13 @@
         android:text="Commencer une pause:" />
 
     <EditText
-        android:id="@+id/textView"
+        android:id="@+id/edittext_beginning_pause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ex: 2020-03-30 11:10:20" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/prefill_beginning_pause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Préremplir" />
@@ -25,23 +25,25 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:textSize="25dp"
         android:text="Terminer une pause:" />
 
     <EditText
-        android:id="@+id/textView2"
+        android:id="@+id/edittext_finish_pause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ex: 2020-03-30 11:10:20" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/prefill_finish_pause"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Préremplir" />
 
     <Button
-        android:id="@+id/textView3"
+        android:id="@+id/validate_pause"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sauvegarder" />

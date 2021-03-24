@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ public class EntryDetailsFragment extends Fragment {
 
     public static final String TAG = "EntryDetailsFragment";
 
-    private int entryId = -1;
+    private long entryId = -1;
     private DbManager dbManager;
     private int weared_time;
     private View view;
@@ -58,7 +59,7 @@ public class EntryDetailsFragment extends Fragment {
         dbManager = new DbManager(context);
 
         Bundle bundle = this.getArguments();
-        entryId = bundle.getInt("entryId", -1);
+        entryId = bundle.getLong("entryId", -1);
 
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
@@ -79,7 +80,7 @@ public class EntryDetailsFragment extends Fragment {
                 case R.id.action_edit_entry:
                     EditEntryFragment fragment = new EditEntryFragment();
                     Bundle bundle2 = new Bundle();
-                    bundle2.putInt("entryId", entryId);
+                    bundle2.putLong("entryId", entryId);
                     fragment.setArguments(bundle2);
                     fragmentManager.beginTransaction()
                             .replace(android.R.id.content, fragment, null)
@@ -103,7 +104,7 @@ public class EntryDetailsFragment extends Fragment {
             }
         });
 
-        ImageButton testButton = view.findViewById(R.id.test_dialog);
+        ImageButton testButton = view.findViewById(R.id.new_pause_button);
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,6 +113,38 @@ public class EntryDetailsFragment extends Fragment {
                 View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_pause_dialog, viewGroup, false);
                 builder.setView(dialogView);
                 AlertDialog alertDialog = builder.create();
+
+                EditText pause_beginning = dialogView.findViewById(R.id.edittext_beginning_pause);
+                EditText pause_ending = dialogView.findViewById(R.id.edittext_finish_pause);
+
+                Button fill_beginning = dialogView.findViewById(R.id.prefill_beginning_pause);
+                fill_beginning.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        pause_beginning.setText(Utils.getdateFormatted(new Date()));
+                    }
+                });
+
+                Button fill_end = dialogView.findViewById(R.id.prefill_finish_pause);
+                fill_end.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        pause_ending.setText(Utils.getdateFormatted(new Date()));
+                    }
+                });
+
+                Button save_entry = dialogView.findViewById(R.id.validate_pause);
+                save_entry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "click validate !");
+                        if (pause_ending.getText().toString().isEmpty())
+                            pause_ending.setText("NOT SET YET");
+                        Log.d(TAG, "pauseTablePut = " + pause_ending.getText());
+                        dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), 0);
+                        alertDialog.dismiss();
+                    }
+                });
                 alertDialog.show();
             }
         });

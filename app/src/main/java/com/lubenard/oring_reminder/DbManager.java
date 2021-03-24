@@ -47,7 +47,7 @@ public class DbManager extends SQLiteOpenHelper {
     private static final String pauseTablePut = "datetimePut";
     private static final String pauseTableRemoved = "datetimeRemoved";
     // Computed by doing dateTimeRemoved - dateTimePut
-    private static final String pauseTableTimeRemoved = "timeWeared";
+    private static final String pauseTableTimeRemoved = "timeRemoved";
 
     private SQLiteDatabase writableDB;
     private SQLiteDatabase readableDB;
@@ -68,6 +68,11 @@ public class DbManager extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + ringTable + " (" + ringTableId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ringTableIsRunning + " INTEGER, " + ringTableTimeWeared + " INTEGER, " +
                 ringTableRemoved + " DATETIME, " + ringTablePut + " DATETIME)");
+
+        db.execSQL("CREATE TABLE " + pausesTable + " (" + pauseTableId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                pauseTableEntryId + " INTEGER, " + pauseTableIsRunning + " INTEGER, "
+                + pauseTableTimeRemoved + " INTEGER, " + pauseTableRemoved + " DATETIME, "
+                + pauseTablePut + " DATETIME)");
 
         Log.d(TAG, "The db has been created, this message should only appear once.");
     }
@@ -185,7 +190,7 @@ public class DbManager extends SQLiteOpenHelper {
      * @return the following fields -> ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning
      * in the form of a ArrayList
      */
-    public ArrayList<String> getEntryDetails(int entryId) {
+    public ArrayList<String> getEntryDetails(long entryId) {
         if (entryId <= 0)
             return null;
         ArrayList<String> entryDatas = new ArrayList<>();
@@ -207,7 +212,7 @@ public class DbManager extends SQLiteOpenHelper {
      * Delete a entry
      * @param entryId the id of the contact we want to delete
      */
-    public void deleteEntry(int entryId)
+    public void deleteEntry(long entryId)
     {
         if (entryId > 0)
             writableDB.delete(ringTable,ringTableId + "=?", new String[]{String.valueOf(entryId)});
@@ -245,18 +250,28 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
-    public long createNewPause(long entryId) {
-        /*ContentValues cv = new ContentValues();
-        cv.put(ringTablePut, datePut);
-        cv.put(ringTableRemoved, dateRemoved);
-        if (dateRemoved.equals("NOT SET YET"))
-            cv.put(ringTableTimeWeared, dateRemoved);
+    /**
+     * Create a new Pause
+     * @param entryId the id to link to the pause
+     * @param dateRemoved the date the user stopped wearing protection
+     * @param datePut the date the user put the new protection again
+     * @param isRunning if the pause is running
+     * @return the id of the pause entry
+     */
+    public long createNewPause(long entryId, String dateRemoved, String datePut, int isRunning) {
+        ContentValues cv = new ContentValues();
+        cv.put(pauseTableRemoved, dateRemoved);
+        cv.put(pauseTablePut, datePut);
+        cv.put(pauseTableEntryId, entryId);
+        Log.d(TAG, "pauseTablePut = " + datePut);
+        if (datePut.equals("NOT SET YET"))
+            cv.put(pauseTableTimeRemoved, datePut);
         else
-            cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
-        cv.put(ringTableIsRunning, isRunning);
+            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+        cv.put(pauseTableIsRunning, isRunning);
 
-        return writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);*/
-        return 1;
+        return writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        //return 1;
     }
 
     /**

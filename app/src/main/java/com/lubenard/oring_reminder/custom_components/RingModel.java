@@ -1,7 +1,7 @@
 package com.lubenard.oring_reminder.custom_components;
 
 public class RingModel {
-    private int id;
+    private long id;
     private String datePut;
     private String dateRemoved;
     private int isRunning;
@@ -15,7 +15,7 @@ public class RingModel {
         this.timeWeared = timeWeared;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

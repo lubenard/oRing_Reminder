@@ -88,7 +88,7 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/test_dialog"
+            android:id="@+id/new_pause_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/baseline_add_green_48"
