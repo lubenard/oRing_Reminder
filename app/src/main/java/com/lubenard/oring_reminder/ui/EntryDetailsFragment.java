@@ -6,9 +6,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +24,8 @@ import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -100,6 +100,19 @@ public class EntryDetailsFragment extends Fragment {
                     return true;
                 default:
                     return false;
+            }
+        });
+
+        ImageButton testButton = view.findViewById(R.id.test_dialog);
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                ViewGroup viewGroup = view.findViewById(android.R.id.content);
+                View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_pause_dialog, viewGroup, false);
+                builder.setView(dialogView);
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
     }

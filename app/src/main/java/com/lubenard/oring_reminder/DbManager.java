@@ -38,6 +38,17 @@ public class DbManager extends SQLiteOpenHelper {
     // Computed by doing dateTimeRemoved - dateTimePut
     private static final String ringTableTimeWeared = "timeWeared";
 
+    // Table registering pauses
+    private static final String pausesTable = "pauseTable";
+    private static final String pauseTableId = "id";
+    // The link to ringTable
+    private static final String pauseTableEntryId = "entryId";
+    private static final String pauseTableIsRunning = "isRunning";
+    private static final String pauseTablePut = "datetimePut";
+    private static final String pauseTableRemoved = "datetimeRemoved";
+    // Computed by doing dateTimeRemoved - dateTimePut
+    private static final String pauseTableTimeRemoved = "timeWeared";
+
     private SQLiteDatabase writableDB;
     private SQLiteDatabase readableDB;
 
@@ -202,6 +213,10 @@ public class DbManager extends SQLiteOpenHelper {
             writableDB.delete(ringTable,ringTableId + "=?", new String[]{String.valueOf(entryId)});
     }
 
+    /**
+     * Set a session as finished for given entryId
+     * @param entryId set the session as finished for given id
+     */
     public void endSession(long entryId) {
         if (entryId < 0)
             return;
@@ -230,14 +245,24 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
-    /**
-     * Close the db when finished using it.
-     */
-    public void closeDb() {
-        if (writableDB != null) { writableDB.close();}
-        if (readableDB != null) { readableDB.close();}
+    public long createNewPause(long entryId) {
+        /*ContentValues cv = new ContentValues();
+        cv.put(ringTablePut, datePut);
+        cv.put(ringTableRemoved, dateRemoved);
+        if (dateRemoved.equals("NOT SET YET"))
+            cv.put(ringTableTimeWeared, dateRemoved);
+        else
+            cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+        cv.put(ringTableIsRunning, isRunning);
+
+        return writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);*/
+        return 1;
     }
 
+    /**
+     * This function is used to backup into a file
+     * @return All the datas for all the entrys.
+     */
     public ArrayList<RingModel> getAllDatasForAllEntrys() {
         ArrayList<RingModel> datas = new ArrayList<>();
 
@@ -253,6 +278,14 @@ public class DbManager extends SQLiteOpenHelper {
         }
         cursor.close();
         return datas;
+    }
+
+    /**
+     * Close the db when finished using it.
+     */
+    public void closeDb() {
+        if (writableDB != null) { writableDB.close();}
+        if (readableDB != null) { readableDB.close();}
     }
 }
 

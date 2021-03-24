@@ -68,4 +68,33 @@
         android:layout_marginTop="15dp"
         android:textSize="17dp"
         android:text="able_to_get_it_off_to" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="30dp"
+            android:text="Pauses:" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/test_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_add_green_48"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:text="Add a pause" />
+    </LinearLayout>
+
 </LinearLayout>
