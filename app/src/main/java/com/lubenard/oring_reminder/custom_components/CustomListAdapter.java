@@ -1,11 +1,14 @@
 package com.lubenard.oring_reminder.custom_components;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -65,8 +68,16 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         } else
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
 
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        int weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+
         if (dataModel.getIsRunning() == 0) {
-            viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+            if (dataModel.getTimeWeared() / 60 >= weared_time)
+                viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+            else
+                viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
             viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
         }
         else {
