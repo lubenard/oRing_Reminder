@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -102,7 +103,7 @@ public class EntryDetailsFragment extends Fragment {
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_edit_entry:
-                    EditEntryFragment fragment = new EditEntryFragment();
+                    EditEntryFragment fragment = new EditEntryFragment(getContext());
                     Bundle bundle2 = new Bundle();
                     bundle2.putLong("entryId", entryId);
                     fragment.setArguments(bundle2);
@@ -175,6 +176,26 @@ public class EntryDetailsFragment extends Fragment {
                 alertDialog.show();
             }
         });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
+                        .setMessage(R.string.alertdialog_delete_contact_body)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                RingModel object = (RingModel) arg0.getItemAtPosition(pos);
+                                Log.d(TAG, "delete pause with id: " + object.getId());
+                                dbManager.deletePauseEntry(entryId);
+                                updatePauseList();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert).show();
+                return true;
+            }
+        });
+
     }
 
     /**
@@ -205,8 +226,10 @@ public class EntryDetailsFragment extends Fragment {
             // Depending of the timeWeared set in the settings
             if (!contactDetails.get(2).equals("NOT SET YET") && Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            else
+            else if (!contactDetails.get(2).equals("NOT SET YET") && Integer.parseInt(contactDetails.get(2)) / 60 < weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            else
+                timeWeared.setTextColor(getResources().getColor(R.color.yellow));
 
             put.setText(contactDetails.get(0));
             removed.setText(contactDetails.get(1));
@@ -214,9 +237,10 @@ public class EntryDetailsFragment extends Fragment {
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
-            if (contactDetails.get(2).equals("NOT SET YET"))
-                timeWeared.setText(R.string.not_set_yet);
-            else {
+            if (contactDetails.get(2).equals("NOT SET YET")) {
+                long timeBeforeRemove = Utils.getDateDiff(contactDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                timeWeared.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+            } else {
                 int time_spent_wearing = Integer.parseInt(contactDetails.get(2));
                 if (time_spent_wearing < 60)
                     timeWeared.setText(contactDetails.get(2) + getString(R.string.minute_with_M_uppercase));
