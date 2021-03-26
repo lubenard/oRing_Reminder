@@ -164,7 +164,7 @@ public class DbManager extends SQLiteOpenHelper {
      * @param dateRemoved the new dateRemoved
      * @param isRunning the new isRunning
      */
-    public void updateDatesRing(int id, String datePut, String dateRemoved, int isRunning) {
+    public void updateDatesRing(long id, String datePut, String dateRemoved, int isRunning) {
         if (id <= 0)
             return;
         ContentValues cv = new ContentValues();
