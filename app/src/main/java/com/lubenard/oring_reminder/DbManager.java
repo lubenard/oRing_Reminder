@@ -312,6 +312,11 @@ public class DbManager extends SQLiteOpenHelper {
         return datas;
     }
 
+    public void deletePauseEntry(long entryId) {
+        if (entryId > 0)
+            writableDB.delete(pausesTable,pauseTableId + "=?", new String[]{String.valueOf(entryId)});
+    }
+
     /**
      * Close the db when finished using it.
      */
