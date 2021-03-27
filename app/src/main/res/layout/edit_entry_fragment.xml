@@ -19,60 +19,42 @@
         android:textSize="30dp"
         android:text="@string/from" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/new_entry_date_from"
-            style="@style/base_text_all_wrap"
-            android:ems="10"
-            android:layout_weight="1"
-            android:inputType="date" />
-
-        <Button
-            android:id="@+id/new_entry_auto_date_from"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/set_auto_date_and_time" />
-    </LinearLayout>
-
     <EditText
-        android:id="@+id/new_entry_time_from"
+        android:id="@+id/new_entry_date_from"
         style="@style/base_text_all_wrap"
         android:ems="10"
-        android:inputType="time" />
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:inputType="datetime"
+        android:hint="Ex: 2020-03-30 10:04:20"/>
+
+    <Button
+        android:id="@+id/new_entry_auto_date_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:text="@string/set_auto_date_and_time" />
 
     <TextView
         style="@style/base_text_all_wrap"
         android:textSize="30dp"
         android:text="@string/to" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/new_entry_date_to"
-            style="@style/base_text_all_wrap"
-            android:ems="10"
-            android:layout_weight="1"
-            android:inputType="date" />
-
-        <Button
-            android:id="@+id/new_entry_auto_date_to"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/set_auto_date_and_time" />
-    </LinearLayout>
-
     <EditText
-        android:id="@+id/new_entry_time_to"
+        android:id="@+id/new_entry_date_to"
         style="@style/base_text_all_wrap"
+        android:layout_marginTop="20dp"
         android:ems="10"
-        android:inputType="time" />
+        android:layout_gravity="center"
+        android:hint="Ex: 2020-03-31 01:10:20"
+        android:inputType="datetime" />
+
+    <Button
+        android:id="@+id/new_entry_auto_date_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:text="@string/set_auto_date_and_time" />
 </LinearLayout>

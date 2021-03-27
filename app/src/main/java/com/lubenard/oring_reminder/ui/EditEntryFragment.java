@@ -47,10 +47,8 @@ public class EditEntryFragment extends Fragment {
     private DbManager dbManager;
     private long entryId;
 
-    private EditText new_entry_date_from;
-    private EditText new_entry_time_from;
-    private EditText new_entry_date_to;
-    private EditText new_entry_time_to;
+    private EditText new_entry_datetime_from;
+    private EditText new_entry_datetime_to;
 
     private SharedPreferences sharedPreferences;
     private int weared_time;
@@ -86,9 +84,7 @@ public class EditEntryFragment extends Fragment {
      * @param date the date to set in input
      */
     private void fill_entry_from(String date) {
-        String[] slittedDate = date.split(" ");
-        new_entry_date_from.setText(slittedDate[0]);
-        new_entry_time_from.setText(slittedDate[1]);
+        new_entry_datetime_from.setText(date);
     }
 
     /**
@@ -96,9 +92,7 @@ public class EditEntryFragment extends Fragment {
      * @param date the date to set in input
      */
     private void fill_entry_to(String date) {
-        String[] slittedDate = date.split(" ");
-        new_entry_date_to.setText(slittedDate[0]);
-        new_entry_time_to.setText(slittedDate[1]);
+        new_entry_datetime_to.setText(date);
     }
 
     public static void setUpddateMainList(boolean newStatus) {
@@ -180,11 +174,8 @@ public class EditEntryFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        new_entry_date_from = view.findViewById(R.id.new_entry_date_from);
-        new_entry_time_from = view.findViewById(R.id.new_entry_time_from);
-
-        new_entry_date_to = view.findViewById(R.id.new_entry_date_to);
-        new_entry_time_to = view.findViewById(R.id.new_entry_time_to);
+        new_entry_datetime_from = view.findViewById(R.id.new_entry_date_from);
+        new_entry_datetime_to = view.findViewById(R.id.new_entry_date_to);
 
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
@@ -225,24 +216,27 @@ public class EditEntryFragment extends Fragment {
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_validate:
-                    String dateRemoved = new_entry_date_to.getText().toString();
-                    String timeRemoved = new_entry_time_to.getText().toString();
 
-                    String formattedDatePut = String.format("%s %s", new_entry_date_from.getText(), new_entry_time_from.getText());
-                    String formattedDateRemoved = String.format("%s %s", dateRemoved, timeRemoved);
+                    String formattedDatePut = new_entry_datetime_from.getText().toString();
+                    String formattedDateRemoved = new_entry_datetime_to.getText().toString();
 
-                    if (dateRemoved.isEmpty() && timeRemoved.isEmpty()) {
-                        insertNewEntry(formattedDatePut, true);
-                    } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-                        if (entryId != -1)
-                            dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                    // If entry already exist in the db.
+                    if (entryId != -1) {
+                        if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET"))
+                            dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
                         else
-                            dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
-                        // Get back to the last element in the fragment stack
+                            dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     } else {
-                        // If the diff time is too short, trigger this error
-                        Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
+                        if (formattedDateRemoved.isEmpty())
+                            insertNewEntry(formattedDatePut, true);
+                        else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
+                            dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
+                            // Get back to the last element in the fragment stack
+                            getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        } else
+                            // If the diff time is too short, trigger this error
+                            Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 default:
