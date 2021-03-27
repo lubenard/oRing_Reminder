@@ -63,10 +63,10 @@ public class EditEntryFragment extends Fragment {
      * @param alarmDate The date of the alarm in the form 2020-12-30 10:42:00
      * @param entryId the id entry of the entry to update
      */
-    private void setAlarm(String alarmDate, long entryId) {
+    public static void setAlarm(Context context, String alarmDate, long entryId, int wearing_time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Utils.getdateParsed(alarmDate));
-        calendar.add(Calendar.HOUR_OF_DAY, weared_time);
+        calendar.add(Calendar.HOUR_OF_DAY, wearing_time);
         Log.d(TAG, "Setting the alarm for this timstamp in millis " + calendar.getTimeInMillis());
         Log.d(TAG, "setAlarm receive id: " + entryId);
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
@@ -107,7 +107,7 @@ public class EditEntryFragment extends Fragment {
         this.entryId = -1;
         this.context = context;
         dbManager = new DbManager(context);
-        runningSessions = dbManager.getRunningSessions();
+        runningSessions = dbManager.getAllRunningSessions();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
         should_warn_user = sharedPreferences.getBoolean("myring_prevent_me_when_started_session", true);
@@ -127,7 +127,7 @@ public class EditEntryFragment extends Fragment {
             long newlyInsertedEntry = dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
             // Set alarm only for new entry
             if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
-                setAlarm(formattedDatePut, newlyInsertedEntry);
+                setAlarm(context, formattedDatePut, newlyInsertedEntry, weared_time);
         }
         // We do not need to go back if this is a long click on '+' on mainFragment
         if (shouldGoBack)

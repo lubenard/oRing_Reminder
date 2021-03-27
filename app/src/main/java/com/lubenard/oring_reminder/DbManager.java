@@ -143,7 +143,7 @@ public class DbManager extends SQLiteOpenHelper {
      * Return the one running
      * @return
      */
-    public HashMap<Integer, String> getRunningSessions() {
+    public HashMap<Integer, String> getAllRunningSessions() {
         HashMap <Integer, String> entryDatas = new HashMap<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut};

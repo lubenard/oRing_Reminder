@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +27,11 @@
         <activity android:name=".BackupRestore"/>
         <receiver android:name=".NotificationSenderBroadcastReceiver"/>
         <receiver android:name=".NotificationReceiverBroadcastReceiver"/>
+        <!--When boot is completed, launch this activity to restart the Background Service-->
+        <receiver android:name=".AfterBootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
-
 </manifest>
