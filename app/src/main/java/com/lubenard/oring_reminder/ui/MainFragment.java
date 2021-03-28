@@ -125,7 +125,7 @@ public class MainFragment extends Fragment {
     private void createNewEntry() {
         EditEntryFragment fragment = new EditEntryFragment(getContext());
         Bundle bundle = new Bundle();
-        bundle.putInt("entryId", -1);
+        bundle.putLong("entryId", -1);
         fragment.setArguments(bundle);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fragment, null)

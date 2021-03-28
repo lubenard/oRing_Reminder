@@ -170,6 +170,7 @@ public class EntryDetailsFragment extends Fragment {
                         Log.d(TAG, "pauseTablePut = " + pause_ending.getText());
                         dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
                         alertDialog.dismiss();
+                        recomputeWearingTime();
                         updatePauseList();
                     }
                 });
@@ -195,7 +196,42 @@ public class EntryDetailsFragment extends Fragment {
                 return true;
             }
         });
+    }
 
+    public void recomputeWearingTime() {
+        // TODO: To optimize, by setting variable get in onResume global
+        ArrayList<String> contactDetails = dbManager.getEntryDetails(entryId);
+        long oldtimeBeforeRemove = Utils.getDateDiff(contactDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        int totalTimePause = 0;
+
+        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+
+        Log.d(TAG, "old time remove is  " + oldtimeBeforeRemove);
+
+        for (int i = 0; i < pausesDatas.size(); i++) {
+            if (pausesDatas.get(i).getIsRunning() == 0) {
+                Log.d(TAG, "Remove " + pausesDatas.get(i).getTimeWeared() + " to " + oldtimeBeforeRemove);
+                oldtimeBeforeRemove -= pausesDatas.get(i).getTimeWeared();
+                totalTimePause += pausesDatas.get(i).getTimeWeared();
+                Log.d(TAG, "new wearing time is " + oldtimeBeforeRemove);
+            } else {
+                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                oldtimeBeforeRemove -= timeToRemove;
+                totalTimePause += timeToRemove;
+            }
+        }
+        Log.d(TAG, "User is new wearing time for " + oldtimeBeforeRemove);
+        TextView timeWeared = view.findViewById(R.id.details_entry_time_weared);
+        timeWeared.setText(String.format("%dh%02dm", oldtimeBeforeRemove / 60, oldtimeBeforeRemove % 60));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Utils.getdateParsed(contactDetails.get(0)));
+        calendar.add(Calendar.MINUTE, weared_time * 60 + totalTimePause);
+        TextView ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
+        long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
+        Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
+        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.getdateFormatted(calendar.getTime())
+                + "\n" + String.format("(in about %dh%02dm)", timeBeforeRemove / 60, timeBeforeRemove % 60));
     }
 
     /**
@@ -224,9 +260,9 @@ public class EntryDetailsFragment extends Fragment {
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
-            if (!contactDetails.get(2).equals("NOT SET YET") && Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
+            if (Integer.parseInt(contactDetails.get(3)) == 0 && Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            else if (!contactDetails.get(2).equals("NOT SET YET") && Integer.parseInt(contactDetails.get(2)) / 60 < weared_time)
+            else if (Integer.parseInt(contactDetails.get(3)) == 0 && Integer.parseInt(contactDetails.get(2)) / 60 < weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             else
                 timeWeared.setTextColor(getResources().getColor(R.color.yellow));
@@ -237,7 +273,7 @@ public class EntryDetailsFragment extends Fragment {
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
-            if (contactDetails.get(2).equals("NOT SET YET")) {
+            if (Integer.parseInt(contactDetails.get(3)) == 1) {
                 long timeBeforeRemove = Utils.getDateDiff(contactDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 timeWeared.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
@@ -268,6 +304,7 @@ public class EntryDetailsFragment extends Fragment {
                 isRunning.setText(R.string.session_finished);
                 ableToGetItOff.setVisibility(View.INVISIBLE);
             }
+            recomputeWearingTime();
             updatePauseList();
         } else {
             // Trigger an error if the entryId is wrong, then go back to main list
