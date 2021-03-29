@@ -200,8 +200,10 @@ public class EntryDetailsFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 RingModel object = (RingModel) arg0.getItemAtPosition(pos);
                                 Log.d(TAG, "delete pause with id: " + object.getId());
-                                dbManager.deletePauseEntry(entryId);
+                                dbManager.deletePauseEntry(object.getId());
                                 updatePauseList();
+                                recomputeWearingTime();
+                                recomputeAlarm();
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
