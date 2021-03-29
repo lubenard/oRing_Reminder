@@ -70,7 +70,7 @@ public class EditEntryFragment extends Fragment {
         Log.d(TAG, "Setting the alarm for this timstamp in millis " + calendar.getTimeInMillis());
         Log.d(TAG, "setAlarm receive id: " + entryId);
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)

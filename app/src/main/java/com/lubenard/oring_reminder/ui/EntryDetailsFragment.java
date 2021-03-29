@@ -1,9 +1,14 @@
 package com.lubenard.oring_reminder.ui;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
 import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
@@ -36,6 +42,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
+
+import static android.os.Build.VERSION.SDK_INT;
 
 public class EntryDetailsFragment extends Fragment {
 
@@ -50,6 +58,7 @@ public class EntryDetailsFragment extends Fragment {
     private ListView listView;
     private CustomListPausesAdapter adapter;
     private ArrayList<RingModel> dataModels;
+    private int newAlarmDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -171,6 +180,7 @@ public class EntryDetailsFragment extends Fragment {
                         dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
                         alertDialog.dismiss();
                         recomputeWearingTime();
+                        recomputeAlarm();
                         updatePauseList();
                     }
                 });
@@ -198,8 +208,28 @@ public class EntryDetailsFragment extends Fragment {
         });
     }
 
-    public void recomputeWearingTime() {
-        // TODO: To optimize, by setting variable get in onResume global
+    private void recomputeAlarm() {
+        ArrayList<String> entryDetails = dbManager.getEntryDetails(entryId);
+
+        // From the doc, juste create the exact same intent, and cancel it.
+        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
+        calendar.add(Calendar.MINUTE, newAlarmDate);
+        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+
+        am.cancel(pendingIntent);
+        Log.d(TAG, "Alarm has been canceled by user");
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+            am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        else if (SDK_INT >= Build.VERSION_CODES.M)
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    private void recomputeWearingTime() {
+        // TODO: To optimize this whole function, by setting variable get in onResume global
         ArrayList<String> contactDetails = dbManager.getEntryDetails(entryId);
         long oldtimeBeforeRemove = Utils.getDateDiff(contactDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         int totalTimePause = 0;
@@ -224,9 +254,10 @@ public class EntryDetailsFragment extends Fragment {
         TextView timeWeared = view.findViewById(R.id.details_entry_time_weared);
         timeWeared.setText(String.format("%dh%02dm", oldtimeBeforeRemove / 60, oldtimeBeforeRemove % 60));
 
+        newAlarmDate = weared_time * 60 + totalTimePause;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Utils.getdateParsed(contactDetails.get(0)));
-        calendar.add(Calendar.MINUTE, weared_time * 60 + totalTimePause);
+        calendar.add(Calendar.MINUTE, newAlarmDate);
         TextView ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
         long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
