@@ -84,5 +84,6 @@
     <string name="notif_choice_dismiss">Dismiss</string>
     <string name="please_wait">Please wait...</string>
     <string name="toast_session_bad_id">"There was an error: we could not end session with id: "</string>
+    <string name="in_about_entry_details">(in about %dh%02dm)</string>
 
 </resources>

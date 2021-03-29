@@ -59,6 +59,9 @@ public class EntryDetailsFragment extends Fragment {
     private CustomListPausesAdapter adapter;
     private ArrayList<RingModel> dataModels;
     private int newAlarmDate;
+    private ArrayList<String> entryDetails;
+    private TextView ableToGetItOff;
+    private TextView timeWeared;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -209,9 +212,7 @@ public class EntryDetailsFragment extends Fragment {
     }
 
     private void recomputeAlarm() {
-        ArrayList<String> entryDetails = dbManager.getEntryDetails(entryId);
-
-        // From the doc, juste create the exact same intent, and cancel it.
+        // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
@@ -221,7 +222,7 @@ public class EntryDetailsFragment extends Fragment {
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
         am.cancel(pendingIntent);
-        Log.d(TAG, "Alarm has been canceled by user");
+        Log.d(TAG, "Alarm has been reschedule by user at " + calendar.getTime());
         if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
             am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         else if (SDK_INT >= Build.VERSION_CODES.M)
@@ -229,40 +230,39 @@ public class EntryDetailsFragment extends Fragment {
     }
 
     private void recomputeWearingTime() {
-        // TODO: To optimize this whole function, by setting variable get in onResume global
-        ArrayList<String> contactDetails = dbManager.getEntryDetails(entryId);
-        long oldtimeBeforeRemove = Utils.getDateDiff(contactDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-        int totalTimePause = 0;
+        // TODO: To optimize this whole function, by setting variable get in onResume on global
+        long oldTimeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        long oldTimeBeforeRemoveCopy = oldTimeBeforeRemove;
+        int totalTimePause;
 
         ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
 
-        Log.d(TAG, "old time remove is  " + oldtimeBeforeRemove);
+        Log.d(TAG, "old time remove is = " + oldTimeBeforeRemove);
 
         for (int i = 0; i < pausesDatas.size(); i++) {
             if (pausesDatas.get(i).getIsRunning() == 0) {
-                Log.d(TAG, "Remove " + pausesDatas.get(i).getTimeWeared() + " to " + oldtimeBeforeRemove);
-                oldtimeBeforeRemove -= pausesDatas.get(i).getTimeWeared();
-                totalTimePause += pausesDatas.get(i).getTimeWeared();
-                Log.d(TAG, "new wearing time is " + oldtimeBeforeRemove);
+                oldTimeBeforeRemove -= pausesDatas.get(i).getTimeWeared();
             } else {
                 long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                oldtimeBeforeRemove -= timeToRemove;
-                totalTimePause += timeToRemove;
+                oldTimeBeforeRemove -= timeToRemove;
             }
         }
-        Log.d(TAG, "User is new wearing time for " + oldtimeBeforeRemove);
-        TextView timeWeared = view.findViewById(R.id.details_entry_time_weared);
-        timeWeared.setText(String.format("%dh%02dm", oldtimeBeforeRemove / 60, oldtimeBeforeRemove % 60));
+        totalTimePause = (int) (oldTimeBeforeRemoveCopy - oldTimeBeforeRemove);
+        Log.d(TAG, "New wearing time for " + oldTimeBeforeRemove);
+        timeWeared.setText(String.format("%dh%02dm", oldTimeBeforeRemove / 60, oldTimeBeforeRemove % 60));
 
         newAlarmDate = weared_time * 60 + totalTimePause;
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(contactDetails.get(0)));
+        calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
         calendar.add(Calendar.MINUTE, newAlarmDate);
-        TextView ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
+        updateAbleToGetItOffUI(calendar);
+    }
+
+    private void updateAbleToGetItOffUI(Calendar calendar) {
         long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
         ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.getdateFormatted(calendar.getTime())
-                + "\n" + String.format("(in about %dh%02dm)", timeBeforeRemove / 60, timeBeforeRemove % 60));
+                + "\n" + String.format(getString(R.string.in_about_entry_details), timeBeforeRemove / 60, timeBeforeRemove % 60));
     }
 
     /**
@@ -282,52 +282,49 @@ public class EntryDetailsFragment extends Fragment {
         super.onResume();
         if (entryId > 0) {
             // Load datas from the db and put them at the right place
-            ArrayList<String> contactDetails = dbManager.getEntryDetails(entryId);
+            entryDetails = dbManager.getEntryDetails(entryId);
             TextView put = view.findViewById(R.id.details_entry_put);
             TextView removed = view.findViewById(R.id.details_entry_removed);
-            TextView timeWeared = view.findViewById(R.id.details_entry_time_weared);
+            timeWeared = view.findViewById(R.id.details_entry_time_weared);
             TextView isRunning = view.findViewById(R.id.details_entry_isRunning);
-            TextView ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
+            ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
-            if (Integer.parseInt(contactDetails.get(3)) == 0 && Integer.parseInt(contactDetails.get(2)) / 60 >= weared_time)
+            if (Integer.parseInt(entryDetails.get(3)) == 0 && Integer.parseInt(entryDetails.get(2)) / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            else if (Integer.parseInt(contactDetails.get(3)) == 0 && Integer.parseInt(contactDetails.get(2)) / 60 < weared_time)
+            else if (Integer.parseInt(entryDetails.get(3)) == 0 && Integer.parseInt(entryDetails.get(2)) / 60 < weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             else
                 timeWeared.setTextColor(getResources().getColor(R.color.yellow));
 
-            put.setText(contactDetails.get(0));
-            removed.setText(contactDetails.get(1));
+            put.setText(entryDetails.get(0));
+            removed.setText(entryDetails.get(1));
 
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
-            if (Integer.parseInt(contactDetails.get(3)) == 1) {
-                long timeBeforeRemove = Utils.getDateDiff(contactDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+            if (Integer.parseInt(entryDetails.get(3)) == 1) {
+                long timeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 timeWeared.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
-                int time_spent_wearing = Integer.parseInt(contactDetails.get(2));
+                int time_spent_wearing = Integer.parseInt(entryDetails.get(2));
                 if (time_spent_wearing < 60)
-                    timeWeared.setText(contactDetails.get(2) + getString(R.string.minute_with_M_uppercase));
+                    timeWeared.setText(entryDetails.get(2) + getString(R.string.minute_with_M_uppercase));
                 else
                     timeWeared.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
             }
 
             // Display the datas relative to the session
-            if (Integer.parseInt(contactDetails.get(3)) == 1) {
+            if (Integer.parseInt(entryDetails.get(3)) == 1) {
                 isRunning.setTextColor(getResources().getColor(R.color.yellow));
                 isRunning.setText(R.string.session_is_running);
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(Utils.getdateParsed(contactDetails.get(0)));
+                calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
+                updateAbleToGetItOffUI(calendar);
 
-                long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
-                Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
-                ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.getdateFormatted(calendar.getTime())
-                        + "\n" + String.format("(in about %dh%02dm)", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
                 // If the session is finished, no need to show the ableToGetItOff textView.
                 // This textview is only used to warn user when he will be able to get it off
