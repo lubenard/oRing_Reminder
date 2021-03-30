@@ -321,6 +321,27 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     /**
+     * This function is used to backup into a file
+     * @return All the datas for all the entrys.
+     */
+    public ArrayList<RingModel> getAllDatasForAllPauses() {
+        ArrayList<RingModel> datas = new ArrayList<>();
+
+        String[] columns = new String[]{pauseTableEntryId, pauseTablePut, pauseTableRemoved, pauseTableIsRunning, pauseTableTimeRemoved};
+        Cursor cursor = readableDB.query(pausesTable,  columns, null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            datas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(pauseTableEntryId)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
+                    cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved))));
+        }
+        cursor.close();
+        return datas;
+    }
+
+    /**
      * Close the db when finished using it.
      */
     public void closeDb() {

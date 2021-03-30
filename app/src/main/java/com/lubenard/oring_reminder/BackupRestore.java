@@ -138,9 +138,8 @@ public class BackupRestore extends Activity{
         // Datas containing all saved datas
         try {
             xmlWriter.writeEntity("datas");
-            // Contain number of unlocks
+            // Contain all entrys
             ArrayList<RingModel> datas = dbManager.getAllDatasForAllEntrys();
-
             for (int i = 0; i < datas.size(); i++) {
                 xmlWriter.writeEntity("entry");
                 xmlWriter.writeAttribute("id", String.valueOf(datas.get(i).getId()));
@@ -150,6 +149,19 @@ public class BackupRestore extends Activity{
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
                 xmlWriter.endEntity();
             }
+
+            // Contain all pauses
+            ArrayList<RingModel> pauses = dbManager.getAllDatasForAllPauses();
+            for (int i = 0; i < pauses.size(); i++) {
+                xmlWriter.writeEntity("pause");
+                xmlWriter.writeAttribute("entryId", String.valueOf(pauses.get(i).getId()));
+                xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(i).getIsRunning()));
+                xmlWriter.writeAttribute("dateTimePut", pauses.get(i).getDatePut());
+                xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(i).getDateRemoved());
+                xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(i).getTimeWeared()));
+                xmlWriter.endEntity();
+            }
+
             xmlWriter.endEntity();
         } catch (IOException e) {
             e.printStackTrace();
@@ -171,6 +183,11 @@ public class BackupRestore extends Activity{
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("entry")) {
                     isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
                     dbManager.createNewDatesRing(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
+                }
+                if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("pause")) {
+                    Log.d(TAG, "Restauring pause with entryId: " + Long.parseLong(myParser.getAttributeValue(null, "entryId")));
+                    isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
+                    dbManager.createNewPause(Long.parseLong(myParser.getAttributeValue(null, "entryId")), myParser.getAttributeValue(null, "dateTimeRemoved"), myParser.getAttributeValue(null, "dateTimePut"), isRunning);
                 }
                 eventType = myParser.next();
             }
