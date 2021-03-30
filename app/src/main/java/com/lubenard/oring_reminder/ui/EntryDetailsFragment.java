@@ -233,9 +233,13 @@ public class EntryDetailsFragment extends Fragment {
 
     private void recomputeWearingTime() {
         // TODO: To optimize this whole function, by setting variable get in onResume on global
-        long oldTimeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-        long oldTimeBeforeRemoveCopy = oldTimeBeforeRemove;
-        int totalTimePause;
+        long oldTimeBeforeRemove;
+        if (Integer.parseInt(entryDetails.get(3)) == 1)
+            oldTimeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        else
+            oldTimeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), entryDetails.get(1), TimeUnit.MINUTES);
+        int totalTimePause = 0;
+        int newComputedTime;
 
         ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
 
@@ -243,17 +247,18 @@ public class EntryDetailsFragment extends Fragment {
 
         for (int i = 0; i < pausesDatas.size(); i++) {
             if (pausesDatas.get(i).getIsRunning() == 0) {
-                oldTimeBeforeRemove -= pausesDatas.get(i).getTimeWeared();
+                totalTimePause += pausesDatas.get(i).getTimeWeared();
             } else {
                 long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                oldTimeBeforeRemove -= timeToRemove;
+                totalTimePause += timeToRemove;
             }
         }
-        totalTimePause = (int) (oldTimeBeforeRemoveCopy - oldTimeBeforeRemove);
-        Log.d(TAG, "New wearing time for " + oldTimeBeforeRemove);
-        timeWeared.setText(String.format("%dh%02dm", oldTimeBeforeRemove / 60, oldTimeBeforeRemove % 60));
 
-        newAlarmDate = weared_time * 60 + totalTimePause;
+        newComputedTime = (int) (oldTimeBeforeRemove - totalTimePause);
+        Log.d(TAG, "New wearing time for entry is = " + newComputedTime);
+        timeWeared.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
+
+        newAlarmDate = (weared_time * 60 + newComputedTime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
         calendar.add(Calendar.MINUTE, newAlarmDate);
@@ -326,7 +331,6 @@ public class EntryDetailsFragment extends Fragment {
                 calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
-
             } else {
                 // If the session is finished, no need to show the ableToGetItOff textView.
                 // This textview is only used to warn user when he will be able to get it off

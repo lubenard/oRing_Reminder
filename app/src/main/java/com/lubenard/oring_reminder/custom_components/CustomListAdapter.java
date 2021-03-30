@@ -2,6 +2,7 @@ package com.lubenard.oring_reminder.custom_components;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -41,6 +43,28 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
             return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
         else
             return getContext().getString(R.string.more_than_one_day);
+    }
+
+    private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
+        long oldTimeBeforeRemove;
+        if (dateRemoved == null)
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        else
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
+        long totalTimePause = 0;
+
+        DbManager dbManager = new DbManager(getContext());
+        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+
+        for (int i = 0; i < pausesDatas.size(); i++) {
+            if (pausesDatas.get(i).getIsRunning() == 0) {
+                totalTimePause += pausesDatas.get(i).getTimeWeared();
+            } else {
+                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                oldTimeBeforeRemove += timeToRemove;
+            }
+        }
+        return (int) (oldTimeBeforeRemove - totalTimePause);
     }
 
     @Override
@@ -78,10 +102,10 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(convertTimeWeared(dataModel.getTimeWeared()));
+            viewHolder.weared_during.setText(convertTimeWeared( getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved())));
         }
         else {
-            long timeBeforeRemove = Utils.getDateDiff(dataModel.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+            long timeBeforeRemove = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), null);
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(R.color.yellow));
             viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         }
