@@ -92,5 +92,7 @@
     <string name="pause_starting_too_big">The starting date of the pause is after the ending date of the entry. Please fix.</string>
     <string name="pause_ending_too_small">The ending date of the pause is before the starting date of the entry. Please fix.</string>
     <string name="already_running_pause">It seems there already is a running pause. Please fix. you cannot have more than one running pause.</string>
-
+    <string name="ui_action_on_plus_button_title">Action during click on (+) button in homepage</string>
+    <string name="settings_ui_action_on_plus_button_default">(Default)\nPress -> quick running session \nLong press -> advanced session ui</string>
+    <string name="settings_ui_action_on_plus_button_long_click">Press -> advanced session ui \nlong press -> quick running session</string>
 </resources>

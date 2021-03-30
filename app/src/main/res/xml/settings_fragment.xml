@@ -26,6 +26,15 @@
             android:entries="@array/ui_theme_titles"
             android:entryValues="@array/ui_theme_values"
             android:defaultValue="dark"/>
+
+        <ListPreference
+            android:key="ui_action_on_plus_button"
+            android:title="@string/ui_action_on_plus_button_title"
+            app:summary="@string/settings_actually_value"
+            android:entries="@array/ui_action_on_plus_button_titles"
+            android:entryValues="@array/ui_action_on_plus_button_values"
+            android:defaultValue="default"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -27,6 +27,17 @@
         <item>battery_saver</item>
         <item>system</item>
     </string-array>
+
+    <string-array name="ui_action_on_plus_button_titles">
+        <item>@string/settings_ui_action_on_plus_button_default</item>
+        <item>@string/settings_ui_action_on_plus_button_long_click</item>
+    </string-array>
+
+    <string-array name="ui_action_on_plus_button_values">
+        <item>default</item>
+        <item>not_default</item>
+    </string-array>
+
     <string name="settings_ui_language_FR" translatable="false">Francais</string>
     <string name="settings_ui_language_EN" translatable="false">English</string>
 </resources>

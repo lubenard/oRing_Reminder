@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder.ui;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -12,6 +13,7 @@ import com.lubenard.oring_reminder.utils.Utils;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,16 +64,14 @@ public class MainFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNewEntry();
+                actionOnPlusButton(false);
             }
         });
 
         fab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                EditEntryFragment.setUpddateMainList(true);
-                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                actionOnPlusButton(true);
                 return true;
             }
         });
@@ -111,6 +111,29 @@ public class MainFragment extends Fragment {
                     return false;
             }
         });
+    }
+
+    private void actionOnPlusButton(boolean isLongClick) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String action = sharedPreferences.getString("ui_action_on_plus_button", "default");
+
+        if (isLongClick) {
+            if (action.equals("default")) {
+                createNewEntry();
+            } else {
+                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                EditEntryFragment.setUpddateMainList(true);
+                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+            }
+        } else {
+            if (action.equals("default")) {
+                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                EditEntryFragment.setUpddateMainList(true);
+                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+            } else {
+                createNewEntry();
+            }
+        }
     }
 
     /**
