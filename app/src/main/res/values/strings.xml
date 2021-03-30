@@ -87,5 +87,10 @@
     <string name="in_about_entry_details">(in about %dh%02dm)</string>
     <string name="ordered_by_desc">The entrys are now sorted from newer to older</string>
     <string name="not_ordered_by_desc">The entrys are now sorted from older to newer</string>
+    <string name="pause_beginning_to_small">The starting date of the pause is before the starting date of the entry. Please fix.</string>
+    <string name="pause_ending_too_big">The ending date of the pause is after the ending date of the entry. Please fix.</string>
+    <string name="pause_starting_too_big">The starting date of the pause is after the ending date of the entry. Please fix.</string>
+    <string name="pause_ending_too_small">The ending date of the pause is before the starting date of the entry. Please fix.</string>
+    <string name="already_running_pause">It seems there already is a running pause. Please fix. you cannot have more than one running pause.</string>
 
 </resources>

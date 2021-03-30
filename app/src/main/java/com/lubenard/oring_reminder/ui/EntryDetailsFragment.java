@@ -62,6 +62,7 @@ public class EntryDetailsFragment extends Fragment {
     private ArrayList<String> entryDetails;
     private TextView ableToGetItOff;
     private TextView timeWeared;
+    private boolean isThereAlreadyARunningPause = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -179,12 +180,29 @@ public class EntryDetailsFragment extends Fragment {
                             pause_ending.setText("NOT SET YET");
                             isRunning = 1;
                         }
-                        Log.d(TAG, "pauseTablePut = " + pause_ending.getText());
-                        dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
-                        alertDialog.dismiss();
-                        recomputeWearingTime();
-                        recomputeAlarm();
-                        updatePauseList();
+
+                        if (isThereAlreadyARunningPause && isRunning == 1){
+                            Log.d(TAG, "Already a running pause");
+                            Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+                        } else if (Utils.getDateDiff(entryDetails.get(0), pause_beginning.getText().toString(), TimeUnit.MINUTES) <= 0) {
+                            Log.d(TAG, "Start of pause < start of entry");
+                            Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
+                        } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.get(0), pause_ending.getText().toString(), TimeUnit.MINUTES) <= 0) {
+                            Log.d(TAG, "End of pause < start of entry");
+                            Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
+                        } else if (isRunning == 0 && Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
+                            Log.d(TAG, "End of pause > end of entry");
+                            Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
+                        } else if (Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
+                            Log.d(TAG, "Start of pause > end of entry");
+                            Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
+                        } else {
+                            dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
+                            alertDialog.dismiss();
+                            recomputeWearingTime();
+                            recomputeAlarm();
+                            updatePauseList();
+                        }
                     }
                 });
                 alertDialog.show();
@@ -251,6 +269,7 @@ public class EntryDetailsFragment extends Fragment {
             } else {
                 long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 totalTimePause += timeToRemove;
+                isThereAlreadyARunningPause = true;
             }
         }
 
