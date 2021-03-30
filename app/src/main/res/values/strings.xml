@@ -85,5 +85,7 @@
     <string name="please_wait">Please wait...</string>
     <string name="toast_session_bad_id">"There was an error: we could not end session with id: "</string>
     <string name="in_about_entry_details">(in about %dh%02dm)</string>
+    <string name="ordered_by_desc">The entrys are now sorted from newer to older</string>
+    <string name="not_ordered_by_desc">The entrys are now sorted from older to newer</string>
 
 </resources>

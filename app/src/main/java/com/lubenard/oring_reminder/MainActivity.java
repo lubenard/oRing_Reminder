@@ -15,7 +15,7 @@ import com.lubenard.oring_reminder.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     private void checkConfig() {
         String theme_option = sharedPreferences.getString("ui_theme", "dark");

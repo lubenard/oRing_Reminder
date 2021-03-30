@@ -101,11 +101,11 @@ public class DbManager extends SQLiteOpenHelper {
      * Get the datas list for a the main List
      * @return The datas fetched from the DB as a LinkedHashMap
      */
-    public LinkedHashMap<Integer, RingModel> getAllDatasForMainList() {
+    public LinkedHashMap<Integer, RingModel> getAllDatasForMainList(boolean isDesc) {
         LinkedHashMap<Integer, RingModel> entryDatas = new LinkedHashMap<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
-        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, ringTableId + " DESC");
+        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, (isDesc) ? ringTableId + " DESC" : null);
 
         while (cursor.moveToNext()) {
             entryDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)), new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),

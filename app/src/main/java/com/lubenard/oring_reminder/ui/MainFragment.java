@@ -37,6 +37,7 @@ public class MainFragment extends Fragment {
     private static CustomListAdapter adapter;
     private static ListView listView;
     private static Context context;
+    private static boolean orderEntryByDesc = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,6 +101,12 @@ public class MainFragment extends Fragment {
                     return true;
                 case R.id.action_reload_datas:
                     updateElementList();
+                    return true;
+                case R.id.action_sort_entrys:
+                    orderEntryByDesc = !orderEntryByDesc;
+                    Toast.makeText(context, context.getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc),Toast.LENGTH_SHORT).show();
+                    updateElementList();
+                    return true;
                 default:
                     return false;
             }
@@ -112,7 +119,7 @@ public class MainFragment extends Fragment {
     public static void updateElementList() {
         Log.d(TAG, "updated main Listview");
         dataModels.clear();
-        LinkedHashMap<Integer, RingModel> entrysDatas = dbManager.getAllDatasForMainList();
+        LinkedHashMap<Integer, RingModel> entrysDatas = dbManager.getAllDatasForMainList(orderEntryByDesc);
         for (LinkedHashMap.Entry<Integer, RingModel> oneElemData : entrysDatas.entrySet())
             dataModels.add(oneElemData.getValue());
         adapter = new CustomListAdapter(dataModels, context);
