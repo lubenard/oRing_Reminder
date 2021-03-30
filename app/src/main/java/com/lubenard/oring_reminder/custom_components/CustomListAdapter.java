@@ -47,6 +47,8 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
 
     private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
         long oldTimeBeforeRemove;
+        int newValue;
+
         if (dateRemoved == null)
             oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         else
@@ -64,7 +66,8 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
                 oldTimeBeforeRemove += timeToRemove;
             }
         }
-        return (int) (oldTimeBeforeRemove - totalTimePause);
+        newValue = (int) (oldTimeBeforeRemove - totalTimePause);
+        return (newValue < 0) ? 0 : newValue;
     }
 
     @Override

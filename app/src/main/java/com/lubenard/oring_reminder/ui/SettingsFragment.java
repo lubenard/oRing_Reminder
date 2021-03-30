@@ -99,7 +99,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         wearing_time.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if (newValue.toString().matches("[0-9]")) {
+                if (newValue.toString().matches("\\d+")) {
                     int newTimeWeared = Integer.parseInt(newValue.toString());
                     if (newTimeWeared < 13 || newTimeWeared > 18) {
                         new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_dangerous_wearing_time)

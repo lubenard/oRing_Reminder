@@ -274,6 +274,8 @@ public class EntryDetailsFragment extends Fragment {
         }
 
         newComputedTime = (int) (oldTimeBeforeRemove - totalTimePause);
+        if (newComputedTime < 0)
+            newComputedTime = 0;
         Log.d(TAG, "New wearing time for entry is = " + newComputedTime);
         timeWeared.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
 
