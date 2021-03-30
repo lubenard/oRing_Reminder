@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +37,7 @@ public class BackupRestore extends Activity{
     private boolean shouldBackupRestoreDatas;
     private int typeOfDatas;
     private boolean shouldBackupRestoreSettings;
+    private String exportPath = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +58,9 @@ public class BackupRestore extends Activity{
         } catch (ActivityNotFoundException e) {
             Log.w(TAG, "Failed to open a Intent. Save will be done at default location.");
             Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_fail, Toast.LENGTH_LONG).show();
+            getDefaultFolder();
+            createDefaultFileIfNeeded();
+            launchBackupRestore(exportPath);
         }
     }
 
@@ -67,8 +73,35 @@ public class BackupRestore extends Activity{
         } else {
             Log.w(TAG, "Your android version is pretty old. Save will be done at default location.");
             Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
+            getDefaultFolder();
+            createDefaultFileIfNeeded();
+            launchBackupRestore(exportPath);
         }
         return true;
+    }
+
+    private void createDefaultFileIfNeeded() {
+        if (typeOfDatas == 1) {
+            File f1 = new File(Environment.getExternalStorageDirectory() + "/oRingReminder-Backup", "backup.xml");
+            if (!f1.exists()) {
+                try {
+                    f1.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void getDefaultFolder() {
+        String folder_main = "oRingReminder-Backup";
+
+        File f = new File(Environment.getExternalStorageDirectory(), folder_main);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        exportPath = f.getPath() + "/backup.xml";
+        Log.d(TAG, "Absolute path of backup file is " + exportPath);
     }
 
     private boolean startRestoreFromXML() {
@@ -78,8 +111,10 @@ public class BackupRestore extends Activity{
             dataToFileChooser.setType("text/xml");
             launchIntent(dataToFileChooser);
         } else {
-            Log.w(TAG, "Android version too old. Save will be at default location");
+            Log.w(TAG, "Android version too old. Restore will be from default location");
             Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
+            getDefaultFolder();
+            launchBackupRestore(exportPath);
         }
         return true;
     }
@@ -242,46 +277,55 @@ public class BackupRestore extends Activity{
         SettingsFragment.restartActivity();
     }
 
+    private void launchBackupRestore(String filePath) {
+        createAlertDialog();
+        Uri uri;
+        if (exportPath != null)
+            uri = Uri.fromFile(new File(filePath));
+        else
+            uri = Uri.parse(filePath);
+        if (typeOfDatas == 1) {
+            Log.d(TAG, "Backup at path: " + filePath);
+            try {
+                OutputStream outputStream = getContentResolver().openOutputStream(uri);
+                XmlWriter xmlWriter = new XmlWriter(outputStream);
+                if (shouldBackupRestoreDatas)
+                    saveDatasIntoXml(xmlWriter);
+                if (shouldBackupRestoreSettings)
+                    saveSettingsIntoXml(xmlWriter);
+                xmlWriter.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Error: something failed during the save of the datas");
+                e.printStackTrace();
+            }
+            Toast.makeText(this, getString(R.string.toast_success_save_datas), Toast.LENGTH_LONG).show();
+        } else if (typeOfDatas == 2) {
+            Log.d(TAG, "ActivityResult restore from path: " + filePath);
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(uri);
+                if (shouldBackupRestoreDatas)
+                    restoreDatasFromXml(inputStream);
+                // TODO: HOTFIX ! I should not need to reopen a stream (at least i think so)
+                // TODO: Find a way to fix this.
+                // Before this fix, the settings could not be restored
+                inputStream = getContentResolver().openInputStream(uri);
+                if (shouldBackupRestoreSettings)
+                    restoreSettingsFromXml(inputStream);
+            } catch (IOException e) {
+                Log.e(TAG, "Error: something failed during the restore of the datas");
+                e.printStackTrace();
+            }
+            Toast.makeText(this, getString(R.string.toast_success_restore_datas), Toast.LENGTH_LONG).show();
+        }
+        dialog.dismiss();
+        finish();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null && data.getDataString() != null) {
-            createAlertDialog();
-            if (typeOfDatas == 1) {
-                Log.d(TAG, "ActivityResult backup at path: " + data.getDataString());
-                try {
-                    OutputStream outputStream = getContentResolver().openOutputStream(Uri.parse(data.getDataString()));
-                    XmlWriter xmlWriter = new XmlWriter(outputStream);
-                    if (shouldBackupRestoreDatas)
-                        saveDatasIntoXml(xmlWriter);
-                    if (shouldBackupRestoreSettings)
-                        saveSettingsIntoXml(xmlWriter);
-                    xmlWriter.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Error: something failed during the save of the datas");
-                    e.printStackTrace();
-                }
-                Toast.makeText(this, getString(R.string.toast_success_save_datas), Toast.LENGTH_LONG).show();
-            } else if (typeOfDatas == 2) {
-                Log.d(TAG, "ActivityResult restore from path: " + data.getDataString());
-                try {
-                    InputStream inputStream = getContentResolver().openInputStream(Uri.parse((data.getDataString())));
-                    if (shouldBackupRestoreDatas)
-                        restoreDatasFromXml(inputStream);
-                    // TODO: HOTFIX ! I should not need to reopen a stream (at least i think so)
-                    // TODO: Find a way to fix this.
-                    // Before this fix, the settings could not be restored
-                    inputStream = getContentResolver().openInputStream(Uri.parse((data.getDataString())));
-                    if (shouldBackupRestoreSettings)
-                        restoreSettingsFromXml(inputStream);
-                } catch (IOException e) {
-                    Log.e(TAG, "Error: something failed during the restore of the datas");
-                    e.printStackTrace();
-                }
-                Toast.makeText(this, getString(R.string.toast_success_restore_datas), Toast.LENGTH_LONG).show();
-            }
-            dialog.dismiss();
-            finish();
+            launchBackupRestore(data.getDataString());
         }
     }
 
