@@ -61,6 +61,8 @@ public class MainFragment extends Fragment {
         dbManager = new DbManager(getContext());
         context = getContext();
 
+        Log.d(TAG, "DB version is: " + dbManager.getVersion());
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -10,7 +10,6 @@ import android.util.Log;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,7 +24,8 @@ public class DbManager extends SQLiteOpenHelper {
 
     public static final String TAG = "DBManager";
 
-    static final String dbName = "dataDB";
+    private static final String dbName = "dataDB";
+    private static final int DATABASE_VERSION = 2;
 
     // Ring table
     private static final String ringTable = "ringTable";
@@ -53,7 +53,7 @@ public class DbManager extends SQLiteOpenHelper {
     private SQLiteDatabase readableDB;
 
     public DbManager(Context context) {
-        super(context, dbName , null,1);
+        super(context, dbName , null, DATABASE_VERSION);
         this.writableDB = this.getWritableDatabase();
         this.readableDB = this.getReadableDatabase();
     }
@@ -85,16 +85,28 @@ public class DbManager extends SQLiteOpenHelper {
         return dbName;
     }
 
+    public int getVersion() {
+        return readableDB.getVersion();
+    }
+
     /**
      * If you plan to improve the database, you might want to use this function as a automated
      * upgrade tool for db.
-     * @param sqLiteDatabase
+     * @param db the Db
      * @param i Old DB version
      * @param i1 New DB version
      */
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        Log.d(TAG, "Old db version is " + i + ", new db version is " + i1);
+        if (i == 1 && i1 == 2) {
+            Log.d(TAG, "Updating db from v1.0 to v1.1");
+            db.execSQL("CREATE TABLE " + pausesTable + " (" + pauseTableId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    pauseTableEntryId + " INTEGER, " + pauseTableIsRunning + " INTEGER, "
+                    + pauseTableTimeRemoved + " INTEGER, " + pauseTableRemoved + " DATETIME, "
+                    + pauseTablePut + " DATETIME)");
 
+        }
     }
 
     /**EditEntry
