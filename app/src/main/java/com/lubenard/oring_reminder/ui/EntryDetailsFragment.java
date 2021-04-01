@@ -61,6 +61,7 @@ public class EntryDetailsFragment extends Fragment {
     private int newAlarmDate;
     private ArrayList<String> entryDetails;
     private TextView ableToGetItOff;
+    private TextView whenGetItOff;
     private TextView timeWeared;
     private boolean isThereAlreadyARunningPause = false;
 
@@ -273,50 +274,64 @@ public class EntryDetailsFragment extends Fragment {
 
     private void recomputeWearingTime() {
         // TODO: To optimize this whole function, by setting variable get in onResume on global
-        long oldTimeBeforeRemove;
-        if (Integer.parseInt(entryDetails.get(3)) == 1)
-            oldTimeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-        else
-            oldTimeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), entryDetails.get(1), TimeUnit.MINUTES);
-        int totalTimePause = 0;
+        long oldTimeWeared;
+        if (Integer.parseInt(entryDetails.get(3)) == 1) {
+            oldTimeWeared = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        } else
+            oldTimeWeared = Utils.getDateDiff(entryDetails.get(0), entryDetails.get(1), TimeUnit.MINUTES);
+        long totalTimePause = 0;
         int newComputedTime;
 
         ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
 
-        if (pausesDatas.size() != 0) {
-            Log.d(TAG, "old time remove is = " + oldTimeBeforeRemove);
+        Log.d(TAG, "There is pauses ! oldTimeWeared is = " + oldTimeWeared);
 
-            isThereAlreadyARunningPause = false;
+        isThereAlreadyARunningPause = false;
 
-            for (int i = 0; i < pausesDatas.size(); i++) {
-                if (pausesDatas.get(i).getIsRunning() == 0) {
-                    totalTimePause += pausesDatas.get(i).getTimeWeared();
-                } else {
-                    long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                    totalTimePause += timeToRemove;
-                    isThereAlreadyARunningPause = true;
-                }
+        for (int i = 0; i < pausesDatas.size(); i++) {
+            if (pausesDatas.get(i).getIsRunning() == 0) {
+                totalTimePause += pausesDatas.get(i).getTimeWeared();
+            } else {
+                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                totalTimePause += timeToRemove;
+                isThereAlreadyARunningPause = true;
             }
-
-            newComputedTime = (int) (oldTimeBeforeRemove - totalTimePause);
-            if (newComputedTime < 0)
-                newComputedTime = 0;
-            Log.d(TAG, "New wearing time for entry is = " + newComputedTime);
-            timeWeared.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
-
-            newAlarmDate = (weared_time * 60 + newComputedTime);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
-            calendar.add(Calendar.MINUTE, newAlarmDate);
-            updateAbleToGetItOffUI(calendar);
         }
+
+        // Avoid having more time pause than weared time
+        if (totalTimePause > oldTimeWeared)
+            totalTimePause = oldTimeWeared;
+
+        newComputedTime = (int) (oldTimeWeared - totalTimePause);
+        Log.d(TAG, "Compute newWearingTime = " + oldTimeWeared + " - " + totalTimePause + " = " + newComputedTime);
+        timeWeared.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
+
+        // Time is computed as:
+        // Date of put + number_of_hour_defined_in settings + total_time_in_pause
+        newAlarmDate = (int) (weared_time * 60 + totalTimePause);
+        Log.d(TAG, "New alarm date = " + newAlarmDate);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
+        calendar.add(Calendar.MINUTE, newAlarmDate);
+        updateAbleToGetItOffUI(calendar);
     }
 
     private void updateAbleToGetItOffUI(Calendar calendar) {
+        int texteRessourceWhenGetItOff;
+
         long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
-        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.getdateFormatted(calendar.getTime())
-                + "\n" + String.format(getString(R.string.in_about_entry_details), timeBeforeRemove / 60, timeBeforeRemove % 60));
+
+        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.getdateFormatted(calendar.getTime()));
+        if (timeBeforeRemove >= 0)
+            texteRessourceWhenGetItOff = R.string.in_about_entry_details;
+        else {
+            texteRessourceWhenGetItOff = R.string.when_get_it_off_negative;
+            timeBeforeRemove *= -1;
+        }
+
+        whenGetItOff.setText(String.format(getString(texteRessourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
     }
 
     /**
@@ -342,6 +357,7 @@ public class EntryDetailsFragment extends Fragment {
             timeWeared = view.findViewById(R.id.details_entry_time_weared);
             TextView isRunning = view.findViewById(R.id.details_entry_isRunning);
             ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
+            whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
@@ -384,6 +400,7 @@ public class EntryDetailsFragment extends Fragment {
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 isRunning.setText(R.string.session_finished);
                 ableToGetItOff.setVisibility(View.INVISIBLE);
+                whenGetItOff.setVisibility(View.INVISIBLE);
             }
             recomputeWearingTime();
             updatePauseList();

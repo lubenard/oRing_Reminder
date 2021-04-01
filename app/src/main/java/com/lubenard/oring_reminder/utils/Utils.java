@@ -57,8 +57,7 @@ public class Utils {
      * @param timeUnit The timeUnit we want to return (Mostly minutes)
      * @return the time in minutes between two dates
      */
-    public static long getDateDiff(String sDate1, String sDate2, TimeUnit timeUnit)
-    {
+    public static long getDateDiff(String sDate1, String sDate2, TimeUnit timeUnit) {
         Date date1 = getdateParsed(sDate1);
         Date date2 = getdateParsed(sDate2);
 

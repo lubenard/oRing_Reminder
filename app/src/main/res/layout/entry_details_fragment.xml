@@ -68,6 +68,11 @@
         android:layout_marginTop="15dp"
         android:textSize="17dp"
         android:text="able_to_get_it_off_to" />
+    <TextView
+        android:id="@+id/details_entry_when_get_it_off"
+        style="@style/base_text_centered"
+        android:textSize="17dp"
+        android:text="when_get_it_off" />
 
     <LinearLayout
         android:layout_width="match_parent"

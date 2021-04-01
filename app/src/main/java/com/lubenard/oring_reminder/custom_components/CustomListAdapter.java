@@ -48,12 +48,12 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
     private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
         long oldTimeBeforeRemove;
         int newValue;
+        long totalTimePause = 0;
 
         if (dateRemoved == null)
             oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         else
             oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
-        long totalTimePause = 0;
 
         DbManager dbManager = new DbManager(getContext());
         ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
@@ -63,7 +63,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
                 totalTimePause += pausesDatas.get(i).getTimeWeared();
             } else {
                 long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                oldTimeBeforeRemove += timeToRemove;
+                totalTimePause += timeToRemove;
             }
         }
         newValue = (int) (oldTimeBeforeRemove - totalTimePause);
@@ -98,14 +98,14 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        int weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+        int neededWearingTime = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
 
         if (dataModel.getIsRunning() == 0) {
-            if (dataModel.getTimeWeared() / 60 >= weared_time)
+            if (dataModel.getTimeWeared() / 60 >= neededWearingTime)
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(convertTimeWeared( getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved())));
+            viewHolder.weared_during.setText(convertTimeWeared(getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved())));
         }
         else {
             long timeBeforeRemove = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), null);
