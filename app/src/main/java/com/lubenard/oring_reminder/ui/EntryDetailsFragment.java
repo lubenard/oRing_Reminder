@@ -146,66 +146,14 @@ public class EntryDetailsFragment extends Fragment {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                ViewGroup viewGroup = view.findViewById(android.R.id.content);
-                View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_pause_dialog, viewGroup, false);
-                builder.setView(dialogView);
-                AlertDialog alertDialog = builder.create();
+                showPauseAlertDialog(null);
+            }
+        });
 
-                EditText pause_beginning = dialogView.findViewById(R.id.edittext_beginning_pause);
-                EditText pause_ending = dialogView.findViewById(R.id.edittext_finish_pause);
-
-                Button fill_beginning = dialogView.findViewById(R.id.prefill_beginning_pause);
-                fill_beginning.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        pause_beginning.setText(Utils.getdateFormatted(new Date()));
-                    }
-                });
-
-                Button fill_end = dialogView.findViewById(R.id.prefill_finish_pause);
-                fill_end.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        pause_ending.setText(Utils.getdateFormatted(new Date()));
-                    }
-                });
-
-                Button save_entry = dialogView.findViewById(R.id.validate_pause);
-                save_entry.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int isRunning = 0;
-                        if (pause_ending.getText().toString().isEmpty()) {
-                            pause_ending.setText("NOT SET YET");
-                            isRunning = 1;
-                        }
-
-                        if (isThereAlreadyARunningPause && isRunning == 1){
-                            Log.d(TAG, "Already a running pause");
-                            Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-                        } else if (Utils.getDateDiff(entryDetails.get(0), pause_beginning.getText().toString(), TimeUnit.MINUTES) <= 0) {
-                            Log.d(TAG, "Start of pause < start of entry");
-                            Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
-                        } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.get(0), pause_ending.getText().toString(), TimeUnit.MINUTES) <= 0) {
-                            Log.d(TAG, "End of pause < start of entry");
-                            Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
-                        } else if (isRunning == 0 && Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
-                            Log.d(TAG, "End of pause > end of entry");
-                            Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
-                        } else if (Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
-                            Log.d(TAG, "Start of pause > end of entry");
-                            Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
-                        } else {
-                            dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
-                            alertDialog.dismiss();
-                            recomputeWearingTime();
-                            recomputeAlarm();
-                            updatePauseList();
-                        }
-                    }
-                });
-                alertDialog.show();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showPauseAlertDialog(dataModels.get(i));
             }
         });
 
@@ -221,7 +169,8 @@ public class EntryDetailsFragment extends Fragment {
                                 dbManager.deletePauseEntry(object.getId());
                                 updatePauseList();
                                 recomputeWearingTime();
-                                recomputeAlarm();
+                                if (Integer.parseInt(entryDetails.get(3)) == 1)
+                                    recomputeAlarm();
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
@@ -229,6 +178,79 @@ public class EntryDetailsFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    private void showPauseAlertDialog(RingModel dataModel) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        ViewGroup viewGroup = view.findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_pause_dialog, viewGroup, false);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+
+        EditText pause_beginning = dialogView.findViewById(R.id.edittext_beginning_pause);
+        EditText pause_ending = dialogView.findViewById(R.id.edittext_finish_pause);
+
+        if (dataModel != null) {
+            pause_beginning.setText(dataModel.getDateRemoved());
+            pause_ending.setText(dataModel.getDatePut());
+        }
+
+        Button fill_beginning = dialogView.findViewById(R.id.prefill_beginning_pause);
+        fill_beginning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pause_beginning.setText(Utils.getdateFormatted(new Date()));
+            }
+        });
+
+        Button fill_end = dialogView.findViewById(R.id.prefill_finish_pause);
+        fill_end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pause_ending.setText(Utils.getdateFormatted(new Date()));
+            }
+        });
+
+        Button save_entry = dialogView.findViewById(R.id.validate_pause);
+        save_entry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int isRunning = 0;
+                if (pause_ending.getText().toString().isEmpty()) {
+                    pause_ending.setText("NOT SET YET");
+                    isRunning = 1;
+                }
+
+                if (isThereAlreadyARunningPause && isRunning == 1){
+                    Log.d(TAG, "Already a running pause");
+                    Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+                } else if (Utils.getDateDiff(entryDetails.get(0), pause_beginning.getText().toString(), TimeUnit.MINUTES) <= 0) {
+                    Log.d(TAG, "Start of pause < start of entry");
+                    Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
+                } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.get(0), pause_ending.getText().toString(), TimeUnit.MINUTES) <= 0) {
+                    Log.d(TAG, "End of pause < start of entry");
+                    Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
+                } else if (isRunning == 0 && Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
+                    Log.d(TAG, "End of pause > end of entry");
+                    Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
+                } else if (Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
+                    Log.d(TAG, "Start of pause > end of entry");
+                    Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
+                } else {
+                    if (dataModel == null)
+                        dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
+                    else
+                        dbManager.updatePause(dataModel.getId(), pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
+                    alertDialog.dismiss();
+                    recomputeWearingTime();
+                    // Only recompute alarm if session is running
+                    if (Integer.parseInt(entryDetails.get(3)) == 1)
+                        recomputeAlarm();
+                    updatePauseList();
+                }
+            }
+        });
+        alertDialog.show();
     }
 
     private void recomputeAlarm() {
@@ -261,29 +283,33 @@ public class EntryDetailsFragment extends Fragment {
 
         ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
 
-        Log.d(TAG, "old time remove is = " + oldTimeBeforeRemove);
+        if (pausesDatas.size() != 0) {
+            Log.d(TAG, "old time remove is = " + oldTimeBeforeRemove);
 
-        for (int i = 0; i < pausesDatas.size(); i++) {
-            if (pausesDatas.get(i).getIsRunning() == 0) {
-                totalTimePause += pausesDatas.get(i).getTimeWeared();
-            } else {
-                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                totalTimePause += timeToRemove;
-                isThereAlreadyARunningPause = true;
+            isThereAlreadyARunningPause = false;
+
+            for (int i = 0; i < pausesDatas.size(); i++) {
+                if (pausesDatas.get(i).getIsRunning() == 0) {
+                    totalTimePause += pausesDatas.get(i).getTimeWeared();
+                } else {
+                    long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                    totalTimePause += timeToRemove;
+                    isThereAlreadyARunningPause = true;
+                }
             }
+
+            newComputedTime = (int) (oldTimeBeforeRemove - totalTimePause);
+            if (newComputedTime < 0)
+                newComputedTime = 0;
+            Log.d(TAG, "New wearing time for entry is = " + newComputedTime);
+            timeWeared.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
+
+            newAlarmDate = (weared_time * 60 + newComputedTime);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
+            calendar.add(Calendar.MINUTE, newAlarmDate);
+            updateAbleToGetItOffUI(calendar);
         }
-
-        newComputedTime = (int) (oldTimeBeforeRemove - totalTimePause);
-        if (newComputedTime < 0)
-            newComputedTime = 0;
-        Log.d(TAG, "New wearing time for entry is = " + newComputedTime);
-        timeWeared.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
-
-        newAlarmDate = (weared_time * 60 + newComputedTime);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
-        calendar.add(Calendar.MINUTE, newAlarmDate);
-        updateAbleToGetItOffUI(calendar);
     }
 
     private void updateAbleToGetItOffUI(Calendar calendar) {

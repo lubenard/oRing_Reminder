@@ -289,6 +289,36 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     /**
+     * Updated the datas contained in a entry
+     * @param pauseId the entry we want to update
+     * @param datePut the new datePut
+     * @param dateRemoved the new dateRemoved
+     * @param isRunning the new isRunning
+     */
+    public void updatePause(long pauseId, String dateRemoved, String datePut, int isRunning) {
+        if (pauseId <= 0)
+            return;
+        ContentValues cv = new ContentValues();
+        cv.put(pauseTableRemoved, dateRemoved);
+        cv.put(pauseTablePut, datePut);
+        if (datePut.equals("NOT SET YET"))
+            cv.put(pauseTableTimeRemoved, datePut);
+        else
+            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
+        cv.put(pauseTableIsRunning, isRunning);
+
+        int u = writableDB.update(pausesTable, cv, pauseTableId + "=?", new String[]{String.valueOf(pauseId)});
+        if (u == 0) {
+            Log.d(TAG, "pauseUpdate: update does not seems to work, insert data: (for id = " + pauseId);
+            cv.put(pauseTableRemoved, dateRemoved);
+            cv.put(pauseTablePut, datePut);
+            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
+            cv.put(pauseTableTimeRemoved, isRunning);
+            writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+    }
+
+    /**
      * This function is used to backup into a file
      * @return All the datas for all the entrys.
      */
