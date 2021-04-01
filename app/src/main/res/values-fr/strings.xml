@@ -103,4 +103,16 @@
     <string name="notif_choice_do_it">Okay, je l\'ai fait</string>
     <string name="notif_choice_dismiss">Nettoyer</string>
     <string name="please_wait">Merci d\'attendre...</string>
+    <string name="toast_session_bad_id">Il y a eu une erreur : impossible de finir la session avec l\'id :</string>
+    <string name="in_about_entry_details">(dans environ %dh%02dm)</string>
+    <string name="ordered_by_desc">Les entrées sont triées de la plus récente à la plus ancienne</string>
+    <string name="not_ordered_by_desc">Les entrées sont triées de la plus ancienne à la plus récente</string>
+    <string name="pause_beginning_to_small">La date de début de la pause est avant  la date de début de l\'entrée. Merci de corriger</string>
+    <string name="pause_ending_too_big">La date de fin de la pause est après la date de fin de l\'entrée. Merci de corriger</string>
+    <string name="pause_starting_too_big">La date de début de la pause est après la date de fin de l\'entrée. Merci de corriger</string>
+    <string name="pause_ending_too_small">La date de fin de la pause est avant la date de début de l\'entrée. Merci de corriger</string>
+    <string name="already_running_pause">Il semble qu\'il y ait déjà une pause en cours. Vous ne pouvez pas avoir plus d\'une pause en cours en même temps. Merci de corriger.</string>
+    <string name="ui_action_on_plus_button_title">Action pendant un click sur le bouton (+) de la page principale</string>
+    <string name="settings_ui_action_on_plus_button_default">(Défaut)\nAppui -> Session en cours rapide\nAppui long -> Interface avancée de session</string>
+    <string name="settings_ui_action_on_plus_button_long_click">Appui -> interface avancée de session\nAppui long -> Session en cours rapide</string>
 </resources>
