@@ -96,4 +96,5 @@
     <string name="settings_ui_action_on_plus_button_default">(Default)\nPress -> quick running session \nLong press -> advanced session ui</string>
     <string name="settings_ui_action_on_plus_button_long_click">Press -> advanced session ui \nlong press -> quick running session</string>
     <string name="when_get_it_off_negative">(about -%dh%02dm ago)</string>
+    <string name="removed_during">Removed during</string>
 </resources>

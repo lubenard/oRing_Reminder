@@ -14,7 +14,7 @@
 
         <TextView
             style="@style/base_text_all_wrap"
-            android:text="To" />
+            android:text="@string/from" />
 
         <TextView
             android:id="@+id/custom_view_date_weared_to"
@@ -30,7 +30,7 @@
 
         <TextView
             style="@style/base_text_all_wrap"
-            android:text="From" />
+            android:text="@string/to" />
 
         <TextView
             android:id="@+id/custom_view_date_weared_from"
@@ -46,7 +46,7 @@
 
         <TextView
             style="@style/base_text_all_wrap"
-            android:text="Removed during" />
+            android:text="@string/removed_during" />
 
         <TextView
             android:id="@+id/custom_view_date_time_weared"
