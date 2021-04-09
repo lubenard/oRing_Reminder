@@ -13,6 +13,15 @@
         app:menu="@menu/menu_main"
         app:titleTextColor="@color/white"/>
 
+    <TextView
+        android:id="@+id/header_last_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="5dp"
+        android:paddingVertical="5dp"
+        android:textSize="22sp"
+        android:text="last_24_hour_wearing_time" />
+
     <ListView
         android:id="@+id/main_list"
         android:layout_width="match_parent"

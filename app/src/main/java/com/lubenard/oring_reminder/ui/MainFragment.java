@@ -23,11 +23,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class MainFragment extends Fragment {
 
@@ -40,6 +43,7 @@ public class MainFragment extends Fragment {
     private static ListView listView;
     private static Context context;
     private static boolean orderEntryByDesc = true;
+    private static TextView statLastDayTextview;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,19 +67,14 @@ public class MainFragment extends Fragment {
 
         Log.d(TAG, "DB version is: " + dbManager.getVersion());
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionOnPlusButton(false);
-            }
-        });
+        statLastDayTextview = view.findViewById(R.id.header_last_day);
+        //statLastDayTextview;
 
-        fab.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                actionOnPlusButton(true);
-                return true;
-            }
+        fab.setOnClickListener(view12 -> actionOnPlusButton(false));
+
+        fab.setOnLongClickListener(view1 -> {
+            actionOnPlusButton(true);
+            return true;
         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -149,6 +148,40 @@ public class MainFragment extends Fragment {
             dataModels.add(oneElemData.getValue());
         adapter = new CustomListAdapter(dataModels, context);
         listView.setAdapter(adapter);
+        recomputeLastWearingTime();
+    }
+
+    private static void recomputeLastWearingTime() {
+        int totalTimeLastDay = 0;
+        Calendar calendar = Calendar.getInstance();
+        String todayDate = Utils.getdateFormatted(calendar.getTime());
+        calendar.add(Calendar.HOUR_OF_DAY, -24);
+        String last24Hours = Utils.getdateFormatted(calendar.getTime());
+        Log.d(TAG, "Computing last 24 hours: interval is between: " + last24Hours + " and " + todayDate);
+        for (int i = 0; i != dataModels.size(); i++) {
+            if (dataModels.get(i).getIsRunning() == 0) {
+                // If the session is inside the born
+                if (Utils.getDateDiff(last24Hours, dataModels.get(i).getDatePut(), TimeUnit.MINUTES) > 0 &&
+                        Utils.getDateDiff(dataModels.get(i).getDateRemoved(), todayDate, TimeUnit.MINUTES) > 0) {
+                    Log.d(TAG, "entry at index " + i + " is added: " + dataModels.get(i).getTimeWeared());
+                    totalTimeLastDay += dataModels.get(i).getTimeWeared();
+                } else if (Utils.getDateDiff(last24Hours, dataModels.get(i).getDatePut(), TimeUnit.MINUTES) <= 0 &&
+                        Utils.getDateDiff(last24Hours, dataModels.get(i).getDateRemoved(),  TimeUnit.MINUTES) > 0) {
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, dataModels.get(i).getDateRemoved(), TimeUnit.MINUTES));
+                    totalTimeLastDay += Utils.getDateDiff(last24Hours, dataModels.get(i).getDateRemoved(), TimeUnit.MINUTES);
+                }
+            } else {
+                if (Utils.getDateDiff(last24Hours, dataModels.get(i).getDatePut(), TimeUnit.MINUTES) > 0) {
+                    Log.d(TAG, "running entry at index " + i + " is added: " +Utils.getDateDiff(dataModels.get(i).getDatePut(), todayDate, TimeUnit.MINUTES));
+                    totalTimeLastDay += Utils.getDateDiff(dataModels.get(i).getDatePut(), todayDate, TimeUnit.MINUTES);
+                } else if (Utils.getDateDiff(last24Hours, dataModels.get(i).getDatePut(), TimeUnit.MINUTES) <= 0) {
+                    Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimeLastDay += Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                }
+            }
+        }
+        Log.d(TAG, "Computed last 24 hours is: " + totalTimeLastDay + "mn");
+        statLastDayTextview.setText(context.getString(R.string.last_day_string_header) + String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60));
     }
 
     /**
