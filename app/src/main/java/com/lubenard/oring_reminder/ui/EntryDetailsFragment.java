@@ -144,40 +144,25 @@ public class EntryDetailsFragment extends Fragment {
         });
 
         ImageButton testButton = view.findViewById(R.id.new_pause_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPauseAlertDialog(null);
-            }
-        });
+        testButton.setOnClickListener(view1 -> showPauseAlertDialog(null));
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showPauseAlertDialog(dataModels.get(i));
-            }
-        });
+        listView.setOnItemClickListener((adapterView, view12, i, l) -> showPauseAlertDialog(dataModels.get(i)));
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-                new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
-                        .setMessage(R.string.alertdialog_delete_contact_body)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                RingModel object = (RingModel) arg0.getItemAtPosition(pos);
-                                Log.d(TAG, "delete pause with id: " + object.getId());
-                                dbManager.deletePauseEntry(object.getId());
-                                updatePauseList();
-                                recomputeWearingTime();
-                                if (Integer.parseInt(entryDetails.get(3)) == 1)
-                                    recomputeAlarm();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert).show();
-                return true;
-            }
+        listView.setOnItemLongClickListener((arg0, arg1, pos, id) -> {
+            new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
+                    .setMessage(R.string.alertdialog_delete_contact_body)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        RingModel object = (RingModel) arg0.getItemAtPosition(pos);
+                        Log.d(TAG, "delete pause with id: " + object.getId());
+                        dbManager.deletePauseEntry(object.getId());
+                        updatePauseList();
+                        recomputeWearingTime();
+                        if (Integer.parseInt(entryDetails.get(3)) == 1)
+                            recomputeAlarm();
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert).show();
+            return true;
         });
     }
 
@@ -197,58 +182,45 @@ public class EntryDetailsFragment extends Fragment {
         }
 
         Button fill_beginning = dialogView.findViewById(R.id.prefill_beginning_pause);
-        fill_beginning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pause_beginning.setText(Utils.getdateFormatted(new Date()));
-            }
-        });
+        fill_beginning.setOnClickListener(view -> pause_beginning.setText(Utils.getdateFormatted(new Date())));
 
         Button fill_end = dialogView.findViewById(R.id.prefill_finish_pause);
-        fill_end.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pause_ending.setText(Utils.getdateFormatted(new Date()));
-            }
-        });
+        fill_end.setOnClickListener(view -> pause_ending.setText(Utils.getdateFormatted(new Date())));
 
         Button save_entry = dialogView.findViewById(R.id.validate_pause);
-        save_entry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int isRunning = 0;
-                if (pause_ending.getText().toString().isEmpty()) {
-                    pause_ending.setText("NOT SET YET");
-                    isRunning = 1;
-                }
+        save_entry.setOnClickListener(view -> {
+            int isRunning = 0;
+            if (pause_ending.getText().toString().isEmpty()) {
+                pause_ending.setText("NOT SET YET");
+                isRunning = 1;
+            }
 
-                if (isThereAlreadyARunningPause && isRunning == 1){
-                    Log.d(TAG, "Already a running pause");
-                    Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-                } else if (Utils.getDateDiff(entryDetails.get(0), pause_beginning.getText().toString(), TimeUnit.MINUTES) <= 0) {
-                    Log.d(TAG, "Start of pause < start of entry");
-                    Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
-                } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.get(0), pause_ending.getText().toString(), TimeUnit.MINUTES) <= 0) {
-                    Log.d(TAG, "End of pause < start of entry");
-                    Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
-                } else if (isRunning == 0 && Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
-                    Log.d(TAG, "End of pause > end of entry");
-                    Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
-                } else if (Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.get(1), TimeUnit.MINUTES) <= 0) {
-                    Log.d(TAG, "Start of pause > end of entry");
-                    Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
-                } else {
-                    if (dataModel == null)
-                        dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
-                    else
-                        dbManager.updatePause(dataModel.getId(), pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
-                    alertDialog.dismiss();
-                    recomputeWearingTime();
-                    // Only recompute alarm if session is running
-                    if (Integer.parseInt(entryDetails.get(3)) == 1)
-                        recomputeAlarm();
-                    updatePauseList();
-                }
+            if (isThereAlreadyARunningPause && isRunning == 1){
+                Log.d(TAG, "Already a running pause");
+                Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+            } else if (Utils.getDateDiff(entryDetails.get(0), pause_beginning.getText().toString(), TimeUnit.SECONDS) <= 0) {
+                Log.d(TAG, "Start of pause < start of entry");
+                Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
+            } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.get(0), pause_ending.getText().toString(), TimeUnit.SECONDS) <= 0) {
+                Log.d(TAG, "End of pause < start of entry");
+                Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
+            } else if (isRunning == 0 && Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.get(1), TimeUnit.SECONDS) <= 0) {
+                Log.d(TAG, "End of pause > end of entry");
+                Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
+            } else if (Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.get(1), TimeUnit.SECONDS) <= 0) {
+                Log.d(TAG, "Start of pause > end of entry");
+                Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
+            } else {
+                if (dataModel == null)
+                    dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
+                else
+                    dbManager.updatePause(dataModel.getId(), pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
+                alertDialog.dismiss();
+                recomputeWearingTime();
+                // Only recompute alarm if session is running
+                if (Integer.parseInt(entryDetails.get(3)) == 1)
+                    recomputeAlarm();
+                updatePauseList();
             }
         });
         alertDialog.show();
