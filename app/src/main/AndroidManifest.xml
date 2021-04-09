@@ -27,11 +27,12 @@
         <activity android:name=".BackupRestore"/>
         <receiver android:name=".NotificationSenderBroadcastReceiver"/>
         <receiver android:name=".NotificationReceiverBroadcastReceiver"/>
-        <!--When boot is completed, launch this activity to restart the Background Service-->
+        <!--When boot is completed, launch this BroadcastReceiver with given Intents-->
         <receiver android:name=".AfterBootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
     </application>
