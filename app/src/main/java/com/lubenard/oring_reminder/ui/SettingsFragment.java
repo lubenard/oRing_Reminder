@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,6 +63,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         Utils.setAppLocale(activity, "fr");
                         break;
                     case "system":
+                        Utils.setAppLocale(activity, Resources.getSystem().getConfiguration().locale.getLanguage());
                         break;
                 }
                 fragmentManager.popBackStackImmediate();

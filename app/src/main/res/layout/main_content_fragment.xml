@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="5dp"
         android:paddingVertical="5dp"
-        android:textSize="22sp"
+        android:textSize="18sp"
         android:text="last_24_hour_wearing_time" />
 
     <ListView

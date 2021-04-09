@@ -3,6 +3,7 @@ package com.lubenard.oring_reminder;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 Utils.setAppLocale(this, "fr");
                 break;
             case "system":
+                Utils.setAppLocale(this, Resources.getSystem().getConfiguration().locale.getLanguage());
                 break;
         }
     }
