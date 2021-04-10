@@ -137,6 +137,7 @@ public class MainFragment extends Fragment {
 
     private static void recomputeLastWearingTime() {
         int totalTimeLastDay = 0;
+        int pauseTimeForThisEntry = 0;
         Calendar calendar = Calendar.getInstance();
         String todayDate = Utils.getdateFormatted(calendar.getTime());
         calendar.add(Calendar.HOUR_OF_DAY, -24);
@@ -145,23 +146,24 @@ public class MainFragment extends Fragment {
         RingModel currentModel;
         for (int i = 0; i != dataModels.size(); i++) {
             currentModel = dataModels.get(i);
+            pauseTimeForThisEntry = EntryDetailsFragment.computeTotalTimePauseForId(dbManager, currentModel.getId());
             if (currentModel.getIsRunning() == 0) {
                 if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
                         Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "entry at index " + i + " is added: " + dataModels.get(i).getTimeWeared());
-                    totalTimeLastDay += currentModel.getTimeWeared();
+                    totalTimeLastDay += currentModel.getTimeWeared() - pauseTimeForThisEntry;
                 } else if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
                         Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeLastDay += Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(), TimeUnit.MINUTES);
+                    totalTimeLastDay += Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             } else {
                 if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "running entry at index " + i + " is added: " + Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeLastDay += Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES);
+                    totalTimeLastDay += Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 } else if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
                     Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimeLastDay += Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                    totalTimeLastDay += Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             }
         }

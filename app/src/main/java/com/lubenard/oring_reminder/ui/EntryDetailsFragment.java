@@ -217,9 +217,12 @@ public class EntryDetailsFragment extends Fragment {
     private void recomputeWearingTime() {
         // TODO: To optimize this whole function, by setting variable get in onResume on global
         long oldTimeWeared;
-        if (Integer.parseInt(entryDetails.get(3)) == 1) {
+        // If session is running,
+        // OldTimeWeared is the time in minute between the starting of the entry and the current Date
+        // Or, oldTimeWeared is the time between the start of the entry and it's pause
+        if (Integer.parseInt(entryDetails.get(3)) == 1)
             oldTimeWeared = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-        } else
+        else
             oldTimeWeared = Utils.getDateDiff(entryDetails.get(0), entryDetails.get(1), TimeUnit.MINUTES);
         long totalTimePause = 0;
         int newComputedTime;
@@ -257,6 +260,20 @@ public class EntryDetailsFragment extends Fragment {
         calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
         calendar.add(Calendar.MINUTE, newAlarmDate);
         updateAbleToGetItOffUI(calendar);
+    }
+
+    public static int computeTotalTimePauseForId(DbManager dbManager, long entryId) {
+        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        int totalTimePause = 0;
+        for (int i = 0; i < pausesDatas.size(); i++) {
+            if (pausesDatas.get(i).getIsRunning() == 0) {
+                totalTimePause += pausesDatas.get(i).getTimeWeared();
+            } else {
+                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                totalTimePause += timeToRemove;
+            }
+        }
+        return totalTimePause;
     }
 
     private void updateAbleToGetItOffUI(Calendar calendar) {
