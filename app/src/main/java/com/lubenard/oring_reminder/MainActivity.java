@@ -1,7 +1,11 @@
 package com.lubenard.oring_reminder;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -14,6 +18,8 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,11 +69,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         // Check the UI config (Theme and language) and apply them
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         checkConfig();
         createNotifChannel();
-        super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(this, CurrentSessionWidgetProvider.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        AlarmManager am = (AlarmManager)getSystemService(Activity.ALARM_SERVICE);
+        // 6000 millis is one minute
+        am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
 
         // Then switch to the main Fragment
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

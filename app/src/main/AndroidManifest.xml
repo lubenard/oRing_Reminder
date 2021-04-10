@@ -35,5 +35,14 @@
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
+        <!-- Widget manifest -->
+        <receiver android:name="CurrentSessionWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/current_sessions_widget_metadatas" />
+        </receiver>
+
     </application>
 </manifest>

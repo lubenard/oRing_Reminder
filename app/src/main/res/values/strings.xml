@@ -38,7 +38,7 @@
     <string name="from">Since:</string>
     <string name="you_weared_your_protection_from">You weared your protection since:</string>
     <string name="that_make_about">That make about:</string>
-    <string name="worn_for">Worn for</string>
+    <string name="worn_for">Worn for:</string>
     <string name="alertdialog_dangerous_wearing_time">Are you sure ?</string>
     <string name="alertdialog_dangerous_wearing_body">Not wearing your protection enough can make you fertile again. Wearing it too often is not good either. If in doubt, have a spermogram and go see your doctor.</string>
     <string name="wering_time">Wearing time</string>
@@ -99,4 +99,6 @@
     <string name="removed_during">Removed during</string>
     <string name="last_day_string_header">In last 24h, you worn it during:&#160;</string>
     <string name="create_new_entry">Create new entry</string>
+    <string name="time_remaining">Time remaining:</string>
+    <string name="no_running_session">No running session</string>
 </resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Setting updatePeriodMillis to 0 avoid waking up the device each minute
+     See here for more infos: https://developer.android.com/guide/topics/appwidgets/#MetaData -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="200dp"
+    android:minHeight="30dp"
+    android:updatePeriodMillis="0"
+    android:previewImage="@drawable/widget_preview_example"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen">
+</appwidget-provider>
+
+<!--Additionnal conf
+    android:initialLayout="@layout/example_appwidget"
+    android:configure="com.example.android.ExampleAppWidgetConfigure"
+-->

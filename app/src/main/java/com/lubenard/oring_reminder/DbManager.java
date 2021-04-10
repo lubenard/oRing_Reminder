@@ -318,6 +318,20 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
+    public RingModel getLastRunningEntry() {
+
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
+        Cursor cursor = readableDB.query(ringTable, columns,ringTableIsRunning + "=?",
+                new String[]{"1"}, null, null, pauseTableId + " DESC");
+
+        RingModel data = null;
+        if (cursor.moveToFirst())
+            data = new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)), cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)), cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
+        cursor.close();
+        return data;
+    }
+
     /**
      * This function is used to backup into a file
      * @return All the datas for all the entrys.
