@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -69,12 +74,15 @@ public class EntryDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.entry_details_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = getContext();
         fragmentManager = getActivity().getSupportFragmentManager();
@@ -91,8 +99,6 @@ public class EntryDetailsFragment extends Fragment {
 
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
 
-        Toolbar toolbar = view.findViewById(R.id.entry_details_toolbar);
-
         listView = view.findViewById(R.id.listview_pauses);
 
         // This can block the listview from scrolling, but i cannot integrate listview inside
@@ -106,42 +112,6 @@ public class EntryDetailsFragment extends Fragment {
                 return false;
             }
         });*/
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fragmentManager.popBackStackImmediate();
-            }
-        });
-
-        toolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_edit_entry:
-                    EditEntryFragment fragment = new EditEntryFragment(getContext());
-                    Bundle bundle2 = new Bundle();
-                    bundle2.putLong("entryId", entryId);
-                    fragment.setArguments(bundle2);
-                    fragmentManager.beginTransaction()
-                            .replace(android.R.id.content, fragment, null)
-                            .addToBackStack(null).commit();
-                    return true;
-                case R.id.action_delete_entry:
-                    // Warn user then delete entry in the db
-                    new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
-                            .setMessage(R.string.alertdialog_delete_contact_body)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dbManager.deleteEntry(entryId);
-                                    fragmentManager.popBackStackImmediate();
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .setIcon(android.R.drawable.ic_dialog_alert).show();
-                    return true;
-                default:
-                    return false;
-            }
-        });
 
         ImageButton testButton = view.findViewById(R.id.new_pause_button);
         testButton.setOnClickListener(view1 -> showPauseAlertDialog(null));
@@ -381,6 +351,41 @@ public class EntryDetailsFragment extends Fragment {
             Toast.makeText(context, context.getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
             Log.e(TAG, "Error: Wrong Id: " + entryId);
             fragmentManager.popBackStackImmediate();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_entry_details, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_edit_entry:
+                EditEntryFragment fragment = new EditEntryFragment(getContext());
+                Bundle bundle2 = new Bundle();
+                bundle2.putLong("entryId", entryId);
+                fragment.setArguments(bundle2);
+                fragmentManager.beginTransaction()
+                        .replace(android.R.id.content, fragment, null)
+                        .addToBackStack(null).commit();
+                return true;
+            case R.id.action_delete_entry:
+                // Warn user then delete entry in the db
+                new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
+                        .setMessage(R.string.alertdialog_delete_contact_body)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            dbManager.deleteEntry(entryId);
+                            fragmentManager.popBackStackImmediate();
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert).show();
+                return true;
+            default:
+                return false;
         }
     }
 }

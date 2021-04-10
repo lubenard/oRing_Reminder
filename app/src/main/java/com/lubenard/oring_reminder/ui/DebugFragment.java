@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
@@ -26,16 +27,11 @@ public class DebugFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Toolbar toolbar = view.findViewById(R.id.about_toolbar);
-        Button buttonSendNotif = view.findViewById(R.id.debug_send_notif);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Get back to last fragment in the stack
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-            }
-        });
+        getActivity().setTitle(R.string.debug_menu_title);
+
+        Button buttonSendNotif = view.findViewById(R.id.debug_send_notif);
 
         buttonSendNotif.setOnClickListener(new View.OnClickListener() {
             @Override

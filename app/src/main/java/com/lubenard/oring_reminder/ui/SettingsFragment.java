@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
@@ -48,6 +49,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.settings_fragment, rootKey);
         activity = getActivity();
         fragmentManager = getActivity().getSupportFragmentManager();
+
+        activity.setTitle(R.string.action_settings);
+
+        ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Language change listener
         Preference language = findPreference("ui_language");
@@ -249,22 +254,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        Toolbar toolbar = view.findViewById(R.id.settings_toolbar);
-
-        if (toolbar != null) {
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fragmentManager.popBackStackImmediate();
-                }
-            });
-        }
     }
 
     public static void restartActivity() {

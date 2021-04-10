@@ -5,14 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/entry_details_toolbar"
-        style="@style/basic_toolbar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:navigationIcon="@drawable/baseline_arrow_back_white_36"
-        app:menu="@menu/menu_entry_details"
-        app:titleTextColor="@color/white"/>
-
     <TextView
         style="@style/base_text_centered"
         android:textSize="20dp"

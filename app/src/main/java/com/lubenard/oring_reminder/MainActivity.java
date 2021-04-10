@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -47,6 +48,17 @@ public class MainActivity extends AppCompatActivity {
                 Utils.setAppLocale(this, Resources.getSystem().getConfiguration().locale.getLanguage());
                 break;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                getSupportFragmentManager().popBackStackImmediate();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

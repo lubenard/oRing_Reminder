@@ -11,17 +11,20 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +52,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
@@ -56,9 +60,11 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getActivity().setTitle(R.string.app_name);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         FloatingActionButton fab = view.findViewById(R.id.fab);
         listView = view.findViewById(R.id.main_list);
-        Toolbar toolbar = view.findViewById(R.id.main_toolbar);
 
         dataModels = new ArrayList<>();
 
@@ -68,7 +74,6 @@ public class MainFragment extends Fragment {
         Log.d(TAG, "DB version is: " + dbManager.getVersion());
 
         statLastDayTextview = view.findViewById(R.id.header_last_day);
-        //statLastDayTextview;
 
         fab.setOnClickListener(view12 -> actionOnPlusButton(false));
 
@@ -89,27 +94,6 @@ public class MainFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, fragment, null)
                         .addToBackStack(null).commit();
-            }
-        });
-
-        toolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_settings:
-                    // Navigate to settings screen
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, new SettingsFragment(), null)
-                            .addToBackStack(null).commit();
-                    return true;
-                case R.id.action_reload_datas:
-                    updateElementList();
-                    return true;
-                case R.id.action_sort_entrys:
-                    orderEntryByDesc = !orderEntryByDesc;
-                    Toast.makeText(context, context.getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc),Toast.LENGTH_SHORT).show();
-                    updateElementList();
-                    return true;
-                default:
-                    return false;
             }
         });
     }
@@ -205,5 +189,34 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateElementList();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_settings:
+                // Navigate to settings screen
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new SettingsFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            case R.id.action_reload_datas:
+                updateElementList();
+                return true;
+            case R.id.action_sort_entrys:
+                orderEntryByDesc = !orderEntryByDesc;
+                Toast.makeText(context, context.getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc),Toast.LENGTH_SHORT).show();
+                updateElementList();
+                return true;
+            default:
+                return false;
+        }
     }
 }

@@ -12,13 +12,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -117,6 +122,7 @@ public class EditEntryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
     }
 
@@ -174,6 +180,8 @@ public class EditEntryFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         new_entry_datetime_from = view.findViewById(R.id.new_entry_date_from);
         new_entry_datetime_to = view.findViewById(R.id.new_entry_date_to);
 
@@ -188,6 +196,9 @@ public class EditEntryFragment extends Fragment {
             ArrayList<String> datas = dbManager.getEntryDetails(entryId);
             fill_entry_from(datas.get(0));
             fill_entry_to(datas.get(1));
+            getActivity().setTitle(R.string.action_edit);
+        } else {
+            getActivity().setTitle(R.string.create_new_entry);
         }
 
         auto_from_button.setOnClickListener(new View.OnClickListener() {
@@ -203,45 +214,44 @@ public class EditEntryFragment extends Fragment {
                 fill_entry_to(Utils.getdateFormatted(new Date()));
             }
         });
+    }
 
-        Toolbar toolbar = view.findViewById(R.id.edit_entry_toolbar);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_add_entry, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_validate:
 
-        toolbar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_validate:
+                String formattedDatePut = new_entry_datetime_from.getText().toString();
+                String formattedDateRemoved = new_entry_datetime_to.getText().toString();
 
-                    String formattedDatePut = new_entry_datetime_from.getText().toString();
-                    String formattedDateRemoved = new_entry_datetime_to.getText().toString();
-
-                    // If entry already exist in the db.
-                    if (entryId != -1) {
-                        if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET"))
-                            dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-                        else
-                            dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                // If entry already exist in the db.
+                if (entryId != -1) {
+                    if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET"))
+                        dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
+                    else
+                        dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                    getActivity().getSupportFragmentManager().popBackStackImmediate();
+                } else {
+                    if (formattedDateRemoved.isEmpty())
+                        insertNewEntry(formattedDatePut, true);
+                    else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
+                        dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
+                        // Get back to the last element in the fragment stack
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
-                    } else {
-                        if (formattedDateRemoved.isEmpty())
-                            insertNewEntry(formattedDatePut, true);
-                        else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-                            dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
-                            // Get back to the last element in the fragment stack
-                            getActivity().getSupportFragmentManager().popBackStackImmediate();
-                        } else
-                            // If the diff time is too short, trigger this error
-                            Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                default:
-                    return false;
-            }
-        });
+                    } else
+                        // If the diff time is too short, trigger this error
+                        Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            default:
+                return false;
+        }
     }
 }
