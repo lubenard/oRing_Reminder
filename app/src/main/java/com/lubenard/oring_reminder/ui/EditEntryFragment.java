@@ -201,19 +201,9 @@ public class EditEntryFragment extends Fragment {
             getActivity().setTitle(R.string.create_new_entry);
         }
 
-        auto_from_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fill_entry_from(Utils.getdateFormatted(new Date()));
-            }
-        });
+        auto_from_button.setOnClickListener(view1 -> fill_entry_from(Utils.getdateFormatted(new Date())));
 
-        new_entry_auto_date_to.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fill_entry_to(Utils.getdateFormatted(new Date()));
-            }
-        });
+        new_entry_auto_date_to.setOnClickListener(view12 -> fill_entry_to(Utils.getdateFormatted(new Date())));
     }
 
     @Override
@@ -233,10 +223,13 @@ public class EditEntryFragment extends Fragment {
 
                 // If entry already exist in the db.
                 if (entryId != -1) {
-                    if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET"))
+                    if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET")) {
                         dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-                    else
+                        recomputeAlarm(Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES), true);
+                    } else {
                         dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                        recomputeAlarm(-1, false);
+                    }
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
                 } else {
                     if (formattedDateRemoved.isEmpty())
@@ -252,6 +245,26 @@ public class EditEntryFragment extends Fragment {
                 return true;
             default:
                 return false;
+        }
+    }
+
+    private void recomputeAlarm(long newAlarmDate, boolean reSetAlarm) {
+        // From the doc, just create the exact same intent, and cancel it.
+        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
+        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        am.cancel(pendingIntent);
+
+        if (reSetAlarm) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Utils.getdateParsed(dbManager.getEntryDetails(entryId).get(0)));
+            calendar.add(Calendar.MINUTE, (int)newAlarmDate);
+            Log.d(TAG, "Alarm has been reschedule by user at " + calendar.getTime());
+            if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            else if (SDK_INT >= Build.VERSION_CODES.M)
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
 }
