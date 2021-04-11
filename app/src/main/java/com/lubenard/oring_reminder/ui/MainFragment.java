@@ -144,9 +144,9 @@ public class MainFragment extends Fragment {
         String last24Hours = Utils.getdateFormatted(calendar.getTime());
         Log.d(TAG, "Computing last 24 hours: interval is between: " + last24Hours + " and " + todayDate);
         RingModel currentModel;
-        for (int i = 0; i != dataModels.size(); i++) {
+        for (int i = 0; i != 5; i++) {
             currentModel = dataModels.get(i);
-            pauseTimeForThisEntry = EntryDetailsFragment.computeTotalTimePauseForId(dbManager, currentModel.getId());
+            pauseTimeForThisEntry = computeTotalTimePauseForId(dbManager, currentModel.getId(), last24Hours, todayDate);
             if (currentModel.getIsRunning() == 0) {
                 if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
                         Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
@@ -169,6 +169,33 @@ public class MainFragment extends Fragment {
         }
         Log.d(TAG, "Computed last 24 hours is: " + totalTimeLastDay + "mn");
         statLastDayTextview.setText(context.getString(R.string.last_day_string_header) + String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60));
+    }
+
+    public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
+        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        int totalTimePause = 0;
+        for (int i = 0; i < pausesDatas.size(); i++) {
+            if (pausesDatas.get(i).getIsRunning() == 0) {
+                if (Utils.getDateDiff(date24HoursAgo, pausesDatas.get(i).getDateRemoved(), TimeUnit.SECONDS) > 0 &&
+                        Utils.getDateDiff(pausesDatas.get(i).getDatePut(), dateNow, TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeWeared());
+                    totalTimePause += pausesDatas.get(i).getTimeWeared();
+                } else if (Utils.getDateDiff(date24HoursAgo, pausesDatas.get(i).getDateRemoved(), TimeUnit.SECONDS) <= 0 &&
+                        Utils.getDateDiff(date24HoursAgo, pausesDatas.get(i).getDatePut(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, pausesDatas.get(i).getDatePut(), TimeUnit.SECONDS));
+                    totalTimePause += Utils.getDateDiff(date24HoursAgo, pausesDatas.get(i).getDatePut(), TimeUnit.MINUTES);
+                }
+            } else {
+                if (Utils.getDateDiff(date24HoursAgo, pausesDatas.get(i).getDateRemoved(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running pause at index " + i + " is added: " + Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), dateNow, TimeUnit.SECONDS));
+                    totalTimePause += Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), dateNow, TimeUnit.MINUTES);
+                } else if (Utils.getDateDiff(date24HoursAgo, pausesDatas.get(i).getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimePause += Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                }
+            }
+        }
+        return totalTimePause;
     }
 
     /**

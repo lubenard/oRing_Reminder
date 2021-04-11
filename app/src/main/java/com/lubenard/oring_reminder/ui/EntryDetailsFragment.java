@@ -262,20 +262,6 @@ public class EntryDetailsFragment extends Fragment {
         updateAbleToGetItOffUI(calendar);
     }
 
-    public static int computeTotalTimePauseForId(DbManager dbManager, long entryId) {
-        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
-        int totalTimePause = 0;
-        for (int i = 0; i < pausesDatas.size(); i++) {
-            if (pausesDatas.get(i).getIsRunning() == 0) {
-                totalTimePause += pausesDatas.get(i).getTimeWeared();
-            } else {
-                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                totalTimePause += timeToRemove;
-            }
-        }
-        return totalTimePause;
-    }
-
     private void updateAbleToGetItOffUI(Calendar calendar) {
         int texteRessourceWhenGetItOff;
 
