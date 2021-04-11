@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -25,27 +26,22 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static SharedPreferences sharedPreferences;
     private static DbManager dbManager;
     private static RemoteViews remoteViews;
-    private static Context context;
-    private AppWidgetManager appWidgetManager;
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
 
-        this.context = context;
-        this.appWidgetManager = appWidgetManager;
         dbManager = new DbManager(context);
 
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i = 0; i < N; i++) {
             int appWidgetId = appWidgetIds[i];
 
-            // Create an Intent to launch ExampleActivity
-            //Intent intent = new Intent(context, MainFragment.class);
-            //PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-            // Get the layout for the App Widget and attach an on-click listener
-            // to the button
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+
+            Intent intent = new Intent(context, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+            remoteViews.setOnClickPendingIntent(R.id.widget_root_view, pendingIntent);
 
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
