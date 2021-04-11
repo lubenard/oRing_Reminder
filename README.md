@@ -3,10 +3,13 @@ This app remind you when you can take off your contraceptive method (created for
 
 ## Features:
  - Can predict when you can take your protection off
- - Send a notification when you can take your protection off
+ - Send a notification when you can take your protection off (with quick replies !)
  - Save your datas into a local database
  - Dark theme
  - Working with 'sessions'
+ - Import / Export your datas and settings
+ - Add as many pauses as you want in your sessions !
+ - Available in 2 languages (FR and EN)
  - Completely open source (and always will be)
  
  ## Datas
