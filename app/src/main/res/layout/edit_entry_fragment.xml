@@ -50,4 +50,12 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:text="@string/set_auto_date_and_time" />
+
+    <TextView
+        android:id="@+id/get_it_on_before"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="get_it_on_before" />
 </LinearLayout>

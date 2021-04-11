@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,6 +58,8 @@ public class EditEntryFragment extends Fragment {
     private EditText new_entry_datetime_from;
     private EditText new_entry_datetime_to;
 
+    private TextView getItOnBeforeTextView;
+
     private SharedPreferences sharedPreferences;
     private int weared_time;
     private boolean should_warn_user;
@@ -82,22 +87,6 @@ public class EditEntryFragment extends Fragment {
             am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         else if (SDK_INT >= Build.VERSION_CODES.M)
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-    }
-
-    /**
-     * Fill the entry "from" with the right datas
-     * @param date the date to set in input
-     */
-    private void fill_entry_from(String date) {
-        new_entry_datetime_from.setText(date);
-    }
-
-    /**
-     * Fill the entry "to" with the right datas
-     * @param date the date to set in input
-     */
-    private void fill_entry_to(String date) {
-        new_entry_datetime_to.setText(date);
     }
 
     public static void setUpddateMainList(boolean newStatus) {
@@ -184,6 +173,7 @@ public class EditEntryFragment extends Fragment {
 
         new_entry_datetime_from = view.findViewById(R.id.new_entry_date_from);
         new_entry_datetime_to = view.findViewById(R.id.new_entry_date_to);
+        getItOnBeforeTextView = view.findViewById(R.id.get_it_on_before);
 
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
@@ -194,16 +184,71 @@ public class EditEntryFragment extends Fragment {
 
         if (entryId != -1) {
             ArrayList<String> datas = dbManager.getEntryDetails(entryId);
-            fill_entry_from(datas.get(0));
-            fill_entry_to(datas.get(1));
+            new_entry_datetime_from.setText(datas.get(0));
+            new_entry_datetime_to.setText(datas.get(1));
             getActivity().setTitle(R.string.action_edit);
         } else {
             getActivity().setTitle(R.string.create_new_entry);
         }
 
-        auto_from_button.setOnClickListener(view1 -> fill_entry_from(Utils.getdateFormatted(new Date())));
+        auto_from_button.setOnClickListener(view1 -> {
+            new_entry_datetime_from.setText(Utils.getdateFormatted(new Date()));
+            computeTimeBeforeGettingItAgain();
+        });
 
-        new_entry_auto_date_to.setOnClickListener(view12 -> fill_entry_to(Utils.getdateFormatted(new Date())));
+        new_entry_auto_date_to.setOnClickListener(view12 -> {
+            new_entry_datetime_to.setText(Utils.getdateFormatted(new Date()));
+            computeTimeBeforeGettingItAgain();
+        });
+
+        new_entry_datetime_from.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                computeTimeBeforeGettingItAgain();
+            }
+        });
+
+        new_entry_datetime_to.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                computeTimeBeforeGettingItAgain();
+            }
+        });
+
+        computeTimeBeforeGettingItAgain();
+    }
+
+    private int checkInputSanity(String text) {
+        if (text.equals("") || text.equals("NOT SET YET") || Utils.getdateParsed(text) == null)
+            return 0;
+        return 1;
+    }
+
+    private void computeTimeBeforeGettingItAgain() {
+        Calendar calendar = Calendar.getInstance();
+        if (checkInputSanity(new_entry_datetime_to.getText().toString()) == 0 &&
+                checkInputSanity(new_entry_datetime_from.getText().toString()) == 1) {
+            calendar.setTime(Utils.getdateParsed(new_entry_datetime_from.getText().toString()));
+            calendar.add(Calendar.HOUR_OF_DAY, weared_time + 9);
+            getItOnBeforeTextView.setText("Get it on before " + Utils.getdateFormatted(calendar.getTime()));
+        } else if (checkInputSanity(new_entry_datetime_to.getText().toString()) == 1) {
+            calendar.setTime(Utils.getdateParsed(new_entry_datetime_to.getText().toString()));
+            calendar.add(Calendar.HOUR_OF_DAY, 9);
+            getItOnBeforeTextView.setText("Get it on before " + Utils.getdateFormatted(calendar.getTime()));
+        } else
+            getItOnBeforeTextView.setText("Not enought datas to compute when you should wear it again");
     }
 
     @Override

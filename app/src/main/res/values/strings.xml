@@ -101,4 +101,5 @@
     <string name="create_new_entry">Create new entry</string>
     <string name="time_remaining">Time remaining:</string>
     <string name="no_running_session">No running session</string>
+    <string name="you_can_get_it_on_again">"You should get it on at: "</string>
 </resources>
