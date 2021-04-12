@@ -191,10 +191,6 @@ public class DbManager extends SQLiteOpenHelper {
         int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(id)});
         if (u == 0) {
             Log.d(TAG, "ringUpdate: update does not seems to work, insert data: (for id = " + id);
-            cv.put(ringTablePut, datePut);
-            cv.put(ringTableRemoved, dateRemoved);
-            cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
-            cv.put(ringTableIsRunning, isRunning);
             writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         }
     }
@@ -205,22 +201,20 @@ public class DbManager extends SQLiteOpenHelper {
      * @return the following fields -> ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning
      * in the form of a ArrayList
      */
-    public ArrayList<String> getEntryDetails(long entryId) {
+    public RingModel getEntryDetails(long entryId) {
         if (entryId <= 0)
             return null;
-        ArrayList<String> entryDatas = new ArrayList<>();
 
         String[] columns = new String[]{ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
         Cursor cursor = readableDB.query(ringTable, columns,ringTableId + "=?",
                 new String[]{String.valueOf(entryId)}, null, null, null);
 
         cursor.moveToFirst();
-        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTablePut)));
-        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableRemoved)));
-        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableTimeWeared)));
-        entryDatas.add(cursor.getString(cursor.getColumnIndex(ringTableIsRunning)));
+        RingModel data = new RingModel(-1, cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)), cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
+
         cursor.close();
-        return entryDatas;
+        return data;
     }
 
     /**
@@ -259,8 +253,6 @@ public class DbManager extends SQLiteOpenHelper {
         int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(entryId)});
         if (u == 0) {
             Log.d(TAG, "ringUpdate: update does not seems to work, insert data: (for id = " + entryId);
-            cv.put(ringTableRemoved, dateRemoved);
-            cv.put(ringTableTimeWeared, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));
             writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         }
     }
@@ -310,10 +302,6 @@ public class DbManager extends SQLiteOpenHelper {
         int u = writableDB.update(pausesTable, cv, pauseTableId + "=?", new String[]{String.valueOf(pauseId)});
         if (u == 0) {
             Log.d(TAG, "pauseUpdate: update does not seems to work, insert data: (for id = " + pauseId);
-            cv.put(pauseTableRemoved, dateRemoved);
-            cv.put(pauseTablePut, datePut);
-            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
-            cv.put(pauseTableTimeRemoved, isRunning);
             writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         }
     }

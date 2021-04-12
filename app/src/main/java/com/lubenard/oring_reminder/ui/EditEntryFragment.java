@@ -35,6 +35,7 @@ import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.text.ParseException;
@@ -183,9 +184,9 @@ public class EditEntryFragment extends Fragment {
         entryId = bundle.getLong("entryId", -1);
 
         if (entryId != -1) {
-            ArrayList<String> datas = dbManager.getEntryDetails(entryId);
-            new_entry_datetime_from.setText(datas.get(0));
-            new_entry_datetime_to.setText(datas.get(1));
+            RingModel data = dbManager.getEntryDetails(entryId);
+            new_entry_datetime_from.setText(data.getDatePut());
+            new_entry_datetime_to.setText(data.getDateRemoved());
             getActivity().setTitle(R.string.action_edit);
         } else {
             getActivity().setTitle(R.string.create_new_entry);
@@ -322,7 +323,7 @@ public class EditEntryFragment extends Fragment {
 
         if (reSetAlarm) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Utils.getdateParsed(dbManager.getEntryDetails(entryId).get(0)));
+            calendar.setTime(Utils.getdateParsed(dbManager.getEntryDetails(entryId).getDatePut()));
             calendar.add(Calendar.MINUTE, (int)newAlarmDate);
             Log.d(TAG, "Alarm has been reschedule by user at " + calendar.getTime());
             if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)

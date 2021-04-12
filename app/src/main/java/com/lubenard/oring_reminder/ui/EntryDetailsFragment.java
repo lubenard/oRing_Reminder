@@ -64,7 +64,7 @@ public class EntryDetailsFragment extends Fragment {
     private CustomListPausesAdapter adapter;
     private ArrayList<RingModel> dataModels;
     private int newAlarmDate;
-    private ArrayList<String> entryDetails;
+    private RingModel entryDetails;
     private TextView ableToGetItOff;
     private TextView whenGetItOff;
     private TextView timeWeared;
@@ -127,7 +127,7 @@ public class EntryDetailsFragment extends Fragment {
                         dbManager.deletePauseEntry(object.getId());
                         updatePauseList();
                         recomputeWearingTime();
-                        if (Integer.parseInt(entryDetails.get(3)) == 1)
+                        if (entryDetails.getIsRunning() == 1)
                             recomputeAlarm();
                     })
                     .setNegativeButton(android.R.string.no, null)
@@ -173,16 +173,16 @@ public class EntryDetailsFragment extends Fragment {
             if (isThereAlreadyARunningPause && isRunning == 1){
                 Log.d(TAG, "Already a running pause");
                 Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-            } else if (Utils.getDateDiff(entryDetails.get(0), pause_beginning.getText().toString(), TimeUnit.SECONDS) <= 0) {
+            } else if (Utils.getDateDiff(entryDetails.getDatePut(), pause_beginning.getText().toString(), TimeUnit.SECONDS) <= 0) {
                 Log.d(TAG, "Start of pause < start of entry");
                 Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
-            } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.get(0), pause_ending.getText().toString(), TimeUnit.SECONDS) <= 0) {
+            } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.getDatePut(), pause_ending.getText().toString(), TimeUnit.SECONDS) <= 0) {
                 Log.d(TAG, "End of pause < start of entry");
                 Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
-            } else if (isRunning == 0 && Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.get(1), TimeUnit.SECONDS) <= 0) {
+            } else if (isRunning == 0 && entryDetails.getIsRunning() == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
                 Log.d(TAG, "End of pause > end of entry");
                 Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
-            } else if (Integer.parseInt(entryDetails.get(3)) == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.get(1), TimeUnit.SECONDS) <= 0) {
+            } else if (entryDetails.getIsRunning() == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
                 Log.d(TAG, "Start of pause > end of entry");
                 Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
             } else {
@@ -193,7 +193,7 @@ public class EntryDetailsFragment extends Fragment {
                 alertDialog.dismiss();
                 recomputeWearingTime();
                 // Only recompute alarm if session is running
-                if (Integer.parseInt(entryDetails.get(3)) == 1)
+                if (entryDetails.getIsRunning() == 1)
                     recomputeAlarm();
                 updatePauseList();
             }
@@ -209,7 +209,7 @@ public class EntryDetailsFragment extends Fragment {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
+        calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
         calendar.add(Calendar.MINUTE, newAlarmDate);
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
@@ -232,10 +232,10 @@ public class EntryDetailsFragment extends Fragment {
         // If session is running,
         // OldTimeWeared is the time in minute between the starting of the entry and the current Date
         // Or, oldTimeWeared is the time between the start of the entry and it's pause
-        if (Integer.parseInt(entryDetails.get(3)) == 1)
-            oldTimeWeared = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        if (entryDetails.getIsRunning() == 1)
+            oldTimeWeared = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         else
-            oldTimeWeared = Utils.getDateDiff(entryDetails.get(0), entryDetails.get(1), TimeUnit.MINUTES);
+            oldTimeWeared = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES);
         long totalTimePause = 0;
         int newComputedTime;
 
@@ -267,7 +267,7 @@ public class EntryDetailsFragment extends Fragment {
         Log.d(TAG, "New alarm date = " + newAlarmDate);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
+        calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
         calendar.add(Calendar.MINUTE, newAlarmDate);
         updateAbleToGetItOffUI(calendar);
     }
@@ -320,37 +320,37 @@ public class EntryDetailsFragment extends Fragment {
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
-            if (Integer.parseInt(entryDetails.get(3)) == 0 && Integer.parseInt(entryDetails.get(2)) / 60 >= weared_time)
+            if (entryDetails.getIsRunning() == 0 && entryDetails.getTimeWeared() / 60 >= weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            else if (Integer.parseInt(entryDetails.get(3)) == 0 && Integer.parseInt(entryDetails.get(2)) / 60 < weared_time)
+            else if (entryDetails.getIsRunning() == 0 && entryDetails.getTimeWeared() / 60 < weared_time)
                 timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             else
                 timeWeared.setTextColor(getResources().getColor(R.color.yellow));
 
-            put.setText(entryDetails.get(0));
-            removed.setText(entryDetails.get(1));
+            put.setText(entryDetails.getDatePut());
+            removed.setText(entryDetails.getDateRemoved());
 
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
-            if (Integer.parseInt(entryDetails.get(3)) == 1) {
-                long timeBeforeRemove = Utils.getDateDiff(entryDetails.get(0), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+            if (entryDetails.getIsRunning() == 1) {
+                long timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 timeWeared.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
-                int time_spent_wearing = Integer.parseInt(entryDetails.get(2));
+                int time_spent_wearing = entryDetails.getTimeWeared();
                 if (time_spent_wearing < 60)
-                    timeWeared.setText(entryDetails.get(2) + getString(R.string.minute_with_M_uppercase));
+                    timeWeared.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
                 else
                     timeWeared.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
             }
 
             // Display the datas relative to the session
-            if (Integer.parseInt(entryDetails.get(3)) == 1) {
+            if (entryDetails.getIsRunning() == 1) {
                 isRunning.setTextColor(getResources().getColor(R.color.yellow));
                 isRunning.setText(R.string.session_is_running);
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(Utils.getdateParsed(entryDetails.get(0)));
+                calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
             } else {
