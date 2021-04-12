@@ -136,6 +136,11 @@ public class EntryDetailsFragment extends Fragment {
         });
     }
 
+    /**
+     * Show user pause alert dialog
+     * Also compute if pause it in the session interval
+     * @param dataModel If the pause already exist, give it datas to load
+     */
     private void showPauseAlertDialog(RingModel dataModel) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         ViewGroup viewGroup = view.findViewById(android.R.id.content);
@@ -196,6 +201,10 @@ public class EntryDetailsFragment extends Fragment {
         alertDialog.show();
     }
 
+    /**
+     * Recompute alarm date
+     * Cancel the old one, then set a new one
+     */
     private void recomputeAlarm() {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
@@ -214,8 +223,11 @@ public class EntryDetailsFragment extends Fragment {
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
+    /**
+     * Compute when user an get it off according to breaks.
+     * If the user made a 1h30 break, then he should wear it 1h30 more
+     */
     private void recomputeWearingTime() {
-        // TODO: To optimize this whole function, by setting variable get in onResume on global
         long oldTimeWeared;
         // If session is running,
         // OldTimeWeared is the time in minute between the starting of the entry and the current Date
@@ -228,8 +240,6 @@ public class EntryDetailsFragment extends Fragment {
         int newComputedTime;
 
         ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
-
-        Log.d(TAG, "There is pauses ! oldTimeWeared is = " + oldTimeWeared);
 
         isThereAlreadyARunningPause = false;
 
@@ -262,6 +272,10 @@ public class EntryDetailsFragment extends Fragment {
         updateAbleToGetItOffUI(calendar);
     }
 
+    /**
+     * Compute the relative time when user can get protection of
+     * @param calendar the time the user can remove the protection
+     */
     private void updateAbleToGetItOffUI(Calendar calendar) {
         int texteRessourceWhenGetItOff;
 

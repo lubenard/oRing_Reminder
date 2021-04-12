@@ -98,6 +98,10 @@ public class MainFragment extends Fragment {
         });
     }
 
+    /**
+     * Define what action should be done on longClick on the '+' button
+     * @param isLongClick act if it is a long click or not
+     */
     private void actionOnPlusButton(boolean isLongClick) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String action = sharedPreferences.getString("ui_action_on_plus_button", "default");
@@ -135,6 +139,9 @@ public class MainFragment extends Fragment {
         recomputeLastWearingTime();
     }
 
+    /**
+     * Recompute last 24 h header according to pauses
+     */
     private static void recomputeLastWearingTime() {
         int totalTimeLastDay = 0;
         int pauseTimeForThisEntry = 0;
@@ -171,6 +178,14 @@ public class MainFragment extends Fragment {
         statLastDayTextview.setText(context.getString(R.string.last_day_string_header) + String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60));
     }
 
+    /**
+     * Compute all pause time into interval
+     * @param dbManager The database manager, avoiding to create a new instance
+     * @param entryId entry for the wanted session
+     * @param date24HoursAgo oldest boundaries
+     * @param dateNow interval newest boundaries
+     * @return the time in Minutes of pauses between the interval
+     */
     public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
         ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
         int totalTimePause = 0;

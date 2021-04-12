@@ -220,7 +220,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        // feedback preference click listener
+        // debug menu preference click listener
         Preference debugMenu = findPreference("other_debug_menu");
         debugMenu.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -244,7 +244,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        // feedback preference click listener
+        // licenses preference click listener
         Preference aboutLicenses = findPreference("other_about_licenses");
         aboutLicenses.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {

@@ -45,6 +45,13 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
             return getContext().getString(R.string.more_than_one_day);
     }
 
+    /**
+     * Get the total time pause for one session
+     * @param datePut The datetime the user put the protection
+     * @param entryId the entry id of the session
+     * @param dateRemoved The datetime the user removed the protection
+     * @return the total time in Minutes of new wearing time
+     */
     private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
         long oldTimeBeforeRemove;
         int newValue;

@@ -97,7 +97,7 @@ public class EditEntryFragment extends Fragment {
      * Used to have headless fragment from mainFragment
      * @param context context used to get get db
      */
-    public EditEntryFragment(Context context) {
+    public EditEntryFragment(Context context) { //  // If entry already exist in the db.If entry already exist in the db.
         this.entryId = -1;
         this.context = context;
         dbManager = new DbManager(context);
@@ -113,7 +113,7 @@ public class EditEntryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
-    }
+    } // If entry already exist in the db. // If en // If entry already exist in the db.try already exist in the db.
 
     private void saveEntry(String formattedDatePut, boolean shouldGoBack) {
         if (entryId != -1)
@@ -230,12 +230,24 @@ public class EditEntryFragment extends Fragment {
         computeTimeBeforeGettingItAgain();
     }
 
+    /**
+     * Check if the input string is valid
+     * @param text the given input string
+     * @return 1 if the string is valid, else 0
+     */
     private int checkInputSanity(String text) {
         if (text.equals("") || text.equals("NOT SET YET") || Utils.getdateParsed(text) == null)
             return 0;
         return 1;
     }
 
+    /**
+     * Recompute time for Textview saying when user should wear it again
+     * This is computed in the following way:
+     * If "to" editText is empty -> "from" textview + user-defined-wearing-time + 9
+     * If "to" editText is not empty -> "to" editText + 9
+     * Else, no sufficient datas is given to compute it
+     */
     private void computeTimeBeforeGettingItAgain() {
         Calendar calendar = Calendar.getInstance();
         if (checkInputSanity(new_entry_datetime_to.getText().toString()) == 0 &&
@@ -270,9 +282,11 @@ public class EditEntryFragment extends Fragment {
                 if (entryId != -1) {
                     if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET")) {
                         dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
+                        // Recompute alarm if the entry already exist, but has no ending time
                         recomputeAlarm(Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES), true);
                     } else {
                         dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                        // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
                         recomputeAlarm(-1, false);
                     }
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
@@ -293,6 +307,11 @@ public class EditEntryFragment extends Fragment {
         }
     }
 
+    /**
+     * Recompute alarm date, and set a new one if needed
+     * @param newAlarmDate The new alarm date
+     * @param reSetAlarm if the alarm should be re set (else it is just canceled)
+     */
     private void recomputeAlarm(long newAlarmDate, boolean reSetAlarm) {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)

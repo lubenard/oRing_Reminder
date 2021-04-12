@@ -82,7 +82,7 @@ public class Utils {
     /**
      * Check is a permission is given. If not, it ask user for it.
      * @param permRequired
-     * @return
+     * @return if the permission is granted or not
      */
     public static boolean checkOrRequestPerm(Activity activity, Context context, String permRequired) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

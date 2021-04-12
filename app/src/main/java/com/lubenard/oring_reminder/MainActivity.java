@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+    /**
+     * Apply config at app startup
+     */
     private void checkConfig() {
         String theme_option = sharedPreferences.getString("ui_theme", "dark");
         switch (theme_option) {
@@ -87,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    /**
+     * Create notif channel if no one exist
+     */
     private void createNotifChannel() {
         if (!sharedPreferences.getBoolean("has_notif_channel_created", false)) {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

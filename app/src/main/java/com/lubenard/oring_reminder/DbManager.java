@@ -318,6 +318,11 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Get the last running entry
+     * @return A ringModel containing last Running entry.
+     * Primarily used for widget
+     */
     public RingModel getLastRunningEntry() {
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
@@ -353,6 +358,12 @@ public class DbManager extends SQLiteOpenHelper {
         return datas;
     }
 
+    /**
+     * Return a array list of all pauses for given id
+     * @param entryId id to look for
+     * @param isDesc set if the pauses should be desc or not
+     * @return a Arraylist containing RingModel objects of all pauses
+     */
     public ArrayList<RingModel> getAllPausesForId(long entryId, boolean isDesc) {
         ArrayList<RingModel> datas = new ArrayList<>();
 
@@ -371,9 +382,13 @@ public class DbManager extends SQLiteOpenHelper {
         return datas;
     }
 
-    public void deletePauseEntry(long entryId) {
-        if (entryId > 0)
-            writableDB.delete(pausesTable,pauseTableId + "=?", new String[]{String.valueOf(entryId)});
+    /**
+     * Delete pause in db
+     * @param pauseId the pauseId to delete
+     */
+    public void deletePauseEntry(long pauseId) {
+        if (pauseId > 0)
+            writableDB.delete(pausesTable,pauseTableId + "=?", new String[]{String.valueOf(pauseId)});
     }
 
     /**

@@ -27,6 +27,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static DbManager dbManager;
     private static RemoteViews remoteViews;
 
+    // Update the Widget datas
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
 

@@ -25,6 +25,8 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG = "AfterBootBroadcast";
 
     public void onReceive(Context context, Intent arg1) {
+        // Set all alarms for running sessions, because they have been erased after reboot
+        // Also called when user change time, and when app is updated
         DbManager dbManager = new DbManager(context);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();

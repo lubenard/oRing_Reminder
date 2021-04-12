@@ -33,14 +33,11 @@ public class DebugFragment extends Fragment {
 
         Button buttonSendNotif = view.findViewById(R.id.debug_send_notif);
 
-        buttonSendNotif.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.sendNotificationWithQuickAnswer(getContext(), "This is a test notification",
-                        "No entry is affected by this notification",
-                        R.drawable.baseline_done_24, -1);
-                Toast.makeText(getContext(), "Just sent a manual notif. Do not worry, no entry will be affected.", Toast.LENGTH_SHORT).show();
-            }
+        buttonSendNotif.setOnClickListener(view1 -> {
+            Utils.sendNotificationWithQuickAnswer(getContext(), "This is a test notification",
+                    "No entry is affected by this notification",
+                    R.drawable.baseline_done_24, -1);
+            Toast.makeText(getContext(), "Just sent a manual notif. Do not worry, no entry will be affected.", Toast.LENGTH_SHORT).show();
         });
     }
 }
