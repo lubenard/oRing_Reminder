@@ -221,10 +221,12 @@ public class DbManager extends SQLiteOpenHelper {
      * Delete a entry
      * @param entryId the id of the contact we want to delete
      */
-    public void deleteEntry(long entryId)
-    {
-        if (entryId > 0)
-            writableDB.delete(ringTable,ringTableId + "=?", new String[]{String.valueOf(entryId)});
+    public void deleteEntry(long entryId) {
+        if (entryId > 0) {
+            // Also delete pauses linked to this entry
+            writableDB.delete(pausesTable, pauseTableEntryId + "=?", new String[]{String.valueOf(entryId)});
+            writableDB.delete(ringTable, ringTableId + "=?", new String[]{String.valueOf(entryId)});
+        }
     }
 
     /**
