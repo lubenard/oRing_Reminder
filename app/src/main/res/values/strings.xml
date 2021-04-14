@@ -102,4 +102,13 @@
     <string name="time_remaining">Time remaining:</string>
     <string name="no_running_session">No running session</string>
     <string name="you_can_get_it_on_again">"You should get it on at: "</string>
+    <string name="action_calculators">Calculators</string>
+    <string name="calculators_title">Calculators</string>
+    <string name="number_of_spermato_per_ml">Number of spermatozoa / ml:</string>
+    <string name="progressive_mobility_in_percent">Progressive mobility (in %):</string>
+    <string name="compute_if_i_am_fertile">Compute if i am contracepted</string>
+    <string name="you_are_contracepted">You are contracepted ! With a number of:&#160;</string>
+    <string name="you_are_not_contracepted">You are NOT contracepted ! With a number of:&#160;</string>
+    <string name="spermo_per_ml">&#160; spermatozoa / ml</string>
+    <string name="please_fill_required_infos">Please fill required infos.</string>
 </resources>

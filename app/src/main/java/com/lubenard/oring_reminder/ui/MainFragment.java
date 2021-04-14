@@ -245,6 +245,12 @@ public class MainFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_calculators:
+                CalculatorsFragment fragment = new CalculatorsFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, fragment, null)
+                        .addToBackStack(null).commit();
+                return true;
             case R.id.action_settings:
                 // Navigate to settings screen
                 getActivity().getSupportFragmentManager().beginTransaction()

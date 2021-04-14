@@ -118,4 +118,13 @@
     <string name="when_get_it_off_negative">(Il y a environ -%dh%02dm)</string>
     <string name="removed_during">Retiré prendant :</string>
     <string name="last_day_string_header">Dans les dernières 24h, porté pendant :&#160;</string>
+    <string name="action_calculators">Calculateurs</string>
+    <string name="calculators_title">Calculateurs</string>
+    <string name="number_of_spermato_per_ml">Nombre de spermatozoïdes / ml</string>
+    <string name="progressive_mobility_in_percent">Mobilité progressive (en %)</string>
+    <string name="compute_if_i_am_fertile">Calculer si je suis contracepté</string>
+    <string name="you_are_not_contracepted">Vous n\'êtes PAS contracepté ! Avec un nombre de :&#160;</string>
+    <string name="you_are_contracepted">Vous êtes contraceptés ! Avec un nombre de :&#160;</string>
+    <string name="spermo_per_ml">&#160; spermatozoïdes / ml</string>
+    <string name="please_fill_required_infos">Merci de remplir les infos demandées.</string>
 </resources>
