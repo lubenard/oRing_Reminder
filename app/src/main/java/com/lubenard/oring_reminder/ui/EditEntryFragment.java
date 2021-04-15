@@ -282,22 +282,34 @@ public class EditEntryFragment extends Fragment {
                 // If entry already exist in the db.
                 if (entryId != -1) {
                     if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET")) {
-                        dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-                        // Recompute alarm if the entry already exist, but has no ending time
-                        recomputeAlarm(Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES), true);
+                        if (checkInputSanity(formattedDatePut) == 0) {
+                            dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
+                            // Recompute alarm if the entry already exist, but has no ending time
+                            recomputeAlarm(Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES), true);
+                        } else
+                            showToastBadFormattedDate();
                     } else {
-                        dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
-                        // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
-                        recomputeAlarm(-1, false);
+                        if (checkInputSanity(formattedDatePut) == 0 && checkInputSanity(formattedDateRemoved) == 0) {
+                            dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                            // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
+                            recomputeAlarm(-1, false);
+                        } else
+                            showToastBadFormattedDate();
                     }
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
                 } else {
                     if (formattedDateRemoved.isEmpty())
-                        insertNewEntry(formattedDatePut, true);
+                        if (checkInputSanity(formattedDatePut) == 0) {
+                            insertNewEntry(formattedDatePut, true);
+                        } else
+                            showToastBadFormattedDate();
                     else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-                        dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
-                        // Get back to the last element in the fragment stack
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        if (checkInputSanity(formattedDatePut) == 1 && checkInputSanity(formattedDateRemoved) == 1) {
+                            dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
+                            // Get back to the last element in the fragment stack
+                            getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        } else
+                            showToastBadFormattedDate();
                     } else
                         // If the diff time is too short, trigger this error
                         Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
@@ -306,6 +318,10 @@ public class EditEntryFragment extends Fragment {
             default:
                 return false;
         }
+    }
+
+    private void showToastBadFormattedDate() {
+        Toast.makeText(context, R.string.bad_date_format, Toast.LENGTH_SHORT).show();
     }
 
     /**
