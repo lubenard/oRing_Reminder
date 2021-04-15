@@ -151,7 +151,7 @@ public class MainFragment extends Fragment {
         String last24Hours = Utils.getdateFormatted(calendar.getTime());
         Log.d(TAG, "Computing last 24 hours: interval is between: " + last24Hours + " and " + todayDate);
         RingModel currentModel;
-        for (int i = 0; i != 5; i++) {
+        for (int i = 0; i != ((dataModels.size() > 5) ? 5 : dataModels.size()); i++) {
             currentModel = dataModels.get(i);
             pauseTimeForThisEntry = computeTotalTimePauseForId(dbManager, currentModel.getId(), last24Hours, todayDate);
             if (currentModel.getIsRunning() == 0) {
