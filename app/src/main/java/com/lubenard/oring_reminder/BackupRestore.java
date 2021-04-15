@@ -150,6 +150,10 @@ public class BackupRestore extends Activity{
             xmlWriter.writeText(preferences.getString("ui_theme", "dark"));
             xmlWriter.endEntity();
 
+            xmlWriter.writeEntity("ui_action_on_plus_button");
+            xmlWriter.writeText(preferences.getString("ui_action_on_plus_button", "default"));
+            xmlWriter.endEntity();
+
             xmlWriter.writeEntity("myring_wearing_time");
             xmlWriter.writeText(preferences.getString("myring_wearing_time", "15"));
             xmlWriter.endEntity();
@@ -252,6 +256,11 @@ public class BackupRestore extends Activity{
                             myParser.next();
                             Log.d(TAG, "ui_theme setting = " + myParser.getText());
                             preferences.edit().putString("ui_theme", myParser.getText()).apply();
+                            break;
+                        case  "ui_action_on_plus_button":
+                            myParser.next();
+                            Log.d(TAG, "ui_action_on_plus_button" + myParser.getText());
+                            preferences.edit().putString("ui_action_on_plus_button", myParser.getText()).apply();
                             break;
                         case "myring_wearing_time":
                             myParser.next();
