@@ -2,103 +2,123 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/base_text_centered"
-        android:textSize="20dp"
-        android:layout_marginTop="30dp"
-        android:textStyle="bold"
-        android:text="@string/you_weared_your_protection_from" />
-
-    <TextView
-        style="@style/base_text_centered"
-        android:id="@+id/details_entry_put"
-        android:textSize="17dp"
-        android:text="datetime_start_wearing" />
-
-    <TextView
-        style="@style/base_text_centered"
-        android:layout_marginTop="30dp"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:text="@string/to" />
-
-    <TextView
-        android:id="@+id/details_entry_removed"
-        style="@style/base_text_centered"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="17dp"
-        android:text="datetime_stop_wearing" />
+        android:layout_weight="1">
 
-    <TextView
-        style="@style/base_text_centered"
-        android:layout_marginTop="30dp"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:text="@string/that_make_about" />
-
-    <TextView
-        style="@style/base_text_centered"
-        android:id="@+id/details_entry_time_weared"
-        android:textSize="17dp"
-        android:text="time_weared" />
-
-    <TextView
-        android:id="@+id/details_entry_isRunning"
-        style="@style/base_text_centered"
-        android:layout_marginTop="30dp"
-        android:textSize="17dp"
-        android:text="is_running" />
-
-    <TextView
-        android:id="@+id/details_entry_able_to_get_it_off"
-        style="@style/base_text_centered"
-        android:layout_marginTop="15dp"
-        android:textSize="17dp"
-        android:text="able_to_get_it_off_to" />
-    <TextView
-        android:id="@+id/details_entry_when_get_it_off"
-        style="@style/base_text_centered"
-        android:textSize="17dp"
-        android:text="when_get_it_off" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="30dp"
-            android:text="Pauses:" />
+            android:orientation="vertical" >
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            <TextView
+                style="@style/base_text_centered"
+                android:layout_marginTop="30dp"
+                android:text="@string/you_weared_your_protection_from"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/new_pause_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/baseline_add_green_48"
-            android:layout_marginRight="10dp"
-            android:background="@null"
-            android:text="Add a pause" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/details_entry_put"
+                style="@style/base_text_centered"
+                android:text="datetime_start_wearing"
+                android:textSize="17dp" />
 
-    <ListView
-        android:id="@+id/listview_pauses"
+            <TextView
+                style="@style/base_text_centered"
+                android:layout_marginTop="30dp"
+                android:text="@string/to"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/details_entry_removed"
+                style="@style/base_text_centered"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="datetime_stop_wearing"
+                android:textAlignment="center"
+                android:textSize="17dp" />
+
+            <TextView
+                style="@style/base_text_centered"
+                android:layout_marginTop="30dp"
+                android:text="@string/that_make_about"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/details_entry_time_weared"
+                style="@style/base_text_centered"
+                android:text="time_weared"
+                android:textSize="17dp" />
+
+            <TextView
+                android:id="@+id/details_entry_isRunning"
+                style="@style/base_text_centered"
+                android:layout_marginTop="30dp"
+                android:text="is_running"
+                android:textSize="17dp" />
+
+            <TextView
+                android:id="@+id/details_entry_able_to_get_it_off"
+                style="@style/base_text_centered"
+                android:layout_marginTop="15dp"
+                android:text="able_to_get_it_off_to"
+                android:textSize="17dp" />
+
+            <TextView
+                android:id="@+id/details_entry_when_get_it_off"
+                style="@style/base_text_centered"
+                android:text="when_get_it_off"
+                android:textSize="17dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Pauses:"
+                    android:textSize="30dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/new_pause_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:background="@null"
+                    android:src="@drawable/baseline_add_green_48"
+                    android:text="Add a pause" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/listview_pauses"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:divider="@null"
+                android:dividerHeight="7dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_finish_session"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:divider="@null"
-        android:dividerHeight="7dp" />
+        android:layout_height="75dp"
+        android:background="@android:color/holo_red_dark"
+        android:visibility="gone"
+        android:text="@string/finish_session" />
 </LinearLayout>

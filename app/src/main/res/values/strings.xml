@@ -112,4 +112,5 @@
     <string name="spermo_per_ml">&#160; spermatozoa / ml</string>
     <string name="please_fill_required_infos">Please fill required infos.</string>
     <string name="bad_date_format">Bad date format. Please check it.</string>
+    <string name="finish_session">Finish this session</string>
 </resources>

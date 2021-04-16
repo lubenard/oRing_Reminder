@@ -68,6 +68,7 @@ public class EntryDetailsFragment extends Fragment {
     private TextView ableToGetItOff;
     private TextView whenGetItOff;
     private TextView timeWeared;
+    private Button stopSessionButton;
     private boolean isThereAlreadyARunningPause = false;
 
     @Override
@@ -101,17 +102,12 @@ public class EntryDetailsFragment extends Fragment {
 
         listView = view.findViewById(R.id.listview_pauses);
 
-        // This can block the listview from scrolling, but i cannot integrate listview inside
-        // scrollview without it acting weird (only showing one row)
-        /*listView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    return true; // Indicates that this has been handled by you and will not be forwarded further.
-                }
-                return false;
-            }
-        });*/
+        stopSessionButton = view.findViewById(R.id.button_finish_session);
+
+        stopSessionButton.setOnClickListener(view13 -> {
+            dbManager.endSession(entryId);
+            updateAllFragmentDatas();
+        });
 
         ImageButton testButton = view.findViewById(R.id.new_pause_button);
         testButton.setOnClickListener(view1 -> showPauseAlertDialog(null));
@@ -303,11 +299,10 @@ public class EntryDetailsFragment extends Fragment {
        dataModels.addAll(pausesDatas);
        adapter = new CustomListPausesAdapter(dataModels, getContext());
        listView.setAdapter(adapter);
+        Utils.getListViewSize(listView);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void updateAllFragmentDatas() {
         if (entryId > 0) {
             // Load datas from the db and put them at the right place
             entryDetails = dbManager.getEntryDetails(entryId);
@@ -349,6 +344,8 @@ public class EntryDetailsFragment extends Fragment {
                 isRunning.setTextColor(getResources().getColor(R.color.yellow));
                 isRunning.setText(R.string.session_is_running);
 
+                stopSessionButton.setVisibility(View.VISIBLE);
+
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
@@ -360,6 +357,7 @@ public class EntryDetailsFragment extends Fragment {
                 isRunning.setText(R.string.session_finished);
                 ableToGetItOff.setVisibility(View.INVISIBLE);
                 whenGetItOff.setVisibility(View.INVISIBLE);
+                stopSessionButton.setVisibility(View.GONE);
             }
             recomputeWearingTime();
             updatePauseList();
@@ -369,6 +367,12 @@ public class EntryDetailsFragment extends Fragment {
             Log.e(TAG, "Error: Wrong Id: " + entryId);
             fragmentManager.popBackStackImmediate();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateAllFragmentDatas();
     }
 
     @Override

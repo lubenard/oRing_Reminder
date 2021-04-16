@@ -127,4 +127,5 @@
     <string name="you_are_contracepted">Vous êtes contraceptés ! Avec un nombre de :&#160;</string>
     <string name="spermo_per_ml">&#160; spermatozoïdes / ml</string>
     <string name="please_fill_required_infos">Merci de remplir les infos demandées.</string>
+    <string name="finish_session">Terminer cette session</string>
 </resources>
