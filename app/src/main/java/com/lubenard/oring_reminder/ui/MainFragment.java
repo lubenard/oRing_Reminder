@@ -111,13 +111,13 @@ public class MainFragment extends Fragment {
                 createNewEntry();
             } else {
                 Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                EditEntryFragment.setUpddateMainList(true);
+                EditEntryFragment.setUpdateMainList(true);
                 new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
             }
         } else {
             if (action.equals("default")) {
                 Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                EditEntryFragment.setUpddateMainList(true);
+                EditEntryFragment.setUpdateMainList(true);
                 new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
             } else {
                 createNewEntry();

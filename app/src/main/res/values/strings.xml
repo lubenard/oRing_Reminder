@@ -65,6 +65,7 @@
     <string name="datas_export_data_xml_title">Export your datas in XML</string>
     <string name="datas_export_data_xml_summary">Export your data in XML format</string>
     <string name="datas_import_data_xml_title">Import your data in XML</string>
+    <string name="datas_export_data_csv_title">Export your data in CSV</string>
     <string name="datas_erase_data_title">Erase all your data</string>
     <string name="datas_erase_datas_summary">This will delete all your data</string>
     <string name="cat_ui">UI</string>
@@ -72,6 +73,7 @@
     <string name="cat_datas">DATAS</string>
     <string name="cat_other">OTHER</string>
     <string name="datas_import_data_xml">Import your data in XML format</string>
+    <string name="datas_export_data_csv">Export your data in CSV format</string>
     <string name="alertdialog_multiple_running_session_body">Multiple sessions running have been found ! What do you want to do ?</string>
     <string name="alertdialog_multiple_running_session_choice1">End them all !</string>
     <string name="alertdialog_multiple_running_session_choice2">Still insert my entry</string>

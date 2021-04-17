@@ -76,6 +76,11 @@
             app:summary="@string/datas_import_data_xml"/>
 
         <Preference
+            app:key="datas_export_data_csv"
+            app:title="@string/datas_export_data_csv_title"
+            app:summary="@string/datas_export_data_csv"/>
+
+        <Preference
             app:key="datas_erase_data"
             app:title="@string/datas_erase_data_title"
             app:summary="@string/datas_erase_datas_summary"/>

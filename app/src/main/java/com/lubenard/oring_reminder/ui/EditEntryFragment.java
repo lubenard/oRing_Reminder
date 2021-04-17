@@ -90,7 +90,7 @@ public class EditEntryFragment extends Fragment {
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
-    public static void setUpddateMainList(boolean newStatus) {
+    public static void setUpdateMainList(boolean newStatus) {
         shouldUpdateMainList = newStatus;
     }
 
@@ -98,7 +98,7 @@ public class EditEntryFragment extends Fragment {
      * Used to have headless fragment from mainFragment
      * @param context context used to get get db
      */
-    public EditEntryFragment(Context context) { //  // If entry already exist in the db.If entry already exist in the db.
+    public EditEntryFragment(Context context) {
         this.entryId = -1;
         this.context = context;
         dbManager = new DbManager(context);

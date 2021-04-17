@@ -160,6 +160,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+        Preference exportCSV = findPreference("datas_export_data_csv");
+        exportCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                if (!Utils.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                    return false;
+                Intent intent = new Intent(getContext(), BackupRestore.class);
+                intent.putExtra("mode", 3);
+                startActivity(intent);
+                return true;
+            }
+        });
+
         Preference importXML = findPreference("datas_import_data_xml");
         importXML.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {

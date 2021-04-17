@@ -18,6 +18,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.ui.SettingsFragment;
+import com.lubenard.oring_reminder.utils.CsvWriter;
 import com.lubenard.oring_reminder.utils.XmlWriter;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -50,6 +51,23 @@ public class BackupRestore extends Activity{
             startBackupIntoXML();
         if (typeOfDatas == 2)
             startRestoreFromXML();
+        if (typeOfDatas == 3)
+            startBackupIntoCSV();
+    }
+
+    private void startBackupIntoCSV() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            dataToFileChooser.setType("text/csv");
+            dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatasCSV.csv");
+            launchIntent(dataToFileChooser);
+        } else {
+            Log.w(TAG, "Your android version is pretty old. Save will be done at default location.");
+            Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
+            getDefaultFolder("csv");
+            createDefaultFileIfNeeded();
+            launchBackupRestore(exportPath);
+        }
     }
 
     private void launchIntent(Intent dataToFileChooser) {
@@ -58,7 +76,7 @@ public class BackupRestore extends Activity{
         } catch (ActivityNotFoundException e) {
             Log.w(TAG, "Failed to open a Intent. Save will be done at default location.");
             Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_fail, Toast.LENGTH_LONG).show();
-            getDefaultFolder();
+            getDefaultFolder("xml");
             createDefaultFileIfNeeded();
             launchBackupRestore(exportPath);
         }
@@ -73,7 +91,7 @@ public class BackupRestore extends Activity{
         } else {
             Log.w(TAG, "Your android version is pretty old. Save will be done at default location.");
             Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder();
+            getDefaultFolder("xml");
             createDefaultFileIfNeeded();
             launchBackupRestore(exportPath);
         }
@@ -93,14 +111,14 @@ public class BackupRestore extends Activity{
         }
     }
 
-    private void getDefaultFolder() {
+    private void getDefaultFolder(String extension) {
         String folder_main = "oRingReminder-Backup";
 
         File f = new File(Environment.getExternalStorageDirectory(), folder_main);
         if (!f.exists()) {
             f.mkdirs();
         }
-        exportPath = f.getPath() + "/backup.xml";
+        exportPath = f.getPath() + "/backup." + extension;
         Log.d(TAG, "Absolute path of backup file is " + exportPath);
     }
 
@@ -113,7 +131,7 @@ public class BackupRestore extends Activity{
         } else {
             Log.w(TAG, "Android version too old. Restore will be from default location");
             Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder();
+            getDefaultFolder("xml");
             launchBackupRestore(exportPath);
         }
         return true;
@@ -325,9 +343,57 @@ public class BackupRestore extends Activity{
                 e.printStackTrace();
             }
             Toast.makeText(this, getString(R.string.toast_success_restore_datas), Toast.LENGTH_LONG).show();
+        } else if (typeOfDatas == 3) {
+            Log.d(TAG, "Backup at path: " + filePath);
+            try {
+                OutputStream outputStream = getContentResolver().openOutputStream(uri);
+                CsvWriter csvWriter = new CsvWriter(outputStream);
+                saveDatasIntoCsv(csvWriter);
+                csvWriter.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Error: something failed during the save of the datas");
+                e.printStackTrace();
+            }
+            Toast.makeText(this, getString(R.string.toast_success_save_datas), Toast.LENGTH_LONG).show();
         }
         dialog.dismiss();
         finish();
+    }
+
+    private void saveDatasIntoCsv(CsvWriter csvWriter) {
+        DbManager dbManager = new DbManager(this);
+        // Datas containing all saved datas
+        try {
+
+            csvWriter.writeColumnsName(new String[]{"DatePut", "DateRemoved", "timeWorn"});
+
+            ArrayList<String> formattedDatas = new ArrayList<>();
+            // Contain all entrys
+            ArrayList<RingModel> rawDatas = dbManager.getAllDatasForAllEntrys();
+            for (int i = 0; i < rawDatas.size(); i++) {
+                formattedDatas.add(rawDatas.get(i).getDatePut());
+                formattedDatas.add(rawDatas.get(i).getDateRemoved());
+                formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared()));
+                csvWriter.writeColumnsDatas(formattedDatas);
+                formattedDatas.clear();
+            }
+
+            // Contain all pauses
+            /*ArrayList<RingModel> pauses = dbManager.getAllDatasForAllPauses();
+            for (int i = 0; i < pauses.size(); i++) {
+                xmlWriter.writeEntity("pause");
+                xmlWriter.writeAttribute("entryId", String.valueOf(pauses.get(i).getId()));
+                xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(i).getIsRunning()));
+                xmlWriter.writeAttribute("dateTimePut", pauses.get(i).getDatePut());
+                xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(i).getDateRemoved());
+                xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(i).getTimeWeared()));
+                xmlWriter.endEntity();
+            }
+
+            xmlWriter.endEntity();*/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
