@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.preference.PreferenceManager;
 
@@ -33,14 +34,12 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         Calendar calendar = Calendar.getInstance();
 
         for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
-            // Thoses lines are only for log
             calendar.setTime(Utils.getdateParsed(sessions.getValue()));
             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")));
             Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
 
-            // This is the real and only useful line here
-            EditEntryFragment.setAlarm(context, sessions.getValue(), sessions.getKey(),
-                    Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")));
+            // Set alarms for session not finished
+            EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
         }
     }
 }

@@ -74,15 +74,18 @@ public class EditEntryFragment extends Fragment {
      * @param alarmDate The date of the alarm in the form 2020-12-30 10:42:00
      * @param entryId the id entry of the entry to update
      */
-    public static void setAlarm(Context context, String alarmDate, long entryId, int wearing_time) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(alarmDate));
-        calendar.add(Calendar.HOUR_OF_DAY, wearing_time);
-        Log.d(TAG, "Setting the alarm for this timstamp in millis " + calendar.getTimeInMillis());
-        Log.d(TAG, "setAlarm receive id: " + entryId);
+    public static void setAlarm(Context context, String alarmDate, long entryId, boolean cancelOldAlarm) {
+        // From the doc, just create the exact same intent, and cancel it.
+        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+
+        if (cancelOldAlarm)
+            am.cancel(pendingIntent);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Utils.getdateParsed(alarmDate));
 
         if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
             am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
@@ -109,12 +112,11 @@ public class EditEntryFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
-    } // If entry already exist in the db. // If en // If entry already exist in the db.try already exist in the db.
+    }
 
     private void saveEntry(String formattedDatePut, boolean shouldGoBack) {
         if (entryId != -1)
@@ -122,8 +124,12 @@ public class EditEntryFragment extends Fragment {
         else {
             long newlyInsertedEntry = dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
             // Set alarm only for new entry
-            if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true))
-                setAlarm(context, formattedDatePut, newlyInsertedEntry, weared_time);
+            if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true)) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.HOUR_OF_DAY, weared_time);
+                Log.d(TAG, "New entry: setting alarm at " + calendar.getTimeInMillis());
+                setAlarm(context, Utils.getdateFormatted(calendar.getTime()), newlyInsertedEntry, false);
+            }
         }
         // We do not need to go back if this is a long click on '+' on mainFragment
         if (shouldGoBack)
@@ -146,20 +152,14 @@ public class EditEntryFragment extends Fragment {
             if (!runningSessions.isEmpty() && should_warn_user) {
                 new AlertDialog.Builder(context).setTitle(R.string.alertdialog_multiple_running_session_title)
                         .setMessage(R.string.alertdialog_multiple_running_session_body)
-                        .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
-                                    Log.d(TAG, "Set session " + sessions.getKey() + " to finished");
-                                    dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), Utils.getdateFormatted(new Date()), 0);
-                                }
-                                saveEntry(formattedDatePut, shouldGoBack);
+                        .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, (dialog, which) -> {
+                            for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
+                                Log.d(TAG, "Set session " + sessions.getKey() + " to finished");
+                                dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), Utils.getdateFormatted(new Date()), 0);
                             }
+                            saveEntry(formattedDatePut, shouldGoBack);
                         })
-                        .setNegativeButton(R.string.alertdialog_multiple_running_session_choice2, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                saveEntry(formattedDatePut, shouldGoBack);
-                            }
-                        })
+                        .setNegativeButton(R.string.alertdialog_multiple_running_session_choice2, (dialog, which) -> saveEntry(formattedDatePut, shouldGoBack))
                         .setIcon(android.R.drawable.ic_dialog_alert).show();
             } else {
                 saveEntry(formattedDatePut, shouldGoBack);
@@ -172,6 +172,11 @@ public class EditEntryFragment extends Fragment {
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Bundle bundle = this.getArguments();
+        entryId = bundle.getLong("entryId", -1);
+
+        context = getContext();
+
         new_entry_datetime_from = view.findViewById(R.id.new_entry_date_from);
         new_entry_datetime_to = view.findViewById(R.id.new_entry_date_to);
         getItOnBeforeTextView = view.findViewById(R.id.get_it_on_before);
@@ -179,18 +184,14 @@ public class EditEntryFragment extends Fragment {
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
 
-        context = getContext();
-        Bundle bundle = this.getArguments();
-        entryId = bundle.getLong("entryId", -1);
-
+        // Fill datas into new fields
         if (entryId != -1) {
             RingModel data = dbManager.getEntryDetails(entryId);
             new_entry_datetime_from.setText(data.getDatePut());
             new_entry_datetime_to.setText(data.getDateRemoved());
             getActivity().setTitle(R.string.action_edit);
-        } else {
+        } else
             getActivity().setTitle(R.string.create_new_entry);
-        }
 
         auto_from_button.setOnClickListener(view1 -> {
             new_entry_datetime_from.setText(Utils.getdateFormatted(new Date()));
@@ -232,17 +233,6 @@ public class EditEntryFragment extends Fragment {
     }
 
     /**
-     * Check if the input string is valid
-     * @param text the given input string
-     * @return 1 if the string is valid, else 0
-     */
-    private int checkInputSanity(String text) {
-        if (text.equals("") || text.equals("NOT SET YET") || Utils.getdateParsed(text) == null)
-            return 0;
-        return 1;
-    }
-
-    /**
      * Recompute time for Textview saying when user should wear it again
      * This is computed in the following way:
      * If "to" editText is empty -> "from" textview + user-defined-wearing-time + 9
@@ -251,17 +241,21 @@ public class EditEntryFragment extends Fragment {
      */
     private void computeTimeBeforeGettingItAgain() {
         Calendar calendar = Calendar.getInstance();
-        if (checkInputSanity(new_entry_datetime_to.getText().toString()) == 0 &&
-                checkInputSanity(new_entry_datetime_from.getText().toString()) == 1) {
+
+        int is_new_entry_datetime_to_valid = Utils.checkDateInputSanity(new_entry_datetime_to.getText().toString());
+
+        // If new_entry_datetime_from is valid but new_entry_datetime_to is not valid
+        if (is_new_entry_datetime_to_valid == 0 && Utils.checkDateInputSanity(new_entry_datetime_from.getText().toString()) == 1) {
             calendar.setTime(Utils.getdateParsed(new_entry_datetime_from.getText().toString()));
             calendar.add(Calendar.HOUR_OF_DAY, weared_time + 9);
-            getItOnBeforeTextView.setText("Get it on before " + Utils.getdateFormatted(calendar.getTime()));
-        } else if (checkInputSanity(new_entry_datetime_to.getText().toString()) == 1) {
+            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + Utils.getdateFormatted(calendar.getTime()));
+        } else if (is_new_entry_datetime_to_valid == 1) {
+            // Only if new_entry_datetime_to is valid (meaning a session is supposed to have a end date)
             calendar.setTime(Utils.getdateParsed(new_entry_datetime_to.getText().toString()));
             calendar.add(Calendar.HOUR_OF_DAY, 9);
-            getItOnBeforeTextView.setText("Get it on before " + Utils.getdateFormatted(calendar.getTime()));
+            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + Utils.getdateFormatted(calendar.getTime()));
         } else
-            getItOnBeforeTextView.setText("Not enought datas to compute when you should wear it again");
+            getItOnBeforeTextView.setText(R.string.not_enough_datas_to_compute_get_it_on);
     }
 
     @Override
@@ -282,34 +276,44 @@ public class EditEntryFragment extends Fragment {
                 // If entry already exist in the db.
                 if (entryId != -1) {
                     if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET")) {
-                        if (checkInputSanity(formattedDatePut) == 0) {
+                        if (Utils.checkDateInputSanity(formattedDatePut) == 0) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
                             // Recompute alarm if the entry already exist, but has no ending time
-                            recomputeAlarm(Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES), true);
-                        } else
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                            setAlarm(context, Utils.getdateFormatted(calendar.getTime()) , entryId,true);
+                        } else {
+                            Log.d(TAG, "DateFormat wrong check 1");
                             showToastBadFormattedDate();
+                        }
                     } else {
-                        if (checkInputSanity(formattedDatePut) == 0 && checkInputSanity(formattedDateRemoved) == 0) {
+                        if (Utils.checkDateInputSanity(formattedDatePut) == 0 && Utils.checkDateInputSanity(formattedDateRemoved) == 0) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
                             // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
-                            recomputeAlarm(-1, false);
-                        } else
+                            cancelAlarm(entryId);
+                        } else {
+                            Log.d(TAG, "DateFormat wrong check 2");
                             showToastBadFormattedDate();
+                        }
                     }
                     getActivity().getSupportFragmentManager().popBackStackImmediate();
                 } else {
                     if (formattedDateRemoved.isEmpty())
-                        if (checkInputSanity(formattedDatePut) == 0) {
+                        if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                             insertNewEntry(formattedDatePut, true);
-                        } else
+                        } else {
+                            Log.d(TAG, "DateFormat wrong check 3");
                             showToastBadFormattedDate();
+                        }
                     else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-                        if (checkInputSanity(formattedDatePut) == 1 && checkInputSanity(formattedDateRemoved) == 1) {
+                        if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                             dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
                             // Get back to the last element in the fragment stack
                             getActivity().getSupportFragmentManager().popBackStackImmediate();
-                        } else
+                        } else {
+                            Log.d(TAG, "DateFormat wrong check 4");
                             showToastBadFormattedDate();
+                        }
                     } else
                         // If the diff time is too short, trigger this error
                         Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
@@ -325,27 +329,14 @@ public class EditEntryFragment extends Fragment {
     }
 
     /**
-     * Recompute alarm date, and set a new one if needed
-     * @param newAlarmDate The new alarm date
-     * @param reSetAlarm if the alarm should be re set (else it is just canceled)
+     * Only cancel alarm for given entryId
      */
-    private void recomputeAlarm(long newAlarmDate, boolean reSetAlarm) {
+    private void cancelAlarm(long entryId) {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
         am.cancel(pendingIntent);
-
-        if (reSetAlarm) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Utils.getdateParsed(dbManager.getEntryDetails(entryId).getDatePut()));
-            calendar.add(Calendar.MINUTE, (int)newAlarmDate);
-            Log.d(TAG, "Alarm has been reschedule by user at " + calendar.getTime());
-            if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
-                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            else if (SDK_INT >= Build.VERSION_CODES.M)
-                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        }
     }
 }

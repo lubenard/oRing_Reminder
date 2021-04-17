@@ -115,4 +115,6 @@
     <string name="please_fill_required_infos">Please fill required infos.</string>
     <string name="bad_date_format">Bad date format. Please check it.</string>
     <string name="finish_session">Finish this session</string>
+    <string name="get_it_on_before">"Get it on before "</string>
+    <string name="not_enough_datas_to_compute_get_it_on">Not enought datas to compute when you should wear it again</string>
 </resources>

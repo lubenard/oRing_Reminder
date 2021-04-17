@@ -17,7 +17,8 @@
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:inputType="datetime"
-        android:hint="Ex: 2020-03-30 10:04:20"/>
+        android:hint="Ex: 2020-03-30 10:04:20"
+        android:digits="0123456789- :"/>
 
     <Button
         android:id="@+id/new_entry_auto_date_from"
@@ -41,6 +42,7 @@
         android:ems="10"
         android:layout_gravity="center"
         android:hint="Ex: 2020-03-31 01:10:20"
+        android:digits="0123456789- :"
         android:inputType="datetime" />
 
     <Button

@@ -31,6 +31,17 @@ import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
+    /**
+     * Check if the input string is valid
+     * @param text the given input string
+     * @return 1 if the string is valid, else 0
+     */
+    public static int checkDateInputSanity(String text) {
+        if (text.equals("") || text.equals("NOT SET YET") || Utils.getdateParsed(text) == null)
+            return 0;
+        return 1;
+    }
+
     public static void getListViewSize(ListView myListView) {
         ListAdapter myListAdapter=myListView.getAdapter();
         if (myListAdapter==null) {
