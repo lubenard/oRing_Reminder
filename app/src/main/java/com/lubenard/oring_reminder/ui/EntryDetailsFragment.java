@@ -123,8 +123,12 @@ public class EntryDetailsFragment extends Fragment {
                         dbManager.deletePauseEntry(object.getId());
                         updatePauseList();
                         recomputeWearingTime();
-                        if (entryDetails.getIsRunning() == 1)
-                            recomputeAlarm();
+                        if (entryDetails.getIsRunning() == 1) {
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
+                            calendar.add(Calendar.MINUTE, newAlarmDate);
+                            EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                        }
                     })
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
@@ -189,34 +193,16 @@ public class EntryDetailsFragment extends Fragment {
                 alertDialog.dismiss();
                 recomputeWearingTime();
                 // Only recompute alarm if session is running
-                if (entryDetails.getIsRunning() == 1)
-                    recomputeAlarm();
+                if (entryDetails.getIsRunning() == 1) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
+                    calendar.add(Calendar.MINUTE, newAlarmDate);
+                    EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                }
                 updatePauseList();
             }
         });
         alertDialog.show();
-    }
-
-    /**
-     * Recompute alarm date
-     * Cancel the old one, then set a new one
-     */
-    private void recomputeAlarm() {
-        // From the doc, just create the exact same intent, and cancel it.
-        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
-        calendar.add(Calendar.MINUTE, newAlarmDate);
-        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
-        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-
-        am.cancel(pendingIntent);
-        Log.d(TAG, "Alarm has been reschedule by user at " + calendar.getTime());
-        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
-            am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        else if (SDK_INT >= Build.VERSION_CODES.M)
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     /**

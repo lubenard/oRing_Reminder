@@ -9,9 +9,11 @@ import android.widget.EditText;
 
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +27,19 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
     public static final String TAG = "AfterBootBroadcast";
 
+    private int computeTotalTimePause(DbManager dbManager, long entryId) {
+        ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
+        int totalTimePause = 0;
+        for (int i = 0; i != allPauses.size(); i++) {
+            if (allPauses.get(i).getIsRunning() == 0)
+                totalTimePause += allPauses.get(i).getTimeWeared();
+            else
+                totalTimePause += Utils.getDateDiff(allPauses.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        }
+        Log.d(TAG, "TotalTimePause is: " + totalTimePause);
+        return totalTimePause;
+    }
+
     public void onReceive(Context context, Intent arg1) {
         // Set all alarms for running sessions, because they have been erased after reboot
         // Also called when user change time, and when app is updated
@@ -36,6 +51,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
             calendar.setTime(Utils.getdateParsed(sessions.getValue()));
             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")));
+            calendar.add(Calendar.MINUTE, computeTotalTimePause(dbManager, sessions.getKey()));
             Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
 
             // Set alarms for session not finished
