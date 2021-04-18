@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -62,17 +63,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         else
             oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
 
-        DbManager dbManager = new DbManager(getContext());
-        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
-
-        for (int i = 0; i < pausesDatas.size(); i++) {
-            if (pausesDatas.get(i).getIsRunning() == 0) {
-                totalTimePause += pausesDatas.get(i).getTimeWeared();
-            } else {
-                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                totalTimePause += timeToRemove;
-            }
-        }
+        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(new DbManager(getContext()), entryId);
         newValue = (int) (oldTimeBeforeRemove - totalTimePause);
         return (newValue < 0) ? 0 : newValue;
     }

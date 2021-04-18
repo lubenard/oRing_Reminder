@@ -27,7 +27,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
     public static final String TAG = "AfterBootBroadcast";
 
-    private int computeTotalTimePause(DbManager dbManager, long entryId) {
+    public static int computeTotalTimePause(DbManager dbManager, long entryId) {
         ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
         int totalTimePause = 0;
         for (int i = 0; i != allPauses.size(); i++) {
@@ -45,16 +45,17 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         // Also called when user change time, and when app is updated
         DbManager dbManager = new DbManager(context);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int userSettingWearingTime = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
         HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();
         Calendar calendar = Calendar.getInstance();
 
         for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
             calendar.setTime(Utils.getdateParsed(sessions.getValue()));
-            calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")));
+            calendar.add(Calendar.HOUR_OF_DAY, userSettingWearingTime);
             calendar.add(Calendar.MINUTE, computeTotalTimePause(dbManager, sessions.getKey()));
-            Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
 
             // Set alarms for session not finished
+            Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
             EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
         }
     }

@@ -60,17 +60,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Log.d(TAG, "Language value has changed for " + newValue);
-                switch (newValue.toString()) {
-                    case "en":
-                        Utils.setAppLocale(activity, "en-us");
-                        break;
-                    case "fr":
-                        Utils.setAppLocale(activity, "fr");
-                        break;
-                    case "system":
-                        Utils.setAppLocale(activity, Resources.getSystem().getConfiguration().locale.getLanguage());
-                        break;
-                }
+                Utils.applyLanguage(getContext(), newValue.toString());
                 fragmentManager.popBackStackImmediate();
                 return true;
             }
@@ -82,20 +72,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Log.d(TAG, "Theme value has changed for " + newValue);
-                switch (newValue.toString()) {
-                    case "dark":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        break;
-                    case "white":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        break;
-                    case "battery_saver":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
-                        break;
-                    case "system":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                        break;
-                }
+                Utils.applyTheme(newValue.toString());
                 restartActivity();
                 return true;
             }

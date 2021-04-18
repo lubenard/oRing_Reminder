@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
@@ -30,6 +31,46 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
+
+    /**
+     * Apply theme based on newValue
+     * @param newValue the new Theme to apply
+     */
+    public static void applyTheme(String newValue) {
+        switch (newValue) {
+            case "dark":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "white":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "battery_saver":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
+                break;
+            case "system":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
+    }
+
+    /**
+     * Apply language based on newValue
+     * @param context context
+     * @param newValue the new Language to apply
+     */
+    public static void applyLanguage(Context context, String newValue) {
+        switch (newValue) {
+            case "en":
+                setAppLocale(context,"en-us");
+                break;
+            case "fr":
+                setAppLocale(context, "fr");
+                break;
+            case "system":
+                setAppLocale(context, Resources.getSystem().getConfiguration().locale.getLanguage());
+                break;
+        }
+    }
 
     /**
      * Check if the input string is valid
@@ -103,13 +144,13 @@ public class Utils {
     }
 
     /**
-     * Set App language
-     * @param activity current actvity
-     * @param localeCode the locale we want to apply (ex: fr)
+     * Change language
+     * @param context
+     * @param localeCode localCode to apply
      */
-    public static void setAppLocale(Activity activity, String localeCode) {
+    public static final void setAppLocale(Context context, String localeCode) {
         Locale myLocale = new Locale(localeCode);
-        Resources res = activity.getResources();
+        Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;

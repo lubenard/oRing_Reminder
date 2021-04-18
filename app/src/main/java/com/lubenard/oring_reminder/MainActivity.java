@@ -30,33 +30,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void checkConfig() {
         String theme_option = sharedPreferences.getString("ui_theme", "dark");
-        switch (theme_option) {
-            case "dark":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                break;
-            case "white":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                break;
-            case "battery_saver":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
-                break;
-            case "system":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                break;
-        }
+        Utils.applyTheme(theme_option);
 
         String language_option = sharedPreferences.getString("ui_language", "system");
-        switch (language_option) {
-            case "en":
-                Utils.setAppLocale(this, "en-us");
-                break;
-            case "fr":
-                Utils.setAppLocale(this, "fr");
-                break;
-            case "system":
-                Utils.setAppLocale(this, Resources.getSystem().getConfiguration().locale.getLanguage());
-                break;
-        }
+        Utils.applyLanguage(this, language_option);
     }
 
     @Override
