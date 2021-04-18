@@ -55,12 +55,6 @@ public class MainActivity extends AppCompatActivity {
         checkConfig();
         createNotifChannel();
 
-        Intent intent = new Intent(this, CurrentSessionWidgetProvider.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
-        AlarmManager am = (AlarmManager)getSystemService(Activity.ALARM_SERVICE);
-        // 6000 millis is one minute
-        am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
-
         // Then switch to the main Fragment
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(android.R.id.content, new MainFragment());

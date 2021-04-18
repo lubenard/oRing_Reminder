@@ -27,6 +27,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static DbManager dbManager;
     private static RemoteViews remoteViews;
 
+    public static boolean isThereAWidget = false;
+
     // Update the Widget datas
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
@@ -55,20 +57,20 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 calendar.setTime(Utils.getdateParsed(lastEntry.getDatePut()));
                 calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")));
 
-                int texteRessourceWhenGetItOff;
+                int textResourceWhenGetItOff;
 
                 long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
 
                 if (timeBeforeRemove >= 0)
-                    texteRessourceWhenGetItOff = R.string.in_about_entry_details;
+                    textResourceWhenGetItOff = R.string.in_about_entry_details;
                 else {
-                    texteRessourceWhenGetItOff = R.string.when_get_it_off_negative;
+                    textResourceWhenGetItOff = R.string.when_get_it_off_negative;
                     timeBeforeRemove *= -1;
                 }
 
                 remoteViews.setTextViewText(R.id.widget_date_from, lastEntry.getDatePut());
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
-                remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(texteRessourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
+                remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
                 remoteViews.setTextViewText(R.id.widget_date_from, context.getString(R.string.no_running_session));
                 remoteViews.setTextViewText(R.id.widget_worn_for, context.getString(R.string.no_running_session));
@@ -77,6 +79,18 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             // Update the widget view.
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        isThereAWidget = true;
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        super.onDisabled(context);
+        isThereAWidget = false;
     }
 
     @Override

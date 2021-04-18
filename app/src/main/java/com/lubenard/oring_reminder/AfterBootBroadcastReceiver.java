@@ -1,5 +1,8 @@
 package com.lubenard.oring_reminder;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -58,5 +61,11 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
             Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
             EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
         }
+
+        Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        AlarmManager am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
+        // 6000 millis is one minute
+        am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
     }
 }
