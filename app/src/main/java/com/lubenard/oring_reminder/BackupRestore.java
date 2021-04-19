@@ -19,6 +19,7 @@ import androidx.preference.PreferenceManager;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.ui.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
+import com.lubenard.oring_reminder.utils.Utils;
 import com.lubenard.oring_reminder.utils.XmlWriter;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -30,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class BackupRestore extends Activity{
 
@@ -365,32 +368,33 @@ public class BackupRestore extends Activity{
         // Datas containing all saved datas
         try {
 
-            csvWriter.writeColumnsName(new String[]{"DatePut", "DateRemoved", "timeWorn"});
+            csvWriter.writeColumnsName(new String[]{"All times are computed in minutes."});
+            csvWriter.writeColumnsName(new String[]{"Date put", "Hour put", "Date removed", "Hour removed", "Time worn (without breaks)",
+                                                    "Total break time", "Time worn (with breaks)"});
 
             ArrayList<String> formattedDatas = new ArrayList<>();
             // Contain all entrys
             ArrayList<RingModel> rawDatas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < rawDatas.size(); i++) {
-                formattedDatas.add(rawDatas.get(i).getDatePut());
-                formattedDatas.add(rawDatas.get(i).getDateRemoved());
-                formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared()));
+                String[] datePut = rawDatas.get(i).getDatePut().split(" ");
+                String[] dateRemoved = rawDatas.get(i).getDateRemoved().split(" ");
+                int totalTimePauses = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, rawDatas.get(i).getId());
+                formattedDatas.add(datePut[0]);
+                formattedDatas.add(datePut[1]);
+                formattedDatas.add(dateRemoved[0]);
+                formattedDatas.add(dateRemoved[1]);
+                if (rawDatas.get(i).getIsRunning() == 0)
+                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared()));
+                else
+                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                formattedDatas.add(String.valueOf(totalTimePauses));
+                if (rawDatas.get(i).getIsRunning() == 0)
+                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared() - totalTimePauses));
+                else
+                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
                 csvWriter.writeColumnsDatas(formattedDatas);
                 formattedDatas.clear();
             }
-
-            // Contain all pauses
-            /*ArrayList<RingModel> pauses = dbManager.getAllDatasForAllPauses();
-            for (int i = 0; i < pauses.size(); i++) {
-                xmlWriter.writeEntity("pause");
-                xmlWriter.writeAttribute("entryId", String.valueOf(pauses.get(i).getId()));
-                xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(i).getIsRunning()));
-                xmlWriter.writeAttribute("dateTimePut", pauses.get(i).getDatePut());
-                xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(i).getDateRemoved());
-                xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(i).getTimeWeared()));
-                xmlWriter.endEntity();
-            }
-
-            xmlWriter.endEntity();*/
         } catch (IOException e) {
             e.printStackTrace();
         }
