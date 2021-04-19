@@ -130,4 +130,12 @@
     <string name="finish_session">Terminer cette session</string>
     <string name="datas_export_data_csv_title">Exportez vos données en CSV</string>
     <string name="datas_export_data_csv">Exportez vos données en format CSV</string>
+    <string name="create_new_entry">Créer une nouvelle entrée</string>
+    <string name="time_remaining">Temps restant</string>
+    <string name="no_running_session">Pas de session active en cours</string>
+    <string name="you_can_get_it_on_again">Vous devriez pouvoir le remettre à :</string>
+    <string name="bad_date_format">Mauvais format de date. Merci de vérifier</string>
+    <string name="get_it_on_before">La remettre avant</string>
+    <string name="not_enough_datas_to_compute_get_it_on">Pas assez de données pour calculer quand vous devriez recommencer a la portez</string>
+    <string name="no_pause_session_is_not_running">Vous ne pouvez pas créer une pause en cours si la session n\'est pas en cours</string>
 </resources>
