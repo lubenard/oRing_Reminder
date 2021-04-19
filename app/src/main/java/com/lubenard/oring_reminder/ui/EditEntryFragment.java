@@ -276,27 +276,29 @@ public class EditEntryFragment extends Fragment {
                 // If entry already exist in the db.
                 if (entryId != -1) {
                     if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET")) {
-                        if (Utils.checkDateInputSanity(formattedDatePut) == 0) {
+                        if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
                             // Recompute alarm if the entry already exist, but has no ending time
                             Calendar calendar = Calendar.getInstance();
                             calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
                             setAlarm(context, Utils.getdateFormatted(calendar.getTime()) , entryId,true);
+                            getActivity().getSupportFragmentManager().popBackStackImmediate();
                         } else {
                             Log.d(TAG, "DateFormat wrong check 1");
                             showToastBadFormattedDate();
                         }
                     } else {
-                        if (Utils.checkDateInputSanity(formattedDatePut) == 0 && Utils.checkDateInputSanity(formattedDateRemoved) == 0) {
+                        if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                            dbManager.endSession(entryId);
                             // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
                             cancelAlarm(entryId);
+                            getActivity().getSupportFragmentManager().popBackStackImmediate();
                         } else {
                             Log.d(TAG, "DateFormat wrong check 2");
                             showToastBadFormattedDate();
                         }
                     }
-                    getActivity().getSupportFragmentManager().popBackStackImmediate();
                 } else {
                     if (formattedDateRemoved.isEmpty())
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1) {

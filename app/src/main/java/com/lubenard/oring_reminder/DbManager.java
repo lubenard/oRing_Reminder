@@ -254,8 +254,35 @@ public class DbManager extends SQLiteOpenHelper {
 
         int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(entryId)});
         if (u == 0) {
-            Log.d(TAG, "ringUpdate: update does not seems to work, insert data: (for id = " + entryId);
+            Log.d(TAG, "endSession: update does not seems to work, insert data: (for id = " + entryId);
             writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+        // End pause is session is set to finish
+        endPause(entryId);
+    }
+
+    private void endPause(long entryId) {
+        // First we catch the dateTablePut date
+        String[] columns = new String[]{pauseTableRemoved};
+        Cursor cursor = readableDB.query(pausesTable, columns,pauseTableEntryId + "=?"
+                        + " AND " + pauseTableIsRunning + "=?",
+                new String[]{String.valueOf(entryId), "1"}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            // Then we set our values:
+            // We need to recompute the date
+            // And set the isRunning to 0
+            String datePut = Utils.getdateFormatted(new Date());
+            ContentValues cv = new ContentValues();
+            cv.put(pauseTablePut, datePut);
+            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(pauseTableRemoved)), datePut, TimeUnit.MINUTES));
+            cv.put(pauseTableIsRunning, 0);
+
+            int u = writableDB.update(pausesTable, cv, pauseTableEntryId + "=?", new String[]{String.valueOf(entryId)});
+            if (u == 0) {
+                Log.d(TAG, "endPause: update does not seems to work, insert data: (for id = " + entryId);
+                writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+            }
         }
     }
 

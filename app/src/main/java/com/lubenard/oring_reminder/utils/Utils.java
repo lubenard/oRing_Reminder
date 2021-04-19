@@ -122,7 +122,6 @@ public class Utils {
         try {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
         } catch (ParseException e) {
-            e.printStackTrace();
             return null;
         }
     }
