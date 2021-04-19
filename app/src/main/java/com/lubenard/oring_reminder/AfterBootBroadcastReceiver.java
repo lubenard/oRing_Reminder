@@ -30,6 +30,15 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
     public static final String TAG = "AfterBootBroadcast";
 
+    private static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
+        ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
+        for (int i = 0; i != allPauses.size(); i++) {
+            if (allPauses.get(i).getIsRunning() == 1)
+                return true;
+        }
+        return false;
+    }
+
     public static int computeTotalTimePause(DbManager dbManager, long entryId) {
         ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
         int totalTimePause = 0;
@@ -39,7 +48,6 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
             else
                 totalTimePause += Utils.getDateDiff(allPauses.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         }
-        Log.d(TAG, "TotalTimePause is: " + totalTimePause);
         return totalTimePause;
     }
 
@@ -53,13 +61,18 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         Calendar calendar = Calendar.getInstance();
 
         for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
-            calendar.setTime(Utils.getdateParsed(sessions.getValue()));
-            calendar.add(Calendar.HOUR_OF_DAY, userSettingWearingTime);
-            calendar.add(Calendar.MINUTE, computeTotalTimePause(dbManager, sessions.getKey()));
+            // Do not set a alarm if session has a running pause, because we do not know when this pause is going
+            // to end.
+            // Only set a new alarm when the end time of the pause is known
+            if (!doesSessionHaveRunningPause(dbManager, sessions.getKey())) {
+                calendar.setTime(Utils.getdateParsed(sessions.getValue()));
+                calendar.add(Calendar.HOUR_OF_DAY, userSettingWearingTime);
+                calendar.add(Calendar.MINUTE, computeTotalTimePause(dbManager, sessions.getKey()));
 
-            // Set alarms for session not finished
-            Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
-            EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
+                // Set alarms for session not finished
+                Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
+                EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
+            }
         }
 
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);

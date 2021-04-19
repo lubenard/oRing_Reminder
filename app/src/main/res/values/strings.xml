@@ -117,4 +117,5 @@
     <string name="finish_session">Finish this session</string>
     <string name="get_it_on_before">"Get it on before "</string>
     <string name="not_enough_datas_to_compute_get_it_on">Not enought datas to compute when you should wear it again</string>
+    <string name="no_pause_session_is_not_running">You cannot create a running pause if the session is not running</string>
 </resources>

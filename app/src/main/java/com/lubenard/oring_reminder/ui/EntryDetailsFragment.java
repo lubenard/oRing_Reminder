@@ -1,25 +1,16 @@
 package com.lubenard.oring_reminder.ui;
 
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,15 +20,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.DbManager;
-import com.lubenard.oring_reminder.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
 import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -45,10 +33,7 @@ import com.lubenard.oring_reminder.utils.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
-
-import static android.os.Build.VERSION.SDK_INT;
 
 public class EntryDetailsFragment extends Fragment {
 
@@ -109,8 +94,23 @@ public class EntryDetailsFragment extends Fragment {
             updateAllFragmentDatas();
         });
 
-        ImageButton testButton = view.findViewById(R.id.new_pause_button);
-        testButton.setOnClickListener(view1 -> showPauseAlertDialog(null));
+        ImageButton pauseButton = view.findViewById(R.id.new_pause_button);
+        pauseButton.setOnClickListener(view1 -> showPauseAlertDialog(null));
+        pauseButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (entryDetails.getIsRunning() == 1) {
+                    dbManager.createNewPause(entryId, Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
+                    // Cancel alarm until breaks are set as finished.
+                    // Only then set a new alarm date
+                    Log.d(TAG, "Cancelling alarm for entry: " + entryId);
+                    EditEntryFragment.cancelAlarm(context, entryId);
+                    updatePauseList();
+                } else
+                    Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
 
         listView.setOnItemClickListener((adapterView, view12, i, l) -> showPauseAlertDialog(dataModels.get(i)));
 
@@ -127,6 +127,7 @@ public class EntryDetailsFragment extends Fragment {
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
                             calendar.add(Calendar.MINUTE, newAlarmDate);
+                            Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
                             EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
                         }
                     })
@@ -171,19 +172,19 @@ public class EntryDetailsFragment extends Fragment {
             }
 
             if (isThereAlreadyARunningPause && isRunning == 1){
-                Log.d(TAG, "Already a running pause");
+                Log.d(TAG, "Error: Already a running pause");
                 Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             } else if (Utils.getDateDiff(entryDetails.getDatePut(), pause_beginning.getText().toString(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Start of pause < start of entry");
+                Log.d(TAG, "Error: Start of pause < start of entry");
                 Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
             } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.getDatePut(), pause_ending.getText().toString(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "End of pause < start of entry");
+                Log.d(TAG, "Error: End of pause < start of entry");
                 Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
             } else if (isRunning == 0 && entryDetails.getIsRunning() == 0 && Utils.getDateDiff(pause_ending.getText().toString(), entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "End of pause > end of entry");
+                Log.d(TAG, "Error: End of pause > end of entry");
                 Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
             } else if (entryDetails.getIsRunning() == 0 && Utils.getDateDiff(pause_beginning.getText().toString(), entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Start of pause > end of entry");
+                Log.d(TAG, "Error: Start of pause > end of entry");
                 Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
             } else {
                 if (dataModel == null)
@@ -192,12 +193,19 @@ public class EntryDetailsFragment extends Fragment {
                     dbManager.updatePause(dataModel.getId(), pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
                 alertDialog.dismiss();
                 recomputeWearingTime();
-                // Only recompute alarm if session is running
+
+                // Only recompute alarm if session running, else cancel it.
                 if (entryDetails.getIsRunning() == 1) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
-                    calendar.add(Calendar.MINUTE, newAlarmDate);
-                    EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                    if (pause_ending.getText().toString().equals("NOT SET YET")) {
+                        Log.d(TAG, "Cancelling alarm for entry: " + entryId);
+                        EditEntryFragment.cancelAlarm(context, entryId);
+                    } else {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
+                        calendar.add(Calendar.MINUTE, newAlarmDate);
+                        Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
+                        EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                    }
                 }
                 updatePauseList();
             }

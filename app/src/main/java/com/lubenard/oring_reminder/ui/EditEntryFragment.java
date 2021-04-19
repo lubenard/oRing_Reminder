@@ -292,7 +292,7 @@ public class EditEntryFragment extends Fragment {
                             dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
                             dbManager.endSession(entryId);
                             // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
-                            cancelAlarm(entryId);
+                            cancelAlarm(context, entryId);
                             getActivity().getSupportFragmentManager().popBackStackImmediate();
                         } else {
                             Log.d(TAG, "DateFormat wrong check 2");
@@ -333,7 +333,7 @@ public class EditEntryFragment extends Fragment {
     /**
      * Only cancel alarm for given entryId
      */
-    private void cancelAlarm(long entryId) {
+    public static void cancelAlarm(Context context, long entryId) {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
