@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
         String language_option = sharedPreferences.getString("ui_language", "system");
         Utils.applyLanguage(this, language_option);
+
+        if (sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", null) == null) {
+            sharedPreferences.edit().putString("myring_prevent_me_when_no_session_started_date", "12:00").apply();
+        }
     }
 
     @Override

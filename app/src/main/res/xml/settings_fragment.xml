@@ -59,6 +59,15 @@
             android:defaultValue="true"
             android:key="myring_prevent_me_when_started_session"
             android:title="@string/settings_prevent_me_when_started_session" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="myring_prevent_me_when_no_session_started_for_today"
+            android:title="@string/settings_prevent_me_when_no_session_started_for_today" />
+
+        <Preference
+            app:key="myring_prevent_me_when_no_session_started_date"
+            app:title="@string/myring_prevent_me_when_no_session_started_date_title" />
     </PreferenceCategory>
 
     <PreferenceCategory

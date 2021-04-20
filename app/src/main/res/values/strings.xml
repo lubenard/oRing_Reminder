@@ -43,6 +43,7 @@
     <string name="alertdialog_dangerous_wearing_body">Not wearing your protection enough can make you fertile again. Wearing it too often is not good either. If in doubt, have a spermogram and go see your doctor.</string>
     <string name="wering_time">Wearing time</string>
     <string name="settings_send_notif_when_done_wearing">Send a notification when you can take off your protection</string>
+    <string name="settings_around">Around,&#160;</string>
     <string name="settings_actually_value">Actually, %s</string>
     <string name="action_validate">Save this entry</string>
     <string name="alertdialog_multiple_running_session_title">Warning: Multiple running sessions detected !</string>
@@ -118,4 +119,8 @@
     <string name="get_it_on_before">"Get it on before "</string>
     <string name="not_enough_datas_to_compute_get_it_on">Not enought datas to compute when you should wear it again</string>
     <string name="no_pause_session_is_not_running">You cannot create a running pause if the session is not running</string>
+    <string name="settings_prevent_me_when_no_session_started_for_today">Prevent me if no session is running at given hour</string>
+    <string name="myring_prevent_me_when_no_session_started_date_title">Choose the time I want to be notified</string>
+    <string name="have_you_start_session_today_title">Have you created a session today ?</string>
+    <string name="have_you_start_session_today_body">No running sessions have been found.</string>
 </resources>

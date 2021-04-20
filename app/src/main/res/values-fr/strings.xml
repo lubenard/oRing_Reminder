@@ -138,4 +138,8 @@
     <string name="get_it_on_before">La remettre avant</string>
     <string name="not_enough_datas_to_compute_get_it_on">Pas assez de données pour calculer quand vous devriez recommencer a la portez</string>
     <string name="no_pause_session_is_not_running">Vous ne pouvez pas créer une pause en cours si la session n\'est pas en cours</string>
+    <string name="settings_prevent_me_when_no_session_started_for_today">Me prevenir si une session est en cours à une heure définie</string>
+    <string name="myring_prevent_me_when_no_session_started_date_title">Choisir l\'heure à laquelle je veux être notifié</string>
+    <string name="have_you_start_session_today_title">Avez vous crée une session ajourd\'hui ?</string>
+    <string name="have_you_start_session_today_body">Auncune session en cours n\'a été trouvé.</string>
 </resources>

@@ -77,7 +77,9 @@ public class EditEntryFragment extends Fragment {
     public static void setAlarm(Context context, String alarmDate, long entryId, boolean cancelOldAlarm) {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
-        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
+        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
+                .putExtra("action", 1)
+                .putExtra("entryId", entryId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
@@ -336,7 +338,9 @@ public class EditEntryFragment extends Fragment {
     public static void cancelAlarm(Context context, long entryId) {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
-        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class).putExtra("entryId", entryId);
+        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
+                .putExtra("action", 1)
+                .putExtra("entryId", entryId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
         am.cancel(pendingIntent);

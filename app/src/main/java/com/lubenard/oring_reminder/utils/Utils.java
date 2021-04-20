@@ -191,6 +191,27 @@ public class Utils {
      * @param content notification body
      * @param drawable drawable icon
      */
+    public static void sendNotification(Context context, String title, String content, int drawable) {
+        // First let's create the intent
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Get the notification manager and build it
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, "NORMAL_CHANNEL");
+        permNotifBuilder.setSmallIcon(drawable)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setContentIntent(pi);
+        mNotificationManager.notify(0, permNotifBuilder.build());
+    }
+
+    /**
+     * Send a notification on the 'normal' channel
+     * @param context current Context
+     * @param title Notification title
+     * @param content notification body
+     * @param drawable drawable icon
+     */
     public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, long entryId) {
         // First let's create the intent
         PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);

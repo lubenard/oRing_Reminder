@@ -2,17 +2,23 @@ package com.lubenard.oring_reminder.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -23,11 +29,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.BackupRestore;
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import static android.os.Build.VERSION.SDK_INT;
 
 /**
  * Settings page.
@@ -78,7 +92,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        // feedback preference click listener
+        // wearing_time preference click listener
         Preference wearing_time = findPreference("myring_wearing_time");
         wearing_time.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -99,6 +113,92 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
                 return false;
+            }
+        });
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        Preference choosingAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_date");
+        choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) +
+                sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "Not set"));
+
+        // Boolean if prevented about session not started for the day preference click listener
+        Preference optionAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_for_today");
+        optionAlarmIfNoSessionStarted.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                choosingAlarmIfNoSessionStarted.setEnabled((boolean) newValue);
+                if ((boolean) newValue == false) {
+                    Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
+                            .putExtra("action", 2);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+                    AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+                    // We cancel the old repetitive alarm
+                    am.cancel(pendingIntent);
+                }
+                return true;
+            }
+        });
+
+        choosingAlarmIfNoSessionStarted.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                final View customLayout = getLayoutInflater().inflate(R.layout.time_chooser, null);
+                builder.setView(customLayout);
+                TimePicker timePicker = customLayout.findViewById(R.id.time_picker);
+                timePicker.setIs24HourView(true);
+                String oldTime = sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "12:00");
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    timePicker.setCurrentHour(Integer.parseInt(oldTime.split(":")[0]));
+                    timePicker.setCurrentMinute(Integer.parseInt(oldTime.split(":")[1]));
+                } else {
+                    timePicker.setHour(Integer.parseInt(oldTime.split(":")[0]));
+                    timePicker.setMinute(Integer.parseInt(oldTime.split(":")[1]));
+                }
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        int timePickerHour;
+                        int timePickerMinutes;
+
+                        String alarmTime;
+                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                            timePickerHour = timePicker.getCurrentHour();
+                            timePickerMinutes = timePicker.getCurrentMinute();
+                        } else {
+                            timePickerHour = timePicker.getHour();
+                            timePickerMinutes = timePicker.getMinute();
+                        }
+
+                        alarmTime = String.format("%02d:%02d", timePickerHour, timePickerMinutes);
+
+                        sharedPreferences.edit().putString("myring_prevent_me_when_no_session_started_date", alarmTime).apply();
+                        choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) + alarmTime);
+
+                        Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
+                                .putExtra("action", 2);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+                        AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+                        // We cancel the old repetitive alarm
+                        am.cancel(pendingIntent);
+
+                        Calendar calendar = Calendar.getInstance();
+                            Log.d(TAG, "User set repetitive alarm at " + alarmTime);
+                            // This stupid calendar does not work well with only setTime(...).
+                            // It causes it to trigger multiple time the event
+                            // This is stupid, but working
+                            calendar.setTimeInMillis(System.currentTimeMillis());
+                            calendar.set(Calendar.HOUR_OF_DAY, (timePickerHour == 12) ? 00 : timePickerHour);
+                            calendar.set(Calendar.MINUTE, timePickerMinutes);
+                            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel,null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
             }
         });
 
