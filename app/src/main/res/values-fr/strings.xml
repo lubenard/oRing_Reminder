@@ -117,7 +117,7 @@
     <string name="settings_ui_action_on_plus_button_long_click">Appui -> interface avancée de session\nAppui long -> Session en cours rapide</string>
     <string name="when_get_it_off_negative">(Il y a environ -%dh%02dm)</string>
     <string name="removed_during">Retiré prendant :</string>
-    <string name="last_day_string_header">Dans les dernières 24h, porté pendant :&#160;</string>
+    <string name="last_day_string_header">Dans les dernières 24h, porté :&#160;</string>
     <string name="action_calculators">Calculateurs</string>
     <string name="calculators_title">Calculateurs</string>
     <string name="number_of_spermato_per_ml">Nombre de spermatozoïdes / ml</string>
@@ -146,4 +146,5 @@
     <string name="prevent_me_after">Me prevenir après</string>
     <string name="your_break_seems_longer_title">Votre pause semble + longue que prévu</string>
     <string name="your_break_seems_longer_body">Avez vous oublié de la marquer comme finie ?</string>
+    <string name="settings_around">Environ&#160;</string>
 </resources>

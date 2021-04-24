@@ -182,7 +182,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             // It causes it to trigger multiple time the event
                             // This is stupid, but working
                             calendar.setTimeInMillis(System.currentTimeMillis());
-                            calendar.set(Calendar.HOUR_OF_DAY, (timePickerHour == 12) ? 00 : timePickerHour);
+                            calendar.set(Calendar.HOUR_OF_DAY, timePickerHour);
                             calendar.set(Calendar.MINUTE, timePickerMinutes);
                             am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
                     }
