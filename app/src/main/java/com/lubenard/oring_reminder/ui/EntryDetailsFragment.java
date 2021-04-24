@@ -109,7 +109,10 @@ public class EntryDetailsFragment extends Fragment {
         pauseButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                if (entryDetails.getIsRunning() == 1) {
+                if (isThereAlreadyARunningPause) {
+                    Log.d(TAG, "Error: Already a running pause");
+                    Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+                } else if (entryDetails.getIsRunning() == 1) {
                     dbManager.createNewPause(entryId, Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
                     // Cancel alarm until breaks are set as finished.
                     // Only then set a new alarm date
