@@ -187,6 +187,22 @@ public class BackupRestore extends Activity{
             xmlWriter.writeText(String.valueOf(preferences.getBoolean("myring_prevent_me_when_started_session", true)));
             xmlWriter.endEntity();
 
+            xmlWriter.writeEntity("myring_prevent_me_when_no_session_started_for_today");
+            xmlWriter.writeText(String.valueOf(preferences.getBoolean("myring_prevent_me_when_no_session_started_for_today", false)));
+            xmlWriter.endEntity();
+
+            xmlWriter.writeEntity("myring_prevent_me_when_no_session_started_date");
+            xmlWriter.writeText(preferences.getString("myring_prevent_me_when_no_session_started_date", "12:00"));
+            xmlWriter.endEntity();
+
+            xmlWriter.writeEntity("myring_prevent_me_when_pause_too_long");
+            xmlWriter.writeText(String.valueOf(preferences.getBoolean("myring_prevent_me_when_pause_too_long", false)));
+            xmlWriter.endEntity();
+
+            xmlWriter.writeEntity("myring_prevent_me_when_pause_too_long_date");
+            xmlWriter.writeText(String.valueOf(preferences.getInt("myring_prevent_me_when_pause_too_long_date", 0)));
+            xmlWriter.endEntity();
+
             xmlWriter.endEntity();
         } catch (IOException e) {
             e.printStackTrace();
@@ -280,7 +296,7 @@ public class BackupRestore extends Activity{
                             break;
                         case  "ui_action_on_plus_button":
                             myParser.next();
-                            Log.d(TAG, "ui_action_on_plus_button" + myParser.getText());
+                            Log.d(TAG, "ui_action_on_plus_button = " + myParser.getText());
                             preferences.edit().putString("ui_action_on_plus_button", myParser.getText()).apply();
                             break;
                         case "myring_wearing_time":
@@ -292,10 +308,32 @@ public class BackupRestore extends Activity{
                             myParser.next();
                             Log.d(TAG, "myring_send_notif_when_session_over setting = " + myParser.getText());
                             preferences.edit().putBoolean("myring_send_notif_when_session_over", Boolean.parseBoolean(myParser.getText())).apply();
+                            break;
                         case "myring_prevent_me_when_started_session":
                             myParser.next();
                             Log.d(TAG, "myring_prevent_me_when_started_session setting = " + myParser.getText());
                             preferences.edit().putBoolean("myring_prevent_me_when_started_session", Boolean.parseBoolean(myParser.getText())).apply();
+                            break;
+                        case "myring_prevent_me_when_no_session_started_for_today":
+                            myParser.next();
+                            Log.d(TAG, "myring_prevent_me_when_no_session_started_for_today setting = " + myParser.getText());
+                            preferences.edit().putBoolean("myring_prevent_me_when_no_session_started_for_today", Boolean.parseBoolean(myParser.getText())).apply();
+                            break;
+                        case "myring_prevent_me_when_no_session_started_date":
+                            myParser.next();
+                            Log.d(TAG, "myring_prevent_me_when_no_session_started_date setting = " + myParser.getText());
+                            preferences.edit().putString("myring_prevent_me_when_no_session_started_date", myParser.getText()).apply();
+                            break;
+                        case "myring_prevent_me_when_pause_too_long":
+                            myParser.next();
+                            Log.d(TAG, "myring_prevent_me_when_pause_too_long setting = " + myParser.getText());
+                            preferences.edit().putBoolean("myring_prevent_me_when_pause_too_long", Boolean.parseBoolean(myParser.getText())).apply();
+                            break;
+                        case "myring_prevent_me_when_pause_too_long_date":
+                            myParser.next();
+                            Log.d(TAG, "myring_prevent_me_when_pause_too_long_date setting = " + myParser.getText());
+                            preferences.edit().putInt("myring_prevent_me_when_pause_too_long_date", Integer.parseInt(myParser.getText())).apply();
+                            break;
                     }
                 }
                 eventType = myParser.next();
