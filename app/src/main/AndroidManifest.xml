@@ -25,10 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".BackupRestore"/>
-        <receiver android:name=".NotificationSenderBroadcastReceiver"/>
-        <receiver android:name=".NotificationReceiverBroadcastReceiver"/>
+        <receiver android:name=".broadcast_receivers.NotificationSenderBroadcastReceiver"/>
+        <receiver android:name=".broadcast_receivers.NotificationReceiverBroadcastReceiver"/>
         <!--When boot is completed, launch this BroadcastReceiver with given Intents-->
-        <receiver android:name=".AfterBootBroadcastReceiver">
+        <receiver android:name=".broadcast_receivers.AfterBootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />

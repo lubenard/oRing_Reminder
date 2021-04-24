@@ -1,15 +1,15 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.broadcast_receivers;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Calendar;
 
 public class NotificationReceiverBroadcastReceiver extends BroadcastReceiver {

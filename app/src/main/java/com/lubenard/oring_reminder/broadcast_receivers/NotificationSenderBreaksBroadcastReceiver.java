@@ -1,10 +1,11 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.broadcast_receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
 
 public class NotificationSenderBreaksBroadcastReceiver extends BroadcastReceiver {

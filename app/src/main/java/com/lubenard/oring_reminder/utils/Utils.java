@@ -21,7 +21,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.NotificationReceiverBroadcastReceiver;
+import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
 
 import java.text.ParseException;

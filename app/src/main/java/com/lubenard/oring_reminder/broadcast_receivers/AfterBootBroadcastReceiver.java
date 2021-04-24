@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.broadcast_receivers;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -8,10 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.EditText;
 
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.CurrentSessionWidgetProvider;
+import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;

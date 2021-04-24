@@ -13,8 +13,6 @@ import android.widget.RemoteViews;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.custom_components.RingModel;
-import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
-import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;

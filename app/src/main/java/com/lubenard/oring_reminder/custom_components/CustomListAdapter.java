@@ -2,7 +2,6 @@ package com.lubenard.oring_reminder.custom_components;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import androidx.preference.PreferenceManager;
 
-import com.lubenard.oring_reminder.AfterBootBroadcastReceiver;
+import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
