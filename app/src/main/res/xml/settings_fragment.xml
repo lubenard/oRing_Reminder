@@ -61,12 +61,21 @@
             android:title="@string/settings_prevent_me_when_started_session" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="myring_prevent_me_when_no_session_started_for_today"
             android:title="@string/settings_prevent_me_when_no_session_started_for_today" />
 
         <Preference
             app:key="myring_prevent_me_when_no_session_started_date"
+            app:title="@string/myring_prevent_me_when_no_session_started_date_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="myring_prevent_me_when_pause_too_long"
+            android:title="@string/settings_prevent_me_when_pause_too_long" />
+
+        <Preference
+            app:key="myring_prevent_me_when_pause_too_long_date"
             app:title="@string/myring_prevent_me_when_no_session_started_date_title" />
     </PreferenceCategory>
 

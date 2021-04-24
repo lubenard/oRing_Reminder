@@ -142,4 +142,8 @@
     <string name="myring_prevent_me_when_no_session_started_date_title">Choisir l\'heure à laquelle je veux être notifié</string>
     <string name="have_you_start_session_today_title">Avez vous crée une session ajourd\'hui ?</string>
     <string name="have_you_start_session_today_body">Auncune session en cours n\'a été trouvé.</string>
+    <string name="settings_prevent_me_when_pause_too_long">Me prevenir quand une pause est trop longue</string>
+    <string name="prevent_me_after">Me prevenir après</string>
+    <string name="your_break_seems_longer_title">Votre pause semble + longue que prévu</string>
+    <string name="your_break_seems_longer_body">Avez vous oublié de la marquer comme finie ?</string>
 </resources>

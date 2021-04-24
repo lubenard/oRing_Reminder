@@ -1,8 +1,13 @@
 package com.lubenard.oring_reminder.ui;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +30,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.NotificationSenderBreaksBroadcastReceiver;
+import com.lubenard.oring_reminder.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
 import com.lubenard.oring_reminder.custom_components.RingModel;
@@ -34,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import static android.os.Build.VERSION.SDK_INT;
 
 public class EntryDetailsFragment extends Fragment {
 
@@ -55,6 +64,7 @@ public class EntryDetailsFragment extends Fragment {
     private TextView timeWeared;
     private Button stopSessionButton;
     private boolean isThereAlreadyARunningPause = false;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,7 +90,7 @@ public class EntryDetailsFragment extends Fragment {
         Bundle bundle = this.getArguments();
         entryId = bundle.getLong("entryId", -1);
 
-        SharedPreferences sharedPreferences =
+        sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
 
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
@@ -189,12 +199,21 @@ public class EntryDetailsFragment extends Fragment {
             } else {
                 if (dataModel == null)
                     dbManager.createNewPause(entryId, pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
-                else
+                else {
                     dbManager.updatePause(dataModel.getId(), pause_beginning.getText().toString(), pause_ending.getText().toString(), isRunning);
+                    // Cancel the break notification if it is set as finished.
+                    if (isRunning == 0) {
+                        Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
+                                .putExtra("action", 1);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) ((dataModel != null) ? dataModel.getId() : entryId), intent, 0);
+                        AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+                        am.cancel(pendingIntent);
+                    }
+                }
                 alertDialog.dismiss();
                 recomputeWearingTime();
 
-                // Only recompute alarm if session running, else cancel it.
+                // Only recompute alarm if session is running, else cancel it.
                 if (entryDetails.getIsRunning() == 1) {
                     if (pause_ending.getText().toString().equals("NOT SET YET")) {
                         Log.d(TAG, "Cancelling alarm for entry: " + entryId);
@@ -206,6 +225,21 @@ public class EntryDetailsFragment extends Fragment {
                         Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
                         EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
                     }
+                }
+                // Add alarm if break is too long (only if break is running)
+                if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false) && isRunning == 1) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(Utils.getdateParsed(pause_beginning.getText().toString()));
+                    calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
+                    Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
+                            .putExtra("action", 1);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) ((dataModel != null) ? dataModel.getId() : entryId), intent, 0);
+                    AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+
+                    if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+                        am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    else if (SDK_INT >= Build.VERSION_CODES.M)
+                        am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
                 updatePauseList();
             }

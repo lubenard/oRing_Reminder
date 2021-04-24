@@ -123,4 +123,8 @@
     <string name="myring_prevent_me_when_no_session_started_date_title">Choose the time I want to be notified</string>
     <string name="have_you_start_session_today_title">Have you created a session today ?</string>
     <string name="have_you_start_session_today_body">No running sessions have been found.</string>
+    <string name="settings_prevent_me_when_pause_too_long">Prevent me when a break is too long</string>
+    <string name="prevent_me_after">Prevent me after</string>
+    <string name="your_break_seems_longer_title">Your break seems longer than expected</string>
+    <string name="your_break_seems_longer_body">Have you forgot to set it as ended ?</string>
 </resources>

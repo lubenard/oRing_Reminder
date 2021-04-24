@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -119,6 +120,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         Preference choosingAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_date");
+        choosingAlarmIfNoSessionStarted.setEnabled(sharedPreferences.getBoolean("myring_prevent_me_when_no_session_started_for_today", false));
         choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) +
                 sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "Not set"));
 
@@ -201,6 +203,39 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+
+        Preference choosingAlarmIfPauseTooLong = findPreference("myring_prevent_me_when_pause_too_long_date");
+        choosingAlarmIfPauseTooLong.setEnabled(sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false));
+        choosingAlarmIfPauseTooLong.setSummary(getString(R.string.settings_around) +
+                sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0) + getString(R.string.minute_with_M_uppercase));
+
+        // Boolean if prevented about session not started for the day preference click listener
+        Preference optionAlarmIfPauseTooLong = findPreference("myring_prevent_me_when_pause_too_long");
+        optionAlarmIfPauseTooLong.setOnPreferenceChangeListener((preference, newValue) -> {
+            choosingAlarmIfPauseTooLong.setEnabled((boolean) newValue);
+            return true;
+        });
+
+        choosingAlarmIfPauseTooLong.setOnPreferenceClickListener(preference -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            final View customLayout = getLayoutInflater().inflate(R.layout.prevent_me_when_pause_too_long, null);
+            builder.setView(customLayout);
+            EditText numberOfMinutes = customLayout.findViewById(R.id.editTextBreakTooLong);
+            int oldTime = sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0);
+            numberOfMinutes.setText(String.valueOf(oldTime));
+            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                int alarmTime = Integer.parseInt(numberOfMinutes.getText().toString());
+
+                sharedPreferences.edit().putInt("myring_prevent_me_when_pause_too_long_date", alarmTime).apply();
+                choosingAlarmIfPauseTooLong.setSummary(getString(R.string.settings_around) + alarmTime +
+                        getString(R.string.minute_with_M_uppercase));
+            });
+            builder.setNegativeButton(android.R.string.cancel,null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return true;
+        });
+
 
         Preference exportXML = findPreference("datas_export_data_xml");
         exportXML.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
