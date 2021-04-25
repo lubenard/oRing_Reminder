@@ -218,27 +218,26 @@ public class BackupRestore extends Activity{
             // Contain all entrys
             ArrayList<RingModel> datas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < datas.size(); i++) {
-                xmlWriter.writeEntity("entry");
-                xmlWriter.writeAttribute("id", String.valueOf(datas.get(i).getId()));
-                xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning()));
+                xmlWriter.writeEntity("session");
                 xmlWriter.writeAttribute("dateTimePut", datas.get(i).getDatePut());
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
+                xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning()));
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
+                ArrayList<RingModel> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
+                if (pauses.size() > 0) {
+                    Log.d(TAG, "Break exist for session " + datas.get(i).getId() + ". There is " + pauses.size() + " breaks");
+                    for (int j = 0; j != pauses.size(); j++) {
+                        Log.d(TAG, "Looping through the break of session " + datas.get(i).getId());
+                        xmlWriter.writeEntity("pause");
+                        xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(j).getDateRemoved());
+                        xmlWriter.writeAttribute("dateTimePut", pauses.get(j).getDatePut());
+                        xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(j).getIsRunning()));
+                        xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(j).getTimeWeared()));
+                        xmlWriter.endEntity();
+                    }
+                }
                 xmlWriter.endEntity();
             }
-
-            // Contain all pauses
-            ArrayList<RingModel> pauses = dbManager.getAllDatasForAllPauses();
-            for (int i = 0; i < pauses.size(); i++) {
-                xmlWriter.writeEntity("pause");
-                xmlWriter.writeAttribute("entryId", String.valueOf(pauses.get(i).getId()));
-                xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(i).getIsRunning()));
-                xmlWriter.writeAttribute("dateTimePut", pauses.get(i).getDatePut());
-                xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(i).getDateRemoved());
-                xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(i).getTimeWeared()));
-                xmlWriter.endEntity();
-            }
-
             xmlWriter.endEntity();
         } catch (IOException e) {
             e.printStackTrace();
@@ -251,20 +250,22 @@ public class BackupRestore extends Activity{
             XmlPullParser myParser = xmlFactoryObject.newPullParser();
             DbManager dbManager = new DbManager(getApplicationContext());
             int isRunning;
+            long lastEntryInsertedId = 0;
 
             myParser.setInput(inputStream, null);
 
             // Skip the first element
             int eventType = myParser.next();
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("entry")) {
+                if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("session")) {
                     isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
-                    dbManager.createNewDatesRing(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
+                    lastEntryInsertedId = dbManager.createNewDatesRing(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
                 }
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("pause")) {
-                    Log.d(TAG, "Restauring pause with entryId: " + Long.parseLong(myParser.getAttributeValue(null, "entryId")));
+                    Log.d(TAG, "Restauring pause for entryId: " + lastEntryInsertedId);
                     isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
-                    dbManager.createNewPause(Long.parseLong(myParser.getAttributeValue(null, "entryId")), myParser.getAttributeValue(null, "dateTimeRemoved"), myParser.getAttributeValue(null, "dateTimePut"), isRunning);
+                    if (lastEntryInsertedId != 0)
+                        dbManager.createNewPause(lastEntryInsertedId, myParser.getAttributeValue(null, "dateTimeRemoved"), myParser.getAttributeValue(null, "dateTimePut"), isRunning);
                 }
                 eventType = myParser.next();
             }
