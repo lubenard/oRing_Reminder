@@ -147,4 +147,6 @@
     <string name="your_break_seems_longer_title">Votre pause semble + longue que prévu</string>
     <string name="your_break_seems_longer_body">Avez vous oublié de la marquer comme finie ?</string>
     <string name="settings_around">Environ&#160;</string>
+    <string name="the_calculation_is_as_follows">Le calcul est le suivant</string>
+    <string name="operation_compute_contraception">Nombre de spermatozoïdes par ml * (Mobilité progressive * 0.01)</string>
 </resources>

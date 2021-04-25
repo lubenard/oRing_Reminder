@@ -41,7 +41,7 @@
         android:ems="10"
         android:hint="Ex: 15"
         android:inputType="number"
-        android:digits="0123456789 "/>
+        android:digits="0123456789"/>
 
     <Button
         android:id="@+id/computeFertilityButton"
@@ -64,11 +64,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="The calculation is as follows:" />
+        android:text="@string/the_calculation_is_as_follows" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Number of spermatozoa per ml * (Progressive mobility * 0.01)" />
+        android:text="@string/operation_compute_contraception" />
 </LinearLayout>
