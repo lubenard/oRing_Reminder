@@ -98,7 +98,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         int neededWearingTime = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
 
         if (dataModel.getIsRunning() == 0) {
-            if (dataModel.getTimeWeared() / 60 >= neededWearingTime)
+            if (getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved()) / 60 >= neededWearingTime)
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));

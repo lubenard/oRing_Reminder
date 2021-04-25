@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
@@ -345,11 +346,12 @@ public class EntryDetailsFragment extends Fragment {
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
-            if (entryDetails.getIsRunning() == 0 && entryDetails.getTimeWeared() / 60 >= weared_time)
-                timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            else if (entryDetails.getIsRunning() == 0 && entryDetails.getTimeWeared() / 60 < weared_time)
-                timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            else
+            if (entryDetails.getIsRunning() == 0) {
+                if ((entryDetails.getTimeWeared() - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId)) / 60 >= weared_time)
+                    timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                else
+                    timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            } else
                 timeWeared.setTextColor(getResources().getColor(R.color.yellow));
 
             put.setText(entryDetails.getDatePut());
