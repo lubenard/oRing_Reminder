@@ -445,7 +445,8 @@ public class BackupRestore extends Activity{
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null && data.getDataString() != null) {
             launchBackupRestore(data.getDataString());
-        }
+        } else
+            finish();
     }
 
 }
