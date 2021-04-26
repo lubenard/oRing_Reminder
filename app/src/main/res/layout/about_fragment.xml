@@ -17,6 +17,7 @@
 
             <ImageView
                 android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
                 android:layout_height="100dp"
                 app:srcCompat="@mipmap/ic_launcher_round" />
 
@@ -38,31 +39,31 @@
             <TextView
                 style="@style/base_text_centered"
                 android:layout_marginTop="35dp"
+                android:autoLink="web"
+                android:text="@string/license_app_source"/>
+
+            <TextView
+                style="@style/base_text_centered"
+                android:layout_marginTop="35dp"
                 android:text="@string/licenses"
                 android:textSize="30sp"/>
 
             <TextView
                 style="@style/base_text_centered"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="20dp"
                 android:textSize="20sp"
                 android:text="@string/license_app_title"/>
 
         <TextView
             style="@style/base_text_centered"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="10dp"
             android:text="@string/license_app_licence"/>
-
-        <TextView
-            style="@style/base_text_centered"
-            android:layout_marginTop="35dp"
-            android:text="@string/license_app_source"/>
 
         <View
             style="@style/Divider" />
 
         <TextView
             style="@style/base_text_centered"
-            android:layout_marginTop="10dp"
             android:text="@string/license_XmlWriter_title"/>
 
         <TextView
@@ -71,6 +72,8 @@
 
         <TextView
             style="@style/base_text_centered"
+            android:autoLink="web"
+            android:layout_marginBottom="15dp"
             android:text="@string/license_XmlWriter_source"/>
         </LinearLayout>
     </ScrollView>

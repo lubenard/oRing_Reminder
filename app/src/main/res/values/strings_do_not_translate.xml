@@ -15,7 +15,7 @@
         distributed under the License is distributed on an "AS IS" BASIS,\n
         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
         See the License for the specific language governing permissions and\n
-        limitations under the License.\n
+        limitations under the License.
     </string>
     <string name="license_XmlWriter_licence" translatable="false">
         Copyright (c) 2010, Menny Even Danan\n
@@ -39,6 +39,6 @@
        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n
        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n
        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n
-       POSSIBILITY OF SUCH DAMAGE.\n
+       POSSIBILITY OF SUCH DAMAGE.
     </string>
 </resources>
