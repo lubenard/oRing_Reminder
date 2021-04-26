@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 public class CustomListAdapter extends ArrayAdapter<RingModel> {
 
+    private DbManager dbManager;
+
     private static class ViewHolder {
         TextView weared_from;
         TextView weared_to;
@@ -62,7 +64,7 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         else
             oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
 
-        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(new DbManager(getContext()), entryId);
+        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
         newValue = (int) (oldTimeBeforeRemove - totalTimePause);
         return (newValue < 0) ? 0 : newValue;
     }
@@ -72,11 +74,13 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
         // Get the data item for this position
         RingModel dataModel = getItem(position);
         ViewHolder viewHolder;
+        Context context = getContext();
+        dbManager = new DbManager(context);
 
         // Get our layout and Textview.
         // Inflate it and get all elements
         viewHolder = new ViewHolder();
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        LayoutInflater inflater = LayoutInflater.from(context);
         convertView = inflater.inflate(R.layout.custom_entry_list_element, parent, false);
         viewHolder.weared_from = convertView.findViewById(R.id.custom_view_date_weared_from);
         viewHolder.weared_to = convertView.findViewById(R.id.custom_view_date_weared_to);
@@ -93,20 +97,21 @@ public class CustomListAdapter extends ArrayAdapter<RingModel> {
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
 
         SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(getContext());
+                PreferenceManager.getDefaultSharedPreferences(context);
 
         int neededWearingTime = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
 
         if (dataModel.getIsRunning() == 0) {
-            if (getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved()) / 60 >= neededWearingTime)
-                viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+            int totalTimePause = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
+            if (totalTimePause / 60 >= neededWearingTime)
+                viewHolder.weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
             else
-                viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(convertTimeWeared(getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved())));
+                viewHolder.weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));
+            viewHolder.weared_during.setText(convertTimeWeared(totalTimePause));
         }
         else {
             long timeBeforeRemove = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), null);
-            viewHolder.weared_during.setTextColor(getContext().getResources().getColor(R.color.yellow));
+            viewHolder.weared_during.setTextColor(context.getResources().getColor(R.color.yellow));
             viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         }
         return convertView;
