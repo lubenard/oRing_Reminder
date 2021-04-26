@@ -121,6 +121,7 @@ public class EditEntryFragment extends Fragment {
             // Set alarm only for new entry
             if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true)) {
                 Calendar calendar = Calendar.getInstance();
+                calendar.setTime(Utils.getdateParsed(formattedDatePut));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 Log.d(TAG, "New entry: setting alarm at " + calendar.getTimeInMillis());
                 setAlarm(context, Utils.getdateFormatted(calendar.getTime()), newlyInsertedEntry, false);
