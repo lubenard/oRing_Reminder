@@ -15,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +38,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements CustomListAdapter.onListItemClickListener{
 
     public static final String TAG = "MainFragment";
 
@@ -43,10 +46,12 @@ public class MainFragment extends Fragment {
     private static ArrayList<RingModel> dataModels;
     private static DbManager dbManager;
     private static CustomListAdapter adapter;
-    private static ListView listView;
+    private static RecyclerView recyclerView;
     private static Context context;
     private static boolean orderEntryByDesc = true;
     private static TextView statLastDayTextview;
+    private LinearLayoutManager linearLayoutManager;
+    private static CustomListAdapter.onListItemClickListener onListItemClickListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +69,18 @@ public class MainFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
-        listView = view.findViewById(R.id.main_list);
+
+        recyclerView = view.findViewById(R.id.main_list);
+
+        // Add dividers (like listView) to recyclerView
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        onListItemClickListener = this;
 
         dataModels = new ArrayList<>();
 
@@ -80,21 +96,6 @@ public class MainFragment extends Fragment {
         fab.setOnLongClickListener(view1 -> {
             actionOnPlusButton(true);
             return true;
-        });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                RingModel dataModel= dataModels.get(i);
-                Log.d(TAG, "Element " + dataModel.getId());
-                EntryDetailsFragment fragment = new EntryDetailsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putLong("entryId", dataModel.getId());
-                fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, fragment, null)
-                        .addToBackStack(null).commit();
-            }
         });
     }
 
@@ -129,13 +130,13 @@ public class MainFragment extends Fragment {
      * Update the listView by fetching all elements from the db
      */
     public static void updateElementList(boolean shouldUpdateHeader) {
-        Log.d(TAG, "updated main Listview");
+        Log.d(TAG, "Updated main Listview");
         dataModels.clear();
         LinkedHashMap<Integer, RingModel> entrysDatas = dbManager.getAllDatasForMainList(orderEntryByDesc);
         for (LinkedHashMap.Entry<Integer, RingModel> oneElemData : entrysDatas.entrySet())
             dataModels.add(oneElemData.getValue());
-        adapter = new CustomListAdapter(dataModels, context);
-        listView.setAdapter(adapter);
+        adapter = new CustomListAdapter(dataModels, onListItemClickListener);
+        recyclerView.setAdapter(adapter);
         if (shouldUpdateHeader)
             recomputeLastWearingTime();
     }
@@ -270,5 +271,18 @@ public class MainFragment extends Fragment {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onListItemClickListener(int position) {
+        RingModel dataModel= dataModels.get(position);
+        Log.d(TAG, "Element " + dataModel.getId());
+        EntryDetailsFragment fragment = new EntryDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong("entryId", dataModel.getId());
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, fragment, null)
+                .addToBackStack(null).commit();
     }
 }
