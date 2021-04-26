@@ -128,7 +128,7 @@ public class MainFragment extends Fragment {
     /**
      * Update the listView by fetching all elements from the db
      */
-    public static void updateElementList() {
+    public static void updateElementList(boolean shouldUpdateHeader) {
         Log.d(TAG, "updated main Listview");
         dataModels.clear();
         LinkedHashMap<Integer, RingModel> entrysDatas = dbManager.getAllDatasForMainList(orderEntryByDesc);
@@ -136,7 +136,8 @@ public class MainFragment extends Fragment {
             dataModels.add(oneElemData.getValue());
         adapter = new CustomListAdapter(dataModels, context);
         listView.setAdapter(adapter);
-        recomputeLastWearingTime();
+        if (shouldUpdateHeader)
+            recomputeLastWearingTime();
     }
 
     /**
@@ -233,7 +234,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateElementList();
+        updateElementList(true);
     }
 
     @Override
@@ -259,12 +260,12 @@ public class MainFragment extends Fragment {
                         .addToBackStack(null).commit();
                 return true;
             case R.id.action_reload_datas:
-                updateElementList();
+                updateElementList(true);
                 return true;
             case R.id.action_sort_entrys:
                 orderEntryByDesc = !orderEntryByDesc;
                 Toast.makeText(context, context.getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc),Toast.LENGTH_SHORT).show();
-                updateElementList();
+                updateElementList(false);
                 return true;
             default:
                 return false;

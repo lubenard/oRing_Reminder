@@ -135,7 +135,7 @@ public class EditEntryFragment extends Fragment {
         // We could have merged with the condition above, but i wanted to have better granular control
         // if needed
         if (shouldUpdateMainList) {
-            MainFragment.updateElementList();
+            MainFragment.updateElementList(true);
         }
     }
 
