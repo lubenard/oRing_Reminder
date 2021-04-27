@@ -369,31 +369,66 @@ public class BackupRestore extends Activity{
         try {
 
             csvWriter.writeColumnsName(new String[]{"All times are computed in minutes."});
-            csvWriter.writeColumnsName(new String[]{"Date put", "Hour put", "Date removed", "Hour removed", "Time worn (without breaks)",
-                                                    "Total break time", "Time worn (with breaks)"});
+            /*csvWriter.writeColumnsName(new String[]{"Date put", "Hour put", "Date removed", "Hour removed", "Time worn (without breaks)",
+                                                    "Total break time", "Time worn (with breaks)"});*/
+            csvWriter.writeColumnsName(new String[]{"Date put","Date removed"});
 
             ArrayList<String> formattedDatas = new ArrayList<>();
             // Contain all entrys
-            ArrayList<RingModel> rawDatas = dbManager.getAllDatasForAllEntrys();
-            for (int i = 0; i < rawDatas.size(); i++) {
-                String[] datePut = rawDatas.get(i).getDatePut().split(" ");
-                String[] dateRemoved = rawDatas.get(i).getDateRemoved().split(" ");
-                int totalTimePauses = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, rawDatas.get(i).getId());
+            ArrayList<RingModel> rawEntries = dbManager.getAllDatasForAllEntrys();
+
+            String tempDatePut = "";
+            String tempDateRemove = "";
+            long entryId = 0;
+
+            for (int i = 0; i < rawEntries.size(); i++) {
+                //initialize the export - for each session, the first start date is always the first datetime of the entry
+                tempDatePut = rawEntries.get(i).getDatePut();
+
+                //search for all pause for the given entry
+                entryId = rawEntries.get(i).getId();
+                ArrayList<RingModel> rawPauseForId = dbManager.getAllPausesForId(entryId,true);
+
+                //if there is a pause, get the start pause date as end date, register the datas in CSV, and get the end of the pause as new start for the next entry
+                if (rawPauseForId.size() != 0){
+                    for (int j=0; j<rawPauseForId.size();j++){
+                        tempDateRemove = rawPauseForId.get(j).getDateRemoved();
+
+                        formattedDatas.add(tempDatePut);
+                        formattedDatas.add(tempDateRemove);
+                        csvWriter.writeColumnsDatas(formattedDatas);
+                        formattedDatas.clear();
+
+                        tempDatePut = rawPauseForId.get(j).getDatePut();
+                    }
+                }
+
+                //terminate the export --> last date for a given entry is always the date removed of this entry
+                tempDateRemove = rawEntries.get(i).getDateRemoved();
+                formattedDatas.add(tempDatePut);
+                formattedDatas.add(tempDateRemove);
+                csvWriter.writeColumnsDatas(formattedDatas);
+                formattedDatas.clear();
+
+                /*String[] datePut = rawEntries.get(i).getDatePut().split(" ");
+                String[] dateRemoved = rawEntries.get(i).getDateRemoved().split(" ");
+                int totalTimePauses = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, rawEntries.get(i).getId());
                 formattedDatas.add(datePut[0]);
                 formattedDatas.add(datePut[1]);
                 formattedDatas.add(dateRemoved[0]);
                 formattedDatas.add(dateRemoved[1]);
-                if (rawDatas.get(i).getIsRunning() == 0)
-                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared()));
+                formattedDatas.add(datePut[0]);
+                if (rawEntries.get(i).getIsRunning() == 0)
+                    formattedDatas.add(String.valueOf(rawEntries.get(i).getTimeWeared()));
                 else
-                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawEntries.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 formattedDatas.add(String.valueOf(totalTimePauses));
-                if (rawDatas.get(i).getIsRunning() == 0)
-                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared() - totalTimePauses));
+                if (rawEntries.get(i).getIsRunning() == 0)
+                    formattedDatas.add(String.valueOf(rawEntries.get(i).getTimeWeared() - totalTimePauses));
                 else
-                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
+                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawEntries.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
                 csvWriter.writeColumnsDatas(formattedDatas);
-                formattedDatas.clear();
+                formattedDatas.clear();*/
             }
         } catch (IOException e) {
             e.printStackTrace();
