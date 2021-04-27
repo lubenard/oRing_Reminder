@@ -261,6 +261,38 @@ public class DbManager extends SQLiteOpenHelper {
         endPause(entryId);
     }
 
+    /**
+     *Overloading method to pass the end date in parameter. without this parameter, when editing and ended session, the dateRemoved is override by the current date
+     * @param entryId set the session as finished for given id
+     * @param dateRemoved set the session end date and usually pulled from getText
+     */
+    public void endSession(long entryId, String dateRemoved) {
+        if (entryId < 0)
+            return;
+
+        // First we catch the dateTablePut date
+        String[] columns = new String[]{ringTablePut};
+        Cursor cursor = readableDB.query(ringTable, columns,ringTableId + "=?",
+                new String[]{String.valueOf(entryId)}, null, null, null);
+        cursor.moveToFirst();
+
+        // Then we set our values:
+        // We need to recompute the date
+        // And set the isRunning to 0
+        ContentValues cv = new ContentValues();
+        cv.put(ringTableRemoved, dateRemoved);
+        cv.put(ringTableTimeWeared, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));
+        cv.put(ringTableIsRunning, 0);
+
+        int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(entryId)});
+        if (u == 0) {
+            Log.d(TAG, "endSession: update does not seems to work, insert data: (for id = " + entryId);
+            writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+        // End pause is session is set to finish
+        endPause(entryId);
+    }
+
     private void endPause(long entryId) {
         // First we catch the dateTablePut date
         String[] columns = new String[]{pauseTableRemoved};
