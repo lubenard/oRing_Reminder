@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.CurrentSessionWidgetProvider;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
@@ -273,6 +274,7 @@ public class EditEntryFragment extends Fragment {
                     if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET")) {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
+                            updateWidget(context);
                             // Recompute alarm if the entry already exist, but has no ending time
                             Calendar calendar = Calendar.getInstance();
                             calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
@@ -286,6 +288,7 @@ public class EditEntryFragment extends Fragment {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
                             dbManager.endSession(entryId);
+                            updateWidget(context);
                             // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
                             cancelAlarm(context, entryId);
                             getActivity().getSupportFragmentManager().popBackStackImmediate();
@@ -295,16 +298,18 @@ public class EditEntryFragment extends Fragment {
                         }
                     }
                 } else {
-                    if (formattedDateRemoved.isEmpty())
+                    if (formattedDateRemoved.isEmpty()) {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                             insertNewEntry(formattedDatePut, true);
+                            updateWidget(context);
                         } else {
                             Log.d(TAG, "DateFormat wrong check 3");
                             showToastBadFormattedDate();
                         }
-                    else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
+                    } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                             dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
+                            updateWidget(context);
                             // Get back to the last element in the fragment stack
                             getActivity().getSupportFragmentManager().popBackStackImmediate();
                         } else {
@@ -318,6 +323,13 @@ public class EditEntryFragment extends Fragment {
                 return true;
             default:
                 return false;
+        }
+    }
+
+    public static void updateWidget(Context context) {
+        if (CurrentSessionWidgetProvider.isThereAWidget) {
+            Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
+            context.sendBroadcast(intent);
         }
     }
 

@@ -102,6 +102,7 @@ public class EntryDetailsFragment extends Fragment {
         stopSessionButton.setOnClickListener(view13 -> {
             dbManager.endSession(entryId);
             updateAllFragmentDatas();
+            EditEntryFragment.updateWidget(context);
         });
 
         ImageButton pauseButton = view.findViewById(R.id.new_pause_button);

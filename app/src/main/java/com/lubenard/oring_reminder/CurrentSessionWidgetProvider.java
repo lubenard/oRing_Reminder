@@ -1,5 +1,7 @@
 package com.lubenard.oring_reminder;
 
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -26,6 +28,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static RemoteViews remoteViews;
 
     public static boolean isThereAWidget = false;
+    private PendingIntent pendingIntent;
+    private AlarmManager am;
 
     // Update the Widget datas
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -83,12 +87,21 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
         isThereAWidget = true;
+        Log.d("Widget", "onEnabled is called");
+        Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
+        pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
+        // 6000 millis is one minute
+        am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
     }
 
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
         isThereAWidget = false;
+        Log.d("Widget", "onDisabled is called");
+        // Cancel alarm manager
+        am.cancel(pendingIntent);
     }
 
     @Override

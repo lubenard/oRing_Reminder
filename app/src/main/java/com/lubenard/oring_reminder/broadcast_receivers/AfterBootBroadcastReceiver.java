@@ -75,11 +75,5 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
                 EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
             }
         }
-
-        Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
-        AlarmManager am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
-        // 6000 millis is one minute
-        am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
     }
 }
