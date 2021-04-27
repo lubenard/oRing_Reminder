@@ -70,9 +70,9 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
                 remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
-                remoteViews.setTextViewText(R.id.widget_date_from, context.getString(R.string.no_running_session));
+                remoteViews.setTextViewText(R.id.widget_date_from, "");
                 remoteViews.setTextViewText(R.id.widget_worn_for, context.getString(R.string.no_running_session));
-                remoteViews.setTextViewText(R.id.widget_time_remaining, context.getString(R.string.no_running_session));
+                remoteViews.setTextViewText(R.id.widget_time_remaining, "");
             }
             // Update the widget view.
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
