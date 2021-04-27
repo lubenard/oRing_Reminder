@@ -1,6 +1,8 @@
 # oRing_Reminder
 This app remind you when you can take off your contraceptive method (created for men using thermal contraception)
 
+<a href='https://play.google.com/store/apps/details?id=com.lubenard.oring_reminder&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="90pt"/></a>
+
 ## Features:
  - Can predict when you can take your protection off
  - Send a notification when you can take your protection off (with quick replies !)
