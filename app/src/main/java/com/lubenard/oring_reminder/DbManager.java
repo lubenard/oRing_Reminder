@@ -238,15 +238,22 @@ public class DbManager extends SQLiteOpenHelper {
             return;
 
         // First we catch the dateTablePut date
-        String[] columns = new String[]{ringTablePut};
+        String[] columns = new String[]{ringTablePut,ringTableRemoved};
         Cursor cursor = readableDB.query(ringTable, columns,ringTableId + "=?",
                 new String[]{String.valueOf(entryId)}, null, null, null);
-        cursor.moveToFirst();
 
+        cursor.moveToFirst();
         // Then we set our values:
         // We need to recompute the date
         // And set the isRunning to 0
-        String dateRemoved = Utils.getdateFormatted(new Date());
+        String dateRemoved = "";
+        if (cursor.getString(1).equals("NOT SET YET")){
+            dateRemoved = Utils.getdateFormatted(new Date());
+
+        }
+        else{
+            dateRemoved = cursor.getString(1);
+        }
         ContentValues cv = new ContentValues();
         cv.put(ringTableRemoved, dateRemoved);
         cv.put(ringTableTimeWeared, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));
