@@ -119,6 +119,7 @@ public class EntryDetailsFragment extends Fragment {
                     // Only then set a new alarm date
                     Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                     EditEntryFragment.cancelAlarm(context, entryId);
+                    setBreakAlarm(Utils.getdateFormatted(new Date()));
                     updatePauseList();
                 } else
                     Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
@@ -227,28 +228,42 @@ public class EntryDetailsFragment extends Fragment {
                         calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
                         calendar.add(Calendar.MINUTE, newAlarmDate);
                         Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
+                        // Cancel break alarm is session is set as finished
+                        if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
+                            Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
+                                    .putExtra("action", 1);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) entryId, intent, 0);
+                            AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+                            am.cancel(pendingIntent);
+                        }
                         EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
                     }
                 }
-                // Add alarm if break is too long (only if break is running)
-                if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false) && isRunning == 1) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(Utils.getdateParsed(pause_beginning.getText().toString()));
-                    calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
-                    Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
-                            .putExtra("action", 1);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) ((dataModel != null) ? dataModel.getId() : entryId), intent, 0);
-                    AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
-
-                    if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
-                        am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                    else if (SDK_INT >= Build.VERSION_CODES.M)
-                        am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                }
+                if (isRunning == 1)
+                    setBreakAlarm(pause_beginning.getText().toString());
                 updatePauseList();
             }
         });
         alertDialog.show();
+    }
+
+    private void setBreakAlarm(String pauseBeginning) {
+        // Add alarm if break is too long (only if break is running)
+        if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Utils.getdateParsed(pauseBeginning));
+            calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
+            Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
+            Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
+                    .putExtra("action", 1);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) entryId, intent, 0);
+            AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+
+            if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            else if (SDK_INT >= Build.VERSION_CODES.M)
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
     }
 
     /**

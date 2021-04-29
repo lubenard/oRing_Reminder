@@ -33,7 +33,6 @@ public class CustomListPausesAdapter extends ArrayAdapter<RingModel> {
      * @return a string containing the time the user weared the protection
      */
     private String convertTimeWeared(int timeWeared) {
-        Log.d("Test", "TimeWeared = " + timeWeared);
         if (timeWeared < 60)
             return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
         else if (timeWeared <= 1440)

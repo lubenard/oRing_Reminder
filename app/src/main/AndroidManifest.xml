@@ -26,6 +26,7 @@
         </activity>
         <activity android:name=".BackupRestore"/>
         <receiver android:name=".broadcast_receivers.NotificationSenderBroadcastReceiver"/>
+        <receiver android:name=".broadcast_receivers.NotificationSenderBreaksBroadcastReceiver"/>
         <receiver android:name=".broadcast_receivers.NotificationReceiverBroadcastReceiver"/>
         <!--When boot is completed, launch this BroadcastReceiver with given Intents-->
         <receiver android:name=".broadcast_receivers.AfterBootBroadcastReceiver">
