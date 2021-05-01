@@ -287,7 +287,7 @@ public class EditEntryFragment extends Fragment {
                     } else {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
-                            dbManager.endSession(entryId);
+                            dbManager.endPause(entryId);
                             updateWidget(context);
                             // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
                             cancelAlarm(context, entryId);

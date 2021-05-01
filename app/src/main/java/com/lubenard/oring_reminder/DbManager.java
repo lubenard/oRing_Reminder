@@ -261,7 +261,11 @@ public class DbManager extends SQLiteOpenHelper {
         endPause(entryId);
     }
 
-    private void endPause(long entryId) {
+    /**
+     * End pause for given sessionId
+     * @param entryId sessionId
+     */
+    public void endPause(long entryId) {
         // First we catch the dateTablePut date
         String[] columns = new String[]{pauseTableRemoved};
         Cursor cursor = readableDB.query(pausesTable, columns,pauseTableEntryId + "=?"
