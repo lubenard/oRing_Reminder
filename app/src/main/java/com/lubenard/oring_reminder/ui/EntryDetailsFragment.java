@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
@@ -84,7 +85,7 @@ public class EntryDetailsFragment extends Fragment {
         fragmentManager = getActivity().getSupportFragmentManager();
         this.view = view;
 
-        dbManager = new DbManager(context);
+        dbManager = MainActivity.getDbManager();
         dataModels = new ArrayList<>();
 
         Bundle bundle = this.getArguments();

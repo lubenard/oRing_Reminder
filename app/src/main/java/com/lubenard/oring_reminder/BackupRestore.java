@@ -211,7 +211,7 @@ public class BackupRestore extends Activity{
     }
 
     private void saveDatasIntoXml(XmlWriter xmlWriter) {
-        DbManager dbManager = new DbManager(this);
+        DbManager dbManager = MainActivity.getDbManager();
         // Datas containing all saved datas
         try {
             xmlWriter.writeEntity("datas");
@@ -248,7 +248,7 @@ public class BackupRestore extends Activity{
         try {
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser myParser = xmlFactoryObject.newPullParser();
-            DbManager dbManager = new DbManager(getApplicationContext());
+            DbManager  dbManager = MainActivity.getDbManager();
             int isRunning;
             long lastEntryInsertedId = 0;
 
@@ -404,7 +404,7 @@ public class BackupRestore extends Activity{
     }
 
     private void saveDatasIntoCsv(CsvWriter csvWriter) {
-        DbManager dbManager = new DbManager(this);
+        DbManager dbManager = MainActivity.getDbManager();
         // Datas containing all saved datas
         try {
 

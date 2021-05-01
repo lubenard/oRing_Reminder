@@ -16,6 +16,7 @@ import com.lubenard.oring_reminder.utils.Utils;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
+    private static DbManager dbManager;
 
     /**
      * Apply config at app startup
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Check the UI config (Theme and language) and apply them
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        dbManager = new DbManager(this);
         checkConfig();
         createNotifChannel();
 
@@ -55,6 +57,16 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(android.R.id.content, new MainFragment());
         fragmentTransaction.commit();
+    }
+
+    public static DbManager getDbManager() {
+        return dbManager;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbManager.closeDb();
     }
 
     /**

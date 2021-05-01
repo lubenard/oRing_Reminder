@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
@@ -83,8 +84,7 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
         onListItemClickListener = this;
 
         dataModels = new ArrayList<>();
-
-        dbManager = new DbManager(getContext());
+        dbManager = MainActivity.getDbManager();
         context = getContext();
 
         Log.d(TAG, "DB version is: " + dbManager.getVersion());

@@ -7,8 +7,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
+import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Date;
@@ -62,7 +64,7 @@ public class MainListViewHolder extends RecyclerView.ViewHolder implements View.
         else
             oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
 
-        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(CustomListAdapter.getDbManager(), entryId);
+        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(MainActivity.getDbManager(), entryId);
         newValue = (int) (oldTimeBeforeRemove - totalTimePause);
         return (newValue < 0) ? 0 : newValue;
     }

@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.ui.MainFragment;
 
 import java.util.ArrayList;
 
@@ -30,7 +32,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<MainListViewHolder> 
     public MainListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.custom_entry_list_element, parent, false);
-        dbManager = new DbManager(parent.getContext());
+        dbManager = MainActivity.getDbManager();
         context = parent.getContext();
         return new MainListViewHolder(view, onListItemClickListener);
     }
@@ -43,10 +45,6 @@ public class CustomListAdapter extends RecyclerView.Adapter<MainListViewHolder> 
     @Override
     public int getItemCount() {
         return entryList.size();
-    }
-
-    public static DbManager getDbManager() {
-        return dbManager;
     }
 
     public interface onListItemClickListener {

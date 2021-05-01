@@ -30,6 +30,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.CurrentSessionWidgetProvider;
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingModel;
@@ -100,7 +101,7 @@ public class EditEntryFragment extends Fragment {
     public EditEntryFragment(Context context) {
         this.entryId = -1;
         this.context = context;
-        dbManager = new DbManager(context);
+        dbManager = MainActivity.getDbManager();
         runningSessions = dbManager.getAllRunningSessions();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
