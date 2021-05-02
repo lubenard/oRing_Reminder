@@ -14,6 +14,7 @@ import android.widget.RemoteViews;
 
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -28,14 +29,11 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static RemoteViews remoteViews;
 
     public static boolean isThereAWidget = false;
-    private PendingIntent pendingIntent;
-    private AlarmManager am;
+    private static AlarmManager am;
 
     // Update the Widget datas
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
-
-        dbManager = new DbManager(context);
 
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i = 0; i < N; i++) {
@@ -50,10 +48,15 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
+            if (dbManager == null)
+                dbManager = new DbManager(context);
+
             RingModel lastEntry = dbManager.getLastRunningEntry();
 
             if (lastEntry != null) {
+                int totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, lastEntry.getId());
                 long wornFor = Utils.getDateDiff(lastEntry.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                wornFor -= totalTimePause;
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(Utils.getdateParsed(lastEntry.getDatePut()));
@@ -62,6 +65,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 int textResourceWhenGetItOff;
 
                 long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
+                timeBeforeRemove += totalTimePause;
 
                 if (timeBeforeRemove >= 0)
                     textResourceWhenGetItOff = R.string.in_about_entry_details;
@@ -88,8 +92,9 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         super.onEnabled(context);
         isThereAWidget = true;
         Log.d("Widget", "onEnabled is called");
+        dbManager = new DbManager(context);
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
-        pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
         am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
         // 6000 millis is one minute
         am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
@@ -100,8 +105,10 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         super.onDisabled(context);
         isThereAWidget = false;
         Log.d("Widget", "onDisabled is called");
+        Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
+        PendingIntent mPendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
         // Cancel alarm manager
-        am.cancel(pendingIntent);
+        am.cancel(mPendingIntent);
     }
 
     @Override

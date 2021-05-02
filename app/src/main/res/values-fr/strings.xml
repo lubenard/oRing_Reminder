@@ -100,7 +100,7 @@
     <string name="settings_ui_action_on_plus_button_default">(Défaut)\nAppui -> Session en cours rapide\nAppui long -> Interface avancée de session</string>
     <string name="settings_ui_action_on_plus_button_long_click">Appui -> interface avancée de session\nAppui long -> Session en cours rapide</string>
     <string name="when_get_it_off_negative">(Il y a environ -%dh%02dm)</string>
-    <string name="removed_during">Retiré prendant :</string>
+    <string name="removed_during">Retiré pendant :</string>
     <string name="last_day_string_header">Dans les dernières 24h, porté :&#160;</string>
     <string name="action_calculators">Calculateurs</string>
     <string name="calculators_title">Calculateurs</string>
