@@ -109,7 +109,8 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
-    /**EditEntry
+    /**
+     * EditEntry
      * Get the datas list for a the main List
      * @return The datas fetched from the DB as a LinkedHashMap
      */

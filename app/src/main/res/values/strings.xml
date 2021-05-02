@@ -129,4 +129,9 @@
     <string name="your_break_seems_longer_body">Have you forgot to set it as ended ?</string>
     <string name="the_calculation_is_as_follows">The calculation is as follows:</string>
     <string name="operation_compute_contraception">Number of spermatozoa per ml * (Progressive mobility * 0.01)</string>
+    <string name="action_datas">Datas</string>
+    <string name="data_fragment_title">Datas</string>
+    <string name="number_of_entries">Number of entries:&#160;</string>
+    <string name="last_entry">The last entry is:&#160;</string>
+    <string name="first_entry">The first entry is:&#160;</string>
 </resources>

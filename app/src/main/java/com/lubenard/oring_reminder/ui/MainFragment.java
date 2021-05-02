@@ -249,9 +249,13 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
         int id = item.getItemId();
         switch (id) {
             case R.id.action_calculators:
-                CalculatorsFragment fragment = new CalculatorsFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, fragment, null)
+                        .replace(android.R.id.content, new CalculatorsFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            case R.id.action_datas:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new DatasFragment(), null)
                         .addToBackStack(null).commit();
                 return true;
             case R.id.action_settings:
