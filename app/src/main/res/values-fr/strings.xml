@@ -40,8 +40,8 @@
     <string name="to">Jusqu\'à : </string>
     <string name="from">Depuis : </string>
     <string name="you_weared_your_protection_from">Vous portez votre protection depuis : </string>
-    <string name="that_make_about">Cela fait environ : </string>
-    <string name="worn_for">Porté pendant</string>
+    <string name="that_make_about">Cela fait environ :</string>
+    <string name="worn_for">Porté pendant :</string>
     <string name="alertdialog_dangerous_wearing_time">Êtes-vous sûr ?</string>
     <string name="alertdialog_dangerous_wearing_body">Ne pas porter votre protection peut vous rendre de nouveau fertile. La porter trop souvent n\'est pas bon non plus. En cas de doute, faites un spermogramme et allez voir votre medecin traitant.</string>
     <string name="wering_time">Temps de port</string>
@@ -115,7 +115,7 @@
     <string name="datas_export_data_csv_title">Exportez vos données en CSV</string>
     <string name="datas_export_data_csv">Exportez vos données en format CSV</string>
     <string name="create_new_entry">Créer une nouvelle entrée</string>
-    <string name="time_remaining">Temps restant</string>
+    <string name="time_remaining">Temps restant :</string>
     <string name="no_running_session">Pas de session active en cours</string>
     <string name="you_can_get_it_on_again">Vous devriez pouvoir le remettre à :</string>
     <string name="bad_date_format">Mauvais format de date. Merci de vérifier</string>
