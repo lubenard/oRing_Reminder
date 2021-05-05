@@ -41,8 +41,11 @@ public class DatasFragment extends Fragment {
         TextView lastEntry = view.findViewById(R.id.last_entry);
         TextView firstEntry = view.findViewById(R.id.first_entry);
 
-        numberOfEntries.setText(getString(R.string.number_of_entries) + datas.size());
-        lastEntry.setText(getString(R.string.last_entry) + datas.get(datas.size() - 1).getDatePut().split(" ")[0]);
-        firstEntry.setText(getString(R.string.first_entry) + datas.get(0).getDatePut().split(" ")[0]);
+        numberOfEntries.setText(getString(R.string.number_of_entries)+ datas.size());
+        String lastEntryData = (datas.size() > 0) ? datas.get(datas.size() - 1).getDatePut().split(" ")[0] : getString(R.string.not_set_yet);
+        String firstEntryData = (datas.size() > 0) ? datas.get(0).getDatePut().split(" ")[0] : getString(R.string.not_set_yet);
+
+        lastEntry.setText(getString(R.string.last_entry) + "\n" + lastEntryData);
+        firstEntry.setText(getString(R.string.first_entry) + "\n" + firstEntryData);
     }
 }
