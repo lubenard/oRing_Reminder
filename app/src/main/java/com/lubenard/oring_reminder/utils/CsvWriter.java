@@ -11,10 +11,19 @@ public class CsvWriter {
 
     Writer fileWriter;
 
+    /**
+     * Constructor
+     * @param outputFileStream
+     */
     public CsvWriter(OutputStream outputFileStream) {
         fileWriter = new OutputStreamWriter(outputFileStream, StandardCharsets.UTF_8);
     }
 
+    /**
+     * Write colum names
+     * @param names column's name
+     * @throws IOException
+     */
     public void writeColumnsName(String[] names) throws IOException {
         if (fileWriter != null) {
             for (int i = 0; i != names.length; i++) {
@@ -25,6 +34,11 @@ public class CsvWriter {
         }
     }
 
+    /**
+     * Write column datas
+     * @param datas datas to write
+     * @throws IOException
+     */
     public void writeColumnsDatas(ArrayList<String> datas) throws IOException {
         if (fileWriter != null) {
             for (int i = 0; i != datas.size(); i++) {

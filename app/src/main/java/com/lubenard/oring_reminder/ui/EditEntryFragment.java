@@ -327,6 +327,10 @@ public class EditEntryFragment extends Fragment {
         }
     }
 
+    /**
+     * Instantly update the widget
+     * @param context
+     */
     public static void updateWidget(Context context) {
         if (CurrentSessionWidgetProvider.isThereAWidget) {
             Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
@@ -334,6 +338,9 @@ public class EditEntryFragment extends Fragment {
         }
     }
 
+    /**
+     * Show toast if a date has been malformed
+     */
     private void showToastBadFormattedDate() {
         Toast.makeText(context, R.string.bad_date_format, Toast.LENGTH_SHORT).show();
     }

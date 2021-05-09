@@ -277,6 +277,9 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
         }
     }
 
+    /**
+     * onClickManager handling clicks on the main List
+     */
     @Override
     public void onListItemClickListener(int position) {
         RingModel dataModel= dataModels.get(position);

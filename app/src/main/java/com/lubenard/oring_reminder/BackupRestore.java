@@ -59,6 +59,9 @@ public class BackupRestore extends Activity{
             startBackupIntoCSV();
     }
 
+    /**
+     * Launch the backup for export in CSV
+     */
     private void startBackupIntoCSV() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -74,6 +77,10 @@ public class BackupRestore extends Activity{
         }
     }
 
+    /**
+     * Start the file chooser intent
+     * @param dataToFileChooser
+     */
     private void launchIntent(Intent dataToFileChooser) {
         try {
             startActivityForResult(dataToFileChooser, 1);
@@ -86,7 +93,10 @@ public class BackupRestore extends Activity{
         }
     }
 
-    private boolean startBackupIntoXML() {
+    /**
+     * Start export in XML
+     */
+    private void startBackupIntoXML() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
             dataToFileChooser.setType("text/xml");
@@ -99,9 +109,13 @@ public class BackupRestore extends Activity{
             createDefaultFileIfNeeded();
             launchBackupRestore(exportPath);
         }
-        return true;
     }
 
+    /**
+     * Create the default export file
+     * Probably in
+     * "Intern Memory"/android/datas/com.lubenard.oring_reminder/oRingReminder-Backup/
+     */
     private void createDefaultFileIfNeeded() {
         if (typeOfDatas == 1) {
             File f1 = new File(Environment.getExternalStorageDirectory() + "/oRingReminder-Backup", "backup.xml");
@@ -115,6 +129,11 @@ public class BackupRestore extends Activity{
         }
     }
 
+    /**
+     * Create the default folder 'oRingReminder-Backup' in
+     * "Intern Memory"/android/datas/com.lubenard.oring_reminder
+     * @param extension file extension ("xml" or "csv")
+     */
     private void getDefaultFolder(String extension) {
         String folder_main = "oRingReminder-Backup";
 
@@ -126,7 +145,11 @@ public class BackupRestore extends Activity{
         Log.d(TAG, "Absolute path of backup file is " + exportPath);
     }
 
-    private boolean startRestoreFromXML() {
+    /**
+     * Start Import from XML
+     * @return
+     */
+    private void startRestoreFromXML() {
         Log.d(TAG, "startRestoreFromXML");
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
@@ -138,9 +161,11 @@ public class BackupRestore extends Activity{
             getDefaultFolder("xml");
             launchBackupRestore(exportPath);
         }
-        return true;
     }
 
+    /**
+     * Create the "Please wait..." alertdialog"
+     */
     private void createAlertDialog() {
         // Create an alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -158,6 +183,10 @@ public class BackupRestore extends Activity{
         dialog.show();
     }
 
+    /**
+     * Export settings in XML
+     * @param xmlWriter
+     */
     private void saveSettingsIntoXml(XmlWriter xmlWriter) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -210,6 +239,10 @@ public class BackupRestore extends Activity{
         }
     }
 
+    /**
+     * Export datas in XML
+     * @param xmlWriter
+     */
     private void saveDatasIntoXml(XmlWriter xmlWriter) {
         DbManager dbManager = MainActivity.getDbManager();
         // Datas containing all saved datas
@@ -244,6 +277,10 @@ public class BackupRestore extends Activity{
         }
     }
 
+    /**
+     * Restore datas from XML
+     * @param inputStream
+     */
     private void restoreDatasFromXml(InputStream inputStream) {
         try {
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
@@ -274,6 +311,10 @@ public class BackupRestore extends Activity{
         }
     }
 
+    /**
+     * Restore settings from XML
+     * @param inputStream
+     */
     private void restoreSettingsFromXml(InputStream inputStream) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         try {
@@ -347,6 +388,11 @@ public class BackupRestore extends Activity{
         SettingsFragment.restartActivity();
     }
 
+    /**
+     * Actually launch the backup system depending on what to do.
+     * This function is executed when we now everything is ready for export
+     * @param filePath
+     */
     private void launchBackupRestore(String filePath) {
         createAlertDialog();
         Uri uri;
@@ -403,6 +449,10 @@ public class BackupRestore extends Activity{
         finish();
     }
 
+    /**
+     * Export datas into CSV
+     * @param csvWriter
+     */
     private void saveDatasIntoCsv(CsvWriter csvWriter) {
         DbManager dbManager = MainActivity.getDbManager();
         // Datas containing all saved datas

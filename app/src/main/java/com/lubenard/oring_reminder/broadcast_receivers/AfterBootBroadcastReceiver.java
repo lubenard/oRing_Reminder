@@ -31,6 +31,12 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
     public static final String TAG = "AfterBootBroadcast";
 
+    /**
+     * Check if given session have running pause ongoing
+     * @param dbManager dbManager
+     * @param entryId entry to check
+     * @return true if running break has been found, else false
+     */
     private static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
         ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
         for (int i = 0; i != allPauses.size(); i++) {
@@ -40,6 +46,12 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         return false;
     }
 
+    /**
+     * Compute the total pause time by adding each one
+     * @param dbManager dbManager
+     * @param entryId entry to check
+     * @return the int value of all pause time in minutes
+     */
     public static int computeTotalTimePause(DbManager dbManager, long entryId) {
         ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
         int totalTimePause = 0;

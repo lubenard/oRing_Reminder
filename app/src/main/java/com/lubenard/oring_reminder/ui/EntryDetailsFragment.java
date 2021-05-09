@@ -248,8 +248,11 @@ public class EntryDetailsFragment extends Fragment {
         alertDialog.show();
     }
 
+    /**
+     * Add alarm if break is too long (only if break is running and option enabled in settings)
+     * @param pauseBeginning
+     */
     private void setBreakAlarm(String pauseBeginning) {
-        // Add alarm if break is too long (only if break is running)
         if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(Utils.getdateParsed(pauseBeginning));
