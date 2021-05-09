@@ -18,6 +18,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.ui.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -297,12 +299,22 @@ public class BackupRestore extends Activity{
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("session")) {
                     isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
                     lastEntryInsertedId = dbManager.createNewDatesRing(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
+                    if (isRunning == 1) {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(Utils.getdateParsed(myParser.getAttributeValue(null, "dateTimePut")));
+                        calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(preferences.getString("myring_wearing_time", "15")));
+                        EditEntryFragment.setAlarm(this, Utils.getdateFormatted(calendar.getTime()) , lastEntryInsertedId, true);
+                    }
                 }
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("pause")) {
                     Log.d(TAG, "Restauring pause for entryId: " + lastEntryInsertedId);
                     isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
-                    if (lastEntryInsertedId != 0)
+                    if (lastEntryInsertedId != 0) {
                         dbManager.createNewPause(lastEntryInsertedId, myParser.getAttributeValue(null, "dateTimeRemoved"), myParser.getAttributeValue(null, "dateTimePut"), isRunning);
+                        if (isRunning == 1)
+                            EditEntryFragment.cancelAlarm(this, lastEntryInsertedId);
+                    }
                 }
                 eventType = myParser.next();
             }
