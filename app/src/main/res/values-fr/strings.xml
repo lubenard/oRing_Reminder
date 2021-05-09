@@ -138,4 +138,5 @@
     <string name="number_of_entries">Nombre d\'entrées :&#160;</string>
     <string name="last_entry">La dernière entrée est le :&#160;</string>
     <string name="first_entry">La première entrée est le :&#160;</string>
+    <string name="no_access_to_storage">Merci d\'autoriser l\'accès au stockage pour exporter / importer.</string>
 </resources>

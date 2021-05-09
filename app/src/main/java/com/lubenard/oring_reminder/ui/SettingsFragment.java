@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.BackupRestore;
 import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -237,8 +239,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!Utils.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                            return;
+                        MainActivity.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE, () -> null, () -> {
+                            Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
+                            return null;
+                        });
+
                         Intent intent = new Intent(getContext(), BackupRestore.class);
                         intent.putExtra("mode", 1);
 
@@ -265,8 +270,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference exportCSV = findPreference("datas_export_data_csv");
         exportCSV.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                if (!Utils.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                    return false;
+                MainActivity.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE, () -> null, () -> {
+                    Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
+                    return null;
+                });
                 Intent intent = new Intent(getContext(), BackupRestore.class);
                 intent.putExtra("mode", 3);
                 startActivity(intent);
@@ -277,8 +284,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference importXML = findPreference("datas_import_data_xml");
         importXML.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                if (!Utils.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.READ_EXTERNAL_STORAGE))
-                    return false;
+                MainActivity.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.READ_EXTERNAL_STORAGE, () -> null, () -> {
+                    Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
+                    return null;
+                });
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.custom_restore_title_alertdialog);
                 final View customLayout = getLayoutInflater().inflate(R.layout.custom_view_backup_dialog, null);
