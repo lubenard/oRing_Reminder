@@ -135,4 +135,5 @@
     <string name="last_entry">The last entry is:&#160;</string>
     <string name="first_entry">The first entry is:&#160;</string>
     <string name="no_access_to_storage">Please allow access to storage to export / import datas.</string>
+    <string name="create_new_session">New session</string>
 </resources>

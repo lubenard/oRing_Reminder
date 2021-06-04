@@ -10,12 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -27,6 +29,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static SharedPreferences sharedPreferences;
     private static DbManager dbManager;
     private static RemoteViews remoteViews;
+
+    public static String WIDGET_BUTTON = "com.lubenard.oring_reminder.WIDGET_BUTTON";
 
     public static boolean isThereAWidget = false;
     private static AlarmManager am;
@@ -54,6 +58,9 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             RingModel lastEntry = dbManager.getLastRunningEntry();
 
             if (lastEntry != null) {
+                // Set the 'Create session' button to invisible
+                remoteViews.setViewVisibility(R.id.widget_button_new_session, View.GONE);
+
                 int totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, lastEntry.getId());
                 long wornFor = Utils.getDateDiff(lastEntry.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 wornFor -= totalTimePause;
@@ -80,7 +87,13 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             } else {
                 remoteViews.setTextViewText(R.id.widget_date_from, "");
                 remoteViews.setTextViewText(R.id.widget_worn_for, context.getString(R.string.no_running_session));
+                remoteViews.setViewVisibility(R.id.widget_button_new_session, View.VISIBLE);
                 remoteViews.setTextViewText(R.id.widget_time_remaining, "");
+
+                Intent intent2 = new Intent(context, getClass());
+                intent2.setAction(WIDGET_BUTTON);
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteViews.setOnClickPendingIntent(R.id.widget_button_new_session, pendingIntent2 );
             }
             // Update the widget view.
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
@@ -115,6 +128,13 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         Log.d("Widget", "Widget receives OnRecieve command to update");
+
+        Log.d("Widget", "intent action is " +  intent.getAction());
+        if (WIDGET_BUTTON.equals(intent.getAction())) {
+            Log.d("Widget", "Hello there");
+            EditEntryFragment.setUpdateMainList(false);
+            new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+        }
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), CurrentSessionWidgetProvider.class.getName());

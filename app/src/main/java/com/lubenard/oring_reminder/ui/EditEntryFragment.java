@@ -102,6 +102,8 @@ public class EditEntryFragment extends Fragment {
         this.entryId = -1;
         this.context = context;
         dbManager = MainActivity.getDbManager();
+        if (dbManager == null)
+            dbManager = new DbManager(context);
         runningSessions = dbManager.getAllRunningSessions();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
