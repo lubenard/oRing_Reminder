@@ -112,7 +112,7 @@
     <string name="compute_if_i_am_fertile">Compute if i am contracepted</string>
     <string name="you_are_contracepted">You are contracepted ! With a number of:&#160;</string>
     <string name="you_are_not_contracepted">You are NOT contracepted ! With a number of:&#160;</string>
-    <string name="spermo_per_ml">&#160; spermatozoa / ml</string>
+    <string name="spermo_per_ml">&#160;spermatozoa / ml</string>
     <string name="please_fill_required_infos">Please fill required infos.</string>
     <string name="bad_date_format">Bad date format. Please check it.</string>
     <string name="finish_session">Finish this session</string>

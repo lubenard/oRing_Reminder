@@ -109,7 +109,7 @@
     <string name="compute_if_i_am_fertile">Calculer si je suis contracepté</string>
     <string name="you_are_not_contracepted">Vous n\'êtes PAS contracepté ! Avec un nombre de :&#160;</string>
     <string name="you_are_contracepted">Vous êtes contraceptés ! Avec un nombre de :&#160;</string>
-    <string name="spermo_per_ml">&#160; spermatozoïdes / ml</string>
+    <string name="spermo_per_ml">&#160;spermatozoïdes / ml</string>
     <string name="please_fill_required_infos">Merci de remplir les infos demandées.</string>
     <string name="finish_session">Terminer cette session</string>
     <string name="datas_export_data_csv_title">Exportez vos données en CSV</string>
