@@ -417,7 +417,7 @@ public class EntryDetailsFragment extends Fragment {
             // Trigger an error if the entryId is wrong, then go back to main list
             Toast.makeText(context, context.getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
             Log.e(TAG, "Error: Wrong Id: " + entryId);
-            fragmentManager.popBackStackImmediate();
+            getActivity().onBackPressed();
         }
     }
 

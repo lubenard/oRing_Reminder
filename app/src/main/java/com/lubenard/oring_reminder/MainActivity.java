@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -12,9 +13,11 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -131,9 +134,18 @@ public class MainActivity extends AppCompatActivity {
         checkConfig();
         createNotifChannel();
 
-        // Then switch to the main Fragment
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(android.R.id.content, new MainFragment());
+        Intent intent = getIntent();
+        if (intent.getLongExtra("switchToEntry", -1) != -1) {
+            Bundle bundle = new Bundle();
+            bundle.putLong("entryId", intent.getLongExtra("switchToEntry", -1));
+            Fragment fragment = new EntryDetailsFragment();
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(android.R.id.content, fragment);
+        } else {
+            // Then switch to the main Fragment
+            fragmentTransaction.replace(android.R.id.content, new MainFragment());
+        }
         fragmentTransaction.commit();
     }
 

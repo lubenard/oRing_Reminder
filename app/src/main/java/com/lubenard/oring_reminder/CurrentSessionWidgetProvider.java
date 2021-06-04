@@ -18,6 +18,7 @@ import androidx.preference.PreferenceManager;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
+import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -46,9 +47,6 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
             Intent intent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-            remoteViews.setOnClickPendingIntent(R.id.widget_root_view, pendingIntent);
 
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -84,17 +82,24 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.widget_date_from, lastEntry.getDatePut());
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
                 remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
+
+                intent.putExtra("switchToEntry", lastEntry.getId());
             } else {
                 remoteViews.setTextViewText(R.id.widget_date_from, "");
                 remoteViews.setTextViewText(R.id.widget_worn_for, context.getString(R.string.no_running_session));
                 remoteViews.setViewVisibility(R.id.widget_button_new_session, View.VISIBLE);
                 remoteViews.setTextViewText(R.id.widget_time_remaining, "");
 
+                // Action if user click on the button
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON);
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_new_session, pendingIntent2 );
             }
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.widget_root_view, pendingIntent);
+
             // Update the widget view.
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
@@ -121,6 +126,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
         PendingIntent mPendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
         // Cancel alarm manager
+        if (am == null)
+            am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
         am.cancel(mPendingIntent);
     }
 
@@ -131,7 +138,6 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
         Log.d("Widget", "intent action is " +  intent.getAction());
         if (WIDGET_BUTTON.equals(intent.getAction())) {
-            Log.d("Widget", "Hello there");
             EditEntryFragment.setUpdateMainList(false);
             new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);
         }
