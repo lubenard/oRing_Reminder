@@ -23,7 +23,6 @@
     <string name="notif_channel_name">Send a erasable notification</string>
     <string name="notif_normal_channel_desc">This channel is used to send notifications when you can remove your protection</string>
     <string name="minute_with_M_uppercase">&#160;Minutes</string>
-    <string name="more_than_one_day"><![CDATA[> 1 day]]></string>
     <string name="error_edit_entry_date">Error, end time is not correct, please check it</string>
     <string name="not_set_yet">Not set yet</string>
     <string name="session_is_running">Session is running</string>

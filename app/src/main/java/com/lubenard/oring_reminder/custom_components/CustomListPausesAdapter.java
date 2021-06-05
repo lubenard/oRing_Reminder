@@ -35,10 +35,8 @@ public class CustomListPausesAdapter extends ArrayAdapter<RingModel> {
     private String convertTimeWeared(int timeWeared) {
         if (timeWeared < 60)
             return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
-        else if (timeWeared <= 1440)
-            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
         else
-            return getContext().getString(R.string.more_than_one_day);
+            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
     }
 
     @Override
