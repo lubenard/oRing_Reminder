@@ -142,4 +142,5 @@
     <string name="settings_other_useful_links_title">Liens utiles</string>
     <string name="custom_useful_links">Liens utils :</string>
     <string name="settings_other_useful_links_description">Une poignée de liens utils !</string>
+    <string name="number_of_days_between_entries">Nombre de jours entre la prenière et dernière entrée :</string>
 </resources>

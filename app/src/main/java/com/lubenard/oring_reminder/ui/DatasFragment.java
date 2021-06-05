@@ -13,9 +13,11 @@ import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class DatasFragment extends Fragment {
     @Override
@@ -40,12 +42,26 @@ public class DatasFragment extends Fragment {
         TextView numberOfEntries = view.findViewById(R.id.number_of_entries);
         TextView lastEntry = view.findViewById(R.id.last_entry);
         TextView firstEntry = view.findViewById(R.id.first_entry);
+        TextView timeBetweenLastAndFirst = view.findViewById(R.id.time_between_first_and_last_entries);
+
 
         numberOfEntries.setText(getString(R.string.number_of_entries)+ datas.size());
-        String lastEntryData = (datas.size() > 0) ? datas.get(datas.size() - 1).getDatePut().split(" ")[0] : getString(R.string.not_set_yet);
-        String firstEntryData = (datas.size() > 0) ? datas.get(0).getDatePut().split(" ")[0] : getString(R.string.not_set_yet);
+        String lastEntryData;
+        String firstEntryData;
+        String timeBetweenLastAndFirstData;
+
+        if (datas.size() > 0) {
+            lastEntryData = datas.get(datas.size() - 1).getDatePut().split(" ")[0];
+            firstEntryData = datas.get(0).getDatePut().split(" ")[0];
+            timeBetweenLastAndFirstData = String.valueOf(Utils.getDateDiff(datas.get(0).getDatePut(), datas.get(datas.size() - 1).getDatePut(), TimeUnit.DAYS) + 1);
+        } else {
+            lastEntryData = getString(R.string.not_set_yet);
+            firstEntryData = getString(R.string.not_set_yet);
+            timeBetweenLastAndFirstData = getString(R.string.not_set_yet);
+        }
 
         lastEntry.setText(getString(R.string.last_entry) + "\n" + lastEntryData);
         firstEntry.setText(getString(R.string.first_entry) + "\n" + firstEntryData);
+        timeBetweenLastAndFirst.setText(getString(R.string.number_of_days_between_entries) + "\n" + timeBetweenLastAndFirstData);
     }
 }
