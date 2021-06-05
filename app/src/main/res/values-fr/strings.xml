@@ -139,4 +139,7 @@
     <string name="first_entry">La première entrée est le :&#160;</string>
     <string name="no_access_to_storage">Merci d\'autoriser l\'accès au stockage pour exporter / importer.</string>
     <string name="create_new_session">Nouvelle session</string>
+    <string name="settings_other_useful_links_title">Liens utiles</string>
+    <string name="custom_useful_links">Liens utils :</string>
+    <string name="settings_other_useful_links_description">Une poignée de liens utils !</string>
 </resources>

@@ -354,6 +354,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+        // useful links menu preference click listener
+        Preference usefulLinks = findPreference("other_useful_links");
+        usefulLinks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.custom_useful_links);
+                final View customLayout = getLayoutInflater().inflate(R.layout.useful_links_alertdialog, null);
+                builder.setView(customLayout);
+                builder.setPositiveButton(android.R.string.ok, null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            }
+        });
+
         // feedback preference click listener
         Preference feedback = findPreference("other_feedback");
         feedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
