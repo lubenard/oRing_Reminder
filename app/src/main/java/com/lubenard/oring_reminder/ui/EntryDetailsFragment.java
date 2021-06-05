@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
@@ -63,7 +64,7 @@ public class EntryDetailsFragment extends Fragment {
     private TextView ableToGetItOff;
     private TextView whenGetItOff;
     private TextView timeWeared;
-    private Button stopSessionButton;
+    private FloatingActionButton stopSessionButton;
     private boolean isThereAlreadyARunningPause = false;
     private SharedPreferences sharedPreferences;
 
