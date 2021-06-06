@@ -334,10 +334,11 @@ public class EditEntryFragment extends Fragment {
      * @param context
      */
     public static void updateWidget(Context context) {
-        if (CurrentSessionWidgetProvider.isThereAWidget) {
+        //if (CurrentSessionWidgetProvider.isThereAWidget) {
+            Log.d(TAG, "Updating Widget");
             Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
             context.sendBroadcast(intent);
-        }
+        //}
     }
 
     /**

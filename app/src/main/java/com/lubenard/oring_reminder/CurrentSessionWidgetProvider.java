@@ -32,6 +32,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static RemoteViews remoteViews;
 
     public static String WIDGET_BUTTON = "com.lubenard.oring_reminder.WIDGET_BUTTON";
+    private static final String TAG = "Widget";
 
     public static boolean isThereAWidget = false;
     private static AlarmManager am;
@@ -39,6 +40,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     // Update the Widget datas
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
+
+        Log.d(TAG, "Updating widget");
 
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i = 0; i < N; i++) {
@@ -56,6 +59,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             RingModel lastEntry = dbManager.getLastRunningEntry();
 
             if (lastEntry != null) {
+                Log.d(TAG, "A current session has been found");
                 // Set the 'Create session' button to invisible
                 remoteViews.setViewVisibility(R.id.widget_button_new_session, View.GONE);
 
@@ -85,6 +89,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
                 intent.putExtra("switchToEntry", lastEntry.getId());
             } else {
+                Log.d(TAG, "There is no current session");
                 remoteViews.setTextViewText(R.id.widget_date_from, "");
                 remoteViews.setTextViewText(R.id.widget_worn_for, context.getString(R.string.no_running_session));
                 remoteViews.setViewVisibility(R.id.widget_button_new_session, View.VISIBLE);
@@ -97,7 +102,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_new_session, pendingIntent2 );
             }
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.widget_root_view, pendingIntent);
 
             // Update the widget view.
@@ -109,7 +114,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
         isThereAWidget = true;
-        Log.d("Widget", "onEnabled is called");
+        Log.d(TAG, "onEnabled is called");
         dbManager = new DbManager(context);
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
@@ -122,7 +127,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         isThereAWidget = false;
-        Log.d("Widget", "onDisabled is called");
+        Log.d(TAG, "onDisabled is called");
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
         PendingIntent mPendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
         // Cancel alarm manager
@@ -134,9 +139,9 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        Log.d("Widget", "Widget receives OnRecieve command to update");
+        Log.d(TAG, "Widget receives OnRecieve command to update");
 
-        Log.d("Widget", "intent action is " +  intent.getAction());
+        Log.d(TAG, "intent action is " +  intent.getAction());
         if (WIDGET_BUTTON.equals(intent.getAction())) {
             EditEntryFragment.setUpdateMainList(false);
             new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);

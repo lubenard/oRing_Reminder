@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -137,12 +138,14 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Intent intent = getIntent();
         if (intent.getLongExtra("switchToEntry", -1) != -1) {
+            Log.d("Widget", "Opening for given session id : " + intent.getLongExtra("switchToEntry", -1));
             Bundle bundle = new Bundle();
             bundle.putLong("entryId", intent.getLongExtra("switchToEntry", -1));
             Fragment fragment = new EntryDetailsFragment();
             fragment.setArguments(bundle);
             fragmentTransaction.replace(android.R.id.content, fragment);
         } else {
+            Log.d("Widget", "No given session id");
             // Then switch to the main Fragment
             fragmentTransaction.replace(android.R.id.content, new MainFragment());
         }
