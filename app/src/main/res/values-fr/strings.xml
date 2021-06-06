@@ -143,4 +143,6 @@
     <string name="custom_useful_links">Liens utils :</string>
     <string name="settings_other_useful_links_description">Une poignée de liens utils !</string>
     <string name="number_of_days_between_entries">Nombre de jours entre la prenière et dernière entrée :</string>
+    <string name="bad_import_date_xml">La date malformée d\'une session à été trouvée dans la sauvegarde. La session ne sera pas importée</string>
+    <string name="bad_import_date_pause_xml">La date d\'une pause malformée à été trouvée dans la sauvegarde. La session ne sera pas importée</string>
 </resources>

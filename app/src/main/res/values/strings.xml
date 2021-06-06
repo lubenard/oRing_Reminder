@@ -139,4 +139,6 @@
     <string name="settings_other_useful_links_description">A bunch of useful links!</string>
     <string name="custom_useful_links">Useful links</string>
     <string name="number_of_days_between_entries">Number of days between the first and last entry:</string>
+    <string name="bad_import_date_xml">A malformed date for a session has been found in the save. It will not be imported</string>
+    <string name="bad_import_date_pause_xml">A malformed date for a break has been found in the save. It will not be imported</string>
 </resources>
