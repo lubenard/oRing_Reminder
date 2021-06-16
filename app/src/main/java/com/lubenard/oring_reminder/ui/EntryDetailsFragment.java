@@ -183,12 +183,12 @@ public class EntryDetailsFragment extends Fragment {
         Button save_entry = dialogView.findViewById(R.id.validate_pause);
         save_entry.setOnClickListener(view -> {
             int isRunning = 0;
-            if (pause_ending.getText().toString().isEmpty()) {
+            if (pause_ending.getText().toString().isEmpty() || pause_ending.getText().toString().equals("NOT SET YET")) {
                 pause_ending.setText("NOT SET YET");
                 isRunning = 1;
             }
 
-            if (isThereAlreadyARunningPause && isRunning == 1){
+            if (isThereAlreadyARunningPause && isRunning == 1) {
                 Log.d(TAG, "Error: Already a running pause");
                 Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             } else if (Utils.getDateDiff(entryDetails.getDatePut(), pause_beginning.getText().toString(), TimeUnit.SECONDS) <= 0) {
