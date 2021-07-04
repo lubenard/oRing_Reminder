@@ -215,7 +215,7 @@ public class DbManager extends SQLiteOpenHelper {
      * Get the details for a entry
      * @param entryId the id we want to have details for
      * @return the following fields -> ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning
-     * in the form of a ArrayList
+     * in the form of a RingModel object
      */
     public RingModel getEntryDetails(long entryId) {
         if (entryId <= 0)
@@ -455,6 +455,26 @@ public class DbManager extends SQLiteOpenHelper {
         cv.put(spermoTableFileLocation, uri);
 
         return writableDB.insertWithOnConflict(spermoTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    /**
+     * Get the details for spermogram
+     * @param entryId the id we want to have details for
+     */
+    public Spermograms getSpermoEntryForId(long entryId) {
+        if (entryId <= 0)
+            return null;
+
+        String[] columns = new String[]{spermoTableDateAdded, spermoTableFileLocation};
+        Cursor cursor = readableDB.query(spermoTable, columns,spermoTableId + "=?",
+                new String[]{String.valueOf(entryId)}, null, null, null);
+
+        cursor.moveToFirst();
+        Spermograms data = new Spermograms(0, cursor.getString(cursor.getColumnIndex(spermoTableDateAdded)),
+                Uri.parse(cursor.getString(cursor.getColumnIndex(spermoTableFileLocation))));
+
+        cursor.close();
+        return data;
     }
 
     public LinkedHashMap<Integer, Spermograms> getAllSpermograms() {

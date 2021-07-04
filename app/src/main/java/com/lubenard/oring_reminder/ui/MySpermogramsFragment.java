@@ -82,13 +82,13 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
     public void onListItemClickListener(int position) {
         Spermograms dataModel= dataModels.get(position);
         Log.d(TAG, "Element " + dataModel.getId());
-        /*EntryDetailsFragment fragment = new EntryDetailsFragment();
+        SpermogramsDetailsFragment fragment = new SpermogramsDetailsFragment();
         Bundle bundle = new Bundle();
         bundle.putLong("entryId", dataModel.getId());
         fragment.setArguments(bundle);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fragment, null)
-                .addToBackStack(null).commit();*/
+                .addToBackStack(null).commit();
     }
 
     /**
