@@ -28,8 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -248,6 +246,11 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_my_spermogramms:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new MySpermogramsFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
             case R.id.action_calculators:
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new CalculatorsFragment(), null)

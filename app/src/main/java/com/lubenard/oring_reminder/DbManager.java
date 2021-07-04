@@ -5,9 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
 
 import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.Spermograms;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ public class DbManager extends SQLiteOpenHelper {
     public static final String TAG = "DBManager";
 
     private static final String dbName = "dataDB";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Ring table
     private static final String ringTable = "ringTable";
@@ -48,6 +50,12 @@ public class DbManager extends SQLiteOpenHelper {
     private static final String pauseTableRemoved = "datetimeRemoved";
     // Computed by doing dateTimeRemoved - dateTimePut
     private static final String pauseTableTimeRemoved = "timeRemoved";
+
+    // Spermograms table table
+    private static final String spermoTable = "spermoTable";
+    private static final String spermoTableId = "id";
+    private static final String spermoTableDateAdded = "dateAdded";
+    private static final String spermoTableFileLocation = "fileLocation";
 
     private SQLiteDatabase writableDB;
     private SQLiteDatabase readableDB;
@@ -73,6 +81,9 @@ public class DbManager extends SQLiteOpenHelper {
                 pauseTableEntryId + " INTEGER, " + pauseTableIsRunning + " INTEGER, "
                 + pauseTableTimeRemoved + " INTEGER, " + pauseTableRemoved + " DATETIME, "
                 + pauseTablePut + " DATETIME)");
+
+        db.execSQL("CREATE TABLE " + spermoTable + " (" + spermoTableId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                spermoTableDateAdded + " INTEGER, " + spermoTableFileLocation + " TEXT)");
 
         Log.d(TAG, "The db has been created, this message should only appear once.");
     }
@@ -106,6 +117,10 @@ public class DbManager extends SQLiteOpenHelper {
                     + pauseTableTimeRemoved + " INTEGER, " + pauseTableRemoved + " DATETIME, "
                     + pauseTablePut + " DATETIME)");
 
+        } else if (i == 2 && i1 == 3) {
+            Log.d(TAG, "Updating db from v1.2.1 to v1.3");
+            db.execSQL("CREATE TABLE " + spermoTable + " (" + spermoTableId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    spermoTableDateAdded + " INTEGER, " + spermoTableFileLocation + " TEXT)");
         }
     }
 
@@ -432,6 +447,21 @@ public class DbManager extends SQLiteOpenHelper {
         }
         cursor.close();
         return datas;
+    }
+
+    public LinkedHashMap<Integer, Spermograms> getAllSpermograms() {
+        LinkedHashMap<Integer, Spermograms> entryDatas = new LinkedHashMap<>();
+
+        String[] columns = new String[]{spermoTableId, spermoTableDateAdded, spermoTableFileLocation};
+        Cursor cursor = readableDB.query(spermoTable,  columns, null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            entryDatas.put(cursor.getInt(cursor.getColumnIndex(spermoTableId)), new Spermograms(cursor.getInt(cursor.getColumnIndex(spermoTableId)),
+                    cursor.getString(cursor.getColumnIndex(spermoTableDateAdded)),
+                    Uri.parse(cursor.getString(cursor.getColumnIndex(spermoTableFileLocation)))));
+        }
+        cursor.close();
+        return entryDatas;
     }
 
     /**

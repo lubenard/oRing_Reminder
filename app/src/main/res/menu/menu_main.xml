@@ -11,8 +11,13 @@
     <item
         android:id="@+id/action_sort_entrys"
         android:icon="@drawable/baseline_sort_24"
-        android:title="@string/action_edit"
+        android:title="@string/action_sort_datas"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_my_spermogramms"
+        android:title="@string/action_my_spermograms"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_calculators"
