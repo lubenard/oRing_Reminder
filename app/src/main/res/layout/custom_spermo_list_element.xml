@@ -5,14 +5,14 @@
 	android:orientation="vertical">
 
 	<TextView
-		android:id="@+id/textView4"
+		android:id="@+id/custom_spermo_date_added"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="15dp"
 		android:text="Added the " />
 
 	<com.github.barteksc.pdfviewer.PDFView
-		android:id="@+id/pdfPreview"
+		android:id="@+id/custom_spermo_pdf_view"
 		android:layout_gravity="center"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

@@ -14,7 +14,7 @@ import com.lubenard.oring_reminder.R;
 
 import java.util.ArrayList;
 
-public class CustomSpermoListAdapter extends RecyclerView.Adapter<SpermoViewHolder> {
+public class CustomSpermoListAdapter extends RecyclerView.Adapter<SpermoListViewHolder> {
 
     private ArrayList<Spermograms> entryList;
     private static DbManager dbManager;
@@ -28,16 +28,16 @@ public class CustomSpermoListAdapter extends RecyclerView.Adapter<SpermoViewHold
 
     @NonNull
     @Override
-    public SpermoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SpermoListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.custom_entry_list_element, parent, false);
+        View view = inflater.inflate(R.layout.custom_spermo_list_element, parent, false);
         dbManager = MainActivity.getDbManager();
         context = parent.getContext();
-        return new SpermoViewHolder(view, onListItemClickListener);
+        return new SpermoListViewHolder(view, onListItemClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SpermoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SpermoListViewHolder holder, int position) {
         holder.updateElementDatas(entryList.get(position), context);
     }
 

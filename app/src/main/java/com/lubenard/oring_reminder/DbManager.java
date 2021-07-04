@@ -449,6 +449,14 @@ public class DbManager extends SQLiteOpenHelper {
         return datas;
     }
 
+    public long importNewSpermo(String uri) {
+        ContentValues cv = new ContentValues();
+        cv.put(spermoTableDateAdded, 0);
+        cv.put(spermoTableFileLocation, uri);
+
+        return writableDB.insertWithOnConflict(spermoTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
     public LinkedHashMap<Integer, Spermograms> getAllSpermograms() {
         LinkedHashMap<Integer, Spermograms> entryDatas = new LinkedHashMap<>();
 
