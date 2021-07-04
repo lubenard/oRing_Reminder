@@ -19,9 +19,9 @@ public class CustomSpermoListAdapter extends RecyclerView.Adapter<SpermoListView
     private ArrayList<Spermograms> entryList;
     private static DbManager dbManager;
     private Context context;
-    private CustomListAdapter.onListItemClickListener onListItemClickListener;
+    private onListItemClickListener onListItemClickListener;
 
-    public CustomSpermoListAdapter(ArrayList<Spermograms> datas, CustomListAdapter.onListItemClickListener onListItemClickListener) {
+    public CustomSpermoListAdapter(ArrayList<Spermograms> datas, onListItemClickListener onListItemClickListener) {
         entryList = datas;
         this.onListItemClickListener = onListItemClickListener;
     }

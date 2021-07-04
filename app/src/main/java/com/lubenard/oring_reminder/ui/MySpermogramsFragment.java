@@ -24,6 +24,7 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
 import com.lubenard.oring_reminder.custom_components.CustomSpermoListAdapter;
+import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
 
 import java.io.File;
@@ -35,14 +36,13 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 
 
-public class MySpermogramsFragment extends Fragment implements CustomListAdapter.onListItemClickListener{
+public class MySpermogramsFragment extends Fragment implements CustomSpermoListAdapter.onListItemClickListener{
     private static RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private static ArrayList<Spermograms> dataModels;
     private static DbManager dbManager;
     private static CustomSpermoListAdapter adapter;
-    private static CustomListAdapter.onListItemClickListener onListItemClickListener;
-
+    private static CustomSpermoListAdapter.onListItemClickListener onListItemClickListener;
 
     private final static String TAG = "MySpermogramsFragment";
 
@@ -67,10 +67,28 @@ public class MySpermogramsFragment extends Fragment implements CustomListAdapter
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        onListItemClickListener = this;
+
         dataModels = new ArrayList<>();
         dbManager = MainActivity.getDbManager();
 
         fab.setOnClickListener(v -> selectSpermoFromFiles());
+    }
+
+    /**
+     * onClickManager handling clicks on the spermogram List
+     */
+    @Override
+    public void onListItemClickListener(int position) {
+        Spermograms dataModel= dataModels.get(position);
+        Log.d(TAG, "Element " + dataModel.getId());
+        /*EntryDetailsFragment fragment = new EntryDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong("entryId", dataModel.getId());
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, fragment, null)
+                .addToBackStack(null).commit();*/
     }
 
     /**
@@ -85,22 +103,6 @@ public class MySpermogramsFragment extends Fragment implements CustomListAdapter
             dataModels.add(oneElemData.getValue());
         adapter = new CustomSpermoListAdapter(dataModels, onListItemClickListener);
         recyclerView.setAdapter(adapter);
-    }
-
-    /**
-     * onClickManager handling clicks on the main List
-     */
-    @Override
-    public void onListItemClickListener(int position) {
-        Spermograms dataModel= dataModels.get(position);
-        Log.d(TAG, "Element " + dataModel.getId());
-        /*EntryDetailsFragment fragment = new EntryDetailsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong("entryId", dataModel.getId());
-        fragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, fragment, null)
-                .addToBackStack(null).commit();*/
     }
 
     private void selectSpermoFromFiles() {

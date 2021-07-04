@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class CustomListAdapter extends RecyclerView.Adapter<MainListViewHolder> {
 
     private ArrayList <RingModel> entryList;
-    private static DbManager dbManager;
     private Context context;
     private onListItemClickListener onListItemClickListener;
 
@@ -32,7 +31,6 @@ public class CustomListAdapter extends RecyclerView.Adapter<MainListViewHolder> 
     public MainListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.custom_entry_list_element, parent, false);
-        dbManager = MainActivity.getDbManager();
         context = parent.getContext();
         return new MainListViewHolder(view, onListItemClickListener);
     }

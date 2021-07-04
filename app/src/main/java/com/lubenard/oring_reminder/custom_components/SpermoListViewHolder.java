@@ -13,12 +13,11 @@ import com.github.barteksc.pdfviewer.PDFView;
 
 public class SpermoListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private Context context;
     private TextView dateAdded;
     private PDFView pdfView;
-    private CustomListAdapter.onListItemClickListener onListItemClickListener;
+    private CustomSpermoListAdapter.onListItemClickListener onListItemClickListener;
 
-    public SpermoListViewHolder(@NonNull View itemView, CustomListAdapter.onListItemClickListener onListItemClickListener) {
+    public SpermoListViewHolder(@NonNull View itemView, CustomSpermoListAdapter.onListItemClickListener onListItemClickListener) {
         super(itemView);
         dateAdded = itemView.findViewById(R.id.custom_spermo_date_added);
         pdfView = itemView.findViewById(R.id.custom_spermo_pdf_view);
@@ -28,7 +27,11 @@ public class SpermoListViewHolder extends RecyclerView.ViewHolder implements Vie
 
     public void updateElementDatas(Spermograms dataModel, Context context) {
         dateAdded.setText("Added the " + dataModel.getDateAdded());
-        pdfView.fromUri(dataModel.getFileAddr()).load();
+        pdfView.fromUri(dataModel.getFileAddr())
+                .pages(0)
+                .defaultPage(0)
+                .enableSwipe(false)
+                .load();
     }
 
     @Override
