@@ -114,6 +114,11 @@
             app:summary="@string/debug_menu_description"/>
 
         <Preference
+            app:key="other_tutorial"
+            app:title="Hey tutorial"
+            app:summary="Hey tutorial"/>
+
+        <Preference
             app:key="other_useful_links"
             app:title="@string/settings_other_useful_links_title"
             app:summary="@string/settings_other_useful_links_description"/>

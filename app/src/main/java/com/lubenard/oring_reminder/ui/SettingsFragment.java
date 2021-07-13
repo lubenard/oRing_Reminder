@@ -354,6 +354,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
+        // Tutorial menu preference click listener
+        Preference launchTutorial = findPreference("other_debug_menu");
+        debugMenu.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+
+                return true;
+            }
+        });
+
         // useful links menu preference click listener
         Preference usefulLinks = findPreference("other_useful_links");
         usefulLinks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

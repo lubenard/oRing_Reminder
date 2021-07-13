@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
@@ -50,6 +52,7 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
     private static boolean orderEntryByDesc = true;
     private static TextView statLastDayTextview;
     private LinearLayoutManager linearLayoutManager;
+    private static boolean isUserInTutorial = true;
     private static CustomListAdapter.onListItemClickListener onListItemClickListener;
 
     @Override
@@ -68,6 +71,22 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
+
+        // Display the tutorial
+        if (isUserInTutorial) {
+            TapTargetView.showFor(getActivity(),
+                    TapTarget.forView(view.findViewById(R.id.fab), "This is a target",
+                            "We have the best targets, believe me")
+                            .tintTarget(false)
+                            .cancelable(false),
+                    new TapTargetView.Listener() {
+                        @Override
+                        public void onTargetClick(TapTargetView view) {
+                            super.onTargetClick(view);
+                            createNewEntry();
+                        }
+                    });
+        }
 
         recyclerView = view.findViewById(R.id.main_list);
 
@@ -95,6 +114,10 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
             actionOnPlusButton(true);
             return true;
         });
+    }
+
+    public static boolean getIsUserInTutorial() {
+        return isUserInTutorial;
     }
 
     /**
