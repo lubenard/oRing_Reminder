@@ -492,6 +492,12 @@ public class DbManager extends SQLiteOpenHelper {
         return entryDatas;
     }
 
+    public void deleteSpermoEntry(long entryId) {
+        if (entryId > 0) {
+            writableDB.delete(spermoTable, ringTableId + "=?", new String[]{String.valueOf(entryId)});
+        }
+    }
+
     /**
      * Close the db when finished using it.
      */

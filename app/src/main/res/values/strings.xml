@@ -144,4 +144,5 @@
 	<string name="action_my_spermograms">My spermograms</string>
     <string name="action_sort_datas">Sort datas</string>
 	<string name="my_spermo_title_fragment">My spermograms</string>
+    <string name="added_the">Added the:&#160;</string>
 </resources>
