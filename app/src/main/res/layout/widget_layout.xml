@@ -68,12 +68,32 @@
                 android:text="time_remaining" />
         </LinearLayout>
     </LinearLayout>
-    <Button
-        android:id="@+id/widget_button_new_session"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_margin="3dp"
-        android:background="@drawable/rounded_corners"
-        android:textColor="@color/white"
         android:layout_height="wrap_content"
-        android:text="@string/create_new_session" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/widget_button_new_session"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corners"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:text="@string/create_new_session" />
+
+        <Button
+            android:id="@+id/widget_button_stop_session"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_corners"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:text="@string/stop_active_session" />
+
+
+    </LinearLayout>
+
 </LinearLayout>

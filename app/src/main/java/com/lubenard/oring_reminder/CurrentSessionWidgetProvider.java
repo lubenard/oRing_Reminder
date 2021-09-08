@@ -31,7 +31,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     private static DbManager dbManager;
     private static RemoteViews remoteViews;
 
-    public static String WIDGET_BUTTON = "com.lubenard.oring_reminder.WIDGET_BUTTON";
+    public static String WIDGET_BUTTON_START = "com.lubenard.oring_reminder.WIDGET_BUTTON_START";
+    public static String WIDGET_BUTTON_STOP = "com.lubenard.oring_reminder.WIDGET_BUTTON_STOP";
     private static final String TAG = "Widget";
 
     public static boolean isThereAWidget = false;
@@ -87,6 +88,16 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
                 remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
 
+                // Hide the 'Stop button' when there is no current session
+                remoteViews.setViewVisibility(R.id.widget_button_stop_session, View.VISIBLE);
+
+                // Action if user click on the button
+                Intent intent2 = new Intent(context, getClass());
+                intent2.setAction(WIDGET_BUTTON_STOP);
+
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteViews.setOnClickPendingIntent(R.id.widget_button_stop_session, pendingIntent2);
+
                 intent.putExtra("switchToEntry", lastEntry.getId());
             } else {
                 Log.d(TAG, "There is no current session");
@@ -95,9 +106,12 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setViewVisibility(R.id.widget_button_new_session, View.VISIBLE);
                 remoteViews.setTextViewText(R.id.widget_time_remaining, "");
 
+                // Hide the 'Stop button' when there is no current session
+                remoteViews.setViewVisibility(R.id.widget_button_stop_session, View.GONE);
+
                 // Action if user click on the button
                 Intent intent2 = new Intent(context, getClass());
-                intent2.setAction(WIDGET_BUTTON);
+                intent2.setAction(WIDGET_BUTTON_START);
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_new_session, pendingIntent2 );
             }
@@ -142,9 +156,12 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, "Widget receives OnRecieve command to update");
 
         Log.d(TAG, "intent action is " +  intent.getAction());
-        if (WIDGET_BUTTON.equals(intent.getAction())) {
+        if (WIDGET_BUTTON_START.equals(intent.getAction())) {
             EditEntryFragment.setUpdateMainList(false);
             new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+        }
+        if (WIDGET_BUTTON_STOP.equals(intent.getAction())) {
+            dbManager.endSession(dbManager.getLastRunningEntry().getId());
         }
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

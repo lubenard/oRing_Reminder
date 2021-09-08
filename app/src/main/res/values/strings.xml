@@ -135,6 +135,7 @@
     <string name="first_entry">The first entry is:&#160;</string>
     <string name="no_access_to_storage">Please allow access to storage to export / import datas.</string>
     <string name="create_new_session">New session</string>
+    <string name="stop_active_session">Stop session</string>
     <string name="settings_other_useful_links_title">Useful links:</string>
     <string name="settings_other_useful_links_description">A bunch of useful links!</string>
     <string name="custom_useful_links">Useful links</string>

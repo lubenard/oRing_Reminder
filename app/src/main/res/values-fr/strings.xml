@@ -149,4 +149,5 @@
     <string name="my_spermo_title_fragment">Mes spermogrammes</string>
     <string name="added_the">Ajouté le : &#160;</string>
     <string name="action_sort_datas">Trier les données</string>
+    <string name="stop_active_session">Arreter la session</string>
 </resources>
