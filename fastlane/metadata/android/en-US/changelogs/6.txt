@@ -1,0 +1,8 @@
+ * Added a "Useful links" section: Go to settings -> useful links
+ * The app now restores alarms for imported data
+ * In the data part, you can now see the number of days between the oldest and the most recent entry
+ * Redesign of the button to end a session
+ * You can create a session from the widget
+ * Clicking on the widget redirects to the current session if there is one
+ * Removed the '> 1 day' mention. The number of hours is displayed instead
+ * Bug fixes

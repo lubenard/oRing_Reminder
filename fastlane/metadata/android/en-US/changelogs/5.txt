@@ -1,0 +1,8 @@
+ * Added a widget with info on the last session in progress
+ * Banner that shows how much time was worn over the last 24 hours
+ * Added export to CSV
+ * Added a feature to check if a pause is too long, and send a notification
+ * Long press on the pause button creates a quick active pause
+ * Added a feature to see when you can reset the protection (end date + 9)
+ * Bug fixed: it is now no longer possible to enter malformed dates
+ * And many more...

@@ -1,0 +1,7 @@
+This first release contains the following features:
+
+ * Can predict when you can take your protection off
+ * Send a notification when you can take your protection off
+ * Save your datas into a local database
+ * Dark theme
+ * Working with 'sessions'

@@ -1,0 +1,18 @@
+This app remind you when you can take off your contraceptive method (created for people using thermal contraception).
+
+<b>Features</b>
+
+ * Can predict when you can take your protection off
+ * Import your spermograms into the app.
+ * Send a notification when you can take your protection off (with quick replies !)
+ * Save your datas into a local database
+ * Dark theme
+ * Import / Export your datas and settings into XML and CSV
+ * Add as many pauses as you want in your session !
+ * Available in 2 languages (FR and EN)
+ * Completely open source (and always will be)
+
+<b>Datas</b>
+
+Due to the sensitivity of the data, and the fact this app is open source,
+ no datas is collected. Everything remains on your phone.

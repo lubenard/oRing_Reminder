@@ -1,0 +1,10 @@
+ * Possibility to create, edit, delete a break.
+ * Possibility to import / export data and settings
+ * Possibility of a click system to create sessions more quickly
+ * Added an option to delete your data
+ * Added an option to not notify me if a session is already in progress
+ * Ability to end a session from a notification
+ * Ability to reload entries manually
+ * Ability to sort entries
+ * Notifications are now restarted after a reboot and an update of the app
+ * And many more...

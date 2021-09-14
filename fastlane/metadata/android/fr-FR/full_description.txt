@@ -1,0 +1,19 @@
+Cette application vous rappelle quand vous pouvez retirer votre méthode contraceptive
+(crée pour les personnes utilisant une contraception thermique).
+
+ <b>Caractéristiques</b>
+
+ * Peut prédire quand vous pouvez retirer votre protection.
+ * Importe vos spermogrammes dans l'appli.
+ * Envoyer une notification lorsque vous pouvez retirer votre protection (avec des réponses rapides !).
+ * Sauvegarde de vos données dans une base de données locale
+ * Thème sombre
+ * Importez / exportez vos données et paramètres en XML et CSV.
+ * Ajoutez autant de pauses que vous le souhaitez dans votre session !
+ * Disponible en 2 langues (FR et EN)
+ * Entièrement open source (et le sera toujours)
+
+<b>Données</b>
+
+En raison de la sensibilité des données, et du fait que cette application est open source,
+ aucune donnée n'est collectée. Tout reste sur votre téléphone.

@@ -1,0 +1,7 @@
+Hello eveyone !
+
+ * This update add the support for Pdf !
+ * Click on the 3 little dots, then 'My spermogramms'
+ * Fix a crash where updating break would crash the app
+
+The size of the app got a lot bigger due to the weigh of the pdf lib, i'll see to reduce it
