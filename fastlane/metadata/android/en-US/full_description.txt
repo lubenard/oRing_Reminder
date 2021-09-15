@@ -14,5 +14,4 @@ This app remind you when you can take off your contraceptive method (created for
 
 <b>Datas</b>
 
-Due to the sensitivity of the data, and the fact this app is open source,
- no datas is collected. Everything remains on your phone.
+Due to the sensitivity of the data, and the fact this app is open source, no datas is collected. Everything remains on your phone.
