@@ -84,7 +84,7 @@
     <string name="settings_alertdialog_erase_datas_body">Are you sure you want to delete all your data ? All losses are definitive. Once completed, the app will shut down.</string>
     <string name="notif_choice_do_it">Okay, i did it</string>
     <string name="notif_choice_dismiss">Dismiss</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="please_wait">Please wait…</string>
     <string name="toast_session_bad_id">"There was an error: we could not end session with id: "</string>
     <string name="in_about_entry_details">(in about %dh%02dm)</string>
     <string name="ordered_by_desc">The entrys are now sorted from newer to older</string>
@@ -146,4 +146,6 @@
     <string name="action_sort_datas">Sort datas</string>
 	<string name="my_spermo_title_fragment">My spermograms</string>
     <string name="added_the">Added the:&#160;</string>
+	<string name="widget_stop_break">Stop break</string>
+    <string name="widget_start_break">Start break</string>
 </resources>
