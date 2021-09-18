@@ -20,6 +20,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.MainFragment;
+import com.lubenard.oring_reminder.ui.NewDesignDetailsFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.concurrent.Callable;
@@ -147,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("Widget", "No given session id");
             // Then switch to the main Fragment
-            fragmentTransaction.replace(android.R.id.content, new MainFragment());
+            fragmentTransaction.replace(android.R.id.content, new NewDesignDetailsFragment());
+            //fragmentTransaction.replace(android.R.id.content, new MainFragment());
         }
         fragmentTransaction.commit();
     }
