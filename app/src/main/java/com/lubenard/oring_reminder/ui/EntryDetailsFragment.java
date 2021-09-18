@@ -123,6 +123,7 @@ public class EntryDetailsFragment extends Fragment {
                     EditEntryFragment.cancelAlarm(context, entryId);
                     setBreakAlarm(Utils.getdateFormatted(new Date()));
                     updatePauseList();
+                    EditEntryFragment.updateWidget(getContext());
                 } else
                     Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
                 return true;
@@ -244,6 +245,7 @@ public class EntryDetailsFragment extends Fragment {
                 if (isRunning == 1)
                     setBreakAlarm(pause_beginning.getText().toString());
                 updatePauseList();
+                EditEntryFragment.updateWidget(getContext());
             }
         });
         alertDialog.show();

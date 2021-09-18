@@ -1,5 +1,7 @@
 package com.lubenard.oring_reminder;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -9,13 +11,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
+import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
@@ -33,6 +38,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
     public static String WIDGET_BUTTON_START = "com.lubenard.oring_reminder.WIDGET_BUTTON_START";
     public static String WIDGET_BUTTON_STOP = "com.lubenard.oring_reminder.WIDGET_BUTTON_STOP";
+    public static String WIDGET_BUTTON_START_BREAK = "com.lubenard.oring_reminder.WIDGET_BUTTON_START_BREAK";
+    public static String WIDGET_BUTTON_STOP_BREAK = "com.lubenard.oring_reminder.WIDGET_BUTTON_STOP_BREAK";
     private static final String TAG = "Widget";
 
     public static boolean isThereAWidget = false;
@@ -59,10 +66,30 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
             RingModel lastEntry = dbManager.getLastRunningEntry();
 
+            // If entering this condition, this mean a session is currently active
             if (lastEntry != null) {
                 Log.d(TAG, "A current session has been found");
-                // Set the 'Create session' button to invisible
-                remoteViews.setViewVisibility(R.id.widget_button_new_session, View.GONE);
+
+                Intent intent3 = new Intent(context, getClass());
+
+                if (dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true).size() > 0) {
+                    if (dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true).get(0).getIsRunning() == 1) {
+                        remoteViews.setTextViewText(R.id.widget_button_start_stop_break_session, "Stop break");
+                        intent3.setAction(WIDGET_BUTTON_STOP_BREAK);
+                    } else {
+                        remoteViews.setTextViewText(R.id.widget_button_start_stop_break_session, "Start break");
+                        intent3.setAction(WIDGET_BUTTON_START_BREAK);
+                    }
+                } else {
+                    remoteViews.setTextViewText(R.id.widget_button_start_stop_break_session, "Start break");
+                    intent3.setAction(WIDGET_BUTTON_START_BREAK);
+                }
+
+                // Set the 'Add break' button to visible
+                remoteViews.setViewVisibility(R.id.widget_button_start_stop_break_session, View.VISIBLE);
+
+                PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 0, intent3, PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteViews.setOnClickPendingIntent(R.id.widget_button_start_stop_break_session, pendingIntent3);
 
                 int totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, lastEntry.getId());
                 long wornFor = Utils.getDateDiff(lastEntry.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
@@ -88,32 +115,32 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
                 remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
 
-                // Hide the 'Stop button' when there is no current session
-                remoteViews.setViewVisibility(R.id.widget_button_stop_session, View.VISIBLE);
+                // Change 'Start session' button into 'Stop session'
+                remoteViews.setTextViewText(R.id.widget_button_new_stop_session, context.getString(R.string.stop_active_session));
 
                 // Action if user click on the button
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON_STOP);
 
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteViews.setOnClickPendingIntent(R.id.widget_button_stop_session, pendingIntent2);
+                remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2);
 
                 intent.putExtra("switchToEntry", lastEntry.getId());
             } else {
                 Log.d(TAG, "There is no current session");
+                remoteViews.setViewVisibility(R.id.widget_button_start_stop_break_session, View.GONE);
                 remoteViews.setTextViewText(R.id.widget_date_from, "");
                 remoteViews.setTextViewText(R.id.widget_worn_for, context.getString(R.string.no_running_session));
-                remoteViews.setViewVisibility(R.id.widget_button_new_session, View.VISIBLE);
                 remoteViews.setTextViewText(R.id.widget_time_remaining, "");
 
-                // Hide the 'Stop button' when there is no current session
-                remoteViews.setViewVisibility(R.id.widget_button_stop_session, View.GONE);
+                // Change 'Stop session' into 'Start new session'
+                remoteViews.setTextViewText(R.id.widget_button_new_stop_session, context.getString(R.string.create_new_session));
 
                 // Action if user click on the button
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON_START);
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
-                remoteViews.setOnClickPendingIntent(R.id.widget_button_new_session, pendingIntent2 );
+                remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2 );
             }
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -150,6 +177,24 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         am.cancel(mPendingIntent);
     }
 
+    private void setBreakAlarm(Context context, String pauseBeginning, long entryId) {
+        if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Utils.getdateParsed(pauseBeginning));
+            calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
+            Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
+            Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
+                    .putExtra("action", 1);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
+            AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+
+            if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            else if (SDK_INT >= Build.VERSION_CODES.M)
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
@@ -159,9 +204,22 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         if (WIDGET_BUTTON_START.equals(intent.getAction())) {
             EditEntryFragment.setUpdateMainList(false);
             new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);
-        }
-        if (WIDGET_BUTTON_STOP.equals(intent.getAction())) {
+        } else if (WIDGET_BUTTON_STOP.equals(intent.getAction())) {
             dbManager.endSession(dbManager.getLastRunningEntry().getId());
+        } else if (WIDGET_BUTTON_START_BREAK.equals(intent.getAction())){
+            dbManager.createNewPause(dbManager.getLastRunningEntry().getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
+            // Cancel alarm until breaks are set as finished.
+            // Only then set a new alarm date
+            Log.d(TAG, "Cancelling alarm for entry: " + dbManager.getLastRunningEntry().getId());
+            EditEntryFragment.cancelAlarm(context, dbManager.getLastRunningEntry().getId());
+            setBreakAlarm(context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
+        } else if (WIDGET_BUTTON_STOP_BREAK.equals(intent.getAction())) {
+            dbManager.endPause(dbManager.getLastRunningEntry().getId());
+            // Cancel the break notification if it is set as finished.
+            Intent intent4 = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent4, 0);
+            AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+            am.cancel(pendingIntent);
         }
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
