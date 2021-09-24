@@ -1,7 +1,12 @@
 # oRing - Reminder
 This app help you managing your contraceptive method (created for people using thermal contraception)
 
-<a href='https://play.google.com/store/apps/details?id=com.lubenard.oring_reminder&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="90pt"/></a>
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="90">](https://f-droid.org/packages/com.lubenard.oring_reminder/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="90">](https://play.google.com/store/apps/details?id=com.lubenard.oring_reminder)
 
 ## Screenshots
 ![unnamed](https://user-images.githubusercontent.com/42534397/133885035-61c36187-37cf-40b4-86bd-7ec0e7a6bd63.png)
