@@ -51,30 +51,53 @@
             <TextView
                 style="@style/base_text_centered"
                 android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="15dp"
                 android:textSize="20sp"
                 android:text="@string/license_app_title"/>
 
         <TextView
             style="@style/base_text_centered"
             android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="15dp"
             android:text="@string/license_app_licence"/>
 
-        <View
-            style="@style/Divider" />
+        <View style="@style/Divider" />
 
         <TextView
             style="@style/base_text_centered"
+            android:textSize="20dp"
             android:text="@string/license_XmlWriter_title"/>
 
         <TextView
             style="@style/base_text_centered"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
             android:text="@string/license_XmlWriter_licence"/>
+
+        <TextView
+            style="@style/base_text_centered"
+            android:autoLink="web"
+            android:text="@string/license_XmlWriter_source"/>
+
+        <View style="@style/Divider" />
+
+        <TextView
+            style="@style/base_text_centered"
+            android:textSize="20dp"
+            android:text="@string/license_androidPdfViewer_title"/>
+
+        <TextView
+            style="@style/base_text_centered"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/license_androidPdfViewer_license"/>
 
         <TextView
             style="@style/base_text_centered"
             android:autoLink="web"
             android:layout_marginBottom="15dp"
             android:text="@string/license_XmlWriter_source"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

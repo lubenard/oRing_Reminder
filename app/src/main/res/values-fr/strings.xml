@@ -78,8 +78,7 @@
     <string name="alertdialog_multiple_running_session_choice1">Toutes les terminer !</string>
     <string name="alertdialog_multiple_running_session_choice2">Insérer tout de même mon entrée</string>
     <string name="license_XmlWriter_title">Cette app utilise <b>Java-very-tiny-XmlWriter</b>.</string>
-    <string name="license_XmlWriter_source">"Vouv pouvez voir le code de cette librairie ici :\n
-        https://github.com/menny/Java-very-tiny-XmlWriter"</string>
+    <string name="license_XmlWriter_source">Vous pouvez voir le code de cette librairie ici :          https://github.com/menny/Java-very-tiny-XmlWriter</string>
     <string name="toast_success_restore_datas">Les données ont été restaurées avec succès</string>
     <string name="toast_success_save_datas">Les données ont été sauvegardé avec succès</string>
     <string name="settings_alertdialog_erase_datas_body">Êtes-vous sûr de vouloir supprimer toutes vos données ? Toute perte est définitive. Une fois completée, cette app va s\'éteindre.</string>
@@ -150,4 +149,6 @@
     <string name="added_the">Ajouté le : &#160;</string>
     <string name="action_sort_datas">Trier les données</string>
     <string name="stop_active_session">Arreter la session</string>
+	<string name="license_androidPdfViewer_title">Cette app utilise <b>AndroidPdfViewer</b>.</string>
+    <string name="license_androidPdfViewer_source">Vous pouvez voir le code de cette librairie ici :\n https://github.com/barteksc/AndroidPdfViewer</string>
 </resources>

@@ -78,7 +78,9 @@
     <string name="alertdialog_multiple_running_session_choice1">End them all !</string>
     <string name="alertdialog_multiple_running_session_choice2">Still insert my entry</string>
     <string name="license_XmlWriter_title">This app use parts of <b>Java-very-tiny-XmlWriter</b>.</string>
+    <string name="license_androidPdfViewer_title">This app use parts of <b>AndroidPdfViewer</b>.</string>
     <string name="license_XmlWriter_source">"You can see the source code of this library here :\n https://github.com/menny/Java-very-tiny-XmlWriter"</string>
+    <string name="license_androidPdfViewer_source">You can see the source code of this library here :  https://github.com/barteksc/AndroidPdfViewer</string>
     <string name="toast_success_restore_datas">Success to restore the datas</string>
     <string name="toast_success_save_datas">Success to save the datas</string>
     <string name="settings_alertdialog_erase_datas_body">Are you sure you want to delete all your data ? All losses are definitive. Once completed, the app will shut down.</string>
