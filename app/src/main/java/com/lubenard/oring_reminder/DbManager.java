@@ -146,6 +146,26 @@ public class DbManager extends SQLiteOpenHelper {
         return entryDatas;
     }
 
+    public ArrayList<RingModel> getHistoryForMainView(boolean isDesc) {
+        ArrayList<RingModel> entryDatas = new ArrayList<>();
+
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
+        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, (isDesc) ? ringTableId + " DESC" : null);
+
+        int i = 0;
+
+        while (cursor.moveToNext() && i != 10) {
+            entryDatas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                    cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                    cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+            i++;
+        }
+        cursor.close();
+        return entryDatas;
+    }
+
     /**
      * Create a new contact only if non existent:
      * Example: The contact named Toto does not exist, so let's create it

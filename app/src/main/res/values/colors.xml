@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#FFE500</color>
     <color name="green">#8af60c</color>
+    <color name="button_color">#9D5FB2</color>
 </resources>
