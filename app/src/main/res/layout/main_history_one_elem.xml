@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:background="@drawable/rounded_corners_10">
+
+	<TextView
+		android:id="@+id/main_history_date"
+		android:layout_marginLeft="20dp"
+		android:layout_marginVertical="7dp"
+		style="@style/base_text_all_wrap"
+		android:text="date_from" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="7dp">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20dp"
+		android:orientation="vertical"
+		android:layout_weight="1">
+
+		<TextView
+			style="@style/base_text_all_wrap"
+			android:text="@string/from" />
+
+		<TextView
+			android:id="@+id/custom_view_date_weared_to"
+			style="@style/base_text_all_wrap"
+			android:text="hour_from" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_weight="1">
+
+		<TextView
+			style="@style/base_text_all_wrap"
+			android:text="@string/to" />
+
+		<TextView
+			android:id="@+id/custom_view_date_weared_from"
+			style="@style/base_text_all_wrap"
+			android:text="hour_to" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_weight="1">
+
+		<TextView
+			style="@style/base_text_all_wrap"
+			android:text="@string/worn_for" />
+
+		<TextView
+			android:id="@+id/custom_view_date_time_weared"
+			style="@style/base_text_all_wrap"
+			android:text="worn_for" />
+	</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

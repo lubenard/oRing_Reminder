@@ -53,10 +53,16 @@ public class NewDesignDetailsFragment extends Fragment implements CustomListAdap
 
             LayoutInflater inflater = (LayoutInflater) getActivity().
                     getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.custom_pauses_list_element, null);
+            View view = inflater.inflate(R.layout.main_history_one_elem, null);
             view.setTag(Integer.toString((int) entrysDatas.get(i).getId()));
-            TextView textView = view.findViewById(R.id.custom_view_date_weared_to);
-            textView.setText(entrysDatas.get(i).getDatePut());
+            TextView textView_date = view.findViewById(R.id.main_history_date);
+            textView_date.setText(entrysDatas.get(i).getDatePut().split(" ")[0]);
+
+            TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_to);
+            textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);
+
+            TextView textView_hour_to = view.findViewById(R.id.custom_view_date_weared_from);
+            textView_hour_to.setText(entrysDatas.get(i).getDateRemoved().split(" ")[1]);
             viewGroup.addView(view);
 
             //view.setOnClickListener(clickInLinearLayout());
