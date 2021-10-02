@@ -7,6 +7,7 @@
 	<TextView
 		android:id="@+id/main_history_date"
 		android:layout_marginLeft="20dp"
+		android:textSize="16sp"
 		android:layout_marginVertical="7dp"
 		style="@style/base_text_all_wrap"
 		android:text="date_from" />
@@ -25,11 +26,13 @@
 
 		<TextView
 			style="@style/base_text_all_wrap"
+			android:textSize="16sp"
 			android:text="@string/from" />
 
 		<TextView
 			android:id="@+id/custom_view_date_weared_to"
 			style="@style/base_text_all_wrap"
+			android:textSize="16sp"
 			android:text="hour_from" />
 	</LinearLayout>
 
@@ -41,10 +44,12 @@
 
 		<TextView
 			style="@style/base_text_all_wrap"
+			android:textSize="16sp"
 			android:text="@string/to" />
 
 		<TextView
 			android:id="@+id/custom_view_date_weared_from"
+			android:textSize="16sp"
 			style="@style/base_text_all_wrap"
 			android:text="hour_to" />
 	</LinearLayout>
@@ -57,10 +62,12 @@
 
 		<TextView
 			style="@style/base_text_all_wrap"
+			android:textSize="16sp"
 			android:text="@string/worn_for" />
 
 		<TextView
 			android:id="@+id/custom_view_date_time_weared"
+			android:textSize="16sp"
 			style="@style/base_text_all_wrap"
 			android:text="worn_for" />
 	</LinearLayout>

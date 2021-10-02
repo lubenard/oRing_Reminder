@@ -155,12 +155,15 @@ public class DbManager extends SQLiteOpenHelper {
         int i = 0;
 
         while (cursor.moveToNext() && i != 10) {
-            entryDatas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
-                    cursor.getString(cursor.getColumnIndex(ringTablePut)),
-                    cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
-                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
-                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
-            i++;
+            // Only get the last 10 NON-RUNNING entrys
+            if (cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)) == 0) {
+                entryDatas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                        cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                        cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                        0,
+                        cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+                i++;
+            }
         }
         cursor.close();
         return entryDatas;

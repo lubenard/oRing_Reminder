@@ -1,8 +1,14 @@
 package com.lubenard.oring_reminder.ui;
 
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -10,32 +16,44 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
 import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.concurrent.TimeUnit;
 
-public class NewDesignDetailsFragment extends Fragment implements CustomListAdapter.onListItemClickListener {
+public class NewDesignDetailsFragment extends Fragment {
     ProgressBar progress_bar;
     TextView progress_bar_text;
     int progr = 0;
+
+    private static boolean orderEntryByDesc = true;
 
     private static ViewGroup viewGroup;
     private CustomListPausesAdapter adapter;
     private ArrayList<RingModel> dataModels;
     private DbManager dbManager;
+    private TextView test;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,15 +64,15 @@ public class NewDesignDetailsFragment extends Fragment implements CustomListAdap
 
     private void updateHistoryList() {
         dataModels.clear();
-        ArrayList<RingModel> entrysDatas = dbManager.getHistoryForMainView(true);
-        //dataModels.addAll(entrysDatas);
+        ArrayList<RingModel> entrysDatas = dbManager.getHistoryForMainView(orderEntryByDesc);
+
+        LayoutInflater inflater = (LayoutInflater) getActivity().
+                getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
 
         for (int i = 0; i != entrysDatas.size(); i++) {
-
-            LayoutInflater inflater = (LayoutInflater) getActivity().
-                    getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.main_history_one_elem, null);
             view.setTag(Integer.toString((int) entrysDatas.get(i).getId()));
+
             TextView textView_date = view.findViewById(R.id.main_history_date);
             textView_date.setText(entrysDatas.get(i).getDatePut().split(" ")[0]);
 
@@ -63,10 +81,150 @@ public class NewDesignDetailsFragment extends Fragment implements CustomListAdap
 
             TextView textView_hour_to = view.findViewById(R.id.custom_view_date_weared_from);
             textView_hour_to.setText(entrysDatas.get(i).getDateRemoved().split(" ")[1]);
+
+            TextView textView_worn_for = view.findViewById(R.id.custom_view_date_time_weared);
+            int totalTimePause = getTotalTimePause(entrysDatas.get(i).getDatePut(), entrysDatas.get(i).getId(), entrysDatas.get(i).getDateRemoved());
+            if (totalTimePause / 60 >= 15)
+                textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+            else
+                textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
+            textView_worn_for.setText(convertTimeWeared(totalTimePause));
+
             viewGroup.addView(view);
 
             //view.setOnClickListener(clickInLinearLayout());
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_my_spermogramms:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new MySpermogramsFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            case R.id.action_calculators:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new CalculatorsFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            case R.id.action_datas:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new DatasFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            case R.id.action_settings:
+                // Navigate to settings screen
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new SettingsFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            case R.id.action_reload_datas:
+                updateCurrSessionDatas();
+                updateHistoryList();
+                return true;
+            case R.id.action_sort_entrys:
+                orderEntryByDesc = !orderEntryByDesc;
+                Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
+                updateHistoryList();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Launch the new Entry fragment, and specify we do not want to update a entry
+     */
+    private void createNewEntry() {
+        EditEntryFragment fragment = new EditEntryFragment(getContext());
+        Bundle bundle = new Bundle();
+        bundle.putLong("entryId", -1);
+        fragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, fragment, null)
+                .addToBackStack(null).commit();
+    }
+
+    /**
+     * Define what action should be done on longClick on the '+' button
+     * @param isLongClick act if it is a long click or not
+     */
+    private void actionOnPlusButton(boolean isLongClick) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String action = sharedPreferences.getString("ui_action_on_plus_button", "default");
+
+        if (isLongClick) {
+            if (action.equals("default")) {
+                createNewEntry();
+            } else {
+                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                //EditEntryFragment.setUpdateMainList(true);
+                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                updateHistoryList();
+            }
+        } else {
+            if (action.equals("default")) {
+                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                //EditEntryFragment.setUpdateMainList(true);
+                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                updateHistoryList();
+            } else {
+                createNewEntry();
+            }
+        }
+    }
+
+    /**
+     * Get the total time pause for one session
+     * @param datePut The datetime the user put the protection
+     * @param entryId the entry id of the session
+     * @param dateRemoved The datetime the user removed the protection
+     * @return the total time in Minutes of new wearing time
+     */
+    private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
+        long oldTimeBeforeRemove;
+        int newValue;
+        long totalTimePause = 0;
+
+        if (dateRemoved == null)
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        else
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
+
+        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(MainActivity.getDbManager(), entryId);
+        newValue = (int) (oldTimeBeforeRemove - totalTimePause);
+        return (newValue < 0) ? 0 : newValue;
+    }
+
+    /**
+     * Convert the timeWeared from a int into a readable hour:minutes format
+     * @param timeWeared timeWeared is in minutes
+     * @return a string containing the time the user weared the protection
+     */
+    private String convertTimeWeared(int timeWeared) {
+        if (timeWeared < 60)
+            return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
+        else
+            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
+    }
+
+    private void updateCurrSessionDatas() {
+        RingModel lastRunningEntry = dbManager.getLastRunningEntry();
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
+        test.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+        Log.d("Main view", "MainView percentage is " + ((float)timeBeforeRemove / (float)(Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
+        progress_bar.setProgress((int) (((float)timeBeforeRemove / (float)(Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
     }
 
     @Override
@@ -78,36 +236,31 @@ public class NewDesignDetailsFragment extends Fragment implements CustomListAdap
 
         viewGroup = view.findViewById(R.id.list_history);
 
-        updateHistoryList();
-
         progress_bar = view.findViewById(R.id.progress_bar);
         progress_bar_text = view.findViewById(R.id.text_view_progress);
 
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        test = view.findViewById(R.id.text_view_progress);
 
-        getActivity().setTitle("oRing - Reminder");
+        FloatingActionButton fab = view.findViewById(R.id.fab);
 
+        getActivity().setTitle(R.string.app_name);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        // If this return null, mean there is no running session
+        if (dbManager.getLastRunningEntry() == null) {
+            fab.setOnClickListener(view12 -> actionOnPlusButton(false));
+
+            fab.setOnLongClickListener(view1 -> {
+                actionOnPlusButton(true);
+                return true;
+            });
+        } else {
+            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.outline_close_24));
+            updateCurrSessionDatas();
+        }
+
+
+        updateHistoryList();
     }
-
-    /**
-     * onClickManager handling clicks on the main List
-     */
-    @Override
-    public void onListItemClickListener(int position) {
-        RingModel dataModel= dataModels.get(position);
-        Log.d("MainView", "Element " + dataModel.getId());
-        EntryDetailsFragment fragment = new EntryDetailsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong("entryId", dataModel.getId());
-        fragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, fragment, null)
-                .addToBackStack(null).commit();
-    }
-
-    private void updateProgressBar() {
-        progress_bar.setProgress(progr);
-        progress_bar_text.setText(progr + "%");
-    }
-
 }

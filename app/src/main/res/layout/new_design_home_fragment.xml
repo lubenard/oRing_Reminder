@@ -72,7 +72,20 @@
                     app:layout_constraintStart_toStartOf="@+id/progress_bar"
                     app:layout_constraintTop_toTopOf="@+id/progress_bar"
                     app:layout_constraintVertical_bias="0.350"
-                    tools:text="07h42mn" />
+                    android:text="07h42mn" />
+
+                <TextView
+                    android:id="@+id/text_view_break"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
+                    app:layout_constraintEnd_toEndOf="@+id/progress_bar"
+                    app:layout_constraintStart_toStartOf="@+id/progress_bar"
+                    app:layout_constraintTop_toTopOf="@+id/progress_bar"
+                    app:layout_constraintVertical_bias="0.550"
+                    android:text="En pause depuis : 10 mn" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
@@ -82,6 +95,8 @@
                 android:paddingHorizontal="8dp"
                 android:textColor="@color/white"
                 android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textSize="17sp"
                 android:background="@drawable/basic_button"
                 android:text="Lancer une pause" />
 
