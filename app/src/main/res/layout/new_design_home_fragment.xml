@@ -45,60 +45,77 @@
                     android:text="See my current session" />
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
+                android:id="@+id/layout_session_active"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    style="@style/CircularDeterminateProgressBar"
-                    android:layout_width="350dp"
-                    android:layout_height="350dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    tools:layout_editor_absoluteY="0dp"
-                    tools:progress="60" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/text_view_progress"
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        style="@style/CircularDeterminateProgressBar"
+                        android:layout_width="350dp"
+                        android:layout_height="350dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:layout_editor_absoluteY="0dp"
+                        tools:progress="60" />
+
+                    <TextView
+                        android:id="@+id/text_view_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="28sp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
+                        app:layout_constraintEnd_toEndOf="@+id/progress_bar"
+                        app:layout_constraintStart_toStartOf="@+id/progress_bar"
+                        app:layout_constraintTop_toTopOf="@+id/progress_bar"
+                        app:layout_constraintVertical_bias="0.350"
+                        android:text="07h42mn" />
+
+                    <TextView
+                        android:id="@+id/text_view_break"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
+                        app:layout_constraintEnd_toEndOf="@+id/progress_bar"
+                        app:layout_constraintStart_toStartOf="@+id/progress_bar"
+                        app:layout_constraintTop_toTopOf="@+id/progress_bar"
+                        app:layout_constraintVertical_bias="0.550"
+                        android:text="En pause depuis : 10 mn" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:id="@+id/button_start_break"
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="8dp"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"
-                    android:textSize="28sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
-                    app:layout_constraintEnd_toEndOf="@+id/progress_bar"
-                    app:layout_constraintStart_toStartOf="@+id/progress_bar"
-                    app:layout_constraintTop_toTopOf="@+id/progress_bar"
-                    app:layout_constraintVertical_bias="0.350"
-                    android:text="07h42mn" />
+                    android:textAllCaps="false"
+                    android:textSize="17sp"
+                    android:background="@drawable/basic_button"
+                    android:text="Lancer une pause" />
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/text_view_break"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
-                    app:layout_constraintEnd_toEndOf="@+id/progress_bar"
-                    app:layout_constraintStart_toStartOf="@+id/progress_bar"
-                    app:layout_constraintTop_toTopOf="@+id/progress_bar"
-                    app:layout_constraintVertical_bias="0.550"
-                    android:text="En pause depuis : 10 mn" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <Button
-                android:id="@+id/button_start_break"
+            <TextView
+                android:id="@+id/layout_no_session_active"
                 android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:paddingHorizontal="8dp"
-                android:textColor="@color/white"
+                android:layout_marginTop="15dp"
                 android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="17sp"
-                android:background="@drawable/basic_button"
-                android:text="Lancer une pause" />
+                android:layout_marginLeft="30dp"
+                android:textSize="30sp"
+                android:visibility="gone"
+                android:text="No active session"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -115,7 +132,7 @@
                 android:id="@+id/list_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
+                android:layout_marginHorizontal="18dp"
                 android:layout_marginBottom="15dp"
                 android:orientation="vertical"
                 android:showDividers="middle"

@@ -3,6 +3,7 @@ package com.lubenard.oring_reminder.ui;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -248,6 +250,16 @@ public class NewDesignDetailsFragment extends Fragment {
 
         // If this return null, mean there is no running session
         if (dbManager.getLastRunningEntry() == null) {
+
+            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
+            linearLayout.setVisibility(View.GONE);
+
+            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
+            no_active_session.setVisibility(View.VISIBLE);
+
+            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
+            see_curr_session.setVisibility(View.INVISIBLE);
+
             fab.setOnClickListener(view12 -> actionOnPlusButton(false));
 
             fab.setOnLongClickListener(view1 -> {
