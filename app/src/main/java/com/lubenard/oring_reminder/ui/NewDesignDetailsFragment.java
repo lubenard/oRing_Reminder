@@ -2,8 +2,6 @@ package com.lubenard.oring_reminder.ui;
 
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,34 +20,27 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
-import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
-import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class NewDesignDetailsFragment extends Fragment {
     ProgressBar progress_bar;
     TextView progress_bar_text;
-    int progr = 0;
-
+    private FloatingActionButton fab;
+    private View view;
     private static boolean orderEntryByDesc = true;
 
     private static ViewGroup viewGroup;
-    private CustomListPausesAdapter adapter;
     private ArrayList<RingModel> dataModels;
     private DbManager dbManager;
     private TextView test;
@@ -65,6 +54,7 @@ public class NewDesignDetailsFragment extends Fragment {
     }
 
     private void updateHistoryList() {
+        viewGroup.removeAllViews();
         dataModels.clear();
         ArrayList<RingModel> entrysDatas = dbManager.getHistoryForMainView(orderEntryByDesc);
 
@@ -171,14 +161,14 @@ public class NewDesignDetailsFragment extends Fragment {
                 Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
                 //EditEntryFragment.setUpdateMainList(true);
                 new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
-                updateHistoryList();
+                updateDesign();
             }
         } else {
             if (action.equals("default")) {
                 Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
                 //EditEntryFragment.setUpdateMainList(true);
                 new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
-                updateHistoryList();
+                updateDesign();
             } else {
                 createNewEntry();
             }
@@ -222,11 +212,58 @@ public class NewDesignDetailsFragment extends Fragment {
     private void updateCurrSessionDatas() {
         RingModel lastRunningEntry = dbManager.getLastRunningEntry();
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
-        test.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
-        Log.d("Main view", "MainView percentage is " + ((float)timeBeforeRemove / (float)(Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
-        progress_bar.setProgress((int) (((float)timeBeforeRemove / (float)(Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+        if (lastRunningEntry != null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
+            test.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+            Log.d("Main view", "MainView percentage is " + ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
+            progress_bar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+        }
+    }
+
+    private void updateDesign() {
+        // If this return null, mean there is no running session
+        if (dbManager.getLastRunningEntry() == null) {
+
+            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
+            linearLayout.setVisibility(View.GONE);
+
+            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
+            no_active_session.setVisibility(View.VISIBLE);
+
+            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
+            see_curr_session.setVisibility(View.INVISIBLE);
+
+            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.teal_700)));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.baseline_add_24));
+
+            fab.setOnClickListener(view12 -> actionOnPlusButton(false));
+
+            fab.setOnLongClickListener(view1 -> {
+                actionOnPlusButton(true);
+                return true;
+            });
+        } else {
+            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
+            linearLayout.setVisibility(View.VISIBLE);
+
+            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
+            no_active_session.setVisibility(View.GONE);
+
+            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
+            see_curr_session.setVisibility(View.VISIBLE);
+
+            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
+            fab.setImageDrawable(getResources().getDrawable(R.drawable.outline_close_24));
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dbManager.endSession(dbManager.getLastRunningEntry().getId());
+                    updateDesign();
+                }
+            });
+        }
+        updateHistoryList();
     }
 
     @Override
@@ -243,36 +280,13 @@ public class NewDesignDetailsFragment extends Fragment {
 
         test = view.findViewById(R.id.text_view_progress);
 
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab = view.findViewById(R.id.fab);
+
+        this.view = view;
 
         getActivity().setTitle(R.string.app_name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        // If this return null, mean there is no running session
-        if (dbManager.getLastRunningEntry() == null) {
-
-            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
-            linearLayout.setVisibility(View.GONE);
-
-            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
-            no_active_session.setVisibility(View.VISIBLE);
-
-            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
-            see_curr_session.setVisibility(View.INVISIBLE);
-
-            fab.setOnClickListener(view12 -> actionOnPlusButton(false));
-
-            fab.setOnLongClickListener(view1 -> {
-                actionOnPlusButton(true);
-                return true;
-            });
-        } else {
-            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.outline_close_24));
-            updateCurrSessionDatas();
-        }
-
-
-        updateHistoryList();
+        updateDesign();
     }
 }
