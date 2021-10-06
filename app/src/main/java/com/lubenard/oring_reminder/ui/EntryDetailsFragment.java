@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +57,7 @@ public class EntryDetailsFragment extends Fragment {
     private View view;
     private Context context;
     private FragmentManager fragmentManager;
-    private ListView listView;
+    private LinearLayout listView;
     private CustomListPausesAdapter adapter;
     private ArrayList<RingModel> dataModels;
     private int newAlarmDate;
@@ -133,9 +134,9 @@ public class EntryDetailsFragment extends Fragment {
             }
         });
 
-        listView.setOnItemClickListener((adapterView, view12, i, l) -> showPauseAlertDialog(dataModels.get(i)));
+        //listView.setOnItemClickListener((adapterView, view12, i, l) -> showPauseAlertDialog(dataModels.get(i)));
 
-        listView.setOnItemLongClickListener((arg0, arg1, pos, id) -> {
+        /*listView.setOnItemLongClickListener((arg0, arg1, pos, id) -> {
             new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
                     .setMessage(R.string.alertdialog_delete_contact_body)
                     .setPositiveButton(android.R.string.yes, (dialog, which) -> {
@@ -155,7 +156,7 @@ public class EntryDetailsFragment extends Fragment {
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
             return true;
-        });
+        });*/
     }
 
     /**

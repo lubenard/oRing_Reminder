@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,9 +35,12 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class MainFragment extends Fragment {
-    ProgressBar progress_bar;
-    TextView progress_bar_text;
+    private ProgressBar progress_bar;
+    private TextView progress_bar_text;
+    private Button button_start_break;
+    private ImageButton button_see_curr_session;
     private FloatingActionButton fab;
+    private TextView text_view_break;
     private View view;
     private static boolean orderEntryByDesc = true;
 
@@ -51,6 +55,23 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.new_design_home_fragment, container, false);
+    }
+
+    private View.OnClickListener clickInLinearLayout() {
+        return v -> {
+            Integer position = Integer.parseInt(v.getTag().toString());
+            Log.d("MainView", "Clicked item at position: " + position);
+            //TODO: this toast is debug, need to remove it
+            Toast.makeText(getContext(), "Clicked on element " + position, Toast.LENGTH_SHORT).show();
+
+            EntryDetailsFragment fragment = new EntryDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putLong("entryId", position);
+            fragment.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, fragment, null)
+                    .addToBackStack(null).commit();
+        };
     }
 
     private void updateHistoryList() {
@@ -82,9 +103,9 @@ public class MainFragment extends Fragment {
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
             textView_worn_for.setText(convertTimeWeared(totalTimePause));
 
-            viewGroup.addView(view);
+            view.setOnClickListener(clickInLinearLayout());
 
-            //view.setOnClickListener(clickInLinearLayout());
+            viewGroup.addView(view);
         }
     }
 
@@ -227,6 +248,14 @@ public class MainFragment extends Fragment {
             test.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             Log.d("Main view", "MainView percentage is " + ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
             progress_bar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+            if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
+                dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning() == 1) {
+                text_view_break.setVisibility(View.VISIBLE);
+                button_start_break.setText(getString(R.string.widget_stop_break));
+            } else {
+                text_view_break.setVisibility(View.INVISIBLE);
+                button_start_break.setText(getString(R.string.widget_start_break));
+            }
         }
     }
 
@@ -264,6 +293,19 @@ public class MainFragment extends Fragment {
 
             fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
             fab.setImageDrawable(getResources().getDrawable(R.drawable.outline_close_24));
+            updateCurrSessionDatas();
+            button_see_curr_session.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EntryDetailsFragment fragment = new EntryDetailsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
+                    fragment.setArguments(bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, fragment, null)
+                            .addToBackStack(null).commit();
+                }
+            });
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -290,6 +332,10 @@ public class MainFragment extends Fragment {
         test = view.findViewById(R.id.text_view_progress);
 
         fab = view.findViewById(R.id.fab);
+
+        text_view_break = view.findViewById(R.id.text_view_break);
+        button_start_break = view.findViewById(R.id.button_start_break);
+        button_see_curr_session = view.findViewById(R.id.see_current_session);
 
         this.view = view;
 

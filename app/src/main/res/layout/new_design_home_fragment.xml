@@ -104,7 +104,7 @@
                     android:textAllCaps="false"
                     android:textSize="17sp"
                     android:background="@drawable/basic_button"
-                    android:text="Lancer une pause" />
+                    android:text="@string/widget_start_break" />
             </LinearLayout>
 
             <TextView
