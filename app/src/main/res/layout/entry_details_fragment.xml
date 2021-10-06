@@ -31,6 +31,7 @@
                 android:textSize="17dp" />
 
             <TextView
+                android:id="@+id/details_entry_removed_title"
                 style="@style/base_text_centered"
                 android:layout_marginTop="30dp"
                 android:text="@string/to"
@@ -107,13 +108,16 @@
                     android:text="Add a pause" />
             </LinearLayout>
 
-            <ListView
+            <LinearLayout
                 android:id="@+id/listview_pauses"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:divider="@null"
-                android:dividerHeight="7dp" />
+                android:layout_marginHorizontal="18dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical"
+                android:showDividers="middle"
+                android:divider="@drawable/empty_tall_divider" />
         </LinearLayout>
     </ScrollView>
 

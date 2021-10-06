@@ -67,6 +67,7 @@ public class EntryDetailsFragment extends Fragment {
     private FloatingActionButton stopSessionButton;
     private boolean isThereAlreadyARunningPause = false;
     private SharedPreferences sharedPreferences;
+    private static ViewGroup viewGroup;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +89,8 @@ public class EntryDetailsFragment extends Fragment {
 
         dbManager = MainActivity.getDbManager();
         dataModels = new ArrayList<>();
+
+        viewGroup = view.findViewById(R.id.listview_pauses);
 
         Bundle bundle = this.getArguments();
         entryId = bundle.getLong("entryId", -1);
@@ -344,16 +347,64 @@ public class EntryDetailsFragment extends Fragment {
     }
 
     /**
+     * Convert the timeWeared from a int into a readable hour:minutes format
+     * @param timeWeared timeWeared is in minutes
+     * @return a string containing the time the user weared the protection
+     */
+    private String convertTimeWeared(int timeWeared) {
+        if (timeWeared < 60)
+            return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
+        else
+            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
+    }
+
+    /**
      * Update the listView by fetching all elements from the db
      */
     private void updatePauseList() {
-       dataModels.clear();
-       ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        viewGroup.removeAllViews();
+        dataModels.clear();
+        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
 
-       dataModels.addAll(pausesDatas);
-       adapter = new CustomListPausesAdapter(dataModels, getContext());
-       listView.setAdapter(adapter);
-        Utils.getListViewSize(listView);
+        LayoutInflater inflater = (LayoutInflater) getActivity().
+                getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
+
+        for (int i = 0; i != pausesDatas.size(); i++) {
+            View view = inflater.inflate(R.layout.main_history_one_elem, null);
+            view.setTag(Integer.toString((int) pausesDatas.get(i).getId()));
+
+            String[] datePut = pausesDatas.get(i).getDatePut().split(" ");
+
+            TextView textView_date = view.findViewById(R.id.main_history_date);
+            textView_date.setText(datePut[0]);
+
+            TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_to);
+            textView_hour_from.setText(datePut[1]);
+
+            TextView textView_hour_to = view.findViewById(R.id.custom_view_date_weared_from);
+
+            TextView textView_worn_for = view.findViewById(R.id.custom_view_date_time_weared);
+
+            if (!pausesDatas.get(i).getDatePut().equals("NOT SET YET")) {
+                String[] dateRemoved = pausesDatas.get(i).getDateRemoved().split(" ");
+                textView_hour_to.setText(dateRemoved[1]);
+                textView_date.setText(textView_date.getText() + " -> " + dateRemoved[0]);
+            } else
+                textView_hour_to.setText("Not set yet");
+
+            if (pausesDatas.get(i).getIsRunning() == 0) {
+                textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+                textView_worn_for.setText(convertTimeWeared(pausesDatas.get(i).getTimeWeared()));
+            } else {
+                long timeBeforeRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));
+                textView_worn_for.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+            }
+
+            viewGroup.addView(view);
+
+            //view.setOnClickListener(clickInLinearLayout());
+        }
     }
 
     private void updateAllFragmentDatas() {

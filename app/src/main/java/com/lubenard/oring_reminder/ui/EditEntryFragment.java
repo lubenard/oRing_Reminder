@@ -138,8 +138,8 @@ public class EditEntryFragment extends Fragment {
         // We should update listmainview if long click.
         // We could have merged with the condition above, but i wanted to have better granular control
         // if needed
-        if (shouldUpdateMainList)
-            MainFragment.updateElementList(true);
+        /*if (shouldUpdateMainList)
+            OldMainFragment.updateElementList(true);*/
     }
 
     /**
