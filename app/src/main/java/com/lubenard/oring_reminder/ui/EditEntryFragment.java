@@ -84,9 +84,9 @@ public class EditEntryFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(Utils.getdateParsed(alarmDate));
 
-        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+        if (SDK_INT < Build.VERSION_CODES.M)
             am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        else if (SDK_INT >= Build.VERSION_CODES.M)
+        else
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 

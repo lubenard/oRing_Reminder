@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.lubenard.oring_reminder"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 7
         versionName "1.3"

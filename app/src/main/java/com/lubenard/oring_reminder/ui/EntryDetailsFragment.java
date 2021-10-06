@@ -266,9 +266,9 @@ public class EntryDetailsFragment extends Fragment {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) entryId, intent, 0);
             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
 
-            if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.M)
+            if (SDK_INT < Build.VERSION_CODES.M)
                 am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            else if (SDK_INT >= Build.VERSION_CODES.M)
+            else
                 am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }

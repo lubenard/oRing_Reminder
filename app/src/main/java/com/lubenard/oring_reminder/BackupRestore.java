@@ -65,18 +65,10 @@ public class BackupRestore extends Activity{
      * Launch the backup for export in CSV
      */
     private void startBackupIntoCSV() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            dataToFileChooser.setType("text/csv");
-            dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatasCSV.csv");
-            launchIntent(dataToFileChooser);
-        } else {
-            Log.w(TAG, "Your android version is pretty old. Save will be done at default location.");
-            Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder("csv");
-            createDefaultFileIfNeeded();
-            launchBackupRestore(exportPath);
-        }
+        Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        dataToFileChooser.setType("text/csv");
+        dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatasCSV.csv");
+        launchIntent(dataToFileChooser);
     }
 
     /**
@@ -99,18 +91,10 @@ public class BackupRestore extends Activity{
      * Start export in XML
      */
     private void startBackupIntoXML() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            dataToFileChooser.setType("text/xml");
-            dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatas.xml");
-            launchIntent(dataToFileChooser);
-        } else {
-            Log.w(TAG, "Your android version is pretty old. Save will be done at default location.");
-            Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder("xml");
-            createDefaultFileIfNeeded();
-            launchBackupRestore(exportPath);
-        }
+        Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        dataToFileChooser.setType("text/xml");
+        dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatas.xml");
+        launchIntent(dataToFileChooser);
     }
 
     /**
@@ -153,16 +137,9 @@ public class BackupRestore extends Activity{
      */
     private void startRestoreFromXML() {
         Log.d(TAG, "startRestoreFromXML");
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
-            dataToFileChooser.setType("text/xml");
-            launchIntent(dataToFileChooser);
-        } else {
-            Log.w(TAG, "Android version too old. Restore will be from default location");
-            Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder("xml");
-            launchBackupRestore(exportPath);
-        }
+        Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
+        dataToFileChooser.setType("text/xml");
+        launchIntent(dataToFileChooser);
     }
 
     /**

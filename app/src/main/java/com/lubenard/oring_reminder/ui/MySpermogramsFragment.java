@@ -106,18 +106,13 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
     }
 
     private void selectSpermoFromFiles() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
-            dataToFileChooser.setType("application/pdf");
-            try {
-                startActivityForResult(dataToFileChooser, 1);
-            } catch (ActivityNotFoundException e) {
-                Log.w(TAG, "Failed to open a Intent to import Spermogram.");
-                Toast.makeText(getContext(), R.string.toast_error_custom_path_backup_restore_fail, Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Log.w(TAG, "Android version too old to select file from folder");
-            Toast.makeText(getContext(), R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
+        Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
+        dataToFileChooser.setType("application/pdf");
+        try {
+            startActivityForResult(dataToFileChooser, 1);
+        } catch (ActivityNotFoundException e) {
+            Log.w(TAG, "Failed to open a Intent to import Spermogram.");
+            Toast.makeText(getContext(), R.string.toast_error_custom_path_backup_restore_fail, Toast.LENGTH_LONG).show();
         }
     }
 
