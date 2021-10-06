@@ -30,7 +30,10 @@ import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceive
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -87,7 +90,7 @@ public class MainFragment extends Fragment {
             view.setTag(Integer.toString((int) entrysDatas.get(i).getId()));
 
             TextView textView_date = view.findViewById(R.id.main_history_date);
-            textView_date.setText(entrysDatas.get(i).getDatePut().split(" ")[0]);
+            textView_date.setText(convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]));
 
             TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_to);
             textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);
@@ -107,6 +110,18 @@ public class MainFragment extends Fragment {
 
             viewGroup.addView(view);
         }
+    }
+
+    private String convertDateIntoReadable(String s) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy");
+        return simpleDateFormat.format(date);
     }
 
     /**
