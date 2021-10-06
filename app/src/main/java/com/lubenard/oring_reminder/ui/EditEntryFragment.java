@@ -51,8 +51,11 @@ public class EditEntryFragment extends Fragment {
     private DbManager dbManager;
     private long entryId;
 
-    private EditText new_entry_datetime_from;
-    private EditText new_entry_datetime_to;
+    private EditText new_entry_date_from;
+    private EditText new_entry_time_from;
+
+    private EditText new_entry_date_to;
+    private EditText new_entry_time_to;
 
     private TextView getItOnBeforeTextView;
 
@@ -176,8 +179,12 @@ public class EditEntryFragment extends Fragment {
 
         context = getContext();
 
-        new_entry_datetime_from = view.findViewById(R.id.new_entry_date_from);
-        new_entry_datetime_to = view.findViewById(R.id.new_entry_date_to);
+        new_entry_date_from = view.findViewById(R.id.new_entry_date_from);
+        new_entry_time_from = view.findViewById(R.id.new_entry_hour_from);
+
+        new_entry_date_to = view.findViewById(R.id.new_entry_date_to);
+        new_entry_time_to = view.findViewById(R.id.new_entry_hour_to);
+
         getItOnBeforeTextView = view.findViewById(R.id.get_it_on_before);
 
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
@@ -186,23 +193,31 @@ public class EditEntryFragment extends Fragment {
         // Fill datas into new fields
         if (entryId != -1) {
             RingModel data = dbManager.getEntryDetails(entryId);
-            new_entry_datetime_from.setText(data.getDatePut());
-            new_entry_datetime_to.setText(data.getDateRemoved());
+
+            new_entry_date_from.setText(data.getDatePut().split(" ")[0]);
+            new_entry_time_from.setText(data.getDatePut().split(" ")[1]);
+
+            new_entry_date_to.setText(data.getDateRemoved().split(" ")[0]);
+            new_entry_time_to.setText(data.getDateRemoved().split(" ")[1]);
             getActivity().setTitle(R.string.action_edit);
         } else
             getActivity().setTitle(R.string.create_new_entry);
 
         auto_from_button.setOnClickListener(view1 -> {
-            new_entry_datetime_from.setText(Utils.getdateFormatted(new Date()));
-            computeTimeBeforeGettingItAgain();
+            String[] datetime_formatted = Utils.getdateFormatted(new Date()).split(" ");
+            new_entry_date_from.setText(datetime_formatted[0]);
+            new_entry_time_from.setText(datetime_formatted[1]);
+            //computeTimeBeforeGettingItAgain();
         });
 
         new_entry_auto_date_to.setOnClickListener(view12 -> {
-            new_entry_datetime_to.setText(Utils.getdateFormatted(new Date()));
-            computeTimeBeforeGettingItAgain();
+            String[] datetime_formatted = Utils.getdateFormatted(new Date()).split(" ");
+            new_entry_date_to.setText(datetime_formatted[0]);
+            new_entry_time_to.setText(datetime_formatted[1]);
+            //computeTimeBeforeGettingItAgain();
         });
 
-        new_entry_datetime_from.addTextChangedListener(new TextWatcher() {
+        /*new_entry_datetime_from.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
@@ -226,9 +241,9 @@ public class EditEntryFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 computeTimeBeforeGettingItAgain();
             }
-        });
+        });*/
 
-        computeTimeBeforeGettingItAgain();
+        //computeTimeBeforeGettingItAgain();
     }
 
     /**
@@ -238,7 +253,7 @@ public class EditEntryFragment extends Fragment {
      * If "to" editText is not empty -> "to" editText + 9
      * Else, no sufficient datas is given to compute it
      */
-    private void computeTimeBeforeGettingItAgain() {
+    /*private void computeTimeBeforeGettingItAgain() {
         Calendar calendar = Calendar.getInstance();
 
         int is_new_entry_datetime_to_valid = Utils.checkDateInputSanity(new_entry_datetime_to.getText().toString());
@@ -255,7 +270,7 @@ public class EditEntryFragment extends Fragment {
             getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + Utils.getdateFormatted(calendar.getTime()));
         } else
             getItOnBeforeTextView.setText(R.string.not_enough_datas_to_compute_get_it_on);
-    }
+    }*/
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -269,8 +284,8 @@ public class EditEntryFragment extends Fragment {
         switch (id) {
             case R.id.action_validate:
 
-                String formattedDatePut = new_entry_datetime_from.getText().toString();
-                String formattedDateRemoved = new_entry_datetime_to.getText().toString();
+                String formattedDatePut = new_entry_date_from.getText().toString() + " " + new_entry_time_from.getText().toString();
+                String formattedDateRemoved = new_entry_date_to.getText().toString() + " " + new_entry_time_to.getText().toString();
 
                 // If entry already exist in the db.
                 if (entryId != -1) {

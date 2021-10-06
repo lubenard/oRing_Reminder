@@ -150,4 +150,5 @@
     <string name="added_the">Added the:&#160;</string>
 	<string name="widget_stop_break">Stop break</string>
     <string name="widget_start_break">Start break</string>
+    <string name="save_this_entry">Save this entry</string>
 </resources>
