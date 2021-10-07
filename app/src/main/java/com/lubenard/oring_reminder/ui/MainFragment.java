@@ -42,6 +42,7 @@ public class MainFragment extends Fragment {
     private TextView progress_bar_text;
     private Button button_start_break;
     private ImageButton button_see_curr_session;
+    private Button button_see_full_history;
     private FloatingActionButton fab;
     private TextView text_view_break;
     private View view;
@@ -309,24 +310,18 @@ public class MainFragment extends Fragment {
             fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
             fab.setImageDrawable(getResources().getDrawable(R.drawable.outline_close_24));
             updateCurrSessionDatas();
-            button_see_curr_session.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EntryDetailsFragment fragment = new EntryDetailsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
-                    fragment.setArguments(bundle);
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, fragment, null)
-                            .addToBackStack(null).commit();
-                }
+            button_see_curr_session.setOnClickListener(v -> {
+                EntryDetailsFragment fragment = new EntryDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
+                fragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, fragment, null)
+                        .addToBackStack(null).commit();
             });
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dbManager.endSession(dbManager.getLastRunningEntry().getId());
-                    updateDesign();
-                }
+            fab.setOnClickListener(v -> {
+                dbManager.endSession(dbManager.getLastRunningEntry().getId());
+                updateDesign();
             });
         }
         updateHistoryList();
@@ -352,10 +347,22 @@ public class MainFragment extends Fragment {
         button_start_break = view.findViewById(R.id.button_start_break);
         button_see_curr_session = view.findViewById(R.id.see_current_session);
 
+        button_see_full_history = view.findViewById(R.id.button_see_history);
+
         this.view = view;
 
         getActivity().setTitle(R.string.app_name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        button_see_full_history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HistoryFragment fragment = new HistoryFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, fragment, null)
+                        .addToBackStack(null).commit();
+            }
+        });
 
         updateDesign();
     }
