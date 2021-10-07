@@ -398,6 +398,29 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     /**
+     * Get the last running entry
+     * @return A ringModel containing last Running entry.
+     * Primarily used for widget
+     */
+    public RingModel getLastRunningPauseForId(long entryId) {
+        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved};
+        Cursor cursor = readableDB.query(pausesTable,  columns, pauseTableEntryId + "=? AND " + pauseTableIsRunning + "=?", new String[]{String.valueOf(entryId), "1"},
+                null, null, pauseTableId + " DESC");
+
+        RingModel datas = null;
+
+        if (cursor.moveToFirst()) {
+            datas = new RingModel(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
+                    cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)));
+        }
+        cursor.close();
+        return datas;
+    }
+
+    /**
      * This function is used to backup into a file
      * @return All the datas for all the entrys.
      */

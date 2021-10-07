@@ -153,5 +153,5 @@
     <string name="license_androidPdfViewer_source">Vous pouvez voir le code de cette librairie ici :\n https://github.com/barteksc/AndroidPdfViewer</string>
     <string name="widget_start_break">Lancer une pause</string>
     <string name="save_this_entry">Enregistrer cette entrée</string>
-    <string name="widget_stop_break">Arreter une pause</string>
+    <string name="widget_stop_break">Arreter la pause</string>
 </resources>

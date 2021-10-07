@@ -204,6 +204,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         Log.d(TAG, "Widget receives OnRecieve command to update");
         Log.d(TAG, "intent action is " +  intent.getAction());
+        if (intent != null && intent.getAction() != null) {
         switch (intent.getAction()) {
             // Clicked on the 'Start Session' button
             case WIDGET_BUTTON_START:
@@ -234,6 +235,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + intent.getAction());
+        }
         }
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

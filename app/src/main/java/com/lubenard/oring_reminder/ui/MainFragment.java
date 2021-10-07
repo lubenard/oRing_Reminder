@@ -38,6 +38,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class MainFragment extends Fragment {
+    private static final String TAG = "MainFragment";
+
     private ProgressBar progress_bar;
     private TextView progress_bar_text;
     private Button button_start_break;
@@ -65,8 +67,6 @@ public class MainFragment extends Fragment {
         return v -> {
             Integer position = Integer.parseInt(v.getTag().toString());
             Log.d("MainView", "Clicked item at position: " + position);
-            //TODO: this toast is debug, need to remove it
-            Toast.makeText(getContext(), "Clicked on element " + position, Toast.LENGTH_SHORT).show();
 
             EntryDetailsFragment fragment = new EntryDetailsFragment();
             Bundle bundle = new Bundle();
@@ -91,7 +91,11 @@ public class MainFragment extends Fragment {
             view.setTag(Integer.toString((int) entrysDatas.get(i).getId()));
 
             TextView textView_date = view.findViewById(R.id.main_history_date);
-            textView_date.setText(convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]));
+
+            if (entrysDatas.get(i).getDatePut().split(" ")[0].equals(entrysDatas.get(i).getDateRemoved().split(" ")[0]))
+                textView_date.setText(convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]));
+            else
+                textView_date.setText(convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]) + " -> " + convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0]));
 
             TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_to);
             textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);
@@ -255,6 +259,26 @@ public class MainFragment extends Fragment {
             return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
     }
 
+    private void startBreak() {
+        RingModel lastRunningEntry = dbManager.getLastRunningEntry();
+        Log.d(TAG, "Test start break" + dbManager.getLastRunningPauseForId(lastRunningEntry.getId()));
+
+        if (dbManager.getLastRunningPauseForId(lastRunningEntry.getId()) == null) {
+            Log.d(TAG, "No running pause");
+            dbManager.createNewPause(lastRunningEntry.getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
+            // Cancel alarm until breaks are set as finished.
+            // Only then set a new alarm date
+            Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
+            EditEntryFragment.cancelAlarm(getContext(), lastRunningEntry.getId());
+            EntryDetailsFragment.setBreakAlarm(PreferenceManager.getDefaultSharedPreferences(getContext()),
+                    Utils.getdateFormatted(new Date()), getContext(), lastRunningEntry.getId());
+            EditEntryFragment.updateWidget(getContext());
+        } else {
+            Log.d(TAG, "Error: Already a running pause");
+            Toast.makeText(getContext(), getContext().getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void updateCurrSessionDatas() {
         RingModel lastRunningEntry = dbManager.getLastRunningEntry();
 
@@ -262,15 +286,24 @@ public class MainFragment extends Fragment {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
             test.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
-            Log.d("Main view", "MainView percentage is " + ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
+            Log.d(TAG, "MainView percentage is " + ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
             progress_bar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
                 dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning() == 1) {
+                text_view_break.setText("In break for: " + Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) + "mn");
                 text_view_break.setVisibility(View.VISIBLE);
                 button_start_break.setText(getString(R.string.widget_stop_break));
+                button_start_break.setOnClickListener(v -> {
+                    dbManager.endPause(lastRunningEntry.getId());
+                    updateCurrSessionDatas();
+                });
             } else {
                 text_view_break.setVisibility(View.INVISIBLE);
                 button_start_break.setText(getString(R.string.widget_start_break));
+                button_start_break.setOnClickListener(v -> {
+                    startBreak();
+                    updateCurrSessionDatas();
+                });
             }
         }
     }

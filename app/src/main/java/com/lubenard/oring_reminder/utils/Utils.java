@@ -1,24 +1,15 @@
 package com.lubenard.oring_reminder.utils;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroadcastReceiver;
@@ -81,27 +72,6 @@ public class Utils {
         if (text.equals("") || text.equals("NOT SET YET") || Utils.getdateParsed(text) == null)
             return 0;
         return 1;
-    }
-
-    public static void getListViewSize(ListView myListView) {
-        ListAdapter myListAdapter=myListView.getAdapter();
-        if (myListAdapter==null) {
-            //do nothing return null
-            return;
-        }
-        //set listAdapter in loop for getting final size
-        int totalHeight=0;
-        for (int size=0; size < myListAdapter.getCount(); size++) {
-            View listItem=myListAdapter.getView(size, null, myListView);
-            listItem.measure(0, 0);
-            totalHeight+=listItem.getMeasuredHeight();
-        }
-        //setting listview item in adapter
-        ViewGroup.LayoutParams params=myListView.getLayoutParams();
-        params.height=totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
-        myListView.setLayoutParams(params);
-        // print height of adapter on log
-        Log.i("height of listItem:", String.valueOf(totalHeight));
     }
 
     /**

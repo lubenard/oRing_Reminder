@@ -36,7 +36,6 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     private static DbManager dbManager;
     private static HistoryListAdapter adapter;
     private static RecyclerView recyclerView;
-    private static Context context;
     private static boolean orderEntryByDesc = true;
     private LinearLayoutManager linearLayoutManager;
     private static HistoryListAdapter.onListItemClickListener onListItemClickListener;
@@ -69,7 +68,6 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
 
         dataModels = new ArrayList<>();
         dbManager = MainActivity.getDbManager();
-        context = getContext();
 
         Log.d(TAG, "DB version is: " + dbManager.getVersion());
     }

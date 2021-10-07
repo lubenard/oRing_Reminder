@@ -125,7 +125,7 @@ public class EntryDetailsFragment extends Fragment {
                     // Only then set a new alarm date
                     Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                     EditEntryFragment.cancelAlarm(context, entryId);
-                    setBreakAlarm(Utils.getdateFormatted(new Date()));
+                    setBreakAlarm(sharedPreferences, Utils.getdateFormatted(new Date()), context, entryId);
                     updatePauseList();
                     EditEntryFragment.updateWidget(getContext());
                 } else
@@ -247,7 +247,7 @@ public class EntryDetailsFragment extends Fragment {
                     }
                 }
                 if (isRunning == 1)
-                    setBreakAlarm(pause_beginning.getText().toString());
+                    setBreakAlarm(sharedPreferences, pause_beginning.getText().toString(), context, entryId);
                 updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             }
@@ -259,16 +259,16 @@ public class EntryDetailsFragment extends Fragment {
      * Add alarm if break is too long (only if break is running and option enabled in settings)
      * @param pauseBeginning
      */
-    private void setBreakAlarm(String pauseBeginning) {
+    public static void setBreakAlarm(SharedPreferences sharedPreferences, String pauseBeginning, Context context, long entryId) {
         if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(Utils.getdateParsed(pauseBeginning));
             calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
             Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
-            Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
+            Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
                     .putExtra("action", 1);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) entryId, intent, 0);
-            AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
+            AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
             if (SDK_INT < Build.VERSION_CODES.M)
                 am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

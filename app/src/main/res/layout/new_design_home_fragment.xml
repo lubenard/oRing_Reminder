@@ -91,7 +91,8 @@
                         app:layout_constraintStart_toStartOf="@+id/progress_bar"
                         app:layout_constraintTop_toTopOf="@+id/progress_bar"
                         app:layout_constraintVertical_bias="0.550"
-                        android:text="En pause depuis : 10 mn" />
+                        android:textColor="@color/yellow"
+                        android:text="text_view_break"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <Button
