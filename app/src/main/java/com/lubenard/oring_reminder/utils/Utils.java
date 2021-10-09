@@ -112,6 +112,18 @@ public class Utils {
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
+    public static String convertDateIntoReadable(String s) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy");
+        return simpleDateFormat.format(date);
+    }
+
     /**
      * Change language
      * @param context

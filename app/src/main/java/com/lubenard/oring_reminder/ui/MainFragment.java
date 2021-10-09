@@ -93,9 +93,9 @@ public class MainFragment extends Fragment {
             TextView textView_date = view.findViewById(R.id.main_history_date);
 
             if (entrysDatas.get(i).getDatePut().split(" ")[0].equals(entrysDatas.get(i).getDateRemoved().split(" ")[0]))
-                textView_date.setText(convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]));
+                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]));
             else
-                textView_date.setText(convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]) + " -> " + convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0]));
+                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]) + " -> " + Utils.convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0]));
 
             TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_to);
             textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);
@@ -115,18 +115,6 @@ public class MainFragment extends Fragment {
 
             viewGroup.addView(view);
         }
-    }
-
-    private String convertDateIntoReadable(String s) {
-        Date date = null;
-        try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(s);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy");
-        return simpleDateFormat.format(date);
     }
 
     /**

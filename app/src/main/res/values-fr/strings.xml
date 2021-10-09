@@ -118,7 +118,7 @@
     <string name="you_can_get_it_on_again">Vous devriez pouvoir le remettre à :</string>
     <string name="bad_date_format">Mauvais format de date. Merci de vérifier</string>
     <string name="get_it_on_before">La remettre avant</string>
-    <string name="not_enough_datas_to_compute_get_it_on">Pas assez de données pour calculer quand vous devriez recommencer a la portez</string>
+    <string name="not_enough_datas_to_compute_get_it_on">Pas assez de données pour calculer quand vous devriez recommencer à la porter</string>
     <string name="no_pause_session_is_not_running">Vous ne pouvez pas créer une pause en cours si la session n\'est pas en cours</string>
     <string name="settings_prevent_me_when_no_session_started_for_today">Me prevenir si une session est en cours à une heure définie</string>
     <string name="myring_prevent_me_when_no_session_started_date_title">Choisir l\'heure à laquelle je veux être notifié</string>

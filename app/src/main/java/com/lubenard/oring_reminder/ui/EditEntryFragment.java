@@ -78,6 +78,11 @@ public class EditEntryFragment extends Fragment {
     HashMap <Integer, String> runningSessions;
     private static boolean shouldUpdateMainList;
 
+    abstract class LightTextWatcher implements TextWatcher {
+        @Override public final void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        @Override public final void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+    }
+
     /**
      * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
      * @param alarmDate The date of the alarm in the form 2020-12-30 10:42:00
@@ -236,11 +241,9 @@ public class EditEntryFragment extends Fragment {
         new_entry_timepicker_to =view.findViewById(R.id.new_entry_timepicker_to);
 
         new_entry_datepicker_from.setOnClickListener(v -> openCalendarPicker(new_entry_date_from));
-
         new_entry_timepicker_from.setOnClickListener(v -> openTimePicker(new_entry_time_from));
 
         new_entry_datepicker_to.setOnClickListener(v -> openCalendarPicker(new_entry_date_to));
-
         new_entry_timepicker_to.setOnClickListener(v -> openTimePicker(new_entry_time_to));
 
         // Fill datas into new fields
@@ -260,43 +263,41 @@ public class EditEntryFragment extends Fragment {
             String[] datetime_formatted = Utils.getdateFormatted(new Date()).split(" ");
             new_entry_date_from.setText(datetime_formatted[0]);
             new_entry_time_from.setText(datetime_formatted[1]);
-            //computeTimeBeforeGettingItAgain();
+            computeTimeBeforeGettingItAgain();
         });
 
         new_entry_auto_date_to.setOnClickListener(view12 -> {
             String[] datetime_formatted = Utils.getdateFormatted(new Date()).split(" ");
             new_entry_date_to.setText(datetime_formatted[0]);
             new_entry_time_to.setText(datetime_formatted[1]);
-            //computeTimeBeforeGettingItAgain();
+            computeTimeBeforeGettingItAgain();
         });
 
-        /*new_entry_datetime_from.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        new_entry_date_from.addTextChangedListener(new LightTextWatcher() {
+            public void afterTextChanged(Editable e) {
+                computeTimeBeforeGettingItAgain();
+            }
+        });
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
+        new_entry_time_from.addTextChangedListener(new LightTextWatcher() {
             public void afterTextChanged(Editable s) {
                 computeTimeBeforeGettingItAgain();
             }
         });
 
-        new_entry_datetime_to.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
+        new_entry_date_to.addTextChangedListener(new LightTextWatcher() {
             public void afterTextChanged(Editable s) {
                 computeTimeBeforeGettingItAgain();
             }
-        });*/
+        });
 
-        //computeTimeBeforeGettingItAgain();
+        new_entry_time_to.addTextChangedListener(new LightTextWatcher() {
+            public void afterTextChanged(Editable s) {
+                computeTimeBeforeGettingItAgain();
+            }
+        });
+
+        computeTimeBeforeGettingItAgain();
     }
 
     /**
@@ -306,24 +307,29 @@ public class EditEntryFragment extends Fragment {
      * If "to" editText is not empty -> "to" editText + 9
      * Else, no sufficient datas is given to compute it
      */
-    /*private void computeTimeBeforeGettingItAgain() {
+    private void computeTimeBeforeGettingItAgain() {
         Calendar calendar = Calendar.getInstance();
 
-        int is_new_entry_datetime_to_valid = Utils.checkDateInputSanity(new_entry_datetime_to.getText().toString());
+        String datetime_from = new_entry_date_from.getText().toString() + " " + new_entry_time_from.getText().toString();
+        String datetime_to = new_entry_date_to.getText().toString() + " " + new_entry_time_to.getText().toString();
+
+        Log.d(TAG, "datetime_from is " + datetime_from + " datetime_to is " + datetime_to);
+
+        int is_new_entry_datetime_to_valid = Utils.checkDateInputSanity(datetime_to);
 
         // If new_entry_datetime_from is valid but new_entry_datetime_to is not valid
-        if (is_new_entry_datetime_to_valid == 0 && Utils.checkDateInputSanity(new_entry_datetime_from.getText().toString()) == 1) {
-            calendar.setTime(Utils.getdateParsed(new_entry_datetime_from.getText().toString()));
+        if (is_new_entry_datetime_to_valid == 0 && Utils.checkDateInputSanity(datetime_from) == 1) {
+            calendar.setTime(Utils.getdateParsed(datetime_from));
             calendar.add(Calendar.HOUR_OF_DAY, weared_time + 9);
-            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + Utils.getdateFormatted(calendar.getTime()));
+            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + Utils.getdateFormatted(calendar.getTime()));
         } else if (is_new_entry_datetime_to_valid == 1) {
             // Only if new_entry_datetime_to is valid (meaning a session is supposed to have a end date)
-            calendar.setTime(Utils.getdateParsed(new_entry_datetime_to.getText().toString()));
+            calendar.setTime(Utils.getdateParsed(datetime_to));
             calendar.add(Calendar.HOUR_OF_DAY, 9);
-            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + Utils.getdateFormatted(calendar.getTime()));
+            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + Utils.getdateFormatted(calendar.getTime()));
         } else
             getItOnBeforeTextView.setText(R.string.not_enough_datas_to_compute_get_it_on);
-    }*/
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
