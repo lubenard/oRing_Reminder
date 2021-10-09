@@ -1,6 +1,6 @@
 package com.lubenard.oring_reminder.custom_components;
 
-public class RingModel {
+public class RingSession {
     private long id;
     private String datePut;
     private String dateRemoved;
@@ -16,7 +16,7 @@ public class RingModel {
      * Normal session: id: 1, datePut 2021-04-10 11:42:00, dateRemoved 2021-04-11 02:42:00, isRunning 0, timeWeared 900 (15h in Minutes)
      * Break:          id: 3, datePut 2021-04-10 16:36:00, dateRemoved 2021-04-10 14:21:00, isRunning 0, timeWeared 135 (2h15 in Minutes)
      */
-    public RingModel(int id, String datePut, String dateRemoved, int isRunning, int timeWeared) {
+    public RingSession(int id, String datePut, String dateRemoved, int isRunning, int timeWeared) {
         this.id = id;
         this.datePut = datePut;
         this.dateRemoved = dateRemoved;

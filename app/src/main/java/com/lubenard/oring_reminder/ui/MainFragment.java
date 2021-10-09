@@ -28,11 +28,9 @@ import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -52,7 +50,7 @@ public class MainFragment extends Fragment {
     private static boolean orderEntryByDesc = true;
 
     private static ViewGroup viewGroup;
-    private ArrayList<RingModel> dataModels;
+    private ArrayList<RingSession> dataModels;
     private DbManager dbManager;
     private TextView test;
     private SharedPreferences sharedPreferences;
@@ -82,7 +80,7 @@ public class MainFragment extends Fragment {
     private void updateHistoryList() {
         viewGroup.removeAllViews();
         dataModels.clear();
-        ArrayList<RingModel> entrysDatas = dbManager.getHistoryForMainView(orderEntryByDesc);
+        ArrayList<RingSession> entrysDatas = dbManager.getHistoryForMainView(orderEntryByDesc);
 
         LayoutInflater inflater = (LayoutInflater) getActivity().
                 getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
@@ -275,7 +273,7 @@ public class MainFragment extends Fragment {
     }
 
     private void startBreak() {
-        RingModel lastRunningEntry = dbManager.getLastRunningEntry();
+        RingSession lastRunningEntry = dbManager.getLastRunningEntry();
         Log.d(TAG, "Test start break" + dbManager.getLastRunningPauseForId(lastRunningEntry.getId()));
 
         if (dbManager.getLastRunningPauseForId(lastRunningEntry.getId()) == null) {
@@ -295,7 +293,7 @@ public class MainFragment extends Fragment {
     }
 
     private void updateCurrSessionDatas() {
-        RingModel lastRunningEntry = dbManager.getLastRunningEntry();
+        RingSession lastRunningEntry = dbManager.getLastRunningEntry();
 
         if (lastRunningEntry != null) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());

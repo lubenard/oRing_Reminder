@@ -35,7 +35,7 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -55,9 +55,9 @@ public class EntryDetailsFragment extends Fragment {
     private View view;
     private Context context;
     private FragmentManager fragmentManager;
-    private ArrayList<RingModel> dataModels;
+    private ArrayList<RingSession> dataModels;
     private int newAlarmDate;
-    private RingModel entryDetails;
+    private RingSession entryDetails;
     private TextView ableToGetItOff;
     private TextView whenGetItOff;
     private TextView timeWeared;
@@ -160,7 +160,7 @@ public class EntryDetailsFragment extends Fragment {
      * Also compute if pause it in the session interval
      * @param dataModel If the pause already exist, give it datas to load
      */
-    private void showPauseAlertDialog(RingModel dataModel) {
+    private void showPauseAlertDialog(RingSession dataModel) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         ViewGroup viewGroup = view.findViewById(android.R.id.content);
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_pause_dialog, viewGroup, false);
@@ -289,7 +289,7 @@ public class EntryDetailsFragment extends Fragment {
         long totalTimePause = 0;
         int newComputedTime;
 
-        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        ArrayList<RingSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
 
         isThereAlreadyARunningPause = false;
 
@@ -361,7 +361,7 @@ public class EntryDetailsFragment extends Fragment {
     private void updatePauseList() {
         viewGroup.removeAllViews();
         dataModels.clear();
-        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        ArrayList<RingSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
 
         LayoutInflater inflater = (LayoutInflater) getActivity().
                 getSystemService(getContext().LAYOUT_INFLATER_SERVICE);

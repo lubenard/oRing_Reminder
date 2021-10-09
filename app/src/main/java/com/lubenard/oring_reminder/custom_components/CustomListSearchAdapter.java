@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class CustomListSearchAdapter extends ArrayAdapter<RingModel> {
+public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
 
     private static class ViewHolder {
         TextView worn_date;
@@ -25,7 +25,7 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingModel> {
         TextView weared_during;
     }
 
-    public CustomListSearchAdapter(ArrayList<RingModel> data, Context context) {
+    public CustomListSearchAdapter(ArrayList<RingSession> data, Context context) {
         super(context, R.layout.main_history_one_elem, data);
     }
 
@@ -66,7 +66,7 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        RingModel dataModel = getItem(position);
+        RingSession dataModel = getItem(position);
         ViewHolder viewHolder;
 
         // Get our layout and Textview.

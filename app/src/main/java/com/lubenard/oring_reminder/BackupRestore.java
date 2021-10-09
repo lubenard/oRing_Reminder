@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.ui.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
@@ -228,14 +227,14 @@ public class BackupRestore extends Activity{
         try {
             xmlWriter.writeEntity("datas");
             // Contain all entrys
-            ArrayList<RingModel> datas = dbManager.getAllDatasForAllEntrys();
+            ArrayList<RingSession> datas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < datas.size(); i++) {
                 xmlWriter.writeEntity("session");
                 xmlWriter.writeAttribute("dateTimePut", datas.get(i).getDatePut());
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
                 xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning()));
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
-                ArrayList<RingModel> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
+                ArrayList<RingSession> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
                 if (pauses.size() > 0) {
                     Log.d(TAG, "Break exist for session " + datas.get(i).getId() + ". There is " + pauses.size() + " breaks");
                     for (int j = 0; j != pauses.size(); j++) {
@@ -404,6 +403,11 @@ public class BackupRestore extends Activity{
             try {
                 OutputStream outputStream = getContentResolver().openOutputStream(uri);
                 XmlWriter xmlWriter = new XmlWriter(outputStream);
+                // Write app version in xml export, for warning user if
+                // saves are imported from earlier version of the app
+                xmlWriter.writeEntity("app_version");
+                xmlWriter.writeText(getString(R.string.app_version));
+                xmlWriter.endEntity();
                 if (shouldBackupRestoreDatas)
                     saveDatasIntoXml(xmlWriter);
                 if (shouldBackupRestoreSettings)
@@ -418,6 +422,9 @@ public class BackupRestore extends Activity{
             Log.d(TAG, "ActivityResult restore from path: " + filePath);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(uri);
+
+
+
                 if (shouldBackupRestoreDatas)
                     restoreDatasFromXml(inputStream);
                 // TODO: HOTFIX ! I should not need to reopen a stream (at least i think so)
@@ -463,7 +470,7 @@ public class BackupRestore extends Activity{
 
             ArrayList<String> formattedDatas = new ArrayList<>();
             // Contain all entrys
-            ArrayList<RingModel> rawDatas = dbManager.getAllDatasForAllEntrys();
+            ArrayList<RingSession> rawDatas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < rawDatas.size(); i++) {
                 String[] datePut = rawDatas.get(i).getDatePut().split(" ");
                 String[] dateRemoved = rawDatas.get(i).getDateRemoved().split(" ");

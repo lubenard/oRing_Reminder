@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -39,7 +37,7 @@ import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -248,7 +246,7 @@ public class EditEntryFragment extends Fragment {
 
         // Fill datas into new fields
         if (entryId != -1) {
-            RingModel data = dbManager.getEntryDetails(entryId);
+            RingSession data = dbManager.getEntryDetails(entryId);
 
             new_entry_date_from.setText(data.getDatePut().split(" ")[0]);
             new_entry_time_from.setText(data.getDatePut().split(" ")[1]);

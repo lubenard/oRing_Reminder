@@ -8,20 +8,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lubenard.oring_reminder.DbManager;
-import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.ui.MainFragment;
 
 import java.util.ArrayList;
 
 public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
-    private ArrayList <RingModel> entryList;
+    private ArrayList <RingSession> entryList;
     private Context context;
     private onListItemClickListener onListItemClickListener;
 
-    public HistoryListAdapter(ArrayList<RingModel> datas, onListItemClickListener onListItemClickListener) {
+    public HistoryListAdapter(ArrayList<RingSession> datas, onListItemClickListener onListItemClickListener) {
         entryList = datas;
         this.onListItemClickListener = onListItemClickListener;
     }

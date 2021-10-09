@@ -12,11 +12,10 @@ import androidx.fragment.app.Fragment;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class DatasFragment extends Fragment {
@@ -37,7 +36,7 @@ public class DatasFragment extends Fragment {
 
         DbManager dbManager = MainActivity.getDbManager();
 
-        ArrayList<RingModel> datas = dbManager.getAllDatasForAllEntrys();
+        ArrayList<RingSession> datas = dbManager.getAllDatasForAllEntrys();
 
         TextView numberOfEntries = view.findViewById(R.id.number_of_entries);
         TextView lastEntry = view.findViewById(R.id.last_entry);

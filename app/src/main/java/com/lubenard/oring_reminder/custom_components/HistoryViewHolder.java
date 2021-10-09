@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
-import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Date;
@@ -67,7 +66,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
         return (newValue < 0) ? 0 : newValue;
     }
 
-    public void updateElementDatas(RingModel dataModel, Context context) {
+    public void updateElementDatas(RingSession dataModel, Context context) {
         this.context = context;
         String[] datePut = dataModel.getDatePut().split(" ");
         weared_from.setText(datePut[0] + "\n" + datePut[1]);

@@ -15,15 +15,13 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
-import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -66,7 +64,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             if (dbManager == null)
                 dbManager = new DbManager(context);
 
-            RingModel lastEntry = dbManager.getLastRunningEntry();
+            RingSession lastEntry = dbManager.getLastRunningEntry();
 
             // If entering this condition, this mean a session is currently active
             if (lastEntry != null) {
@@ -74,7 +72,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
                 Intent intent3 = new Intent(context, getClass());
 
-                ArrayList<RingModel> session_breaks = dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true);
+                ArrayList<RingSession> session_breaks = dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true);
 
                 if (session_breaks.size() > 0) {
                     if (session_breaks.get(0).getIsRunning() == 1) {

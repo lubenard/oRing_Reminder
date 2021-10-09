@@ -16,13 +16,13 @@ import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.CustomListSearchAdapter;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 
 import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
     private CustomListSearchAdapter adapter;
-    private ArrayList<RingModel> dataModels;
+    private ArrayList<RingSession> dataModels;
     private ListView listView;
 
     @Override
@@ -32,7 +32,7 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.search_fragment, container, false);
     }
 
-    private void updateResultList(ArrayList<RingModel> pausesDatas) {
+    private void updateResultList(ArrayList<RingSession> pausesDatas) {
         dataModels.clear();
         dataModels.addAll(pausesDatas);
         adapter = new CustomListSearchAdapter(dataModels, getContext());
@@ -55,7 +55,7 @@ public class SearchFragment extends Fragment {
 
         Log.d("Search Fragment", "date is " + date_searched);
 
-        ArrayList<RingModel> results = dbManager.searchEntryInDb(date_searched);
+        ArrayList<RingSession> results = dbManager.searchEntryInDb(date_searched);
 
         TextView search_result = view.findViewById(R.id.result_search_textview);
 
@@ -71,7 +71,7 @@ public class SearchFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RingModel dataModel= dataModels.get(position);
+                RingSession dataModel= dataModels.get(position);
                 Log.d("SearchFragment", "Element " + dataModel.getId());
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
                 Bundle bundle = new Bundle();

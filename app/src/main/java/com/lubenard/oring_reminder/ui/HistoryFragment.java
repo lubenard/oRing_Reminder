@@ -1,13 +1,12 @@
 package com.lubenard.oring_reminder.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.HistoryListAdapter;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +31,7 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     public static final String TAG = "HistoryFragment";
 
     // We can set thoses variables as static, because we know the view is going to be created
-    private static ArrayList<RingModel> dataModels;
+    private static ArrayList<RingSession> dataModels;
     private static DbManager dbManager;
     private static HistoryListAdapter adapter;
     private static RecyclerView recyclerView;
@@ -78,8 +77,8 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     public static void updateElementList() {
         Log.d(TAG, "Updated history Listview");
         dataModels.clear();
-        LinkedHashMap<Integer, RingModel> entrysDatas = dbManager.getAllDatasForMainList(orderEntryByDesc);
-        for (LinkedHashMap.Entry<Integer, RingModel> oneElemData : entrysDatas.entrySet())
+        LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(orderEntryByDesc);
+        for (LinkedHashMap.Entry<Integer, RingSession> oneElemData : entrysDatas.entrySet())
             dataModels.add(oneElemData.getValue());
         adapter = new HistoryListAdapter(dataModels, onListItemClickListener);
         recyclerView.setAdapter(adapter);
@@ -94,10 +93,10 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
      * @return the time in Minutes of pauses between the interval
      */
     public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        ArrayList<RingSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
-            RingModel currentBreak = pausesDatas.get(i);
+            RingSession currentBreak = pausesDatas.get(i);
             if (pausesDatas.get(i).getIsRunning() == 0) {
                 if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) > 0 &&
                         Utils.getDateDiff(currentBreak.getDatePut(), dateNow, TimeUnit.SECONDS) > 0) {
@@ -135,7 +134,7 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
      */
     @Override
     public void onListItemClickListener(int position) {
-        RingModel dataModel= dataModels.get(position);
+        RingSession dataModel= dataModels.get(position);
         Log.d(TAG, "Element " + dataModel.getId());
         EntryDetailsFragment fragment = new EntryDetailsFragment();
         Bundle bundle = new Bundle();
