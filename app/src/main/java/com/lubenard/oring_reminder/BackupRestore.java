@@ -386,6 +386,27 @@ public class BackupRestore extends Activity{
         SettingsFragment.restartActivity();
     }
 
+    private void checkAppVersion(InputStream inputStream) {
+        try {
+            XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
+            XmlPullParser myParser = xmlFactoryObject.newPullParser();
+
+            myParser.setInput(inputStream, null);
+
+            // Skip the first element
+            int eventType = myParser.next();
+            if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("app_version")) {
+                myParser.next();
+                if (myParser.getText().equals(getString(R.string.app_version)))
+                    Log.d(TAG, "Same app version !");
+                else
+                    Log.d(TAG, "Not same app version ! " + myParser.getText() + "/" + getString(R.string.app_version));
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Actually launch the backup system depending on what to do.
      * This function is executed when we now everything is ready for export
@@ -422,9 +443,7 @@ public class BackupRestore extends Activity{
             Log.d(TAG, "ActivityResult restore from path: " + filePath);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(uri);
-
-
-
+                checkAppVersion(inputStream);
                 if (shouldBackupRestoreDatas)
                     restoreDatasFromXml(inputStream);
                 // TODO: HOTFIX ! I should not need to reopen a stream (at least i think so)
