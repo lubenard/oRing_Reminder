@@ -31,9 +31,17 @@
             style="@style/base_text_all_wrap"
             android:layout_gravity="center"
             android:ems="6"
+            android:digits="0123456789-"
             android:layout_weight="1"
-            android:hint="Ex: 2020-03-30"
-            android:inputType="date" />
+            android:hint="Ex: 2020-03-30" />
+
+        <ImageButton
+            android:id="@+id/new_entry_datepicker_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_event_24" />
     </LinearLayout>
 
     <LinearLayout
@@ -49,15 +57,23 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:textSize="25dp"
-            android:text="A :" />
+            android:text=" A :" />
 
         <EditText
             android:id="@+id/new_entry_hour_from"
             style="@style/base_text_all_wrap"
-            android:ems="5"
+            android:ems="6"
             android:layout_gravity="center"
-            android:inputType="date"
+            android:digits="0123456789:"
             android:hint="Ex: 10:04:20" />
+
+        <ImageButton
+            android:id="@+id/new_entry_timepicker_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_schedule_24" />
     </LinearLayout>
 
     <Button
@@ -99,8 +115,16 @@
             android:layout_gravity="center"
             android:ems="6"
             android:layout_weight="1"
-            android:hint="Ex: 2020-03-30"
-            android:inputType="date" />
+            android:digits="0123456789-"
+            android:hint="Ex: 2020-03-30" />
+
+        <ImageButton
+            android:id="@+id/new_entry_datepicker_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_event_24" />
     </LinearLayout>
 
     <LinearLayout
@@ -116,15 +140,23 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:textSize="25dp"
-            android:text="A :" />
+            android:text=" A :" />
 
         <EditText
             android:id="@+id/new_entry_hour_to"
             style="@style/base_text_all_wrap"
-            android:ems="5"
+            android:ems="6"
             android:layout_gravity="center"
-            android:inputType="time"
+            android:digits="0123456789:"
             android:hint="Ex: 10:04:20" />
+
+        <ImageButton
+            android:id="@+id/new_entry_timepicker_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_schedule_24" />
     </LinearLayout>
 
     <Button

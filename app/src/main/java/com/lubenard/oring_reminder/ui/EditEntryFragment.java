@@ -3,13 +3,16 @@ package com.lubenard.oring_reminder.ui;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +22,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -56,6 +62,11 @@ public class EditEntryFragment extends Fragment {
 
     private EditText new_entry_date_to;
     private EditText new_entry_time_to;
+
+    private ImageButton new_entry_datepicker_from;
+    private ImageButton new_entry_timepicker_from;
+    private ImageButton new_entry_datepicker_to;
+    private ImageButton new_entry_timepicker_to;
 
     private TextView getItOnBeforeTextView;
 
@@ -168,6 +179,35 @@ public class EditEntryFragment extends Fragment {
             }
     }
 
+    private void openTimePicker(TextView filling_textview) {
+        // Get Current Time
+        final Calendar c = Calendar.getInstance();
+        int mHour = c.get(Calendar.HOUR_OF_DAY);
+        int mMinute = c.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
+            new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            filling_textview.setText(hourOfDay + ":" + minute + ":00");
+                }
+            }, mHour, mMinute, false);
+            timePickerDialog.show();
+    }
+
+    private void openCalendarPicker(TextView filling_textview) {
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                (view, year, monthOfYear, dayOfMonth) -> filling_textview.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
+            datePickerDialog.show();
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -189,6 +229,19 @@ public class EditEntryFragment extends Fragment {
 
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
+
+        new_entry_datepicker_from = view.findViewById(R.id.new_entry_datepicker_from);
+        new_entry_timepicker_from = view.findViewById(R.id.new_entry_timepicker_from);
+        new_entry_datepicker_to = view.findViewById(R.id.new_entry_datepicker_to);
+        new_entry_timepicker_to =view.findViewById(R.id.new_entry_timepicker_to);
+
+        new_entry_datepicker_from.setOnClickListener(v -> openCalendarPicker(new_entry_date_from));
+
+        new_entry_timepicker_from.setOnClickListener(v -> openTimePicker(new_entry_time_from));
+
+        new_entry_datepicker_to.setOnClickListener(v -> openCalendarPicker(new_entry_date_to));
+
+        new_entry_timepicker_to.setOnClickListener(v -> openTimePicker(new_entry_time_to));
 
         // Fill datas into new fields
         if (entryId != -1) {
