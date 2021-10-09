@@ -378,6 +378,25 @@ public class DbManager extends SQLiteOpenHelper {
         }
     }
 
+    public ArrayList<RingModel> searchEntryInDb(String date) {
+        ArrayList<RingModel> datas = new ArrayList<>();
+
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
+
+        Cursor cursor = readableDB.query(ringTable, columns,ringTablePut + " LIKE ?" + " OR " + ringTableRemoved + " LIKE ?",
+                new String[]{date + "%", date + "%"}, null, null, null, "10");
+
+        while (cursor.moveToNext()) {
+            datas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                    cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                    cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+        }
+        cursor.close();
+        return datas;
+    }
+
     /**
      * Get the last running entry
      * @return A ringModel containing last Running entry.

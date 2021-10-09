@@ -51,7 +51,7 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle(R.string.app_name);
+        getActivity().setTitle(R.string.history);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = view.findViewById(R.id.main_list);

@@ -151,4 +151,8 @@
 	<string name="widget_stop_break">Stop break</string>
     <string name="widget_start_break">Start break</string>
     <string name="save_this_entry">Save this entry</string>
+	<string name="history">History</string>
+    <string name="action_search_datas">Search entry</string>
+    <string name="search_result">Search results</string>
+	<string name="total_search">Total results:</string>
 </resources>

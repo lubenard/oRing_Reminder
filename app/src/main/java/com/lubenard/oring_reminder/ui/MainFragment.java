@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder.ui;
 
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -132,10 +133,36 @@ public class MainFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    private void searchEntry() {
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    SearchFragment fragment = new SearchFragment();
+                    Bundle bundle = new Bundle();
+                    if (dayOfMonth < 10)
+                        bundle.putString("date_searched", year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth);
+                    else
+                        bundle.putString("date_searched", year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                    fragment.setArguments(bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, fragment, null)
+                            .addToBackStack(null).commit();
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_search_entry:
+                searchEntry();
+                return true;
             case R.id.action_my_spermogramms:
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new MySpermogramsFragment(), null)

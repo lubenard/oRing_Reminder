@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +35,6 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.CustomListPausesAdapter;
 import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -57,8 +55,6 @@ public class EntryDetailsFragment extends Fragment {
     private View view;
     private Context context;
     private FragmentManager fragmentManager;
-    private LinearLayout listView;
-    private CustomListPausesAdapter adapter;
     private ArrayList<RingModel> dataModels;
     private int newAlarmDate;
     private RingModel entryDetails;
@@ -101,7 +97,7 @@ public class EntryDetailsFragment extends Fragment {
 
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
 
-        listView = view.findViewById(R.id.listview_pauses);
+        LinearLayout listView = view.findViewById(R.id.listview_pauses);
 
         stopSessionButton = view.findViewById(R.id.button_finish_session);
 
