@@ -516,7 +516,7 @@ public class DbManager extends SQLiteOpenHelper {
 
     public long importNewSpermo(String uri) {
         ContentValues cv = new ContentValues();
-        cv.put(spermoTableDateAdded, Utils.getdateFormatted(new Date()));
+        cv.put(spermoTableDateAdded, Utils.getdateFormatted(new Date()).split(" ")[0]);
         cv.put(spermoTableFileLocation, uri);
 
         return writableDB.insertWithOnConflict(spermoTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
