@@ -542,6 +542,17 @@ public class DbManager extends SQLiteOpenHelper {
         return data;
     }
 
+    public void updateSpermogram(long entryId, String new_spermogram_date) {
+        ContentValues cv = new ContentValues();
+        cv.put(spermoTableDateAdded, new_spermogram_date);
+
+        int u = writableDB.update(spermoTable, cv, pauseTableId + "=?", new String[]{String.valueOf(entryId)});
+        if (u == 0) {
+            Log.d(TAG, "pauseUpdate: update does not seems to work, insert data: (for id = " + entryId);
+            writableDB.insertWithOnConflict(spermoTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+    }
+
     public LinkedHashMap<Integer, Spermograms> getAllSpermograms() {
         LinkedHashMap<Integer, Spermograms> entryDatas = new LinkedHashMap<>();
 

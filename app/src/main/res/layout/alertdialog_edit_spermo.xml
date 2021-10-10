@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_marginTop="7dp">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:textSize="20dp"
+		android:text="New date: " />
+
+	<EditText
+		android:id="@+id/spermogram_new_date"
+		style="@style/base_text_all_wrap"
+		android:ems="6"
+		android:inputType="date"
+		android:digits="0123456789-"
+		android:layout_gravity="center"
+		android:hint="Ex: 2020-03-30" />
+
+	<ImageButton
+		android:id="@+id/new_date_datepicker"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:background="@null"
+		android:src="@drawable/outline_event_24" />
+</LinearLayout>
