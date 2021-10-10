@@ -443,7 +443,7 @@ public class BackupRestore extends Activity{
             Log.d(TAG, "ActivityResult restore from path: " + filePath);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(uri);
-                checkAppVersion(inputStream);
+                //checkAppVersion(inputStream);
                 if (shouldBackupRestoreDatas)
                     restoreDatasFromXml(inputStream);
                 // TODO: HOTFIX ! I should not need to reopen a stream (at least i think so)
