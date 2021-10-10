@@ -157,5 +157,6 @@
 	<string name="total_search">Total results:</string>
 	<string name="action_edit_spermo">Edit this spermogram</string>
 	<string name="alertdialog_edit_spermo_title">Please enter the new date</string>
-	<string name="since_midnight_worn_for">Since 00h00, worn for :&#160;</string>
+	<string name="since_midnight_worn_for">Since midnight, worn for :&#160;</string>
+    <string name="entries">entries</string>
 </resources>

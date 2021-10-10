@@ -154,4 +154,12 @@
     <string name="widget_start_break">Lancer une pause</string>
     <string name="save_this_entry">Enregistrer cette entrée</string>
     <string name="widget_stop_break">Arreter la pause</string>
+	<string name="history">Historique</string>
+    <string name="action_search_datas">Chercher des entrées</string>
+    <string name="search_result">Résultats de la recherche</string>
+    <string name="total_search">Nombre de résultats</string>
+    <string name="action_edit_spermo">Editer ce spermogramme</string>
+    <string name="alertdialog_edit_spermo_title">Entrez la nouvelle date</string>
+    <string name="since_midnight_worn_for">Depuis minuit, porté pendant :&#160;</string>
+    <string name="entries">entrées</string>
 </resources>

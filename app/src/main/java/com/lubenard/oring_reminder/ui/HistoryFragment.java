@@ -74,10 +74,11 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     /**
      * Update the listView by fetching all elements from the db
      */
-    public static void updateElementList() {
+    public void updateElementList() {
         Log.d(TAG, "Updated history Listview");
         dataModels.clear();
         LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(orderEntryByDesc);
+        getActivity().setTitle(getString(R.string.history) + " (" + entrysDatas.size() + " " + getString(R.string.entries) + ")");
         for (LinkedHashMap.Entry<Integer, RingSession> oneElemData : entrysDatas.entrySet())
             dataModels.add(oneElemData.getValue());
         adapter = new HistoryListAdapter(dataModels, onListItemClickListener);
