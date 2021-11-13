@@ -81,7 +81,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
 
         if (dataModel.getDatePut().split(" ")[0].equals(dataModel.getDateRemoved().split(" ")[0]))
             worn_date.setText(Utils.convertDateIntoReadable(dataModel.getDatePut().split(" ")[0]));
-        else
+        else if (dataModel.getIsRunning() == 0)
             worn_date.setText(Utils.convertDateIntoReadable(dataModel.getDatePut().split(" ")[0]) + " -> " + Utils.convertDateIntoReadable(dataModel.getDateRemoved().split(" ")[0]));
 
         weared_from.setText(datePut[1]);

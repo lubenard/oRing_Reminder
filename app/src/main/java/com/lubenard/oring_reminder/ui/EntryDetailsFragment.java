@@ -332,7 +332,11 @@ public class EntryDetailsFragment extends Fragment {
         long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
 
-        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.getdateFormatted(calendar.getTime()));
+
+
+        String[] ableToGetItOffStringDate = Utils.getdateFormatted(calendar.getTime()).split(" ");
+
+        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.convertDateIntoReadable(ableToGetItOffStringDate[0]) + " " + ableToGetItOffStringDate[1]);
         if (timeBeforeRemove >= 0)
             texteRessourceWhenGetItOff = R.string.in_about_entry_details;
         else {
@@ -415,6 +419,8 @@ public class EntryDetailsFragment extends Fragment {
             ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
             whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
 
+            put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0]) + " " + entryDetails.getDatePut().split(" ")[1]);
+
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
             if (entryDetails.getIsRunning() == 0) {
@@ -425,16 +431,16 @@ public class EntryDetailsFragment extends Fragment {
             } else
                 timeWeared.setTextColor(getResources().getColor(R.color.yellow));
 
-            put.setText(entryDetails.getDatePut());
-            removed.setText(entryDetails.getDateRemoved());
 
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
             if (entryDetails.getIsRunning() == 1) {
+                removed.setText(entryDetails.getDateRemoved());
                 long timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 timeWeared.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
+                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0]) + " " + entryDetails.getDateRemoved().split(" ")[1]);
                 int time_spent_wearing = entryDetails.getTimeWeared();
                 if (time_spent_wearing < 60)
                     timeWeared.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
