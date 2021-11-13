@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
+    private static String current_language;
+
     /**
      * Apply theme based on newValue
      * @param newValue the new Theme to apply
@@ -120,7 +122,7 @@ public class Utils {
             e.printStackTrace();
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy", new Locale(current_language));
         return simpleDateFormat.format(date);
     }
 
@@ -130,6 +132,7 @@ public class Utils {
      * @param localeCode localCode to apply
      */
     public static final void setAppLocale(Context context, String localeCode) {
+        current_language = localeCode;
         Locale myLocale = new Locale(localeCode);
         Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
