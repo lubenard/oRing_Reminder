@@ -152,15 +152,15 @@ public class DatasFragment extends Fragment {
             int days = (seconds % 604800) / 86400;
             int hours = ((seconds % 604800) % 86400) / 3600;
             int minutes = (((seconds % 604800) % 86400) % 3600) / 60;
-            timeBetweenLastAndFirstData = String.format("Time worn approximately:\n" + weeks + " weeks,\n "+ days + " days,\n " + hours + " hours,\n " + minutes + " minutes");
+            timeBetweenLastAndFirstData = String.format(getString(R.string.time_worn_appr), weeks, days, hours, minutes);
 
             Calendar c = Calendar.getInstance();
 
             int totalTimeSinceMidnight = recomputeLastWearingTime(c.get(Calendar.HOUR_OF_DAY) * -1, c.get(Calendar.MINUTE) * -1);
-            wornSinceMidnightData = getString(R.string.since_midnight_worn_for) + String.format("%dh%02dm", totalTimeSinceMidnight / 60, totalTimeSinceMidnight % 60);
+            wornSinceMidnightData = String.format(getString(R.string.since_midnight_worn_for) + "%dh%02dm", totalTimeSinceMidnight / 60, totalTimeSinceMidnight % 60);
 
             int totalTimeLastDay = recomputeLastWearingTime(-24, 0);
-            wornLast24hoursData = getString(R.string.last_day_string_header) + String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60);
+            wornLast24hoursData = String.format(getString(R.string.last_day_string_header) + "%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60);
         } else {
             lastEntryData = getString(R.string.not_set_yet);
             firstEntryData = getString(R.string.not_set_yet);

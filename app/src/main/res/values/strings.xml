@@ -159,4 +159,9 @@
 	<string name="alertdialog_edit_spermo_title">Please enter the new date</string>
 	<string name="since_midnight_worn_for">Since midnight, worn for :&#160;</string>
     <string name="entries">entries</string>
+    <string name="see_full_history">See full history</string>
+    <string name="no_active_session">No active session</string>
+    <string name="see_current_session">See my current session</string>
+    <string name="history_colon">History:</string>
+    <string name="time_worn_appr">Time worn approximately:\n%d weeks\n%d days\n%d hours\n%d minutes\n</string>
 </resources>

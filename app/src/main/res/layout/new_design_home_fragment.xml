@@ -42,7 +42,7 @@
                     android:layout_marginEnd="15dp"
                     android:background="@null"
                     android:src="@drawable/outline_info_24"
-                    android:text="See my current session" />
+                    android:text="@string/see_current_session" />
             </LinearLayout>
 
             <LinearLayout
@@ -116,7 +116,7 @@
                 android:layout_marginLeft="30dp"
                 android:textSize="30sp"
                 android:visibility="gone"
-                android:text="No active session"/>
+                android:text="@string/no_active_session"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -124,7 +124,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginStart="15dp"
-                android:text="History:"
+                android:text="@string/history_colon"
                 android:textSize="35sp"
                 tools:layout_editor_absoluteX="19dp"
                 tools:layout_editor_absoluteY="26dp" />
@@ -146,9 +146,9 @@
                 android:textColor="@color/white"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
-                android:textSize="11sp"
+                android:textSize="16sp"
                 android:background="@drawable/basic_button"
-                android:text="Voir l'historique complet"
+                android:text="@string/see_full_history"
                 android:layout_marginVertical="15dp"/>
         </LinearLayout>
     </ScrollView>
