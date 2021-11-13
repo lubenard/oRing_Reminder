@@ -96,10 +96,10 @@ public class MainFragment extends Fragment {
             else
                 textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]) + " -> " + Utils.convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0]));
 
-            TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_to);
+            TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_from);
             textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);
 
-            TextView textView_hour_to = view.findViewById(R.id.custom_view_date_weared_from);
+            TextView textView_hour_to = view.findViewById(R.id.custom_view_date_weared_to);
             textView_hour_to.setText(entrysDatas.get(i).getDateRemoved().split(" ")[1]);
 
             TextView textView_worn_for = view.findViewById(R.id.custom_view_date_time_weared);

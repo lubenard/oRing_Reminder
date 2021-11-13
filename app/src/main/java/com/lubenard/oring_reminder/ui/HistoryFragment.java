@@ -1,5 +1,8 @@
 package com.lubenard.oring_reminder.ui;
 
+import static androidx.core.content.ContextCompat.getDrawable;
+
+import android.content.Context;
 import android.os.Bundle;
 
 import com.lubenard.oring_reminder.MainActivity;
@@ -43,7 +46,7 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        return inflater.inflate(R.layout.main_content_fragment, container, false);
+        return inflater.inflate(R.layout.full_history_fragment, container, false);
     }
 
     @Override
@@ -55,10 +58,17 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
 
         recyclerView = view.findViewById(R.id.main_list);
 
+        Context context = getContext();
+
         // Add dividers (like listView) to recyclerView
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(getDrawable(context, R.drawable.empty_tall_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
+
+        // Since the recyclerView has fixed size (according to screen size),
+        // this is used for optimization
+        recyclerView.setHasFixedSize(true);
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);

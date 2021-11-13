@@ -30,7 +30,7 @@
 			android:text="@string/from" />
 
 		<TextView
-			android:id="@+id/custom_view_date_weared_to"
+			android:id="@+id/custom_view_date_weared_from"
 			style="@style/base_text_all_wrap"
 			android:textSize="16sp"
 			android:text="hour_from" />
@@ -48,7 +48,7 @@
 			android:text="@string/to" />
 
 		<TextView
-			android:id="@+id/custom_view_date_weared_from"
+			android:id="@+id/custom_view_date_weared_to"
 			android:textSize="16sp"
 			style="@style/base_text_all_wrap"
 			android:text="hour_to" />
