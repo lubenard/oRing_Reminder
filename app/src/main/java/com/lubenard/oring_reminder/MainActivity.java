@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 .setIcon(Icon.createWithResource(this, R.drawable.baseline_add_green_48))
                 //.setIntent(new Intent(dynamicIntent))
                 .build();
-        shortcutManager.setDynamicShortcuts(Arrays.asList(manageSessionShortcut));
+        //shortcutManager.setDynamicShortcuts(Arrays.asList(manageSessionShortcut));
     }
 
     public static DbManager getDbManager() {

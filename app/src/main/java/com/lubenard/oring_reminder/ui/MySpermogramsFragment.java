@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +25,13 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.CustomSpermoListAdapter;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
+import com.shockwave.pdfium.PdfDocument;
+import com.shockwave.pdfium.PdfiumCore;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,6 +125,29 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
             String filename = new SimpleDateFormat("/dd-MM-yyyy_HH-mm-ss").format(new Date()) + ".pdf";
             writeFileOnInternalStorage(getContext(), filename, data.getData());
             dbManager.importNewSpermo("file://" + getContext().getFilesDir().getAbsolutePath() + filename);
+            generatePdfThumbnail(getContext().getFilesDir().getAbsolutePath() + filename);
+        }
+    }
+
+    // Code for this function has been found here
+    // https://stackoverflow.com/questions/38828396/generate-thumbnail-of-pdf-in-android
+    void generatePdfThumbnail(String pdfUri) {
+        int pageNumber = 0;
+        PdfiumCore pdfiumCore = new PdfiumCore(getContext());
+        try {
+            //http://www.programcreek.com/java-api-examples/index.php?api=android.os.ParcelFileDescriptor
+            ParcelFileDescriptor fd = getContext().getContentResolver().openFileDescriptor(Uri.parse("file://" + pdfUri), "r");
+            PdfDocument pdfDocument = pdfiumCore.newDocument(fd);
+            pdfiumCore.openPage(pdfDocument, pageNumber);
+            int width = pdfiumCore.getPageWidthPoint(pdfDocument, pageNumber);
+            int height = pdfiumCore.getPageHeightPoint(pdfDocument, pageNumber);
+            Bitmap bmp = Bitmap.createBitmap(width, (height / 100) * 75, Bitmap.Config.ARGB_8888);
+            pdfiumCore.renderPageBitmap(pdfDocument, bmp, pageNumber, 0, 0, width, height);
+            OutputStream os = new FileOutputStream(pdfUri + ".jpg");
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            pdfiumCore.closeDocument(pdfDocument); // important!
+        } catch(Exception e) {
+            //todo with exception
         }
     }
 

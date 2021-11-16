@@ -35,29 +35,10 @@ public class SpermoListViewHolder extends RecyclerView.ViewHolder implements Vie
     public void updateElementDatas(Spermograms dataModel, Context context) {
         dateAdded.setText(context.getString(R.string.added_the) + dataModel.getDateAdded());
         Log.d("Pdf View", "Loaded date " + dataModel.getDateAdded() + " path: " + dataModel.getFileAddr());
-        generateImageFromPdf(dataModel.getFileAddr(), context);
+        pdfView.setImageURI(Uri.parse(dataModel.getFileAddr() + ".jpg"));
     }
 
-    // Code for this function has been found here
-    // https://stackoverflow.com/questions/38828396/generate-thumbnail-of-pdf-in-android
-    void generateImageFromPdf(Uri pdfUri, Context context) {
-        int pageNumber = 0;
-        PdfiumCore pdfiumCore = new PdfiumCore(context);
-        try {
-            //http://www.programcreek.com/java-api-examples/index.php?api=android.os.ParcelFileDescriptor
-            ParcelFileDescriptor fd = context.getContentResolver().openFileDescriptor(pdfUri, "r");
-            PdfDocument pdfDocument = pdfiumCore.newDocument(fd);
-            pdfiumCore.openPage(pdfDocument, pageNumber);
-            int width = pdfiumCore.getPageWidthPoint(pdfDocument, pageNumber);
-            int height = pdfiumCore.getPageHeightPoint(pdfDocument, pageNumber);
-            Bitmap bmp = Bitmap.createBitmap(width, (height / 100) * 75, Bitmap.Config.ARGB_8888);
-            pdfiumCore.renderPageBitmap(pdfDocument, bmp, pageNumber, 0, 0, width, height);
-            pdfView.setImageBitmap(bmp);
-            pdfiumCore.closeDocument(pdfDocument); // important!
-        } catch(Exception e) {
-            //todo with exception
-        }
-    }
+
 
     @Override
     public void onClick(View view) {
