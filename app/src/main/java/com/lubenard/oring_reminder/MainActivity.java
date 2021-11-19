@@ -146,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
         createNotifChannel();
 
         // Create dynamical quick shortcut
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
-            createQuickShortcut();
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
+        //    createQuickShortcut();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Intent intent = getIntent();

@@ -12,6 +12,7 @@ import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
 import com.lubenard.oring_reminder.utils.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -570,6 +571,13 @@ public class DbManager extends SQLiteOpenHelper {
 
     public void deleteSpermoEntry(long entryId) {
         if (entryId > 0) {
+            String pdfUrl = getSpermoEntryForId(entryId).getFileAddr().toString().substring(7);
+            File pdf = new File(pdfUrl);
+            File pdfIcon = new File(pdfUrl + ".jpg");
+            if (pdf.exists())
+                pdf.delete();
+            if (pdfIcon.exists())
+                pdfIcon.delete();
             writableDB.delete(spermoTable, ringTableId + "=?", new String[]{String.valueOf(entryId)});
         }
     }

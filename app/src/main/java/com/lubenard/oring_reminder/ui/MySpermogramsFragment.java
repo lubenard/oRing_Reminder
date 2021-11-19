@@ -125,18 +125,19 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
             String filename = new SimpleDateFormat("/dd-MM-yyyy_HH-mm-ss").format(new Date()) + ".pdf";
             writeFileOnInternalStorage(getContext(), filename, data.getData());
             dbManager.importNewSpermo("file://" + getContext().getFilesDir().getAbsolutePath() + filename);
-            generatePdfThumbnail(getContext().getFilesDir().getAbsolutePath() + filename);
+            generatePdfThumbnail(getContext(), getContext().getFilesDir().getAbsolutePath() + filename);
         }
     }
 
     // Code for this function has been found here
     // https://stackoverflow.com/questions/38828396/generate-thumbnail-of-pdf-in-android
-    void generatePdfThumbnail(String pdfUri) {
+    public static void generatePdfThumbnail(Context ctx, String pdfUri) {
         int pageNumber = 0;
-        PdfiumCore pdfiumCore = new PdfiumCore(getContext());
+        PdfiumCore pdfiumCore = new PdfiumCore(ctx);
         try {
             //http://www.programcreek.com/java-api-examples/index.php?api=android.os.ParcelFileDescriptor
-            ParcelFileDescriptor fd = getContext().getContentResolver().openFileDescriptor(Uri.parse("file://" + pdfUri), "r");
+            Log.d(TAG, "Creating thumbnail for " + pdfUri);
+            ParcelFileDescriptor fd = ctx.getContentResolver().openFileDescriptor(Uri.parse("file://" + pdfUri), "r");
             PdfDocument pdfDocument = pdfiumCore.newDocument(fd);
             pdfiumCore.openPage(pdfDocument, pageNumber);
             int width = pdfiumCore.getPageWidthPoint(pdfDocument, pageNumber);
@@ -144,7 +145,7 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
             Bitmap bmp = Bitmap.createBitmap(width, (height / 100) * 75, Bitmap.Config.ARGB_8888);
             pdfiumCore.renderPageBitmap(pdfDocument, bmp, pageNumber, 0, 0, width, height);
             OutputStream os = new FileOutputStream(pdfUri + ".jpg");
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 70, os);
             pdfiumCore.closeDocument(pdfDocument); // important!
         } catch(Exception e) {
             //todo with exception

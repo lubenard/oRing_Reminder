@@ -14,8 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
 
+import com.lubenard.oring_reminder.ui.MySpermogramsFragment;
 import com.shockwave.pdfium.PdfDocument;
 import com.shockwave.pdfium.PdfiumCore;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class SpermoListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -35,6 +39,13 @@ public class SpermoListViewHolder extends RecyclerView.ViewHolder implements Vie
     public void updateElementDatas(Spermograms dataModel, Context context) {
         dateAdded.setText(context.getString(R.string.added_the) + dataModel.getDateAdded());
         Log.d("Pdf View", "Loaded date " + dataModel.getDateAdded() + " path: " + dataModel.getFileAddr());
+
+        File fileUri = new File(dataModel.getFileAddr() + ".jpg");
+        if (!fileUri.exists()) {
+            Log.d("PDF View", "Thumbnail does not exist ! for file addr : " + dataModel.getFileAddr().toString().substring(7));
+            MySpermogramsFragment.generatePdfThumbnail(context, dataModel.getFileAddr().toString().substring(7));
+        }
+
         pdfView.setImageURI(Uri.parse(dataModel.getFileAddr() + ".jpg"));
     }
 
