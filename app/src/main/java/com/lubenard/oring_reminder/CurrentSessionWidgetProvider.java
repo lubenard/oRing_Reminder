@@ -40,6 +40,11 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
     public static final String WIDGET_BUTTON_START_BREAK = "com.lubenard.oring_reminder.WIDGET_BUTTON_START_BREAK";
     public static final String WIDGET_BUTTON_STOP_BREAK = "com.lubenard.oring_reminder.WIDGET_BUTTON_STOP_BREAK";
 
+    public static final String APPWIDGET_ENABLED = "android.appwidget.action.APPWIDGET_ENABLED";
+    public static final String APPWIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
+    public static final String APPWIDGET_DELETED = "android.appwidget.action.APPWIDGET_DELETED";
+    public static final String APPWIDGET_UPDATE_OPTIONS = "android.appwidget.action.APPWIDGET_UPDATE_OPTIONS";
+
     private static final String TAG = "Widget";
 
     public static boolean isThereAWidget = false;
@@ -202,43 +207,50 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         Log.d(TAG, "Widget receives OnRecieve command to update");
         Log.d(TAG, "intent action is " +  intent.getAction());
-        if (intent != null && intent.getAction() != null) {
-        switch (intent.getAction()) {
-            // Clicked on the 'Start Session' button
-            case WIDGET_BUTTON_START:
-                EditEntryFragment.setUpdateMainList(false);
-                new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);
-                break;
-            // Clicked on the 'Stop Session' button
-            case WIDGET_BUTTON_STOP:
-                dbManager.endSession(dbManager.getLastRunningEntry().getId());
-                break;
-            // Clicked on the 'Start break' button
-            case WIDGET_BUTTON_START_BREAK:
-                dbManager.createNewPause(dbManager.getLastRunningEntry().getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
-                // Cancel alarm until breaks are set as finished.
-                // Only then set a new alarm date
-                Log.d(TAG, "Cancelling alarm for entry: " + dbManager.getLastRunningEntry().getId());
-                EditEntryFragment.cancelAlarm(context, dbManager.getLastRunningEntry().getId());
-                setBreakAlarm(context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
-                break;
-            // Clicked on the 'Stop break' button
-            case WIDGET_BUTTON_STOP_BREAK:
-                dbManager.endPause(dbManager.getLastRunningEntry().getId());
-                // Cancel the break notification if it is set as finished.
-                Intent intent4 = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent4, 0);
-                AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-                am.cancel(pendingIntent);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + intent.getAction());
-        }
-        }
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), CurrentSessionWidgetProvider.class.getName());
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+
+        if (intent != null && intent.getAction() != null) {
+            switch (intent.getAction()) {
+                // Clicked on the 'Start Session' button
+                case WIDGET_BUTTON_START:
+                    EditEntryFragment.setUpdateMainList(false);
+                    new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                    break;
+                // Clicked on the 'Stop Session' button
+                case WIDGET_BUTTON_STOP:
+                    dbManager.endSession(dbManager.getLastRunningEntry().getId());
+                    break;
+                // Clicked on the 'Start break' button
+                case WIDGET_BUTTON_START_BREAK:
+                    dbManager.createNewPause(dbManager.getLastRunningEntry().getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
+                    // Cancel alarm until breaks are set as finished.
+                    // Only then set a new alarm date
+                    Log.d(TAG, "Cancelling alarm for entry: " + dbManager.getLastRunningEntry().getId());
+                    EditEntryFragment.cancelAlarm(context, dbManager.getLastRunningEntry().getId());
+                    setBreakAlarm(context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
+                    break;
+                // Clicked on the 'Stop break' button
+                case WIDGET_BUTTON_STOP_BREAK:
+                    dbManager.endPause(dbManager.getLastRunningEntry().getId());
+                    // Cancel the break notification if it is set as finished.
+                    Intent intent4 = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent4, 0);
+                    AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+                    am.cancel(pendingIntent);
+                    break;
+                case APPWIDGET_ENABLED:
+                case APPWIDGET_UPDATE:
+                case APPWIDGET_DELETED:
+                case APPWIDGET_UPDATE_OPTIONS:
+                    onUpdate(context, appWidgetManager, appWidgetIds);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + intent.getAction());
+            }
+        }
 
         onUpdate(context, appWidgetManager, appWidgetIds);
     }
