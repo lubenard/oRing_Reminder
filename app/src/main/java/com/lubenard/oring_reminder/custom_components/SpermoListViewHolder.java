@@ -36,6 +36,11 @@ public class SpermoListViewHolder extends RecyclerView.ViewHolder implements Vie
         itemView.setOnClickListener(this);
     }
 
+    /**
+     * Update the spermogram fragment list
+     * @param dataModel
+     * @param context
+     */
     public void updateElementDatas(Spermograms dataModel, Context context) {
         dateAdded.setText(context.getString(R.string.added_the) + dataModel.getDateAdded());
         Log.d("Pdf View", "Loaded date " + dataModel.getDateAdded() + " path: " + dataModel.getFileAddr());

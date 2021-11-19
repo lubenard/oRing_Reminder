@@ -74,6 +74,11 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
         return (newValue < 0) ? 0 : newValue;
     }
 
+    /**
+     * Update the history element
+     * @param dataModel fresh datas
+     * @param context context
+     */
     public void updateElementDatas(RingSession dataModel, Context context) {
         this.context = context;
 

@@ -134,6 +134,11 @@ public class EditEntryFragment extends Fragment {
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
     }
 
+    /**
+     * Save entry into db
+     * @param formattedDatePut DatePut
+     * @param shouldGoBack if we need to bo back after saving entry
+     */
     private void saveEntry(String formattedDatePut, boolean shouldGoBack) {
         if (entryId != -1)
             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
@@ -182,6 +187,10 @@ public class EditEntryFragment extends Fragment {
             }
     }
 
+    /**
+     * Open time picker
+     * @param filling_textview
+     */
     private void openTimePicker(TextView filling_textview) {
         // Get Current Time
         final Calendar c = Calendar.getInstance();
@@ -199,6 +208,10 @@ public class EditEntryFragment extends Fragment {
             timePickerDialog.show();
     }
 
+    /**
+     * Open Calendar picker
+     * @param filling_textview
+     */
     private void openCalendarPicker(TextView filling_textview) {
         // Get Current Date
         final Calendar c = Calendar.getInstance();

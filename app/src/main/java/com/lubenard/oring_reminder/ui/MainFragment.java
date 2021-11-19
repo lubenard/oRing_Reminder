@@ -272,9 +272,11 @@ public class MainFragment extends Fragment {
             return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
     }
 
+    /**
+     * Start break on MainFragment
+     */
     private void startBreak() {
         RingSession lastRunningEntry = dbManager.getLastRunningEntry();
-        Log.d(TAG, "Test start break" + dbManager.getLastRunningPauseForId(lastRunningEntry.getId()));
 
         if (dbManager.getLastRunningPauseForId(lastRunningEntry.getId()) == null) {
             Log.d(TAG, "No running pause");
@@ -321,6 +323,9 @@ public class MainFragment extends Fragment {
         }
     }
 
+    /**
+     * Update whole design on MainFragment, including fab
+     */
     private void updateDesign() {
         // If this return null, mean there is no running session
         if (dbManager.getLastRunningEntry() == null) {

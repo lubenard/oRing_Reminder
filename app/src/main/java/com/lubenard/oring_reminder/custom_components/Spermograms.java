@@ -17,6 +17,10 @@ public class Spermograms {
         return id;
     }
 
+    /**
+     * filepath is formatted with 'file://'
+     * @return return the filepath of pdf file
+     */
     public Uri getFileAddr() {
         return fileAddr;
     }

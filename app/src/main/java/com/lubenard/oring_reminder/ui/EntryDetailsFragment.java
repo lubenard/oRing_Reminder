@@ -408,6 +408,9 @@ public class EntryDetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Update all displayed infos on EntryDetailsFragment with latest datas from db
+     */
     private void updateAllFragmentDatas() {
         if (entryId > 0) {
             // Load datas from the db and put them at the right place
@@ -430,7 +433,6 @@ public class EntryDetailsFragment extends Fragment {
                     timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             } else
                 timeWeared.setTextColor(getResources().getColor(R.color.yellow));
-
 
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over

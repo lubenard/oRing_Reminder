@@ -107,6 +107,9 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Open action intent to choose a file
+     */
     private void selectSpermoFromFiles() {
         Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
         dataToFileChooser.setType("application/pdf");
@@ -129,6 +132,14 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
         }
     }
 
+    /**
+     * Generate a image from upper half of pdf's first page.
+     * It is used as 'preview' feature in the pdf listview.
+     * To avoid recreating this each time we load the vue, which take a lot of time, we only create
+     * it once, and save it into a file
+     * @param ctx Context
+     * @param pdfUri original pdf url
+     */
     // Code for this function has been found here
     // https://stackoverflow.com/questions/38828396/generate-thumbnail-of-pdf-in-android
     public static void generatePdfThumbnail(Context ctx, String pdfUri) {

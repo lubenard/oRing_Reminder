@@ -32,6 +32,10 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.search_fragment, container, false);
     }
 
+    /**
+     * Update Result list with result search
+     * @param pausesDatas
+     */
     private void updateResultList(ArrayList<RingSession> pausesDatas) {
         dataModels.clear();
         dataModels.addAll(pausesDatas);
@@ -68,19 +72,16 @@ public class SearchFragment extends Fragment {
         else
             search_result.setText("No entry found for this date");
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RingSession dataModel= dataModels.get(position);
-                Log.d("SearchFragment", "Element " + dataModel.getId());
-                EntryDetailsFragment fragment = new EntryDetailsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putLong("entryId", dataModel.getId());
-                fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, fragment, null)
-                        .addToBackStack(null).commit();
-            }
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            RingSession dataModel= dataModels.get(position);
+            Log.d("SearchFragment", "Element " + dataModel.getId());
+            EntryDetailsFragment fragment = new EntryDetailsFragment();
+            Bundle bundle1 = new Bundle();
+            bundle1.putLong("entryId", dataModel.getId());
+            fragment.setArguments(bundle1);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, fragment, null)
+                    .addToBackStack(null).commit();
         });
 
         updateResultList(results);

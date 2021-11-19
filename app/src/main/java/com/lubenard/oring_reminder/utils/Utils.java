@@ -114,6 +114,12 @@ public class Utils {
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Convert date into readable one:
+     * Example : 2021-10-12 -> 12 October 2021
+     * @param s
+     * @return
+     */
     public static String convertDateIntoReadable(String s) {
         Date date = null;
         try {
