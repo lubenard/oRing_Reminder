@@ -96,7 +96,7 @@
             style="@style/base_text_centered"
             android:autoLink="web"
             android:layout_marginBottom="15dp"
-            android:text="@string/license_XmlWriter_source"/>
+            android:text="@string/license_androidPdfViewer_source"/>
 
         </LinearLayout>
     </ScrollView>
