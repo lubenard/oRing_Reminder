@@ -389,7 +389,10 @@ public class EntryDetailsFragment extends Fragment {
             if (!pausesDatas.get(i).getDatePut().equals("NOT SET YET")) {
                 String[] dateRemoved = pausesDatas.get(i).getDateRemoved().split(" ");
                 textView_hour_to.setText(dateRemoved[1]);
-                textView_date.setText(textView_date.getText() + " -> " + dateRemoved[0]);
+                if (!dateRemoved[0].equals(pausesDatas.get(i).getDatePut().split(" ")[0]))
+                    textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0]) + " -> " + Utils.convertDateIntoReadable(pausesDatas.get(i).getDatePut().split(" ")[0]));
+                else
+                    textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0]));
             } else
                 textView_hour_to.setText("Not set yet");
 
