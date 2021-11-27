@@ -329,13 +329,10 @@ public class EntryDetailsFragment extends Fragment {
     private void updateAbleToGetItOffUI(Calendar calendar) {
         int texteRessourceWhenGetItOff;
 
-        long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
+        long timeBeforeRemove = Utils.getDateDiff(new Date(), calendar.getTime(), TimeUnit.MINUTES);
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
 
-
-
         String[] ableToGetItOffStringDate = Utils.getdateFormatted(calendar.getTime()).split(" ");
-
         ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.convertDateIntoReadable(ableToGetItOffStringDate[0]) + " " + ableToGetItOffStringDate[1]);
         if (timeBeforeRemove >= 0)
             texteRessourceWhenGetItOff = R.string.in_about_entry_details;
@@ -343,7 +340,6 @@ public class EntryDetailsFragment extends Fragment {
             texteRessourceWhenGetItOff = R.string.when_get_it_off_negative;
             timeBeforeRemove *= -1;
         }
-
         whenGetItOff.setText(String.format(getString(texteRessourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
     }
 

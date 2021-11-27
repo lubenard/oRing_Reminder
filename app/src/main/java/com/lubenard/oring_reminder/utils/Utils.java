@@ -115,6 +115,21 @@ public class Utils {
     }
 
     /**
+     * getDateDiff methord overload. Same as abovfe, but take 2 dates instead of 2 Strings
+     * Compute the diff between two given dates
+     * The formula is date2 - date1
+     * @param date1 First date in the form of a Date
+     * @param date2 Second date in the form of a Date
+     * @param timeUnit The timeUnit we want to return (Mostly minutes)
+     * @return the time in minutes between two dates
+     */
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+
+    /**
      * Convert date into readable one:
      * Example : 2021-10-12 -> 12 October 2021
      * @param s

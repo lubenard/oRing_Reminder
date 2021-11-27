@@ -120,6 +120,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference optionAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_for_today");
         optionAlarmIfNoSessionStarted.setOnPreferenceChangeListener((preference, newValue) -> {
             choosingAlarmIfNoSessionStarted.setEnabled((boolean) newValue);
+            Log.d(TAG, "Alarm if no session started set : " + newValue);
             if ((boolean) newValue == false) {
                 Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
                         .putExtra("action", 2);
@@ -127,6 +128,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                 // We cancel the old repetitive alarm
                 am.cancel(pendingIntent);
+            } else {
+                // Should have a else case
             }
             return true;
         });

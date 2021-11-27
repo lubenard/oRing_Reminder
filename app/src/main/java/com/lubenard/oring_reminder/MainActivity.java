@@ -79,8 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1:
@@ -166,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    /**
+     * Not used for now
+     */
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private void createQuickShortcut() {
         String dynamicIntent = "com.lubenard.oring_reminder.android.action.broadcast";

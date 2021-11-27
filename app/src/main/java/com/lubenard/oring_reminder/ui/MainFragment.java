@@ -359,7 +359,7 @@ public class MainFragment extends Fragment {
             see_curr_session.setVisibility(View.VISIBLE);
 
             fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.outline_close_24));
+            fab.setImageDrawable(getContext().getDrawable(R.drawable.outline_close_24));
             updateCurrSessionDatas();
             button_see_curr_session.setOnClickListener(v -> {
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
