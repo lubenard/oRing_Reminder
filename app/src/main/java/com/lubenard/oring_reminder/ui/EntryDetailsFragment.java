@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,10 +61,11 @@ public class EntryDetailsFragment extends Fragment {
     private RingSession entryDetails;
     private TextView ableToGetItOff;
     private TextView whenGetItOff;
-    private TextView timeWeared;
+    private TextView textview_progress;
     private FloatingActionButton stopSessionButton;
     private boolean isThereAlreadyARunningPause = false;
     private SharedPreferences sharedPreferences;
+    private ProgressBar progressBar;
     private static ViewGroup viewGroup;
 
     @Override
@@ -309,7 +311,7 @@ public class EntryDetailsFragment extends Fragment {
 
         newComputedTime = (int) (oldTimeWeared - totalTimePause);
         Log.d(TAG, "Compute newWearingTime = " + oldTimeWeared + " - " + totalTimePause + " = " + newComputedTime);
-        timeWeared.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
+        textview_progress.setText(String.format("%dh%02dm", newComputedTime / 60, newComputedTime % 60));
 
         // Time is computed as:
         // Date of put + number_of_hour_defined_in settings + total_time_in_pause
@@ -416,10 +418,11 @@ public class EntryDetailsFragment extends Fragment {
             entryDetails = dbManager.getEntryDetails(entryId);
             TextView put = view.findViewById(R.id.details_entry_put);
             TextView removed = view.findViewById(R.id.details_entry_removed);
-            timeWeared = view.findViewById(R.id.details_entry_time_weared);
+            textview_progress = view.findViewById(R.id.text_view_progress);
             TextView isRunning = view.findViewById(R.id.details_entry_isRunning);
             ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
             whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
+            progressBar = view.findViewById(R.id.progress_bar);
 
             put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0]) + " " + entryDetails.getDatePut().split(" ")[1]);
 
@@ -427,11 +430,11 @@ public class EntryDetailsFragment extends Fragment {
             // Depending of the timeWeared set in the settings
             if (entryDetails.getIsRunning() == 0) {
                 if ((entryDetails.getTimeWeared() - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId)) / 60 >= weared_time)
-                    timeWeared.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                    textview_progress.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 else
-                    timeWeared.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                    textview_progress.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             } else
-                timeWeared.setTextColor(getResources().getColor(R.color.yellow));
+                textview_progress.setTextColor(getResources().getColor(R.color.yellow));
 
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
@@ -439,14 +442,15 @@ public class EntryDetailsFragment extends Fragment {
             if (entryDetails.getIsRunning() == 1) {
                 removed.setText(entryDetails.getDateRemoved());
                 long timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                timeWeared.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+                textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             } else {
                 removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0]) + " " + entryDetails.getDateRemoved().split(" ")[1]);
                 int time_spent_wearing = entryDetails.getTimeWeared();
                 if (time_spent_wearing < 60)
-                    timeWeared.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
+                    textview_progress.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
                 else
-                    timeWeared.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
+                    textview_progress.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
+                progressBar.setProgress((int) (((float) time_spent_wearing / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             }
 
             // Display the datas relative to the session
@@ -465,8 +469,8 @@ public class EntryDetailsFragment extends Fragment {
                 // This textview is only used to warn user when he will be able to get it off
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 isRunning.setText(R.string.session_finished);
-                ableToGetItOff.setVisibility(View.INVISIBLE);
-                whenGetItOff.setVisibility(View.INVISIBLE);
+                ableToGetItOff.setVisibility(View.GONE);
+                whenGetItOff.setVisibility(View.GONE);
                 stopSessionButton.setVisibility(View.GONE);
             }
             recomputeWearingTime();

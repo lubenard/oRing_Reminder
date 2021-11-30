@@ -17,9 +17,41 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="@style/CircularDeterminateProgressBar"
+                    android:layout_width="350dp"
+                    android:layout_height="350dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:layout_editor_absoluteY="0dp"
+                    tools:progress="60" />
+
+                <TextView
+                    android:id="@+id/text_view_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="28sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintBottom_toBottomOf="@+id/progress_bar"
+                    app:layout_constraintEnd_toEndOf="@+id/progress_bar"
+                    app:layout_constraintStart_toStartOf="@+id/progress_bar"
+                    app:layout_constraintTop_toTopOf="@+id/progress_bar"
+                    app:layout_constraintVertical_bias="0.350"
+                    android:text="07h42mn" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <TextView
                 style="@style/base_text_centered"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/you_weared_your_protection_from"
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -29,7 +61,6 @@
                 style="@style/base_text_centered"
                 android:text="datetime_start_wearing"
                 android:textSize="17dp" />
-
             <TextView
                 android:id="@+id/details_entry_removed_title"
                 style="@style/base_text_centered"
@@ -45,19 +76,6 @@
                 android:layout_height="wrap_content"
                 android:text="datetime_stop_wearing"
                 android:textAlignment="center"
-                android:textSize="17dp" />
-
-            <TextView
-                style="@style/base_text_centered"
-                android:layout_marginTop="30dp"
-                android:text="@string/that_make_about"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/details_entry_time_weared"
-                style="@style/base_text_centered"
-                android:text="time_weared"
                 android:textSize="17dp" />
 
             <TextView
@@ -83,7 +101,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:orientation="horizontal">
 
                 <TextView

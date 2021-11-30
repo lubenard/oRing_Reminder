@@ -52,7 +52,7 @@ public class MainFragment extends Fragment {
     private static ViewGroup viewGroup;
     private ArrayList<RingSession> dataModels;
     private DbManager dbManager;
-    private TextView test;
+    private TextView textview_progress;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -300,7 +300,7 @@ public class MainFragment extends Fragment {
         if (lastRunningEntry != null) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
-            test.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+            textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             Log.d(TAG, "MainView percentage is " + ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
             progress_bar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
@@ -390,7 +390,7 @@ public class MainFragment extends Fragment {
         progress_bar = view.findViewById(R.id.progress_bar);
         progress_bar_text = view.findViewById(R.id.text_view_progress);
 
-        test = view.findViewById(R.id.text_view_progress);
+        textview_progress = view.findViewById(R.id.text_view_progress);
 
         fab = view.findViewById(R.id.fab);
 
