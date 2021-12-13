@@ -17,7 +17,8 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.oring"
-            android:configChanges="uiMode">
+            android:configChanges="uiMode"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +30,8 @@
         <receiver android:name=".broadcast_receivers.NotificationSenderBreaksBroadcastReceiver"/>
         <receiver android:name=".broadcast_receivers.NotificationReceiverBroadcastReceiver"/>
         <!--When boot is completed, launch this BroadcastReceiver with given Intents-->
-        <receiver android:name=".broadcast_receivers.AfterBootBroadcastReceiver">
+        <receiver android:name=".broadcast_receivers.AfterBootBroadcastReceiver"
+                android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
@@ -37,7 +39,8 @@
             </intent-filter>
         </receiver>
         <!-- Widget manifest -->
-        <receiver android:name="CurrentSessionWidgetProvider" >
+        <receiver android:name="CurrentSessionWidgetProvider"
+                android:exported="false">
             <intent-filter>
                 <!-- Used to manage the click on the button -->
                 <action android:name="com.lubenard.oring_reminder.WIDGET_BUTTON" />
@@ -48,7 +51,8 @@
                 android:resource="@xml/current_sessions_widget_metadatas" />
         </receiver>
         <!-- Shortcut manifest -->
-        <receiver android:name=".ShortcutManager">
+        <receiver android:name=".ShortcutManager"
+                android:exported="false">
             <intent-filter>
                 <action android:name="com.lubenard.oring_reminder.android.action.broadcast" />
             </intent-filter>
