@@ -4,8 +4,8 @@ This app help you managing your contraceptive method (created for people using t
 <a href='https://play.google.com/store/apps/details?id=com.lubenard.oring_reminder&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="90pt"/></a>
 
 ## Screenshots
-![unnamed](https://user-images.githubusercontent.com/42534397/133885035-61c36187-37cf-40b4-86bd-7ec0e7a6bd63.png)
-![unnamed2](https://user-images.githubusercontent.com/42534397/133885037-007ff8d8-df34-42e4-a849-79fc7331e972.png)
+![unnamed](https://user-images.githubusercontent.com/42534397/146053444-0a66ec5b-3076-4f63-9954-0d8253f80a26.png)
+![unnamed2](https://user-images.githubusercontent.com/42534397/146053451-280ad090-6258-4fba-b78c-a1ef26368afa.png)
 ![unnamed3](https://user-images.githubusercontent.com/42534397/133885040-bb269ef1-4292-4f0d-9a16-8e2c82e7b777.png)
 
 ## Features:
@@ -39,11 +39,9 @@ For a debug version:
 ./gradlew assembleDebug
 ```
 
-
-More informations here
-
 ## Tech part
-This app is coded only in Java and support all the way to Android Kitkat (Api 19)
+This app is coded only in Java and support all the way to Android Lollipop (Api 21)
+
 Feel free to contribute or open a issue if needed.
 
 ## License
