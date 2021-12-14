@@ -31,7 +31,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:layout_editor_absoluteY="0dp"
-                    tools:progress="60" />
+                    tools:progress="0" />
 
                 <TextView
                     android:id="@+id/text_view_progress"

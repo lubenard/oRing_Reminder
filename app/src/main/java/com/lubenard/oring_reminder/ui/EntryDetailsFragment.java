@@ -359,14 +359,11 @@ public class EntryDetailsFragment extends Fragment {
     private void updatePauseList() {
         viewGroup.removeAllViews();
 
-        Log.d(TAG, "Just before updating, pausedatas is " + pausesDatas.size());
-
         LayoutInflater inflater = (LayoutInflater) getActivity().
                 getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
 
         for (int i = 0; i != pausesDatas.size(); i++) {
             View view = inflater.inflate(R.layout.main_history_one_elem, null);
-            //view.setTag(Integer.toString((int) pausesDatas.get(i).getId()));
             view.setTag(Integer.toString(i));
 
             String[] dateRemoved = pausesDatas.get(i).getDateRemoved().split(" ");
@@ -462,21 +459,15 @@ public class EntryDetailsFragment extends Fragment {
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
-            timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
-            if (entryDetails.getIsRunning() == 1) {
-                removed.setText(entryDetails.getDateRemoved());
-                textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
-            } else {
-                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0]) + " " + entryDetails.getDateRemoved().split(" ")[1]);
-                int time_spent_wearing = entryDetails.getTimeWeared();
-                if (time_spent_wearing < 60)
-                    textview_progress.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
-                else
-                    textview_progress.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
-            }
+            Log.d(TAG, "Compute total time pause is " + AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId));
 
             // Display the datas relative to the session
             if (entryDetails.getIsRunning() == 1) {
+                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
+
+                removed.setText(entryDetails.getDateRemoved());
+                textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+
                 isRunning.setTextColor(getResources().getColor(R.color.yellow));
                 isRunning.setText(R.string.session_is_running);
 
@@ -487,6 +478,15 @@ public class EntryDetailsFragment extends Fragment {
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
             } else {
+                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);;
+
+                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0]) + " " + entryDetails.getDateRemoved().split(" ")[1]);
+                int time_spent_wearing = entryDetails.getTimeWeared();
+                if (time_spent_wearing < 60)
+                    textview_progress.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
+                else
+                    textview_progress.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
+
                 // If the session is finished, no need to show the ableToGetItOff textView.
                 // This textview is only used to warn user when he will be able to get it off
                 isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
@@ -495,7 +495,15 @@ public class EntryDetailsFragment extends Fragment {
                 whenGetItOff.setVisibility(View.GONE);
                 stopSessionButton.setVisibility(View.GONE);
             }
+            Log.d(TAG, "Preference is " + (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"))));
+            Log.d(TAG, "timeBeforeRemove is " + (float)timeBeforeRemove);
+
+            Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+            // This is very ugly, probably should not do this, but fix weird bug when ProgressBar was not updating or with random values
+            progressBar.setProgressDrawable(null);
+            progressBar.setProgressDrawable(context.getDrawable(R.drawable.circle));
             progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+            Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();
             updatePauseList();
         } else {

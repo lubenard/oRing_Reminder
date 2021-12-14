@@ -387,7 +387,7 @@ public class MainFragment extends Fragment {
 
         viewGroup = view.findViewById(R.id.list_history);
 
-        progress_bar = view.findViewById(R.id.progress_bar);
+        progress_bar = view.findViewById(R.id.progress_bar_main);
         progress_bar_text = view.findViewById(R.id.text_view_progress);
 
         textview_progress = view.findViewById(R.id.text_view_progress);
