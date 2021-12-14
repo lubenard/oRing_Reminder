@@ -67,7 +67,6 @@ public class EntryDetailsFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private ProgressBar progressBar;
     private static ViewGroup viewGroup;
-    private ProgressBar progress_bar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,7 +102,6 @@ public class EntryDetailsFragment extends Fragment {
 
         weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
 
-        progress_bar = view.findViewById(R.id.progress_bar);
         stopSessionButton = view.findViewById(R.id.button_finish_session);
 
         stopSessionButton.setOnClickListener(view13 -> {
@@ -455,7 +453,7 @@ public class EntryDetailsFragment extends Fragment {
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
-            timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+            timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
             if (entryDetails.getIsRunning() == 1) {
                 removed.setText(entryDetails.getDateRemoved());
                 textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
@@ -466,7 +464,6 @@ public class EntryDetailsFragment extends Fragment {
                     textview_progress.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
                 else
                     textview_progress.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
-                progressBar.setProgress((int) (((float) time_spent_wearing / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             }
 
             // Display the datas relative to the session
@@ -489,7 +486,7 @@ public class EntryDetailsFragment extends Fragment {
                 whenGetItOff.setVisibility(View.GONE);
                 stopSessionButton.setVisibility(View.GONE);
             }
-            progress_bar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+            progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             recomputeWearingTime();
             updatePauseList();
         } else {
