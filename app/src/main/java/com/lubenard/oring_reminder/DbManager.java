@@ -360,9 +360,9 @@ public class DbManager extends SQLiteOpenHelper {
      * @param dateRemoved the new dateRemoved
      * @param isRunning the new isRunning
      */
-    public void updatePause(long pauseId, String dateRemoved, String datePut, int isRunning) {
+    public long updatePause(long pauseId, String dateRemoved, String datePut, int isRunning) {
         if (pauseId <= 0)
-            return;
+            return -1;
         ContentValues cv = new ContentValues();
         cv.put(pauseTableRemoved, dateRemoved);
         cv.put(pauseTablePut, datePut);
@@ -375,8 +375,9 @@ public class DbManager extends SQLiteOpenHelper {
         int u = writableDB.update(pausesTable, cv, pauseTableId + "=?", new String[]{String.valueOf(pauseId)});
         if (u == 0) {
             Log.d(TAG, "pauseUpdate: update does not seems to work, insert data: (for id = " + pauseId);
-            writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+            return writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         }
+        return -1;
     }
 
     public ArrayList<RingSession> searchEntryInDb(String date) {
