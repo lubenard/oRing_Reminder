@@ -20,6 +20,7 @@ import com.shockwave.pdfium.PdfiumCore;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
 
 public class SpermoListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -45,7 +46,8 @@ public class SpermoListViewHolder extends RecyclerView.ViewHolder implements Vie
         dateAdded.setText(context.getString(R.string.added_the) + dataModel.getDateAdded());
         Log.d("Pdf View", "Loaded date " + dataModel.getDateAdded() + " path: " + dataModel.getFileAddr());
 
-        File fileUri = new File(dataModel.getFileAddr() + ".jpg");
+        File fileUri = new File(URI.create(dataModel.getFileAddr() + ".jpg"));
+        Log.d("Pdf View", "Looking for " + dataModel.getFileAddr() + ".jpg");
         if (!fileUri.exists()) {
             Log.d("PDF View", "Thumbnail does not exist ! for file addr : " + dataModel.getFileAddr().toString().substring(7));
             MySpermogramsFragment.generatePdfThumbnail(context, dataModel.getFileAddr().toString().substring(7));

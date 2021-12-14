@@ -156,10 +156,12 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
             Bitmap bmp = Bitmap.createBitmap(width, (height / 100) * 75, Bitmap.Config.ARGB_8888);
             pdfiumCore.renderPageBitmap(pdfDocument, bmp, pageNumber, 0, 0, width, height);
             OutputStream os = new FileOutputStream(pdfUri + ".jpg");
+            Log.d(TAG, "FileOutputStream is on " + pdfUri + ".jpg");
             bmp.compress(Bitmap.CompressFormat.JPEG, 70, os);
             pdfiumCore.closeDocument(pdfDocument); // important!
         } catch(Exception e) {
             //todo with exception
+            Log.d(TAG, "EXCEPTION: " + e);
         }
     }
 
