@@ -340,7 +340,7 @@ public class MainFragment extends Fragment {
             see_curr_session.setVisibility(View.INVISIBLE);
 
             fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.teal_700)));
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.baseline_add_24));
+            fab.setImageDrawable(getContext().getDrawable(R.drawable.baseline_add_24));
 
             fab.setOnClickListener(view12 -> actionOnPlusButton(false));
 
