@@ -371,6 +371,9 @@ public class EntryDetailsFragment extends Fragment {
 
             String[] dateRemoved = pausesDatas.get(i).getDateRemoved().split(" ");
 
+            TextView wornForTextView = view.findViewById(R.id.worn_for_history);
+            wornForTextView.setText(R.string.removed_during);
+
             TextView textView_date = view.findViewById(R.id.main_history_date);
             textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0]));
 
