@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.lubenard.ft_hangouts.MainActivity">
+
+    <item
+        android:id="@+id/action_search_entry"
+        android:title="@string/action_search_datas"
+        android:icon="@drawable/outline_search_24"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/action_reload_datas"
         android:title="@string/action_reload_datas"
@@ -12,7 +19,7 @@
         android:id="@+id/action_sort_entrys"
         android:icon="@drawable/baseline_sort_24"
         android:title="@string/action_sort_datas"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_my_spermogramms"

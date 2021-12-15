@@ -1,230 +1,119 @@
 package com.lubenard.oring_reminder.ui;
 
-import android.content.Context;
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
-import com.lubenard.oring_reminder.DbManager;
-import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.RingModel;
-import com.lubenard.oring_reminder.utils.Utils;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
+import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class MainFragment extends Fragment implements CustomListAdapter.onListItemClickListener{
+public class MainFragment extends Fragment {
+    private static final String TAG = "MainFragment";
 
-    public static final String TAG = "MainFragment";
-
-    // We can set thoses variables as static, because we know the view is going to be created
-    private static ArrayList<RingModel> dataModels;
-    private static DbManager dbManager;
-    private static CustomListAdapter adapter;
-    private static RecyclerView recyclerView;
-    private static Context context;
+    private ProgressBar progress_bar;
+    private TextView progress_bar_text;
+    private Button button_start_break;
+    private ImageButton button_see_curr_session;
+    private Button button_see_full_history;
+    private FloatingActionButton fab;
+    private TextView text_view_break;
+    private View view;
     private static boolean orderEntryByDesc = true;
-    private static TextView statLastDayTextview;
-    private LinearLayoutManager linearLayoutManager;
-    private static CustomListAdapter.onListItemClickListener onListItemClickListener;
+
+    private static ViewGroup viewGroup;
+    private ArrayList<RingSession> dataModels;
+    private DbManager dbManager;
+    private TextView textview_progress;
+    private SharedPreferences sharedPreferences;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.new_design_home_fragment, container, false);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private View.OnClickListener clickInLinearLayout() {
+        return v -> {
+            Integer position = Integer.parseInt(v.getTag().toString());
+            Log.d("MainView", "Clicked item at position: " + position);
 
-        getActivity().setTitle(R.string.app_name);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        FloatingActionButton fab = view.findViewById(R.id.fab);
-
-        recyclerView = view.findViewById(R.id.main_list);
-
-        // Add dividers (like listView) to recyclerView
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        onListItemClickListener = this;
-
-        dataModels = new ArrayList<>();
-        dbManager = MainActivity.getDbManager();
-        context = getContext();
-
-        Log.d(TAG, "DB version is: " + dbManager.getVersion());
-
-        statLastDayTextview = view.findViewById(R.id.header_last_day);
-
-        fab.setOnClickListener(view12 -> actionOnPlusButton(false));
-
-        fab.setOnLongClickListener(view1 -> {
-            actionOnPlusButton(true);
-            return true;
-        });
+            EntryDetailsFragment fragment = new EntryDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putLong("entryId", position);
+            fragment.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, fragment, null)
+                    .addToBackStack(null).commit();
+        };
     }
 
-    /**
-     * Define what action should be done on longClick on the '+' button
-     * @param isLongClick act if it is a long click or not
-     */
-    private void actionOnPlusButton(boolean isLongClick) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String action = sharedPreferences.getString("ui_action_on_plus_button", "default");
-
-        if (isLongClick) {
-            if (action.equals("default")) {
-                createNewEntry();
-            } else {
-                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                EditEntryFragment.setUpdateMainList(true);
-                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
-            }
-        } else {
-            if (action.equals("default")) {
-                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                EditEntryFragment.setUpdateMainList(true);
-                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
-            } else {
-                createNewEntry();
-            }
-        }
-    }
-
-    /**
-     * Update the listView by fetching all elements from the db
-     */
-    public static void updateElementList(boolean shouldUpdateHeader) {
-        Log.d(TAG, "Updated main Listview");
+    private void updateHistoryList() {
+        viewGroup.removeAllViews();
         dataModels.clear();
-        LinkedHashMap<Integer, RingModel> entrysDatas = dbManager.getAllDatasForMainList(orderEntryByDesc);
-        for (LinkedHashMap.Entry<Integer, RingModel> oneElemData : entrysDatas.entrySet())
-            dataModels.add(oneElemData.getValue());
-        adapter = new CustomListAdapter(dataModels, onListItemClickListener);
-        recyclerView.setAdapter(adapter);
-        if (shouldUpdateHeader)
-            recomputeLastWearingTime();
-    }
+        ArrayList<RingSession> entrysDatas = dbManager.getHistoryForMainView(orderEntryByDesc);
 
-    /**
-     * Recompute last 24 h header according to pauses
-     */
-    private static void recomputeLastWearingTime() {
-        int totalTimeLastDay = 0;
-        int pauseTimeForThisEntry = 0;
-        Calendar calendar = Calendar.getInstance();
-        String todayDate = Utils.getdateFormatted(calendar.getTime());
-        calendar.add(Calendar.HOUR_OF_DAY, -24);
-        String last24Hours = Utils.getdateFormatted(calendar.getTime());
-        Log.d(TAG, "Computing last 24 hours: interval is between: " + last24Hours + " and " + todayDate);
-        RingModel currentModel;
-        for (int i = 0; i != ((dataModels.size() > 5) ? 5 : dataModels.size()); i++) {
-            currentModel = dataModels.get(i);
-            pauseTimeForThisEntry = computeTotalTimePauseForId(dbManager, currentModel.getId(), last24Hours, todayDate);
-            if (currentModel.getIsRunning() == 0) {
-                if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "entry at index " + i + " is added: " + dataModels.get(i).getTimeWeared());
-                    totalTimeLastDay += currentModel.getTimeWeared() - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeLastDay += Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                }
-            } else {
-                if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeLastDay += Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimeLastDay += Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                }
-            }
+        LayoutInflater inflater = (LayoutInflater) getActivity().
+                getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
+
+        for (int i = 0; i != entrysDatas.size(); i++) {
+            View view = inflater.inflate(R.layout.main_history_one_elem, null);
+            view.setTag(Integer.toString((int) entrysDatas.get(i).getId()));
+
+            TextView textView_date = view.findViewById(R.id.main_history_date);
+
+            if (entrysDatas.get(i).getDatePut().split(" ")[0].equals(entrysDatas.get(i).getDateRemoved().split(" ")[0]))
+                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]));
+            else
+                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]) + " -> " + Utils.convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0]));
+
+            TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_from);
+            textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);
+
+            TextView textView_hour_to = view.findViewById(R.id.custom_view_date_weared_to);
+            textView_hour_to.setText(entrysDatas.get(i).getDateRemoved().split(" ")[1]);
+
+            TextView textView_worn_for = view.findViewById(R.id.custom_view_date_time_weared);
+            int totalTimePause = getTotalTimePause(entrysDatas.get(i).getDatePut(), entrysDatas.get(i).getId(), entrysDatas.get(i).getDateRemoved());
+            if (totalTimePause / 60 >= 15)
+                textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+            else
+                textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
+            textView_worn_for.setText(convertTimeWeared(totalTimePause));
+
+            view.setOnClickListener(clickInLinearLayout());
+
+            viewGroup.addView(view);
         }
-        Log.d(TAG, "Computed last 24 hours is: " + totalTimeLastDay + "mn");
-        statLastDayTextview.setText(context.getString(R.string.last_day_string_header) + String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60));
-    }
-
-    /**
-     * Compute all pause time into interval
-     * @param dbManager The database manager, avoiding to create a new instance
-     * @param entryId entry for the wanted session
-     * @param date24HoursAgo oldest boundaries
-     * @param dateNow interval newest boundaries
-     * @return the time in Minutes of pauses between the interval
-     */
-    public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<RingModel> pausesDatas = dbManager.getAllPausesForId(entryId, true);
-        int totalTimePause = 0;
-        for (int i = 0; i < pausesDatas.size(); i++) {
-            RingModel currentBreak = pausesDatas.get(i);
-            if (pausesDatas.get(i).getIsRunning() == 0) {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) > 0 &&
-                        Utils.getDateDiff(currentBreak.getDatePut(), dateNow, TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeWeared());
-                    totalTimePause += currentBreak.getTimeWeared();
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(date24HoursAgo, currentBreak.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, currentBreak.getDatePut(), TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(date24HoursAgo, currentBreak.getDatePut(), TimeUnit.MINUTES);
-                }
-            } else {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running pause at index " + i + " is added: " + Utils.getDateDiff(currentBreak.getDateRemoved(), dateNow, TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(currentBreak.getDateRemoved(), dateNow, TimeUnit.MINUTES);
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimePause += Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                }
-            }
-        }
-        return totalTimePause;
-    }
-
-    /**
-     * Launch the new Entry fragment, and specify we do not want to update a entry
-     */
-    private void createNewEntry() {
-        EditEntryFragment fragment = new EditEntryFragment(getContext());
-        Bundle bundle = new Bundle();
-        bundle.putLong("entryId", -1);
-        fragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, fragment, null)
-                .addToBackStack(null).commit();
     }
 
     /**
@@ -233,7 +122,7 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
     @Override
     public void onResume() {
         super.onResume();
-        updateElementList(true);
+        updateDesign();
     }
 
     @Override
@@ -242,10 +131,36 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    private void searchEntry() {
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    SearchFragment fragment = new SearchFragment();
+                    Bundle bundle = new Bundle();
+                    if (dayOfMonth < 10)
+                        bundle.putString("date_searched", year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth);
+                    else
+                        bundle.putString("date_searched", year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                    fragment.setArguments(bundle);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, fragment, null)
+                            .addToBackStack(null).commit();
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_search_entry:
+                searchEntry();
+                return true;
             case R.id.action_my_spermogramms:
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new MySpermogramsFragment(), null)
@@ -268,12 +183,13 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
                         .addToBackStack(null).commit();
                 return true;
             case R.id.action_reload_datas:
-                updateElementList(true);
+                updateCurrSessionDatas();
+                updateHistoryList();
                 return true;
             case R.id.action_sort_entrys:
                 orderEntryByDesc = !orderEntryByDesc;
-                Toast.makeText(context, context.getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc),Toast.LENGTH_SHORT).show();
-                updateElementList(false);
+                Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
+                updateHistoryList();
                 return true;
             default:
                 return false;
@@ -281,18 +197,224 @@ public class MainFragment extends Fragment implements CustomListAdapter.onListIt
     }
 
     /**
-     * onClickManager handling clicks on the main List
+     * Launch the new Entry fragment, and specify we do not want to update a entry
      */
-    @Override
-    public void onListItemClickListener(int position) {
-        RingModel dataModel= dataModels.get(position);
-        Log.d(TAG, "Element " + dataModel.getId());
-        EntryDetailsFragment fragment = new EntryDetailsFragment();
+    private void createNewEntry() {
+        EditEntryFragment fragment = new EditEntryFragment(getContext());
         Bundle bundle = new Bundle();
-        bundle.putLong("entryId", dataModel.getId());
+        bundle.putLong("entryId", -1);
         fragment.setArguments(bundle);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fragment, null)
                 .addToBackStack(null).commit();
+    }
+
+    /**
+     * Define what action should be done on longClick on the '+' button
+     * @param isLongClick act if it is a long click or not
+     */
+    private void actionOnPlusButton(boolean isLongClick) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String action = sharedPreferences.getString("ui_action_on_plus_button", "default");
+
+        if (isLongClick) {
+            if (action.equals("default")) {
+                createNewEntry();
+            } else {
+                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                //EditEntryFragment.setUpdateMainList(true);
+                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                updateDesign();
+            }
+        } else {
+            if (action.equals("default")) {
+                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                //EditEntryFragment.setUpdateMainList(true);
+                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                updateDesign();
+            } else {
+                createNewEntry();
+            }
+        }
+    }
+
+    /**
+     * Get the total time pause for one session
+     * @param datePut The datetime the user put the protection
+     * @param entryId the entry id of the session
+     * @param dateRemoved The datetime the user removed the protection
+     * @return the total time in Minutes of new wearing time
+     */
+    private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
+        long oldTimeBeforeRemove;
+        int newValue;
+        long totalTimePause = 0;
+
+        if (dateRemoved == null)
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        else
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
+
+        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(MainActivity.getDbManager(), entryId);
+        newValue = (int) (oldTimeBeforeRemove - totalTimePause);
+        return (newValue < 0) ? 0 : newValue;
+    }
+
+    /**
+     * Convert the timeWeared from a int into a readable hour:minutes format
+     * @param timeWeared timeWeared is in minutes
+     * @return a string containing the time the user weared the protection
+     */
+    private String convertTimeWeared(int timeWeared) {
+        if (timeWeared < 60)
+            return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
+        else
+            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
+    }
+
+    /**
+     * Start break on MainFragment
+     */
+    private void startBreak() {
+        RingSession lastRunningEntry = dbManager.getLastRunningEntry();
+
+        if (dbManager.getLastRunningPauseForId(lastRunningEntry.getId()) == null) {
+            Log.d(TAG, "No running pause");
+            dbManager.createNewPause(lastRunningEntry.getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
+            // Cancel alarm until breaks are set as finished.
+            // Only then set a new alarm date
+            Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
+            EditEntryFragment.cancelAlarm(getContext(), lastRunningEntry.getId());
+            EntryDetailsFragment.setBreakAlarm(PreferenceManager.getDefaultSharedPreferences(getContext()),
+                    Utils.getdateFormatted(new Date()), getContext(), lastRunningEntry.getId());
+            EditEntryFragment.updateWidget(getContext());
+        } else {
+            Log.d(TAG, "Error: Already a running pause");
+            Toast.makeText(getContext(), getContext().getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateCurrSessionDatas() {
+        RingSession lastRunningEntry = dbManager.getLastRunningEntry();
+
+        if (lastRunningEntry != null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
+            textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+            Log.d(TAG, "MainView percentage is " + ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
+            progress_bar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+            if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
+                dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning() == 1) {
+                text_view_break.setText("In break for: " + Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) + "mn");
+                text_view_break.setVisibility(View.VISIBLE);
+                button_start_break.setText(getString(R.string.widget_stop_break));
+                button_start_break.setOnClickListener(v -> {
+                    dbManager.endPause(lastRunningEntry.getId());
+                    updateCurrSessionDatas();
+                });
+            } else {
+                text_view_break.setVisibility(View.INVISIBLE);
+                button_start_break.setText(getString(R.string.widget_start_break));
+                button_start_break.setOnClickListener(v -> {
+                    startBreak();
+                    updateCurrSessionDatas();
+                });
+            }
+        }
+    }
+
+    /**
+     * Update whole design on MainFragment, including fab
+     */
+    private void updateDesign() {
+        // If this return null, mean there is no running session
+        if (dbManager.getLastRunningEntry() == null) {
+
+            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
+            linearLayout.setVisibility(View.GONE);
+
+            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
+            no_active_session.setVisibility(View.VISIBLE);
+
+            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
+            see_curr_session.setVisibility(View.INVISIBLE);
+
+            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.teal_700)));
+            fab.setImageDrawable(getContext().getDrawable(R.drawable.baseline_add_24));
+
+            fab.setOnClickListener(view12 -> actionOnPlusButton(false));
+
+            fab.setOnLongClickListener(view1 -> {
+                actionOnPlusButton(true);
+                return true;
+            });
+        } else {
+            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
+            linearLayout.setVisibility(View.VISIBLE);
+
+            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
+            no_active_session.setVisibility(View.GONE);
+
+            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
+            see_curr_session.setVisibility(View.VISIBLE);
+
+            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
+            fab.setImageDrawable(getContext().getDrawable(R.drawable.outline_close_24));
+            updateCurrSessionDatas();
+            button_see_curr_session.setOnClickListener(v -> {
+                EntryDetailsFragment fragment = new EntryDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
+                fragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, fragment, null)
+                        .addToBackStack(null).commit();
+            });
+            fab.setOnClickListener(v -> {
+                dbManager.endSession(dbManager.getLastRunningEntry().getId());
+                updateDesign();
+            });
+        }
+        updateHistoryList();
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        dbManager = MainActivity.getDbManager();
+        dataModels = new ArrayList<>();
+
+        viewGroup = view.findViewById(R.id.list_history);
+
+        progress_bar = view.findViewById(R.id.progress_bar_main);
+        progress_bar_text = view.findViewById(R.id.text_view_progress);
+
+        textview_progress = view.findViewById(R.id.text_view_progress);
+
+        fab = view.findViewById(R.id.fab);
+
+        text_view_break = view.findViewById(R.id.text_view_break);
+        button_start_break = view.findViewById(R.id.button_start_break);
+        button_see_curr_session = view.findViewById(R.id.see_current_session);
+
+        button_see_full_history = view.findViewById(R.id.button_see_history);
+
+        this.view = view;
+
+        getActivity().setTitle(R.string.app_name);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        button_see_full_history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HistoryFragment fragment = new HistoryFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, fragment, null)
+                        .addToBackStack(null).commit();
+            }
+        });
+
+        updateDesign();
     }
 }

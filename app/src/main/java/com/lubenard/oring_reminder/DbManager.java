@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
 import com.lubenard.oring_reminder.utils.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -129,18 +130,41 @@ public class DbManager extends SQLiteOpenHelper {
      * Get the datas list for a the main List
      * @return The datas fetched from the DB as a LinkedHashMap
      */
-    public LinkedHashMap<Integer, RingModel> getAllDatasForMainList(boolean isDesc) {
-        LinkedHashMap<Integer, RingModel> entryDatas = new LinkedHashMap<>();
+    public LinkedHashMap<Integer, RingSession> getAllDatasForMainList(boolean isDesc) {
+        LinkedHashMap<Integer, RingSession> entryDatas = new LinkedHashMap<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
         Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, (isDesc) ? ringTableId + " DESC" : null);
 
         while (cursor.moveToNext()) {
-            entryDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)), new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+            entryDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)), new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
                     cursor.getString(cursor.getColumnIndex(ringTablePut)),
                     cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+        }
+        cursor.close();
+        return entryDatas;
+    }
+
+    public ArrayList<RingSession> getHistoryForMainView(boolean isDesc) {
+        ArrayList<RingSession> entryDatas = new ArrayList<>();
+
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
+        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, (isDesc) ? ringTableId + " DESC" : null);
+
+        int i = 0;
+
+        while (cursor.moveToNext() && i != 10) {
+            // Only get the last 10 NON-RUNNING entrys
+            if (cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)) == 0) {
+                entryDatas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                        cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                        cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                        0,
+                        cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+                i++;
+            }
         }
         cursor.close();
         return entryDatas;
@@ -217,7 +241,7 @@ public class DbManager extends SQLiteOpenHelper {
      * @return the following fields -> ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning
      * in the form of a RingModel object
      */
-    public RingModel getEntryDetails(long entryId) {
+    public RingSession getEntryDetails(long entryId) {
         if (entryId <= 0)
             return null;
 
@@ -226,7 +250,7 @@ public class DbManager extends SQLiteOpenHelper {
                 new String[]{String.valueOf(entryId)}, null, null, null);
 
         cursor.moveToFirst();
-        RingModel data = new RingModel(-1, cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+        RingSession data = new RingSession(-1, cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                 cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)), cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
 
         cursor.close();
@@ -336,9 +360,9 @@ public class DbManager extends SQLiteOpenHelper {
      * @param dateRemoved the new dateRemoved
      * @param isRunning the new isRunning
      */
-    public void updatePause(long pauseId, String dateRemoved, String datePut, int isRunning) {
+    public long updatePause(long pauseId, String dateRemoved, String datePut, int isRunning) {
         if (pauseId <= 0)
-            return;
+            return -1;
         ContentValues cv = new ContentValues();
         cv.put(pauseTableRemoved, dateRemoved);
         cv.put(pauseTablePut, datePut);
@@ -351,8 +375,28 @@ public class DbManager extends SQLiteOpenHelper {
         int u = writableDB.update(pausesTable, cv, pauseTableId + "=?", new String[]{String.valueOf(pauseId)});
         if (u == 0) {
             Log.d(TAG, "pauseUpdate: update does not seems to work, insert data: (for id = " + pauseId);
-            writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+            return writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         }
+        return -1;
+    }
+
+    public ArrayList<RingSession> searchEntryInDb(String date) {
+        ArrayList<RingSession> datas = new ArrayList<>();
+
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
+
+        Cursor cursor = readableDB.query(ringTable, columns,ringTablePut + " LIKE ?" + " OR " + ringTableRemoved + " LIKE ?",
+                new String[]{date + "%", date + "%"}, null, null, null, "10");
+
+        while (cursor.moveToNext()) {
+            datas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                    cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                    cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+        }
+        cursor.close();
+        return datas;
     }
 
     /**
@@ -360,32 +404,55 @@ public class DbManager extends SQLiteOpenHelper {
      * @return A ringModel containing last Running entry.
      * Primarily used for widget
      */
-    public RingModel getLastRunningEntry() {
+    public RingSession getLastRunningEntry() {
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
         Cursor cursor = readableDB.query(ringTable, columns,ringTableIsRunning + "=?",
                 new String[]{"1"}, null, null, pauseTableId + " DESC");
 
-        RingModel data = null;
+        RingSession data = null;
         if (cursor.moveToFirst())
-            data = new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)), cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+            data = new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)), cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                 cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)), cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
         cursor.close();
         return data;
     }
 
     /**
+     * Get the last running entry
+     * @return A ringModel containing last Running entry.
+     * Primarily used for widget
+     */
+    public RingSession getLastRunningPauseForId(long entryId) {
+        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved};
+        Cursor cursor = readableDB.query(pausesTable,  columns, pauseTableEntryId + "=? AND " + pauseTableIsRunning + "=?", new String[]{String.valueOf(entryId), "1"},
+                null, null, pauseTableId + " DESC");
+
+        RingSession datas = null;
+
+        if (cursor.moveToFirst()) {
+            datas = new RingSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
+                    cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)));
+        }
+        cursor.close();
+        return datas;
+    }
+
+    /**
      * This function is used to backup into a file
      * @return All the datas for all the entrys.
      */
-    public ArrayList<RingModel> getAllDatasForAllEntrys() {
-        ArrayList<RingModel> datas = new ArrayList<>();
+    public ArrayList<RingSession> getAllDatasForAllEntrys() {
+        ArrayList<RingSession> datas = new ArrayList<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
         Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
-            datas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+            datas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
                     cursor.getString(cursor.getColumnIndex(ringTablePut)),
                     cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
@@ -401,15 +468,15 @@ public class DbManager extends SQLiteOpenHelper {
      * @param isDesc set if the pauses should be desc or not
      * @return a Arraylist containing RingModel objects of all pauses
      */
-    public ArrayList<RingModel> getAllPausesForId(long entryId, boolean isDesc) {
-        ArrayList<RingModel> datas = new ArrayList<>();
+    public ArrayList<RingSession> getAllPausesForId(long entryId, boolean isDesc) {
+        ArrayList<RingSession> datas = new ArrayList<>();
 
         String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved};
         Cursor cursor = readableDB.query(pausesTable,  columns, pauseTableEntryId + "=?", new String[]{String.valueOf(entryId)}, null, null,
                 (isDesc) ? pauseTableId + " DESC": null);
 
         while (cursor.moveToNext()) {
-            datas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
+            datas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
                     cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
@@ -432,14 +499,14 @@ public class DbManager extends SQLiteOpenHelper {
      * This function is used to backup into a file
      * @return All the datas for all the entrys.
      */
-    public ArrayList<RingModel> getAllDatasForAllPauses() {
-        ArrayList<RingModel> datas = new ArrayList<>();
+    public ArrayList<RingSession> getAllDatasForAllPauses() {
+        ArrayList<RingSession> datas = new ArrayList<>();
 
         String[] columns = new String[]{pauseTableEntryId, pauseTablePut, pauseTableRemoved, pauseTableIsRunning, pauseTableTimeRemoved};
         Cursor cursor = readableDB.query(pausesTable,  columns, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
-            datas.add(new RingModel(cursor.getInt(cursor.getColumnIndex(pauseTableEntryId)),
+            datas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(pauseTableEntryId)),
                     cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
@@ -451,7 +518,7 @@ public class DbManager extends SQLiteOpenHelper {
 
     public long importNewSpermo(String uri) {
         ContentValues cv = new ContentValues();
-        cv.put(spermoTableDateAdded, Utils.getdateFormatted(new Date()));
+        cv.put(spermoTableDateAdded, Utils.getdateFormatted(new Date()).split(" ")[0]);
         cv.put(spermoTableFileLocation, uri);
 
         return writableDB.insertWithOnConflict(spermoTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
@@ -477,6 +544,17 @@ public class DbManager extends SQLiteOpenHelper {
         return data;
     }
 
+    public void updateSpermogram(long entryId, String new_spermogram_date) {
+        ContentValues cv = new ContentValues();
+        cv.put(spermoTableDateAdded, new_spermogram_date);
+
+        int u = writableDB.update(spermoTable, cv, pauseTableId + "=?", new String[]{String.valueOf(entryId)});
+        if (u == 0) {
+            Log.d(TAG, "pauseUpdate: update does not seems to work, insert data: (for id = " + entryId);
+            writableDB.insertWithOnConflict(spermoTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+    }
+
     public LinkedHashMap<Integer, Spermograms> getAllSpermograms() {
         LinkedHashMap<Integer, Spermograms> entryDatas = new LinkedHashMap<>();
 
@@ -494,6 +572,13 @@ public class DbManager extends SQLiteOpenHelper {
 
     public void deleteSpermoEntry(long entryId) {
         if (entryId > 0) {
+            String pdfUrl = getSpermoEntryForId(entryId).getFileAddr().toString().substring(7);
+            File pdf = new File(pdfUrl);
+            File pdfIcon = new File(pdfUrl + ".jpg");
+            if (pdf.exists())
+                pdf.delete();
+            if (pdfIcon.exists())
+                pdfIcon.delete();
             writableDB.delete(spermoTable, ringTableId + "=?", new String[]{String.valueOf(entryId)});
         }
     }

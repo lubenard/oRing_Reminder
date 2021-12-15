@@ -3,15 +3,23 @@ package com.lubenard.oring_reminder;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.MenuItem;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -22,6 +30,7 @@ import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1:
                 // If request is cancelled, the result arrays are empty.
@@ -84,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }  else {
+                } else {
                     // Explain to the user that the feature is unavailable because
                     // the features requires a permission that the user has denied.
                     // At the same time, respect the user's decision. Don't link to
@@ -135,6 +144,10 @@ public class MainActivity extends AppCompatActivity {
         checkConfig();
         createNotifChannel();
 
+        // Create dynamical quick shortcut
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
+        //    createQuickShortcut();
+
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Intent intent = getIntent();
         if (intent.getLongExtra("switchToEntry", -1) != -1) {
@@ -150,6 +163,26 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(android.R.id.content, new MainFragment());
         }
         fragmentTransaction.commit();
+    }
+
+    /**
+     * Not used for now
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+    private void createQuickShortcut() {
+        String dynamicIntent = "com.lubenard.oring_reminder.android.action.broadcast";
+
+        IntentFilter intentFilter = new IntentFilter(dynamicIntent);
+        registerReceiver(new com.lubenard.oring_reminder.ShortcutManager(), intentFilter);
+
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+        ShortcutInfo manageSessionShortcut = new ShortcutInfo.Builder(this, "manage_session")
+                .setShortLabel("Create new session")
+                .setLongLabel("Create a real new session")
+                .setIcon(Icon.createWithResource(this, R.drawable.baseline_add_green_48))
+                //.setIntent(new Intent(dynamicIntent))
+                .build();
+        //shortcutManager.setDynamicShortcuts(Arrays.asList(manageSessionShortcut));
     }
 
     public static DbManager getDbManager() {

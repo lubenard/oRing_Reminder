@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/today"
+                    android:textSize="35sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/see_current_session"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="38dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@null"
+                    android:src="@drawable/outline_info_24"
+                    android:text="@string/see_current_session" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_session_active"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar_main"
+                        style="@style/CircularDeterminateProgressBar"
+                        android:layout_width="350dp"
+                        android:layout_height="350dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:layout_editor_absoluteY="0dp"
+                        tools:progress="60" />
+
+                    <TextView
+                        android:id="@+id/text_view_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="28sp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        app:layout_constraintBottom_toBottomOf="@+id/progress_bar_main"
+                        app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
+                        app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
+                        app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
+                        app:layout_constraintVertical_bias="0.350"
+                        android:text="07h42mn" />
+
+                    <TextView
+                        android:id="@+id/text_view_break"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        app:layout_constraintBottom_toBottomOf="@+id/progress_bar_main"
+                        app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
+                        app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
+                        app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
+                        app:layout_constraintVertical_bias="0.550"
+                        android:textColor="@color/yellow"
+                        android:text="text_view_break"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:id="@+id/button_start_break"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="8dp"
+                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="17sp"
+                    android:background="@drawable/basic_button"
+                    android:text="@string/widget_start_break" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/layout_no_session_active"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:textSize="30sp"
+                android:visibility="gone"
+                android:text="@string/no_active_session"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginStart="15dp"
+                android:text="@string/history_colon"
+                android:textSize="35sp"
+                tools:layout_editor_absoluteX="19dp"
+                tools:layout_editor_absoluteY="26dp" />
+
+            <LinearLayout
+                android:id="@+id/list_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="18dp"
+                android:orientation="vertical"
+                android:showDividers="middle"
+                android:divider="@drawable/empty_tall_divider" />
+
+            <Button
+                android:id="@+id/button_see_history"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:paddingHorizontal="8dp"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:background="@drawable/basic_button"
+                android:text="@string/see_full_history"
+                android:layout_marginVertical="15dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/baseline_add_24"
+        tools:ignore="VectorDrawableCompat" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

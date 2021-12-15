@@ -1,24 +1,15 @@
 package com.lubenard.oring_reminder.utils;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroadcastReceiver;
@@ -31,6 +22,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
+
+    private static String current_language;
 
     /**
      * Apply theme based on newValue
@@ -83,27 +76,6 @@ public class Utils {
         return 1;
     }
 
-    public static void getListViewSize(ListView myListView) {
-        ListAdapter myListAdapter=myListView.getAdapter();
-        if (myListAdapter==null) {
-            //do nothing return null
-            return;
-        }
-        //set listAdapter in loop for getting final size
-        int totalHeight=0;
-        for (int size=0; size < myListAdapter.getCount(); size++) {
-            View listItem=myListAdapter.getView(size, null, myListView);
-            listItem.measure(0, 0);
-            totalHeight+=listItem.getMeasuredHeight();
-        }
-        //setting listview item in adapter
-        ViewGroup.LayoutParams params=myListView.getLayoutParams();
-        params.height=totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1));
-        myListView.setLayoutParams(params);
-        // print height of adapter on log
-        Log.i("height of listItem:", String.valueOf(totalHeight));
-    }
-
     /**
      * Format date from Date to string using "yyyy-MM-dd HH:mm:ss" format
      * @param date The date to format
@@ -143,11 +115,45 @@ public class Utils {
     }
 
     /**
+     * getDateDiff methord overload. Same as abovfe, but take 2 dates instead of 2 Strings
+     * Compute the diff between two given dates
+     * The formula is date2 - date1
+     * @param date1 First date in the form of a Date
+     * @param date2 Second date in the form of a Date
+     * @param timeUnit The timeUnit we want to return (Mostly minutes)
+     * @return the time in minutes between two dates
+     */
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+
+    /**
+     * Convert date into readable one:
+     * Example : 2021-10-12 -> 12 October 2021
+     * @param s
+     * @return
+     */
+    public static String convertDateIntoReadable(String s) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(s);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy", new Locale(current_language));
+        return simpleDateFormat.format(date);
+    }
+
+    /**
      * Change language
      * @param context
      * @param localeCode localCode to apply
      */
     public static final void setAppLocale(Context context, String localeCode) {
+        current_language = localeCode;
         Locale myLocale = new Locale(localeCode);
         Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();

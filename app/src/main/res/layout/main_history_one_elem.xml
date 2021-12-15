@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:background="@drawable/rounded_corners_10">
+
+	<TextView
+		android:id="@+id/main_history_date"
+		android:layout_marginLeft="20dp"
+		android:textSize="16sp"
+		android:layout_marginVertical="7dp"
+		style="@style/base_text_all_wrap"
+		android:text="date_from" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="7dp">
+
+		<LinearLayout
+			android:layout_width="350dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="20dp"
+			android:orientation="vertical"
+			android:layout_weight="1">
+
+			<TextView
+				style="@style/base_text_all_wrap"
+				android:textSize="16sp"
+				android:text="@string/from" />
+
+			<TextView
+				android:id="@+id/custom_view_date_weared_from"
+				style="@style/base_text_all_wrap"
+				android:textSize="16sp"
+				android:text="hour_from" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="320dp"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_weight="1">
+
+			<TextView
+				style="@style/base_text_all_wrap"
+				android:textSize="16sp"
+				android:text="@string/to" />
+
+			<TextView
+				android:id="@+id/custom_view_date_weared_to"
+				android:textSize="16sp"
+				style="@style/base_text_all_wrap"
+				android:text="hour_to" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_marginEnd="20dp"
+			android:layout_weight="1">
+
+			<TextView
+				android:id="@+id/worn_for_history"
+				style="@style/base_text_all_wrap"
+				android:textSize="16sp"
+				android:text="@string/worn_for" />
+
+			<TextView
+				android:id="@+id/custom_view_date_time_weared"
+				android:textSize="16sp"
+				style="@style/base_text_all_wrap"
+				android:text="worn_for" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

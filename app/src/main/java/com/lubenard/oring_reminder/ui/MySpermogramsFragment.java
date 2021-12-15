@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,14 +23,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.CustomListAdapter;
 import com.lubenard.oring_reminder.custom_components.CustomSpermoListAdapter;
-import com.lubenard.oring_reminder.custom_components.RingModel;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
+import com.shockwave.pdfium.PdfDocument;
+import com.shockwave.pdfium.PdfiumCore;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -105,19 +107,17 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Open action intent to choose a file
+     */
     private void selectSpermoFromFiles() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
-            dataToFileChooser.setType("application/pdf");
-            try {
-                startActivityForResult(dataToFileChooser, 1);
-            } catch (ActivityNotFoundException e) {
-                Log.w(TAG, "Failed to open a Intent to import Spermogram.");
-                Toast.makeText(getContext(), R.string.toast_error_custom_path_backup_restore_fail, Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Log.w(TAG, "Android version too old to select file from folder");
-            Toast.makeText(getContext(), R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
+        Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
+        dataToFileChooser.setType("application/pdf");
+        try {
+            startActivityForResult(dataToFileChooser, 1);
+        } catch (ActivityNotFoundException e) {
+            Log.w(TAG, "Failed to open a Intent to import Spermogram.");
+            Toast.makeText(getContext(), R.string.toast_error_custom_path_backup_restore_fail, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -128,6 +128,40 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
             String filename = new SimpleDateFormat("/dd-MM-yyyy_HH-mm-ss").format(new Date()) + ".pdf";
             writeFileOnInternalStorage(getContext(), filename, data.getData());
             dbManager.importNewSpermo("file://" + getContext().getFilesDir().getAbsolutePath() + filename);
+            generatePdfThumbnail(getContext(), getContext().getFilesDir().getAbsolutePath() + filename);
+        }
+    }
+
+    /**
+     * Generate a image from upper half of pdf's first page.
+     * It is used as 'preview' feature in the pdf listview.
+     * To avoid recreating this each time we load the vue, which take a lot of time, we only create
+     * it once, and save it into a file
+     * @param ctx Context
+     * @param pdfUri original pdf url
+     */
+    // Code for this function has been found here
+    // https://stackoverflow.com/questions/38828396/generate-thumbnail-of-pdf-in-android
+    public static void generatePdfThumbnail(Context ctx, String pdfUri) {
+        int pageNumber = 0;
+        PdfiumCore pdfiumCore = new PdfiumCore(ctx);
+        try {
+            //http://www.programcreek.com/java-api-examples/index.php?api=android.os.ParcelFileDescriptor
+            Log.d(TAG, "Creating thumbnail for " + pdfUri);
+            ParcelFileDescriptor fd = ctx.getContentResolver().openFileDescriptor(Uri.parse("file://" + pdfUri), "r");
+            PdfDocument pdfDocument = pdfiumCore.newDocument(fd);
+            pdfiumCore.openPage(pdfDocument, pageNumber);
+            int width = pdfiumCore.getPageWidthPoint(pdfDocument, pageNumber);
+            int height = pdfiumCore.getPageHeightPoint(pdfDocument, pageNumber);
+            Bitmap bmp = Bitmap.createBitmap(width, (height / 100) * 75, Bitmap.Config.ARGB_8888);
+            pdfiumCore.renderPageBitmap(pdfDocument, bmp, pageNumber, 0, 0, width, height);
+            OutputStream os = new FileOutputStream(pdfUri + ".jpg");
+            Log.d(TAG, "FileOutputStream is on " + pdfUri + ".jpg");
+            bmp.compress(Bitmap.CompressFormat.JPEG, 70, os);
+            pdfiumCore.closeDocument(pdfDocument); // important!
+        } catch(Exception e) {
+            //todo with exception
+            Log.d(TAG, "EXCEPTION: " + e);
         }
     }
 

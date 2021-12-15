@@ -1,8 +1,5 @@
 package com.lubenard.oring_reminder.broadcast_receivers;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +8,8 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import com.lubenard.oring_reminder.CurrentSessionWidgetProvider;
 import com.lubenard.oring_reminder.DbManager;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -38,7 +34,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
      * @return true if running break has been found, else false
      */
     private static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
-        ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
+        ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
         for (int i = 0; i != allPauses.size(); i++) {
             if (allPauses.get(i).getIsRunning() == 1)
                 return true;
@@ -53,7 +49,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
      * @return the int value of all pause time in minutes
      */
     public static int computeTotalTimePause(DbManager dbManager, long entryId) {
-        ArrayList<RingModel> allPauses = dbManager.getAllPausesForId(entryId, false);
+        ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
         int totalTimePause = 0;
         for (int i = 0; i != allPauses.size(); i++) {
             if (allPauses.get(i).getIsRunning() == 0)

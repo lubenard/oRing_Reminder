@@ -39,7 +39,7 @@
     <string name="to">Jusqu\'à : </string>
     <string name="from">Depuis : </string>
     <string name="you_weared_your_protection_from">Vous portez votre protection depuis : </string>
-    <string name="that_make_about">Cela fait environ :</string>
+    <string name="that_make_about">Cela fait :</string>
     <string name="worn_for">Porté pendant :</string>
     <string name="alertdialog_dangerous_wearing_time">Êtes-vous sûr ?</string>
     <string name="alertdialog_dangerous_wearing_body">Ne pas porter votre protection peut vous rendre de nouveau fertile. La porter trop souvent n\'est pas bon non plus. En cas de doute, faites un spermogramme et allez voir votre medecin traitant.</string>
@@ -78,8 +78,7 @@
     <string name="alertdialog_multiple_running_session_choice1">Toutes les terminer !</string>
     <string name="alertdialog_multiple_running_session_choice2">Insérer tout de même mon entrée</string>
     <string name="license_XmlWriter_title">Cette app utilise <b>Java-very-tiny-XmlWriter</b>.</string>
-    <string name="license_XmlWriter_source">"Vouv pouvez voir le code de cette librairie ici :\n
-        https://github.com/menny/Java-very-tiny-XmlWriter"</string>
+    <string name="license_XmlWriter_source">Vous pouvez voir le code de cette librairie ici :          https://github.com/menny/Java-very-tiny-XmlWriter</string>
     <string name="toast_success_restore_datas">Les données ont été restaurées avec succès</string>
     <string name="toast_success_save_datas">Les données ont été sauvegardé avec succès</string>
     <string name="settings_alertdialog_erase_datas_body">Êtes-vous sûr de vouloir supprimer toutes vos données ? Toute perte est définitive. Une fois completée, cette app va s\'éteindre.</string>
@@ -119,7 +118,7 @@
     <string name="you_can_get_it_on_again">Vous devriez pouvoir le remettre à :</string>
     <string name="bad_date_format">Mauvais format de date. Merci de vérifier</string>
     <string name="get_it_on_before">La remettre avant</string>
-    <string name="not_enough_datas_to_compute_get_it_on">Pas assez de données pour calculer quand vous devriez recommencer a la portez</string>
+    <string name="not_enough_datas_to_compute_get_it_on">Pas assez de données pour calculer quand vous devriez recommencer à la porter</string>
     <string name="no_pause_session_is_not_running">Vous ne pouvez pas créer une pause en cours si la session n\'est pas en cours</string>
     <string name="settings_prevent_me_when_no_session_started_for_today">Me prevenir si une session est en cours à une heure définie</string>
     <string name="myring_prevent_me_when_no_session_started_date_title">Choisir l\'heure à laquelle je veux être notifié</string>
@@ -150,4 +149,23 @@
     <string name="added_the">Ajouté le : &#160;</string>
     <string name="action_sort_datas">Trier les données</string>
     <string name="stop_active_session">Arreter la session</string>
+	<string name="license_androidPdfViewer_title">Cette app utilise <b>AndroidPdfViewer</b>.</string>
+    <string name="license_androidPdfViewer_source">Vous pouvez voir le code de cette librairie ici :\n https://github.com/barteksc/AndroidPdfViewer</string>
+    <string name="widget_start_break">Lancer une pause</string>
+    <string name="save_this_entry">Enregistrer cette entrée</string>
+    <string name="widget_stop_break">Arreter la pause</string>
+	<string name="history">Historique</string>
+    <string name="action_search_datas">Chercher des entrées</string>
+    <string name="search_result">Résultats de la recherche</string>
+    <string name="total_search">Nombre de résultats :</string>
+    <string name="action_edit_spermo">Editer ce spermogramme</string>
+    <string name="alertdialog_edit_spermo_title">Entrez la nouvelle date</string>
+    <string name="since_midnight_worn_for">Depuis minuit, porté pendant :&#160;</string>
+    <string name="entries">entrées</string>
+    <string name="see_full_history">Voir tout l\'historique</string>
+    <string name="no_active_session">Pas de session active</string>
+    <string name="see_current_session">Voir ma session actuelle</string>
+    <string name="history_colon">Historique :</string>
+    <string name="time_worn_appr">Temps porté approximatif:\n%d semaines\n%d jours\n%d heures\n%d minutes</string>
+    <string name="today">Aujourd\'hui :</string>
 </resources>

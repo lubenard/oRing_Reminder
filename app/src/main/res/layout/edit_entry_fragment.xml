@@ -7,18 +7,74 @@
     <TextView
         style="@style/base_text_all_wrap"
         android:layout_gravity="center"
+        android:layout_marginTop="15dp"
         android:textSize="30dp"
         android:text="@string/from" />
 
-    <EditText
-        android:id="@+id/new_entry_date_from"
-        style="@style/base_text_all_wrap"
-        android:ems="10"
-        android:layout_marginTop="20dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:inputType="datetime"
-        android:hint="Ex: 2020-03-30 10:04:20"
-        android:digits="0123456789- :"/>
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:text="Le :" />
+
+        <EditText
+            android:id="@+id/new_entry_date_from"
+            style="@style/base_text_all_wrap"
+            android:layout_gravity="center"
+            android:ems="6"
+            android:digits="0123456789-"
+            android:layout_weight="1"
+            android:hint="Ex: 2020-03-30" />
+
+        <ImageButton
+            android:id="@+id/new_entry_datepicker_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_event_24" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:text=" A :" />
+
+        <EditText
+            android:id="@+id/new_entry_hour_from"
+            style="@style/base_text_all_wrap"
+            android:ems="6"
+            android:layout_gravity="center"
+            android:digits="0123456789:"
+            android:hint="Ex: 10:04:20" />
+
+        <ImageButton
+            android:id="@+id/new_entry_timepicker_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_schedule_24" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/new_entry_auto_date_from"
@@ -26,6 +82,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
+        android:background="@drawable/basic_button"
+        android:paddingHorizontal="8dp"
+        android:textAllCaps="false"
         android:text="@string/set_auto_date_and_time" />
 
     <TextView
@@ -35,15 +94,70 @@
         android:textSize="30dp"
         android:text="@string/to" />
 
-    <EditText
-        android:id="@+id/new_entry_date_to"
-        style="@style/base_text_all_wrap"
-        android:layout_marginTop="20dp"
-        android:ems="10"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="Ex: 2020-03-31 01:10:20"
-        android:digits="0123456789- :"
-        android:inputType="datetime" />
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:text="Le :" />
+
+        <EditText
+            android:id="@+id/new_entry_date_to"
+            style="@style/base_text_all_wrap"
+            android:layout_gravity="center"
+            android:ems="6"
+            android:layout_weight="1"
+            android:digits="0123456789-"
+            android:hint="Ex: 2020-03-30" />
+
+        <ImageButton
+            android:id="@+id/new_entry_datepicker_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_event_24" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textSize="25dp"
+            android:text=" A :" />
+
+        <EditText
+            android:id="@+id/new_entry_hour_to"
+            style="@style/base_text_all_wrap"
+            android:ems="6"
+            android:layout_gravity="center"
+            android:digits="0123456789:"
+            android:hint="Ex: 10:04:20" />
+
+        <ImageButton
+            android:id="@+id/new_entry_timepicker_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_gravity="center"
+            android:src="@drawable/outline_schedule_24" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/new_entry_auto_date_to"
@@ -51,6 +165,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
+        android:background="@drawable/basic_button"
+        android:paddingHorizontal="8dp"
+        android:textAllCaps="false"
         android:text="@string/set_auto_date_and_time" />
 
     <TextView

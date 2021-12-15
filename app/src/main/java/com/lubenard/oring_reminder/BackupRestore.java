@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
-import com.lubenard.oring_reminder.custom_components.RingModel;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.EditEntryFragment;
 import com.lubenard.oring_reminder.ui.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
@@ -65,18 +64,10 @@ public class BackupRestore extends Activity{
      * Launch the backup for export in CSV
      */
     private void startBackupIntoCSV() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            dataToFileChooser.setType("text/csv");
-            dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatasCSV.csv");
-            launchIntent(dataToFileChooser);
-        } else {
-            Log.w(TAG, "Your android version is pretty old. Save will be done at default location.");
-            Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder("csv");
-            createDefaultFileIfNeeded();
-            launchBackupRestore(exportPath);
-        }
+        Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        dataToFileChooser.setType("text/csv");
+        dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatasCSV.csv");
+        launchIntent(dataToFileChooser);
     }
 
     /**
@@ -99,18 +90,10 @@ public class BackupRestore extends Activity{
      * Start export in XML
      */
     private void startBackupIntoXML() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            dataToFileChooser.setType("text/xml");
-            dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatas.xml");
-            launchIntent(dataToFileChooser);
-        } else {
-            Log.w(TAG, "Your android version is pretty old. Save will be done at default location.");
-            Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder("xml");
-            createDefaultFileIfNeeded();
-            launchBackupRestore(exportPath);
-        }
+        Intent dataToFileChooser = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        dataToFileChooser.setType("text/xml");
+        dataToFileChooser.putExtra(Intent.EXTRA_TITLE, "myDatas.xml");
+        launchIntent(dataToFileChooser);
     }
 
     /**
@@ -153,16 +136,9 @@ public class BackupRestore extends Activity{
      */
     private void startRestoreFromXML() {
         Log.d(TAG, "startRestoreFromXML");
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
-            dataToFileChooser.setType("text/xml");
-            launchIntent(dataToFileChooser);
-        } else {
-            Log.w(TAG, "Android version too old. Restore will be from default location");
-            Toast.makeText(this, R.string.toast_error_custom_path_backup_restore_android_too_old, Toast.LENGTH_LONG).show();
-            getDefaultFolder("xml");
-            launchBackupRestore(exportPath);
-        }
+        Intent dataToFileChooser = new Intent(Intent.ACTION_GET_CONTENT);
+        dataToFileChooser.setType("text/xml");
+        launchIntent(dataToFileChooser);
     }
 
     /**
@@ -251,14 +227,14 @@ public class BackupRestore extends Activity{
         try {
             xmlWriter.writeEntity("datas");
             // Contain all entrys
-            ArrayList<RingModel> datas = dbManager.getAllDatasForAllEntrys();
+            ArrayList<RingSession> datas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < datas.size(); i++) {
                 xmlWriter.writeEntity("session");
                 xmlWriter.writeAttribute("dateTimePut", datas.get(i).getDatePut());
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
                 xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning()));
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
-                ArrayList<RingModel> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
+                ArrayList<RingSession> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
                 if (pauses.size() > 0) {
                     Log.d(TAG, "Break exist for session " + datas.get(i).getId() + ". There is " + pauses.size() + " breaks");
                     for (int j = 0; j != pauses.size(); j++) {
@@ -410,6 +386,27 @@ public class BackupRestore extends Activity{
         SettingsFragment.restartActivity();
     }
 
+    private void checkAppVersion(InputStream inputStream) {
+        try {
+            XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
+            XmlPullParser myParser = xmlFactoryObject.newPullParser();
+
+            myParser.setInput(inputStream, null);
+
+            // Skip the first element
+            int eventType = myParser.next();
+            if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("app_version")) {
+                myParser.next();
+                if (myParser.getText().equals(getString(R.string.app_version)))
+                    Log.d(TAG, "Same app version !");
+                else
+                    Log.d(TAG, "Not same app version ! " + myParser.getText() + "/" + getString(R.string.app_version));
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Actually launch the backup system depending on what to do.
      * This function is executed when we now everything is ready for export
@@ -427,6 +424,11 @@ public class BackupRestore extends Activity{
             try {
                 OutputStream outputStream = getContentResolver().openOutputStream(uri);
                 XmlWriter xmlWriter = new XmlWriter(outputStream);
+                // Write app version in xml export, for warning user if
+                // saves are imported from earlier version of the app
+                xmlWriter.writeEntity("app_version");
+                xmlWriter.writeText(getString(R.string.app_version));
+                xmlWriter.endEntity();
                 if (shouldBackupRestoreDatas)
                     saveDatasIntoXml(xmlWriter);
                 if (shouldBackupRestoreSettings)
@@ -441,6 +443,7 @@ public class BackupRestore extends Activity{
             Log.d(TAG, "ActivityResult restore from path: " + filePath);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(uri);
+                //checkAppVersion(inputStream);
                 if (shouldBackupRestoreDatas)
                     restoreDatasFromXml(inputStream);
                 // TODO: HOTFIX ! I should not need to reopen a stream (at least i think so)
@@ -486,7 +489,7 @@ public class BackupRestore extends Activity{
 
             ArrayList<String> formattedDatas = new ArrayList<>();
             // Contain all entrys
-            ArrayList<RingModel> rawDatas = dbManager.getAllDatasForAllEntrys();
+            ArrayList<RingSession> rawDatas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < rawDatas.size(); i++) {
                 String[] datePut = rawDatas.get(i).getDatePut().split(" ");
                 String[] dateRemoved = rawDatas.get(i).getDateRemoved().split(" ");
