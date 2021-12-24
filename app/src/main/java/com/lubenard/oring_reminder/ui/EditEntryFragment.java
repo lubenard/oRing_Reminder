@@ -359,7 +359,7 @@ public class EditEntryFragment extends Fragment {
 
                 // If entry already exist in the db.
                 if (entryId != -1) {
-                    if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET YET")) {
+                    if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET")) {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
                             updateWidget(context);
