@@ -202,8 +202,7 @@ public class EntryDetailsFragment extends Fragment {
                     pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
                     // Cancel the break notification if it is set as finished.
                     if (isRunning == 0) {
-                        Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
-                                .putExtra("action", 1);
+                        Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) ((dataModel != null) ? dataModel.getId() : entryId), intent, 0);
                         AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                         am.cancel(pendingIntent);
@@ -478,8 +477,8 @@ public class EntryDetailsFragment extends Fragment {
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
             } else {
-                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);;
-
+                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
+                Log.d(TAG, "TimeBeforeRemove is " + timeBeforeRemove);
                 removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0]) + " " + entryDetails.getDateRemoved().split(" ")[1]);
                 int time_spent_wearing = entryDetails.getTimeWeared();
                 if (time_spent_wearing < 60)
@@ -500,8 +499,10 @@ public class EntryDetailsFragment extends Fragment {
 
             Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             // This is very ugly, probably should not do this, but fix weird bug when ProgressBar was not updating or with random values
-            progressBar.setProgressDrawable(null);
-            progressBar.setProgressDrawable(context.getDrawable(R.drawable.circle));
+            if ((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100) != progressBar.getProgress()) {
+                progressBar.setProgressDrawable(null);
+                progressBar.setProgressDrawable(context.getDrawable(R.drawable.circle));
+            }
             progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();
