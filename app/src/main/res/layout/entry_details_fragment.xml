@@ -72,7 +72,7 @@
                 style="@style/base_text_centered"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="datetime_stop_wearing"
+                android:text="@string/not_set_yet"
                 android:textAlignment="center"
                 android:textSize="17dp" />
 
