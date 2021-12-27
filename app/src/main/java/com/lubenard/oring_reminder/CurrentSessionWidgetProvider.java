@@ -234,10 +234,11 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     break;
                 // Clicked on the 'Stop break' button
                 case WIDGET_BUTTON_STOP_BREAK:
-                    dbManager.endPause(dbManager.getLastRunningEntry().getId());
+                    long lastRunningSessionId = dbManager.getLastRunningEntry().getId();
+                    dbManager.endPause(lastRunningSessionId);
                     // Cancel the break notification if it is set as finished.
                     Intent intent4 = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent4, 0);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)lastRunningSessionId, intent4, 0);
                     AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
                     am.cancel(pendingIntent);
                     break;
