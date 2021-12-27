@@ -357,9 +357,11 @@ public class EditEntryFragment extends Fragment {
                 String formattedDatePut = new_entry_date_from.getText().toString() + " " + new_entry_time_from.getText().toString();
                 String formattedDateRemoved = new_entry_date_to.getText().toString() + " " + new_entry_time_to.getText().toString();
 
+                Log.d(TAG, "formattedDatePut: '" + formattedDatePut + "' formattedDateRemoved: '" + formattedDateRemoved + "'");
+
                 // If entry already exist in the db.
                 if (entryId != -1) {
-                    if (formattedDateRemoved.isEmpty() || formattedDateRemoved.equals("NOT SET")) {
+                    if (formattedDateRemoved.length() == 1 || formattedDateRemoved.equals("NOT SET")) {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                             dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
                             updateWidget(context);
@@ -386,7 +388,7 @@ public class EditEntryFragment extends Fragment {
                         }
                     }
                 } else {
-                    if (formattedDateRemoved.isEmpty()) {
+                    if (formattedDateRemoved.length() == 1) {
                         if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                             insertNewEntry(formattedDatePut, true);
                             updateWidget(context);
