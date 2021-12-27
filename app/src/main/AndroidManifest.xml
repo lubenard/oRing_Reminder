@@ -40,7 +40,7 @@
         </receiver>
         <!-- Widget manifest -->
         <receiver android:name="CurrentSessionWidgetProvider"
-                android:exported="false">
+                android:exported="true">
             <intent-filter>
                 <!-- Used to manage the click on the button -->
                 <action android:name="com.lubenard.oring_reminder.WIDGET_BUTTON" />
