@@ -195,21 +195,21 @@ public class Utils {
      */
     public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, long entryId) {
         // First let's create the intent
-        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         //Pending intent for a notification button when user removed protection
         PendingIntent removedProtection =
                 PendingIntent.getBroadcast(context, 1, new Intent(context, NotificationReceiverBroadcastReceiver.class)
                                 .putExtra("action", 1)
                                 .putExtra("entryId", entryId),
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 
         //Pending intent for a notification button when user dismissed notification
         PendingIntent dismissedNotif =
                 PendingIntent.getBroadcast(context, 2, new Intent(context, NotificationReceiverBroadcastReceiver.class)
                                 .putExtra("action", 0)
                                 .putExtra("entryId", entryId),
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 
         // Get the notification manager and build it
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
