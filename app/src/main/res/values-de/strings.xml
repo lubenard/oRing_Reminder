@@ -84,9 +84,9 @@
     <string name="toast_success_restore_datas">Gelungene Wiederherstellung der Daten</string>
     <string name="toast_success_save_datas">Gelungene Speicherung der Daten</string>
     <string name="settings_alertdialog_erase_datas_body">Sind Sie sicher, dass Sie alle Ihre Daten löschen wollen? Alle Verluste sind endgültig. Sobald dies geschehen ist, wird die App heruntergefahren.</string>
-    <string name="notif_choice_do_it">Okay, ich hab's geschafft.</string>
+    <string name="notif_choice_do_it">Okay, ich hab\'s geschafft.</string>
     <string name="notif_choice_dismiss">Ablehnen</string>
-    <string name="please_wait">Bitte warten...</string>
+    <string name="please_wait">Bitte warten…</string>
     <string name="toast_session_bad_id">"Es ist ein Fehler aufgetreten: Wir konnten die Sitzung mit der id nicht beenden: "</string>
     <string name="in_about_entry_details">(in ungefähr %dh%02dm)</string>
     <string name="ordered_by_desc">Die Einträge sind nun von neu nach alt sortiert</string>

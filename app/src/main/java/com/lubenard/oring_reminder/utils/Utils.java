@@ -59,6 +59,9 @@ public class Utils {
             case "fr":
                 setAppLocale(context, "fr");
                 break;
+            case "de":
+                setAppLocale(context,"de");
+                break;
             case "system":
                 setAppLocale(context, Resources.getSystem().getConfiguration().locale.getLanguage());
                 break;
