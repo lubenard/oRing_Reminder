@@ -173,7 +173,7 @@ public class EntryDetailsFragment extends Fragment {
             String pauseEndingText = pause_ending.getText().toString();
             String pauseBeginningText = pause_beginning.getText().toString();
             if (pauseEndingText.isEmpty() || pauseEndingText.equals("NOT SET YET")) {
-                pause_ending.setText("NOT SET YET");
+                pauseEndingText = "NOT SET YET" ;
                 isRunning = 1;
             }
 
