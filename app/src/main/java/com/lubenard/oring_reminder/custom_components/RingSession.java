@@ -1,5 +1,9 @@
 package com.lubenard.oring_reminder.custom_components;
 
+import com.lubenard.oring_reminder.utils.Utils;
+
+import java.util.concurrent.TimeUnit;
+
 public class RingSession {
     private long id;
     private String datePut;
@@ -22,6 +26,9 @@ public class RingSession {
         this.dateRemoved = dateRemoved;
         this.isRunning = isRunning;
         this.timeWeared = timeWeared;
+        if (this.timeWeared == 0 && this.isRunning == 0) {
+            this.timeWeared = (int)Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
+        }
     }
 
     public long getId() {
