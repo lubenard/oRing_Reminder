@@ -92,9 +92,9 @@ public class MainFragment extends Fragment {
             TextView textView_date = view.findViewById(R.id.main_history_date);
 
             if (entrysDatas.get(i).getDatePut().split(" ")[0].equals(entrysDatas.get(i).getDateRemoved().split(" ")[0]))
-                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]));
+                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0], false));
             else
-                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0]) + " -> " + Utils.convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0]));
+                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0], false) + " -> " + Utils.convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0], false));
 
             TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_from);
             textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);

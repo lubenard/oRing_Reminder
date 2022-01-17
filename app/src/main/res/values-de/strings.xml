@@ -165,4 +165,5 @@
     <string name="history_colon">Geschichte:</string>
     <string name="time_worn_appr">Ungefähr getragene Zeit:\n%d Wochen\n%d Tage\n%d Stunden\n%d Minuten\n</string>
     <string name="today">Heute:</string>
+    <string name="at">"Mit "</string>
 </resources>

@@ -138,7 +138,7 @@ public class Utils {
      * @param s
      * @return
      */
-    public static String convertDateIntoReadable(String s) {
+    public static String convertDateIntoReadable(String s, boolean shorterVersion) {
         Date date = null;
         try {
             date = new SimpleDateFormat("yyyy-MM-dd").parse(s);
@@ -146,7 +146,13 @@ public class Utils {
             e.printStackTrace();
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy", new Locale(current_language));
+        SimpleDateFormat simpleDateFormat;
+        if (shorterVersion)
+            simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", new Locale(current_language));
+        else {
+            simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy", new Locale(current_language));
+        }
+
         return simpleDateFormat.format(date);
     }
 

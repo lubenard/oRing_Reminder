@@ -330,7 +330,7 @@ public class EntryDetailsFragment extends Fragment {
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
 
         String[] ableToGetItOffStringDate = Utils.getdateFormatted(calendar.getTime()).split(" ");
-        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.convertDateIntoReadable(ableToGetItOffStringDate[0]) + " " + ableToGetItOffStringDate[1]);
+        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.convertDateIntoReadable(ableToGetItOffStringDate[0], false) + " " + ableToGetItOffStringDate[1]);
         if (timeBeforeRemove >= 0)
             texteRessourceWhenGetItOff = R.string.in_about_entry_details;
         else {
@@ -371,7 +371,7 @@ public class EntryDetailsFragment extends Fragment {
             wornForTextView.setText(R.string.removed_during);
 
             TextView textView_date = view.findViewById(R.id.main_history_date);
-            textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0]));
+            textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0], false));
 
             TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_from);
             textView_hour_from.setText(dateRemoved[1]);
@@ -384,7 +384,7 @@ public class EntryDetailsFragment extends Fragment {
                 String[] datePut = pausesDatas.get(i).getDatePut().split(" ");
                 textView_hour_to.setText(datePut[1]);
                 if (!dateRemoved[0].equals(datePut[0]))
-                    textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0]) + " -> " + Utils.convertDateIntoReadable(datePut[0]));
+                    textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + Utils.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
                 textView_worn_for.setText(convertTimeWeared(pausesDatas.get(i).getTimeWeared()));
             } else {
@@ -443,7 +443,7 @@ public class EntryDetailsFragment extends Fragment {
             whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
             progressBar = view.findViewById(R.id.progress_bar);
 
-            put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0]) + " " + entryDetails.getDatePut().split(" ")[1]);
+            put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0], false) + " " + entryDetails.getDatePut().split(" ")[1]);
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
@@ -479,7 +479,7 @@ public class EntryDetailsFragment extends Fragment {
             } else {
                 timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
                 Log.d(TAG, "TimeBeforeRemove is " + timeBeforeRemove);
-                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0]) + " " + entryDetails.getDateRemoved().split(" ")[1]);
+                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0], false) + " " + entryDetails.getDateRemoved().split(" ")[1]);
                 int time_spent_wearing = entryDetails.getTimeWeared();
                 if (time_spent_wearing < 60)
                     textview_progress.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));

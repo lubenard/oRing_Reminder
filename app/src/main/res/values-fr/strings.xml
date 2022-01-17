@@ -168,4 +168,5 @@
     <string name="history_colon">Historique :</string>
     <string name="time_worn_appr">Temps porté approximatif:\n%d semaines\n%d jours\n%d heures\n%d minutes</string>
     <string name="today">Aujourd\'hui :</string>
+    <string name="at">"A "</string>
 </resources>

@@ -118,9 +118,14 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     timeBeforeRemove *= -1;
                 }
 
-                remoteViews.setTextViewText(R.id.widget_date_from, lastEntry.getDatePut());
+                String[] lastEntrySplitted = lastEntry.getDatePut().split(" ");
+
+                String timeRemoval = context.getString(R.string.at) + Utils.getdateFormatted(calendar.getTime()).split(" ")[1];
+
+                remoteViews.setTextViewText(R.id.widget_date_from, Utils.convertDateIntoReadable(lastEntrySplitted[0], true) + "\n" + lastEntrySplitted[1]);
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
-                remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
+                remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60) + "\n"
+                + timeRemoval);
 
                 // Change 'Start session' button into 'Stop session'
                 remoteViews.setTextViewText(R.id.widget_button_new_stop_session, context.getString(R.string.stop_active_session));

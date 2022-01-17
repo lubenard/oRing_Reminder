@@ -81,13 +81,13 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
 
         // Forced to split with a space because the date format is YYYY-MM-dd hh:MM:ss
         String[] datePut = dataModel.getDatePut().split(" ");
-        viewHolder.worn_date.setText(Utils.convertDateIntoReadable(datePut[0]));
+        viewHolder.worn_date.setText(Utils.convertDateIntoReadable(datePut[0], false));
 
         viewHolder.weared_from.setText(datePut[1]);
 
         if (!dataModel.getDateRemoved().equals("NOT SET YET")) {
             String[] dateRemoved = dataModel.getDateRemoved().split(" ");
-            viewHolder.worn_date.setText(Utils.convertDateIntoReadable(datePut[0]) + " -> " + Utils.convertDateIntoReadable(dateRemoved[0]));
+            viewHolder.worn_date.setText(Utils.convertDateIntoReadable(datePut[0], false) + " -> " + Utils.convertDateIntoReadable(dateRemoved[0], false));
             viewHolder.weared_to.setText(dateRemoved[1]);
         } else
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
