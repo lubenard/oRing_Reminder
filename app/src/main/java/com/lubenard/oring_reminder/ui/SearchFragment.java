@@ -25,6 +25,8 @@ public class SearchFragment extends Fragment {
     private ArrayList<RingSession> dataModels;
     private ListView listView;
 
+    public static final String TAG = "SearchFragment";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +59,7 @@ public class SearchFragment extends Fragment {
 
         String date_searched = bundle.getString("date_searched", "NOTHING");
 
-        Log.d("Search Fragment", "date is " + date_searched);
+        Log.d(TAG, "date is " + date_searched);
 
         ArrayList<RingSession> results = dbManager.searchEntryInDb(date_searched);
 
@@ -74,7 +76,7 @@ public class SearchFragment extends Fragment {
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             RingSession dataModel= dataModels.get(position);
-            Log.d("SearchFragment", "Element " + dataModel.getId());
+            Log.d(TAG, "Element " + dataModel.getId());
             EntryDetailsFragment fragment = new EntryDetailsFragment();
             Bundle bundle1 = new Bundle();
             bundle1.putLong("entryId", dataModel.getId());

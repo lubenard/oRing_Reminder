@@ -498,15 +498,10 @@ public class EntryDetailsFragment extends Fragment {
             Log.d(TAG, "timeBeforeRemove is " + (float)timeBeforeRemove);
 
             Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
-            // This is very ugly, probably should not do this, but fix weird bug when ProgressBar was not updating or with random values
-            /*if ((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100) != progressBar.getProgress()) {
-
-            }*/
             if (updateProgressBar) {
                 progressBar.setProgressDrawable(null);
                 progressBar.setProgressDrawable(context.getDrawable(R.drawable.circle));
                 progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
-
             }
             Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();

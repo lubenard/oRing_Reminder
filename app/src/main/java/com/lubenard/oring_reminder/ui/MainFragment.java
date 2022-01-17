@@ -142,10 +142,15 @@ public class MainFragment extends Fragment {
                 (view, year, monthOfYear, dayOfMonth) -> {
                     SearchFragment fragment = new SearchFragment();
                     Bundle bundle = new Bundle();
+                    String monthString = String.valueOf(monthOfYear + 1);
+                    String dayString = String.valueOf(dayOfMonth);
+
+                    if (monthOfYear < 10)
+                        monthString = "0" + monthString;
+
                     if (dayOfMonth < 10)
-                        bundle.putString("date_searched", year + "-" + (monthOfYear + 1) + "-0" + dayOfMonth);
-                    else
-                        bundle.putString("date_searched", year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        dayString = "0" + dayString;
+                    bundle.putString("date_searched", year + "-" + monthString + "-" + dayString);
                     fragment.setArguments(bundle);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, fragment, null)
