@@ -1,0 +1,24 @@
+Hello everone !
+It's been a long time since this app has been updated !
+This is finally the release of the version 2.0 !
+
+Here is the patchnote:
+ * New UI !
+ * Added research function
+ * Dates are now easier to read
+ * ProgressBar for current session
+ * New buttons on widget (start/ stop break)
+ * Launch break from main view
+ * More consistant UI
+ * Option to choose from calendar / time picker
+ * New 'History' page
+ 
+ Other improvements:
+
+ * Faster pdf rendering for list
+ * Fixed crash with widget
+ * Edit dates for spermograms
+ * App is ~ 20 % smaller
+ * Updated translations
+ * New datas in datas page
+ * Dropped support for android 4.4, min is now Lollipop (5.0)

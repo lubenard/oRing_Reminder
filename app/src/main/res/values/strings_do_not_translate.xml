@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">oRing - Reminder</string>
-    <string name="app_version" translatable="false">v2.0.1</string>
+    <string name="app_version" translatable="false">v2.0.2</string>
     <string name="license_app_licence" translatable="false">
             Copyright 2021 lubenard\n\n
 

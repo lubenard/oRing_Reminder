@@ -1,0 +1,8 @@
+V2.0.2 - Second bugfix update
+ * Added German as a language ! Thanks to the traductor !
+ * Fixed Android 12 crashes and widget
+ * Fixed broken search function
+ * Fixed progressBar resetting when ending session
+ * Fixed visual bug where 0 minutes would be displayed for manual breaks
+ * Improved widget
+ * Fixed crash when manually entering break

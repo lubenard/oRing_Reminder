@@ -1,0 +1,11 @@
+V2.0.1 - Bugfix update
+
+Hello !
+I am releasing this update. It does not add any features or optimisation, but fix 5 bugs:
+
+ * Fix bug with 'bad format' when editing running session
+ * When using widget, it might not be displayed on some devices
+ * When stoping break from widget, it would still send 'Break too long' notif
+ * Progress bar was reset after ending session inside Entry details page
+ * Fixed crash when manually inserting new session
+ * Updated to latest translations ! (Thanks to @Juansero29 and PR #8 !)

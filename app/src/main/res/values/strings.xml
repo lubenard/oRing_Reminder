@@ -17,7 +17,7 @@
 
     <string name="license_app_title">This app uses Apache 2 Licence.</string>
 
-    <string name="license_app_source">You can see the app\'s source code for this here :\n https://github.com/lubenard/oRing_Reminder</string>
+    <string name="license_app_source">You can see the app\'s source code here :\n https://github.com/lubenard/oRing_Reminder</string>
     <string name="about_additional_software_licenses">About and Licenses</string>
     <string name="settings_other_see_licenses_title">See about and licences</string>
     <string name="notif_channel_name">Send an erasable notification</string>
