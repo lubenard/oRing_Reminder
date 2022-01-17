@@ -59,7 +59,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.new_design_home_fragment, container, false);
+        return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
     private View.OnClickListener clickInLinearLayout() {

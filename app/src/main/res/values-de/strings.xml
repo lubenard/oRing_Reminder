@@ -149,7 +149,7 @@
 	<string name="my_spermo_title_fragment">Meine Spermiogramme</string>
     <string name="added_the">Hinzufügen der:&#160;</string>
 	<string name="widget_stop_break">Pause stoppen</string>
-    <string name="widget_start_break">Start Pause</string>
+    <string name="widget_start_break">Pause beginnen</string>
     <string name="save_this_entry">Diesen Eintrag speichern</string>
 	<string name="history">Geschichte</string>
     <string name="action_search_datas">Eintrag suchen</string>
