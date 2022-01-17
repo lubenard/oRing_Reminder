@@ -106,7 +106,7 @@ public class EntryDetailsFragment extends Fragment {
 
         stopSessionButton.setOnClickListener(view13 -> {
             dbManager.endSession(entryId);
-            updateAllFragmentDatas();
+            updateAllFragmentDatas(false);
             EditEntryFragment.updateWidget(context);
         });
 
@@ -430,7 +430,7 @@ public class EntryDetailsFragment extends Fragment {
     /**
      * Update all displayed infos on EntryDetailsFragment with latest datas from db
      */
-    private void updateAllFragmentDatas() {
+    private void updateAllFragmentDatas(boolean updateProgressBar) {
         if (entryId > 0) {
             long timeBeforeRemove;
             // Load datas from the db and put them at the right place
@@ -499,11 +499,15 @@ public class EntryDetailsFragment extends Fragment {
 
             Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             // This is very ugly, probably should not do this, but fix weird bug when ProgressBar was not updating or with random values
-            if ((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100) != progressBar.getProgress()) {
+            /*if ((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100) != progressBar.getProgress()) {
+
+            }*/
+            if (updateProgressBar) {
                 progressBar.setProgressDrawable(null);
                 progressBar.setProgressDrawable(context.getDrawable(R.drawable.circle));
+                progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+
             }
-            progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();
             updatePauseList();
@@ -518,7 +522,7 @@ public class EntryDetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateAllFragmentDatas();
+        updateAllFragmentDatas(true);
     }
 
     @Override
