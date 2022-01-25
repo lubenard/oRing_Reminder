@@ -213,6 +213,9 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, "Widget receives OnRecieve command to update");
         Log.d(TAG, "intent action is " +  intent.getAction());
 
+        if (dbManager == null)
+            dbManager = new DbManager(context);
+
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), CurrentSessionWidgetProvider.class.getName());
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
@@ -257,7 +260,6 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     throw new IllegalStateException("Unexpected value: " + intent.getAction());
             }
         }
-
         onUpdate(context, appWidgetManager, appWidgetIds);
     }
 }

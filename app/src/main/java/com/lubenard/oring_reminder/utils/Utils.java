@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
@@ -22,6 +23,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
+
+    private static final String TAG = "Utils";
 
     private static String current_language;
 
@@ -147,11 +150,14 @@ public class Utils {
         }
 
         SimpleDateFormat simpleDateFormat;
+
+        if (current_language == null)
+            current_language = Resources.getSystem().getConfiguration().locale.getLanguage();
+
         if (shorterVersion)
             simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", new Locale(current_language));
-        else {
+        else
             simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy", new Locale(current_language));
-        }
 
         return simpleDateFormat.format(date);
     }
