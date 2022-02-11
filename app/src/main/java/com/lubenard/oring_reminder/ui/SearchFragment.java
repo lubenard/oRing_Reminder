@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.CustomListSearchAdapter;
+import com.lubenard.oring_reminder.ui.adapters.CustomListSearchAdapter;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 
 import java.util.ArrayList;

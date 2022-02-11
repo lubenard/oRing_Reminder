@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.custom_components;
+package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,36 +8,34 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lubenard.oring_reminder.DbManager;
-import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.ui.viewHolders.HistoryViewHolder;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 
 import java.util.ArrayList;
 
-public class CustomSpermoListAdapter extends RecyclerView.Adapter<SpermoListViewHolder> {
+public class HistoryListAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
-    private ArrayList<Spermograms> entryList;
-    private static DbManager dbManager;
+    private ArrayList <RingSession> entryList;
     private Context context;
     private onListItemClickListener onListItemClickListener;
 
-    public CustomSpermoListAdapter(ArrayList<Spermograms> datas, onListItemClickListener onListItemClickListener) {
+    public HistoryListAdapter(ArrayList<RingSession> datas, onListItemClickListener onListItemClickListener) {
         entryList = datas;
         this.onListItemClickListener = onListItemClickListener;
     }
 
     @NonNull
     @Override
-    public SpermoListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.custom_spermo_list_element, parent, false);
-        dbManager = MainActivity.getDbManager();
+        View view = inflater.inflate(R.layout.main_history_one_elem, parent, false);
         context = parent.getContext();
-        return new SpermoListViewHolder(view, onListItemClickListener);
+        return new HistoryViewHolder(view, onListItemClickListener, context);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SpermoListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
         holder.updateElementDatas(entryList.get(position), context);
     }
 

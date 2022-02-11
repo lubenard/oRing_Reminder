@@ -1,9 +1,7 @@
-package com.lubenard.oring_reminder.custom_components;
+package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,18 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
 
+import com.lubenard.oring_reminder.custom_components.Spermograms;
 import com.lubenard.oring_reminder.ui.MySpermogramsFragment;
-import com.shockwave.pdfium.PdfDocument;
-import com.shockwave.pdfium.PdfiumCore;
+import com.lubenard.oring_reminder.ui.adapters.CustomSpermoListAdapter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URI;
 
 public class SpermoListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private TextView dateAdded;
-    //private PDFView pdfView;
     private ImageView pdfView;
     private CustomSpermoListAdapter.onListItemClickListener onListItemClickListener;
 

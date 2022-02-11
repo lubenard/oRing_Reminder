@@ -1,9 +1,7 @@
-package com.lubenard.oring_reminder.custom_components;
+package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
+import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
 import com.lubenard.oring_reminder.utils.Utils;
-
-import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;

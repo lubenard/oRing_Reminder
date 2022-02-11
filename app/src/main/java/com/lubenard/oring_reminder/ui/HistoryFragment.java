@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.HistoryListAdapter;
+import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.Utils;
 
