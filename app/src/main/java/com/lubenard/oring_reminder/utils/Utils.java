@@ -207,7 +207,7 @@ public class Utils {
      */
     public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, long entryId) {
         // First let's create the intent
-        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
 
         //Pending intent for a notification button when user removed protection
         PendingIntent removedProtection =

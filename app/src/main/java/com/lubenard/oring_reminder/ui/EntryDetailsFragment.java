@@ -203,7 +203,7 @@ public class EntryDetailsFragment extends Fragment {
                     // Cancel the break notification if it is set as finished.
                     if (isRunning == 0) {
                         Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) ((dataModel != null) ? dataModel.getId() : entryId), intent, PendingIntent.FLAG_IMMUTABLE);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) ((dataModel != null) ? dataModel.getId() : entryId), intent, PendingIntent.FLAG_MUTABLE);
                         AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                         am.cancel(pendingIntent);
                     }

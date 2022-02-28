@@ -95,7 +95,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 // Set the 'Add break' button to visible
                 remoteViews.setViewVisibility(R.id.widget_button_start_stop_break_session, View.VISIBLE);
 
-                PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 0, intent3, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 0, intent3, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_start_stop_break_session, pendingIntent3);
 
                 int totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, lastEntry.getId());
@@ -134,7 +134,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON_STOP);
 
-                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2);
 
                 intent.putExtra("switchToEntry", lastEntry.getId());
@@ -151,11 +151,11 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 // Action if user click on the button
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON_START);
-                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2 );
             }
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
             remoteViews.setOnClickPendingIntent(R.id.widget_root_view, pendingIntent);
 
             // Update the widget view.
@@ -170,7 +170,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, "onEnabled is called");
         dbManager = new DbManager(context);
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_MUTABLE);
         am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
         // 6000 millis is one minute
         am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
@@ -197,7 +197,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
             Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
                     .putExtra("action", 1);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
             AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
             if (SDK_INT < Build.VERSION_CODES.M)
@@ -246,7 +246,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     dbManager.endPause(lastRunningSessionId);
                     // Cancel the break notification if it is set as finished.
                     Intent intent4 = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)lastRunningSessionId, intent4, PendingIntent.FLAG_IMMUTABLE);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)lastRunningSessionId, intent4, PendingIntent.FLAG_MUTABLE);
                     AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
                     am.cancel(pendingIntent);
                     break;
