@@ -313,6 +313,7 @@ public class DbManager extends SQLiteOpenHelper {
                 new String[]{String.valueOf(entryId), "1"}, null, null, null);
 
         if (cursor.moveToFirst()) {
+            Log.d(TAG, "Hello there");
             // Then we set our values:
             // We need to recompute the date
             // And set the isRunning to 0
@@ -322,7 +323,8 @@ public class DbManager extends SQLiteOpenHelper {
             cv.put(pauseTableTimeRemoved, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(pauseTableRemoved)), datePut, TimeUnit.MINUTES));
             cv.put(pauseTableIsRunning, 0);
 
-            int u = writableDB.update(pausesTable, cv, pauseTableEntryId + "=?", new String[]{String.valueOf(entryId)});
+            int u = writableDB.update(pausesTable, cv, pauseTableEntryId + "=? AND " + pauseTableIsRunning + "=?",
+                    new String[]{String.valueOf(entryId), "1"});
             if (u == 0) {
                 Log.d(TAG, "endPause: update does not seems to work, insert data: (for id = " + entryId);
                 writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
