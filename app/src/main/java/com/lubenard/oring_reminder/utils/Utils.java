@@ -6,15 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 
 import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroadcastReceiver;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -207,21 +207,21 @@ public class Utils {
      */
     public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, long entryId) {
         // First let's create the intent
-        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), getIntentMutableFlag());
 
         //Pending intent for a notification button when user removed protection
         PendingIntent removedProtection =
                 PendingIntent.getBroadcast(context, 1, new Intent(context, NotificationReceiverBroadcastReceiver.class)
                                 .putExtra("action", 1)
                                 .putExtra("entryId", entryId),
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                        getIntentMutableFlag());
 
         //Pending intent for a notification button when user dismissed notification
         PendingIntent dismissedNotif =
                 PendingIntent.getBroadcast(context, 2, new Intent(context, NotificationReceiverBroadcastReceiver.class)
                                 .putExtra("action", 0)
                                 .putExtra("entryId", entryId),
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                        getIntentMutableFlag());
 
         // Get the notification manager and build it
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
@@ -233,5 +233,14 @@ public class Utils {
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
                 .setContentIntent(pi);
         mNotificationManager.notify(0, permNotifBuilder.build());
+    }
+
+    /**
+     * @return return the corresponding pending intent flag according to android version
+     */
+    public static int getIntentMutableFlag() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            return PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE;
+        return PendingIntent.FLAG_UPDATE_CURRENT;
     }
 }

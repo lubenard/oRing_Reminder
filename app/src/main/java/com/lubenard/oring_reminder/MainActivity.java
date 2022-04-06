@@ -3,7 +3,6 @@ package com.lubenard.oring_reminder;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,10 +11,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -30,7 +27,6 @@ import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 public class MainActivity extends AppCompatActivity {

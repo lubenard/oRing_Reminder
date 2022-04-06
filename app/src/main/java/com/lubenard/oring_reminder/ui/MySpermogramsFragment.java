@@ -23,8 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.ui.adapters.CustomSpermoListAdapter;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
+import com.lubenard.oring_reminder.ui.adapters.CustomSpermoListAdapter;
 import com.shockwave.pdfium.PdfDocument;
 import com.shockwave.pdfium.PdfiumCore;
 

@@ -1,5 +1,7 @@
 package com.lubenard.oring_reminder.ui;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -35,8 +37,8 @@ import androidx.preference.PreferenceManager;
 import com.lubenard.oring_reminder.CurrentSessionWidgetProvider;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -45,8 +47,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static android.os.Build.VERSION.SDK_INT;
 
 public class EditEntryFragment extends Fragment {
 

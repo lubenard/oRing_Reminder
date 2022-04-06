@@ -4,13 +4,10 @@ import static androidx.core.content.ContextCompat.getDrawable;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.DbManager;
-import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
-import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.utils.Utils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -18,11 +15,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-
-import android.view.ViewGroup;
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
+import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Date;

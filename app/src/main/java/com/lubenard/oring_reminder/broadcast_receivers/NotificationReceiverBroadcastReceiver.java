@@ -4,10 +4,7 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.preference.EditTextPreferenceDialogFragmentCompat;
 
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;

@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.ui.viewHolders.SpermoListViewHolder;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
+import com.lubenard.oring_reminder.ui.viewHolders.SpermoListViewHolder;
 
 import java.util.ArrayList;
 

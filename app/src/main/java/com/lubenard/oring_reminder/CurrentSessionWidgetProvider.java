@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.lubenard.oring_reminder.utils.Utils.getIntentMutableFlag;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -95,7 +96,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 // Set the 'Add break' button to visible
                 remoteViews.setViewVisibility(R.id.widget_button_start_stop_break_session, View.VISIBLE);
 
-                PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 0, intent3, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 0, intent3, getIntentMutableFlag());
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_start_stop_break_session, pendingIntent3);
 
                 int totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, lastEntry.getId());
@@ -134,7 +135,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON_STOP);
 
-                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, getIntentMutableFlag());
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2);
 
                 intent.putExtra("switchToEntry", lastEntry.getId());
@@ -151,11 +152,11 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 // Action if user click on the button
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON_START);
-                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, getIntentMutableFlag());
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2 );
             }
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, getIntentMutableFlag());
             remoteViews.setOnClickPendingIntent(R.id.widget_root_view, pendingIntent);
 
             // Update the widget view.

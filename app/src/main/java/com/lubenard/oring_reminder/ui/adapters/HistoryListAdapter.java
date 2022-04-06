@@ -9,8 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.ui.viewHolders.HistoryViewHolder;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.ui.viewHolders.HistoryViewHolder;
 
 import java.util.ArrayList;
 

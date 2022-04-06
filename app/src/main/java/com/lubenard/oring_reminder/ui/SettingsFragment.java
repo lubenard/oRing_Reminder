@@ -20,18 +20,17 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.BackupRestore;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
