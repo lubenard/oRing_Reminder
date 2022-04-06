@@ -66,6 +66,7 @@ public class Utils {
                 setAppLocale(context,"de");
                 break;
             case "system":
+            default:
                 setAppLocale(context, Resources.getSystem().getConfiguration().locale.getLanguage());
                 break;
         }
