@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui;
+package com.lubenard.oring_reminder.ui.fragments;
 
 import static androidx.core.content.ContextCompat.getDrawable;
 

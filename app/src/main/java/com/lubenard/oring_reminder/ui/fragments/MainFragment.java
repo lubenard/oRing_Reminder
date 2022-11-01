@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui;
+package com.lubenard.oring_reminder.ui.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
@@ -20,10 +20,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
@@ -44,6 +47,7 @@ public class MainFragment extends Fragment {
     private Button button_start_break;
     private ImageButton button_see_curr_session;
     private Button button_see_full_history;
+    private BottomNavigationView bottom_navigation_view;
     private FloatingActionButton fab;
     private TextView text_view_break;
     private View view;
@@ -58,13 +62,12 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
     private View.OnClickListener clickInLinearLayout() {
         return v -> {
-            Integer position = Integer.parseInt(v.getTag().toString());
+            int position = Integer.parseInt(v.getTag().toString());
             Log.d("MainView", "Clicked item at position: " + position);
 
             EntryDetailsFragment fragment = new EntryDetailsFragment();
@@ -125,12 +128,6 @@ public class MainFragment extends Fragment {
         updateDesign();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-
     private void searchEntry() {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -157,48 +154,6 @@ public class MainFragment extends Fragment {
                             .addToBackStack(null).commit();
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_search_entry:
-                searchEntry();
-                return true;
-            case R.id.action_my_spermogramms:
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new MySpermogramsFragment(), null)
-                        .addToBackStack(null).commit();
-                return true;
-            case R.id.action_calculators:
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new CalculatorsFragment(), null)
-                        .addToBackStack(null).commit();
-                return true;
-            case R.id.action_datas:
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new DatasFragment(), null)
-                        .addToBackStack(null).commit();
-                return true;
-            case R.id.action_settings:
-                // Navigate to settings screen
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new SettingsFragment(), null)
-                        .addToBackStack(null).commit();
-                return true;
-            case R.id.action_reload_datas:
-                updateCurrSessionDatas();
-                updateHistoryList();
-                return true;
-            case R.id.action_sort_entrys:
-                orderEntryByDesc = !orderEntryByDesc;
-                Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
-                updateHistoryList();
-                return true;
-            default:
-                return false;
-        }
     }
 
     /**
@@ -405,10 +360,88 @@ public class MainFragment extends Fragment {
 
         button_see_full_history = view.findViewById(R.id.button_see_history);
 
+        bottom_navigation_view = view.findViewById(R.id.bottomNavigationView);
+
+        bottom_navigation_view.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                Log.d(TAG, "id = " + id);
+                switch (id) {
+                    case R.id.bottom_nav_bar_home:
+                        // Navigate to settings screen
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_home, new MainFragment(), null).addToBackStack(null).commit();
+                        break;
+                    case R.id.bottom_nav_bar_calendar:
+                        // Navigate to settings screen
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_home, new CalendarFragment(), null).addToBackStack(null).commit();
+                        break;
+                    case R.id.bottom_nav_bar_settings:
+                        // Navigate to settings screen
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_home, new SettingsFragment(), null).addToBackStack(null).commit();
+                        break;
+                }
+                return true;
+            }
+        });
+
         this.view = view;
 
         getActivity().setTitle(R.string.app_name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_main, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.action_search_entry:
+                        searchEntry();
+                        return true;
+                    case R.id.action_my_spermogramms:
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, new MySpermogramsFragment(), null)
+                                .addToBackStack(null).commit();
+                        return true;
+                    case R.id.action_calculators:
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, new CalculatorsFragment(), null)
+                                .addToBackStack(null).commit();
+                        return true;
+                    case R.id.action_datas:
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, new DatasFragment(), null)
+                                .addToBackStack(null).commit();
+                        return true;
+                    case R.id.action_settings:
+                        // Navigate to settings screen
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, new SettingsFragment(), null)
+                                .addToBackStack(null).commit();
+                        return true;
+                    case R.id.action_reload_datas:
+                        updateCurrSessionDatas();
+                        updateHistoryList();
+                        return true;
+                    case R.id.action_sort_entrys:
+                        orderEntryByDesc = !orderEntryByDesc;
+                        Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
+                        updateHistoryList();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
 
         button_see_full_history.setOnClickListener(new View.OnClickListener() {
             @Override

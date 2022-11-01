@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
-import com.lubenard.oring_reminder.ui.MySpermogramsFragment;
+import com.lubenard.oring_reminder.ui.fragments.MySpermogramsFragment;
 import com.lubenard.oring_reminder.ui.adapters.CustomSpermoListAdapter;
 
 import java.io.File;

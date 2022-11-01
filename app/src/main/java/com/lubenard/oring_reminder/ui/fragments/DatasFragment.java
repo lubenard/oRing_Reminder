@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui;
+package com.lubenard.oring_reminder.ui.fragments;
 
 import android.os.Bundle;
 import android.util.Log;

@@ -33,4 +33,10 @@
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/circle</item>
     </style>
+
+    <style name="BottomNavBar" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="backgroundColor">@color/white</item>
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+    </style>
 </resources>

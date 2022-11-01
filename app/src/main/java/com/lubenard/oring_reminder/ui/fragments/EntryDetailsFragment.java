@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui;
+package com.lubenard.oring_reminder.ui.fragments;
 
 import static android.os.Build.VERSION.SDK_INT;
 

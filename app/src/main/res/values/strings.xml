@@ -166,4 +166,5 @@
     <string name="time_worn_appr">Time worn approximately:\n%d weeks\n%d days\n%d hours\n%d minutes\n</string>
     <string name="today">Today:</string>
     <string name="at">"At "</string>
+	<string name="calendar_fragment_title">Calendar</string>
 </resources>

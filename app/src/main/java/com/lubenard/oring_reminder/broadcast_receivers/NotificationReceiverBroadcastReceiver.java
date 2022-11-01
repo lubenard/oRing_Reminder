@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.ui.EditEntryFragment;
+import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;

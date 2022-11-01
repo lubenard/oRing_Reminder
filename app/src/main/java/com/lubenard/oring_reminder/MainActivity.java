@@ -23,8 +23,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
-import com.lubenard.oring_reminder.ui.EntryDetailsFragment;
-import com.lubenard.oring_reminder.ui.MainFragment;
+import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
+import com.lubenard.oring_reminder.ui.fragments.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.concurrent.Callable;

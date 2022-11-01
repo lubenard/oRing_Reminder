@@ -17,8 +17,8 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.ui.EditEntryFragment;
-import com.lubenard.oring_reminder.ui.SettingsFragment;
+import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
+import com.lubenard.oring_reminder.ui.fragments.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
 import com.lubenard.oring_reminder.utils.Utils;
 import com.lubenard.oring_reminder.utils.XmlWriter;
