@@ -371,17 +371,17 @@ public class MainFragment extends Fragment {
                     case R.id.bottom_nav_bar_home:
                         // Navigate to settings screen
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_home, new MainFragment(), null).addToBackStack(null).commit();
+                                .replace(android.R.id.content, new MainFragment(), null).addToBackStack(null).commit();
                         break;
                     case R.id.bottom_nav_bar_calendar:
                         // Navigate to settings screen
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_home, new CalendarFragment(), null).addToBackStack(null).commit();
+                                .replace(android.R.id.content, new CalendarFragment(), null).addToBackStack(null).commit();
                         break;
                     case R.id.bottom_nav_bar_settings:
                         // Navigate to settings screen
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_home, new SettingsFragment(), null).addToBackStack(null).commit();
+                                .replace(android.R.id.content, new SettingsFragment(), null).addToBackStack(null).commit();
                         break;
                 }
                 return true;
