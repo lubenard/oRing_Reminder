@@ -5,7 +5,7 @@
 	android:layout_width="30dp"
 	android:layout_height="30dp"
 	android:gravity="center"
-	android:background="@drawable/calendar_circle_green"
+	tools:background="@drawable/calendar_circle_green"
 	android:textStyle="bold"
 	tools:text="1" />
 

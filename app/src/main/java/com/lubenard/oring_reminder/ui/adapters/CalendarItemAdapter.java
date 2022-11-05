@@ -1,50 +1,55 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.ui.viewHolders.CalendarItemViewHolder;
 
 import java.util.ArrayList;
 
-public class CalendarItemAdapter extends RecyclerView.Adapter<CalendarItemViewHolder> {
+public class CalendarItemAdapter extends BaseAdapter {
 
-    private ArrayList <String> monthList;
+    private ArrayList<String> dayList;
     private Context context;
-    private onListItemClickListener onListItemClickListener;
+    private int calendarOffset;
+    private CalendarItemAdapter.onListItemClickListener onListItemClickListener;
 
-    public CalendarItemAdapter(ArrayList<String> datas, onListItemClickListener onListItemClickListener) {
-        monthList = datas;
+    public CalendarItemAdapter(Context context, ArrayList<String> dayList, int calendarOffset, CalendarItemAdapter.onListItemClickListener onListItemClickListener) {
+        this.dayList = dayList;
+        this.context = context;
+        this.calendarOffset = calendarOffset;
         this.onListItemClickListener = onListItemClickListener;
-        Log.d("CalendarItemAdapter", "CalendarItemAdapter is initialised");
-    }
-
-    @NonNull
-    @Override
-    public CalendarItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.calendar_item, parent, false);
-        context = parent.getContext();
-        Log.d("CalendarItemAdapter", "CalendarItemAdapter: returning ViewHolder");
-        return new CalendarItemViewHolder(view, onListItemClickListener, context);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CalendarItemViewHolder holder, int position) {
-        holder.updateDatas(monthList.get(position), context);
+    public int getCount() {
+        return dayList.size();
     }
 
     @Override
-    public int getItemCount() {
-        return monthList.size();
+    public Object getItem(int i) {
+        return dayList.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View gridItem;
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        gridItem = inflater.inflate(R.layout.calendar_grid_item, null);
+
+        ((TextView)gridItem.findViewById(R.id.calendar_grid_item_layout)).setText(String.valueOf(position + 1));
+        return gridItem;
     }
 
     public interface onListItemClickListener {

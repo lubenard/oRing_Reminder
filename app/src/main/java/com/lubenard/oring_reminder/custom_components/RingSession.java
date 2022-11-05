@@ -2,6 +2,7 @@ package com.lubenard.oring_reminder.custom_components;
 
 import com.lubenard.oring_reminder.utils.Utils;
 
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class RingSession {
@@ -41,6 +42,18 @@ public class RingSession {
 
     public String getDateRemoved() {
         return dateRemoved;
+    }
+
+    public Calendar getDatePutCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Utils.getdateParsed(datePut));
+        return calendar;
+    }
+
+    public Calendar getDateRemovedCalendar() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Utils.getdateParsed(dateRemoved));
+        return calendar;
     }
 
     public int getIsRunning() {
