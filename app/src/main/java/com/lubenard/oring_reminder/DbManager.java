@@ -14,6 +14,7 @@ import com.lubenard.oring_reminder.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -461,6 +462,34 @@ public class DbManager extends SQLiteOpenHelper {
                     cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
         }
         cursor.close();
+        return datas;
+    }
+
+    /**
+     * This function is used to backup into a file
+     * @return All the datas for all the entrys.
+     */
+    public ArrayList<RingSession> getEntriesForMonth(Calendar date) {
+        ArrayList<RingSession> datas = new ArrayList<>();
+
+        String month = String.valueOf(date.get(Calendar.MONTH) + 1);
+        String year = String.valueOf(date.get(Calendar.YEAR));
+
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
+
+        Log.d(TAG, "getEntriesForMonth query say " + year + "-" + month + "%" + " as request");
+
+        Cursor cursor = readableDB.query(ringTable,  columns, ringTablePut + " like ?", new String[]{year + "-" + month + "%"},null, null, null);
+
+        while (cursor.moveToNext()) {
+            datas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                    cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                    cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+        }
+        cursor.close();
+        Log.d(TAG, "getEntriesForMonth return " + datas.size() + " results");
         return datas;
     }
 

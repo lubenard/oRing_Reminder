@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,18 +9,24 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CalendarItemAdapter extends BaseAdapter {
 
     private ArrayList<String> dayList;
     private Context context;
     private int calendarOffset;
+    private HashMap<Integer, RingSession> monthEntries;
     private CalendarItemAdapter.onListItemClickListener onListItemClickListener;
 
-    public CalendarItemAdapter(Context context, ArrayList<String> dayList, int calendarOffset, CalendarItemAdapter.onListItemClickListener onListItemClickListener) {
+    public CalendarItemAdapter(Context context, ArrayList<String> dayList, HashMap<Integer, RingSession> monthEntries, int calendarOffset, CalendarItemAdapter.onListItemClickListener onListItemClickListener) {
         this.dayList = dayList;
+        this.monthEntries = monthEntries;
         this.context = context;
         this.calendarOffset = calendarOffset;
         this.onListItemClickListener = onListItemClickListener;
@@ -48,7 +55,21 @@ public class CalendarItemAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridItem = inflater.inflate(R.layout.calendar_grid_item, null);
 
-        ((TextView)gridItem.findViewById(R.id.calendar_grid_item_layout)).setText(String.valueOf(position + 1));
+        if (!dayList.get(position).equals("0")) {
+
+            RingSession session = monthEntries.get(position);
+
+            Log.d("CalendarItemAdapter", "session found is " + session);
+
+            ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setText(String.valueOf(position));
+
+            if (session != null) {
+                if (session.getIsRunning() == 1)
+                    ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
+                else
+                    ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
+            }
+        }
         return gridItem;
     }
 

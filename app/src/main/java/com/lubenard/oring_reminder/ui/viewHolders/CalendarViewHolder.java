@@ -11,14 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.adapters.CalendarAdapter;
 import com.lubenard.oring_reminder.ui.adapters.CalendarItemAdapter;
+import com.lubenard.oring_reminder.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -41,21 +45,32 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
      * @param date date to base data on
      * @param context context
      */
-    public void updateDatas(Calendar date, Context context) {
+    public void updateDatas(Calendar date, ArrayList<RingSession> sessions, Context context) {
         Log.d("CalendarViewHolder", "Received date" + date);
 
         calendarMonth.setText(String.format("%s %d", date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), date.get(Calendar.YEAR)));
 
-        ArrayList<String> num = listOfDatesInMonth(date);
-
         int calendarOffset = getIndexOfFirstDayInMonth(date);
 
-        final CalendarItemAdapter adapter = new CalendarItemAdapter(context, num, calendarOffset, onGridItemClickListener);
+        ArrayList<String> num = listOfDatesInMonth(date, calendarOffset);
+
+        Calendar calendar = Calendar.getInstance();
+        HashMap<Integer, RingSession> mappedSessions = new HashMap<>();
+
+        Log.d("CalendarItemViewHolder", "Have " + sessions.size() + " in this month");
+
+        for (int i = 0; i != sessions.size(); i++) {
+            Log.d("CalendarItemViewHolder", "Adding session numero " + i + " to hashmap");
+            calendar.setTime(Utils.getdateParsed(sessions.get(i).getDatePut()));
+            mappedSessions.put(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i));
+        }
+
+        final CalendarItemAdapter adapter = new CalendarItemAdapter(context, num, mappedSessions,calendarOffset, onGridItemClickListener);
 
         calendarGridDays.setAdapter(adapter);
     }
 
-    ArrayList<String> listOfDatesInMonth(Calendar selectedMonthFirstDay) {
+    ArrayList<String> listOfDatesInMonth(Calendar selectedMonthFirstDay, int calendarOffset) {
         Calendar nextMonthFirstDay = Calendar.getInstance();
         nextMonthFirstDay.set(selectedMonthFirstDay.get(Calendar.YEAR),
                 selectedMonthFirstDay.get(Calendar.DAY_OF_MONTH) + 1, selectedMonthFirstDay.get(Calendar.DAY_OF_MONTH));
@@ -63,6 +78,8 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
         Log.d("CalendarItemViewHolder", "listOfDatesInMonth: nextMonthFirstDay is " + selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         ArrayList<String> list = new ArrayList<>();
+
+        for(int j = 0; j != calendarOffset; j++) {list.add("0");}
 
         for (int i = 1; i < selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH) + 1; i++) {
             list.add(String.valueOf(i));

@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.viewHolders.CalendarViewHolder;
+import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +27,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private onListItemClickListener onListItemClickListener;
 
     public CalendarAdapter(Calendar firstSession, Calendar lastSession, onListItemClickListener onListItemClickListener) {
+
+        Log.d("CalendarItemAdapter", "firstSession say is " + Utils.getdateFormatted(firstSession.getTime()));
 
         monthList = new ArrayList<>();
 
@@ -35,6 +42,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
         int monthDiffCounter = firstSession.get(Calendar.MONTH);
         int yearCounter = firstSession.get(Calendar.YEAR);
+
+        Log.d("CalendarItemAdapter", "Before loop: " + monthDiffCounter + "/" + yearCounter);
+
         for (int i = 0; i < diffMonth; i++) {
             if (monthDiffCounter % 12 == 0) {
                 Log.d("CalendarItemAdapter", "Increasing year counter");
@@ -64,7 +74,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
-        holder.updateDatas(monthList.get(position), context);
+        DbManager dbManager = MainActivity.getDbManager();
+        ArrayList<RingSession> allDatas = dbManager.getAllDatasForAllEntrys();
+        holder.updateDatas(monthList.get(position), dbManager.getEntriesForMonth(monthList.get(position)), context);
     }
 
     @Override

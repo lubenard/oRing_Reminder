@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/calendar_grid_item_layout"
 	android:layout_width="30dp"
 	android:layout_height="30dp"
-	android:gravity="center"
-	tools:background="@drawable/calendar_circle_green"
-	android:textStyle="bold"
-	tools:text="1" />
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<TextView
+		android:id="@+id/calendar_grid_item_layout"
+		android:gravity="center"
+		android:layout_width="30dp"
+		android:layout_height="30dp"
+		tools:background="@drawable/calendar_circle_green"
+		android:textStyle="bold"
+		app:layout_constraintTop_toTopOf="parent"
+		app:layout_constraintLeft_toLeftOf="parent"
+		tools:text="1" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 

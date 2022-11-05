@@ -34,17 +34,7 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
         View view = inflater.inflate(R.layout.calendar_fragment, container, false);
 
         onListItemClickListener = this;
-
-        ArrayList<String> dataModels = new ArrayList<>();
-
-        dataModels.add("January 2022");
-        dataModels.add("February 2022");
-        dataModels.add("Mars 2022");
-
-        Log.d("CalendarFragment", "Should be Launching ItemAdapter, having " + dataModels.size() + " elements");
-
         calendarRecyclerView = view.findViewById(R.id.calendar_list);
-
         return view;
     }
 
