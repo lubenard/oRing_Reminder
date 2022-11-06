@@ -45,8 +45,6 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         getActivity().setTitle(R.string.calendar_fragment_title);
 
         Log.d("CalendarFragment", "View is created");

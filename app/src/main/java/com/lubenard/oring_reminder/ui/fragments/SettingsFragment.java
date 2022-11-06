@@ -58,8 +58,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         activity.setTitle(R.string.action_settings);
 
-        ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         // Language change listener
         Preference language = findPreference("ui_language");
         language.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

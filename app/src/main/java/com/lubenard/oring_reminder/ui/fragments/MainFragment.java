@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -74,17 +75,17 @@ public class MainFragment extends Fragment {
                 case R.id.bottom_nav_bar_home:
                     // Navigate to settings screen
                     getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, new HomeFragment(), null).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, new HomeFragment(), null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
                     break;
                 case R.id.bottom_nav_bar_calendar:
                     // Navigate to settings screen
                     getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, new CalendarFragment(), null).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, new CalendarFragment(), null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
                     break;
                 case R.id.bottom_nav_bar_settings:
                     // Navigate to settings screen
                     getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, new SettingsFragment(), null).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, new SettingsFragment(), null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
                     break;
             }
             return true;

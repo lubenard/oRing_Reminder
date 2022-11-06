@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -55,6 +56,47 @@ public class HomeFragment extends Fragment {
     private DbManager dbManager;
     private TextView textview_progress;
     private SharedPreferences sharedPreferences;
+
+    private MenuProvider menuProvider = new MenuProvider() {
+        @Override
+        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            menuInflater.inflate(R.menu.menu_main, menu);
+        }
+
+        @Override
+        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+            int id = menuItem.getItemId();
+            switch (id) {
+                case R.id.action_search_entry:
+                    searchEntry();
+                    return true;
+                case R.id.action_my_spermogramms:
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new MySpermogramsFragment(), null)
+                            .addToBackStack(null).commit();
+                    return true;
+                case R.id.action_calculators:
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new CalculatorsFragment(), null)
+                            .addToBackStack(null).commit();
+                    return true;
+                case R.id.action_datas:
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, new DatasFragment(), null)
+                            .addToBackStack(null).commit();
+                    return true;
+                case R.id.action_reload_datas:
+                    updateCurrSessionDatas();
+                    return true;
+                case R.id.action_sort_entrys:
+                    orderEntryByDesc = !orderEntryByDesc;
+                    Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,7 +159,6 @@ public class HomeFragment extends Fragment {
      * @param isLongClick act if it is a long click or not
      */
     private void actionOnPlusButton(boolean isLongClick) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String action = sharedPreferences.getString("ui_action_on_plus_button", "default");
 
         if (isLongClick) {
@@ -164,18 +205,6 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Convert the timeWeared from a int into a readable hour:minutes format
-     * @param timeWeared timeWeared is in minutes
-     * @return a string containing the time the user weared the protection
-     */
-    private String convertTimeWeared(int timeWeared) {
-        if (timeWeared < 60)
-            return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
-        else
-            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
-    }
-
-    /**
      * Start break on MainFragment
      */
     private void startBreak() {
@@ -201,7 +230,6 @@ public class HomeFragment extends Fragment {
         RingSession lastRunningEntry = dbManager.getLastRunningEntry();
 
         if (lastRunningEntry != null) {
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
             textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
             float progress_percentage = ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100;
@@ -289,52 +317,19 @@ public class HomeFragment extends Fragment {
         text_view_break = view.findViewById(R.id.text_view_break);
         button_start_break = view.findViewById(R.id.button_start_break);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         this.view = view;
 
         getActivity().setTitle(R.string.app_name);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        requireActivity().addMenuProvider(new MenuProvider() {
-            @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.menu_main, menu);
-            }
+        requireActivity().addMenuProvider(menuProvider);
+    }
 
-            @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch (id) {
-                    case R.id.action_search_entry:
-                        searchEntry();
-                        return true;
-                    case R.id.action_my_spermogramms:
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(android.R.id.content, new MySpermogramsFragment(), null)
-                                .addToBackStack(null).commit();
-                        return true;
-                    case R.id.action_calculators:
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(android.R.id.content, new CalculatorsFragment(), null)
-                                .addToBackStack(null).commit();
-                        return true;
-                    case R.id.action_datas:
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(android.R.id.content, new DatasFragment(), null)
-                                .addToBackStack(null).commit();
-                        return true;
-                    case R.id.action_reload_datas:
-                        updateCurrSessionDatas();
-                        return true;
-                    case R.id.action_sort_entrys:
-                        orderEntryByDesc = !orderEntryByDesc;
-                        Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
-
-        updateDesign();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "OnDestroyView called");
+        requireActivity().removeMenuProvider(menuProvider);
     }
 }
