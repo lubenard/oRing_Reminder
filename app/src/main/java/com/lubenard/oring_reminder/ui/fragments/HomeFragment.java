@@ -46,13 +46,11 @@ public class HomeFragment extends Fragment {
     private TextView progress_bar_text;
     private Button button_start_break;
     private ImageButton button_see_curr_session;
-    private Button button_see_full_history;
     private FloatingActionButton fab;
     private TextView text_view_break;
     private View view;
     private static boolean orderEntryByDesc = true;
 
-    private static ViewGroup viewGroup;
     private ArrayList<RingSession> dataModels;
     private DbManager dbManager;
     private TextView textview_progress;
@@ -62,60 +60,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         return inflater.inflate(R.layout.home_fragment, container, false);
-    }
-
-    private View.OnClickListener clickInLinearLayout() {
-        return v -> {
-            int position = Integer.parseInt(v.getTag().toString());
-            Log.d("MainView", "Clicked item at position: " + position);
-
-            EntryDetailsFragment fragment = new EntryDetailsFragment();
-            Bundle bundle = new Bundle();
-            bundle.putLong("entryId", position);
-            fragment.setArguments(bundle);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, fragment, null)
-                    .addToBackStack(null).commit();
-        };
-    }
-
-    private void updateHistoryList() {
-        viewGroup.removeAllViews();
-        dataModels.clear();
-        ArrayList<RingSession> entrysDatas = dbManager.getHistoryForMainView(orderEntryByDesc);
-
-        LayoutInflater inflater = (LayoutInflater) getActivity().
-                getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-
-        for (int i = 0; i != entrysDatas.size(); i++) {
-            View view = inflater.inflate(R.layout.main_history_one_elem, null);
-            view.setTag(Integer.toString((int) entrysDatas.get(i).getId()));
-
-            TextView textView_date = view.findViewById(R.id.main_history_date);
-
-            if (entrysDatas.get(i).getDatePut().split(" ")[0].equals(entrysDatas.get(i).getDateRemoved().split(" ")[0]))
-                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0], false));
-            else
-                textView_date.setText(Utils.convertDateIntoReadable(entrysDatas.get(i).getDatePut().split(" ")[0], false) + " -> " + Utils.convertDateIntoReadable(entrysDatas.get(i).getDateRemoved().split(" ")[0], false));
-
-            TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_from);
-            textView_hour_from.setText(entrysDatas.get(i).getDatePut().split(" ")[1]);
-
-            TextView textView_hour_to = view.findViewById(R.id.custom_view_date_weared_to);
-            textView_hour_to.setText(entrysDatas.get(i).getDateRemoved().split(" ")[1]);
-
-            TextView textView_worn_for = view.findViewById(R.id.custom_view_date_time_weared);
-            int totalTimePause = getTotalTimePause(entrysDatas.get(i).getDatePut(), entrysDatas.get(i).getId(), entrysDatas.get(i).getDateRemoved());
-            if (totalTimePause / 60 >= 15)
-                textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-            else
-                textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            textView_worn_for.setText(convertTimeWeared(totalTimePause));
-
-            view.setOnClickListener(clickInLinearLayout());
-
-            viewGroup.addView(view);
-        }
     }
 
     /**
@@ -334,7 +278,6 @@ public class HomeFragment extends Fragment {
                 updateDesign();
             });
         }
-        updateHistoryList();
     }
 
     @Override
@@ -343,8 +286,6 @@ public class HomeFragment extends Fragment {
 
         dbManager = MainActivity.getDbManager();
         dataModels = new ArrayList<>();
-
-        viewGroup = view.findViewById(R.id.list_history);
 
         progress_bar = view.findViewById(R.id.progress_bar_main);
         progress_bar_text = view.findViewById(R.id.text_view_progress);
@@ -356,8 +297,6 @@ public class HomeFragment extends Fragment {
         text_view_break = view.findViewById(R.id.text_view_break);
         button_start_break = view.findViewById(R.id.button_start_break);
         button_see_curr_session = view.findViewById(R.id.see_current_session);
-
-        button_see_full_history = view.findViewById(R.id.button_see_history);
 
         this.view = view;
 
@@ -392,35 +331,16 @@ public class HomeFragment extends Fragment {
                                 .replace(android.R.id.content, new DatasFragment(), null)
                                 .addToBackStack(null).commit();
                         return true;
-                    case R.id.action_settings:
-                        // Navigate to settings screen
-                        getActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(android.R.id.content, new SettingsFragment(), null)
-                                .addToBackStack(null).commit();
-                        return true;
                     case R.id.action_reload_datas:
                         updateCurrSessionDatas();
-                        updateHistoryList();
                         return true;
                     case R.id.action_sort_entrys:
                         orderEntryByDesc = !orderEntryByDesc;
                         Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
-                        updateHistoryList();
                         return true;
                     default:
                         return false;
                 }
-            }
-        });
-
-
-        button_see_full_history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HistoryFragment fragment = new HistoryFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, fragment, null)
-                        .addToBackStack(null).commit();
             }
         });
 

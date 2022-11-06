@@ -7,11 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,40 +114,7 @@
                 android:visibility="gone"
                 android:text="@string/no_active_session"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginStart="15dp"
-                android:text="@string/history_colon"
-                android:textSize="35sp"
-                tools:layout_editor_absoluteX="19dp"
-                tools:layout_editor_absoluteY="26dp" />
-
-            <LinearLayout
-                android:id="@+id/list_history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="18dp"
-                android:orientation="vertical"
-                android:showDividers="middle"
-                android:divider="@drawable/empty_tall_divider" />
-
-            <Button
-                android:id="@+id/button_see_history"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:paddingHorizontal="8dp"
-                android:textColor="@color/white"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:background="@drawable/basic_button"
-                android:text="@string/see_full_history"
-                android:layout_marginVertical="15dp"/>
         </LinearLayout>
-    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
