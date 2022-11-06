@@ -499,7 +499,7 @@ public class EntryDetailsFragment extends Fragment {
             Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             if (updateProgressBar) {
                 progressBar.setProgressDrawable(null);
-                progressBar.setProgressDrawable(context.getDrawable(R.drawable.circle));
+                progressBar.setProgressDrawable(context.getDrawable(R.drawable.calendar_circle_red));
                 progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             }
             Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());

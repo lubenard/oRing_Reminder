@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ProgressBar
+                <!--<ProgressBar
                     android:id="@+id/progress_bar"
                     style="@style/CircularDeterminateProgressBar"
                     android:layout_width="250dp"
@@ -31,7 +31,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:layout_editor_absoluteY="0dp"
-                    tools:progress="0" />
+                    tools:progress="0" />-->
 
                 <TextView
                     android:id="@+id/text_view_progress"

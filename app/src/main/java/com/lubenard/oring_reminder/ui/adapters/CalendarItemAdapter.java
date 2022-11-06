@@ -82,6 +82,13 @@ public class CalendarItemAdapter extends BaseAdapter {
         return gridItem;
     }
 
+    @Override
+    public boolean isEnabled(int position) {
+        if (dayList.get(position).equals("0") || monthEntries.get(position) == null)
+            return false;
+        return true;
+    }
+
     public interface onListItemClickListener {
         void onListItemClickListener(int position);
     }

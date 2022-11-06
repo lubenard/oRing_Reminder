@@ -27,6 +27,7 @@ import androidx.preference.PreferenceManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.lubenard.oring_reminder.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
@@ -42,10 +43,9 @@ import java.util.concurrent.TimeUnit;
 public class HomeFragment extends Fragment {
     private static final String TAG = "MainFragment";
 
-    private ProgressBar progress_bar;
+    private CircularProgressIndicator progress_bar;
     private TextView progress_bar_text;
     private Button button_start_break;
-    private ImageButton button_see_curr_session;
     private FloatingActionButton fab;
     private TextView text_view_break;
     private View view;
@@ -204,11 +204,18 @@ public class HomeFragment extends Fragment {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
             textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
-            Log.d(TAG, "MainView percentage is " + ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100);
-            progress_bar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+            float progress_percentage = ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100;
+            Log.d(TAG, "MainView percentage is " + progress_percentage);
+            if (progress_percentage < 1f)
+                progress_percentage = 1f;
+            if (progress_percentage > 100f)
+                progress_bar.setIndicatorColor(getResources().getColor(R.color.green_main_bar));
+            else
+                progress_bar.setIndicatorColor(getResources().getColor(R.color.blue_main_bar));
+            progress_bar.setProgress((int)progress_percentage);
             if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
                 dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning() == 1) {
-                text_view_break.setText("In break for: " + Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) + "mn");
+                text_view_break.setText(String.format("%s: %d mn", getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 text_view_break.setVisibility(View.VISIBLE);
                 button_start_break.setText(getString(R.string.widget_stop_break));
                 button_start_break.setOnClickListener(v -> {
@@ -236,11 +243,8 @@ public class HomeFragment extends Fragment {
             LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
             linearLayout.setVisibility(View.GONE);
 
-            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
+            LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
             no_active_session.setVisibility(View.VISIBLE);
-
-            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
-            see_curr_session.setVisibility(View.INVISIBLE);
 
             fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.teal_700)));
             fab.setImageDrawable(getContext().getDrawable(R.drawable.baseline_add_24));
@@ -255,24 +259,12 @@ public class HomeFragment extends Fragment {
             LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
             linearLayout.setVisibility(View.VISIBLE);
 
-            TextView no_active_session = view.findViewById(R.id.layout_no_session_active);
+            LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
             no_active_session.setVisibility(View.GONE);
-
-            ImageButton see_curr_session = view.findViewById(R.id.see_current_session);
-            see_curr_session.setVisibility(View.VISIBLE);
 
             fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
             fab.setImageDrawable(getContext().getDrawable(R.drawable.outline_close_24));
             updateCurrSessionDatas();
-            button_see_curr_session.setOnClickListener(v -> {
-                EntryDetailsFragment fragment = new EntryDetailsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
-                fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, fragment, null)
-                        .addToBackStack(null).commit();
-            });
             fab.setOnClickListener(v -> {
                 dbManager.endSession(dbManager.getLastRunningEntry().getId());
                 updateDesign();
@@ -296,7 +288,6 @@ public class HomeFragment extends Fragment {
 
         text_view_break = view.findViewById(R.id.text_view_break);
         button_start_break = view.findViewById(R.id.button_start_break);
-        button_see_curr_session = view.findViewById(R.id.see_current_session);
 
         this.view = view;
 

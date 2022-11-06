@@ -169,4 +169,7 @@
     <string name="time_worn_appr">Temps porté approximatif:\n%d semaines\n%d jours\n%d heures\n%d minutes</string>
     <string name="today">Aujourd\'hui :</string>
     <string name="at">"A "</string>
+	<string name="right_now">En ce moment:</string>
+    <string name="calendar_fragment_title">Calendrier</string>
+    <string name="in_break_for">En pause depuis</string>
 </resources>

@@ -167,4 +167,6 @@
     <string name="today">Today:</string>
     <string name="at">"At "</string>
 	<string name="calendar_fragment_title">Calendar</string>
+	<string name="right_now">Right now:</string>
+    <string name="in_break_for">In break for</string>
 </resources>
