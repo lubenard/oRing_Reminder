@@ -1,5 +1,7 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
+import static androidx.core.content.ContextCompat.getDrawable;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,6 +61,12 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
         dbManager = MainActivity.getDbManager();
 
         ArrayList<RingSession> entries = dbManager.getAllDatasForAllEntrys();
+
+        // Add dividers (like listView) to recyclerView
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requireContext(),
+                DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(getDrawable(requireContext(), R.drawable.empty_tall_divider_calendar));
+        calendarRecyclerView.addItemDecoration(dividerItemDecoration);
 
         adapter = new CalendarAdapter(entries.get(0).getDatePutCalendar(), entries.get(entries.size() - 1).getDatePutCalendar(), onListItemClickListener);
         calendarRecyclerView.setAdapter(adapter);

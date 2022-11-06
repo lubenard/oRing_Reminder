@@ -1,12 +1,15 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
@@ -20,6 +23,7 @@ public class CalendarItemAdapter extends BaseAdapter {
 
     private ArrayList<String> dayList;
     private Context context;
+    private SharedPreferences sharedPreferences;
     private int calendarOffset;
     private HashMap<Integer, RingSession> monthEntries;
     private CalendarItemAdapter.onListItemClickListener onListItemClickListener;
@@ -29,6 +33,7 @@ public class CalendarItemAdapter extends BaseAdapter {
         this.monthEntries = monthEntries;
         this.context = context;
         this.calendarOffset = calendarOffset;
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.onListItemClickListener = onListItemClickListener;
     }
 
@@ -66,8 +71,12 @@ public class CalendarItemAdapter extends BaseAdapter {
             if (session != null) {
                 if (session.getIsRunning() == 1)
                     ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
-                else
-                    ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
+                else {
+                    if (session.getTimeWeared() >= (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60))
+                        ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
+                    else
+                        ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));
+                }
             }
         }
         return gridItem;

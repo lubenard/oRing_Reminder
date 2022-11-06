@@ -3,7 +3,10 @@
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:background="@drawable/rounded_corners_10"
+	android:outlineProvider="bounds"
+	android:background="@drawable/calendar_background"
+	android:layout_marginHorizontal="18dp"
+	android:elevation="30dp"
 	xmlns:tools="http://schemas.android.com/tools">
 
 		<TextView
