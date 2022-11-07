@@ -50,7 +50,6 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton fab;
     private TextView text_view_break;
     private View view;
-    private static boolean orderEntryByDesc = true;
 
     private ArrayList<RingSession> dataModels;
     private DbManager dbManager;
@@ -87,10 +86,6 @@ public class HomeFragment extends Fragment {
                     return true;
                 case R.id.action_reload_datas:
                     updateCurrSessionDatas();
-                    return true;
-                case R.id.action_sort_entrys:
-                    orderEntryByDesc = !orderEntryByDesc;
-                    Toast.makeText(getContext(), getContext().getString((orderEntryByDesc) ? R.string.ordered_by_desc : R.string.not_ordered_by_desc), Toast.LENGTH_SHORT).show();
                     return true;
                 default:
                     return false;

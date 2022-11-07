@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CalendarItemAdapter extends BaseAdapter {
+public class CalendarItemAdapter extends BaseAdapter implements View.OnClickListener{
 
     private ArrayList<String> dayList;
     private Context context;
@@ -36,6 +36,7 @@ public class CalendarItemAdapter extends BaseAdapter {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.onListItemClickListener = onListItemClickListener;
     }
+
 
     @Override
     public int getCount() {
@@ -87,6 +88,11 @@ public class CalendarItemAdapter extends BaseAdapter {
         if (dayList.get(position).equals("0") || monthEntries.get(position) == null)
             return false;
         return true;
+    }
+
+    @Override
+    public void onClick(View view) {
+        Log.d("CalendarItemAdapter", "Clicked on item");
     }
 
     public interface onListItemClickListener {

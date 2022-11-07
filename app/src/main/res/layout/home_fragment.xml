@@ -102,6 +102,17 @@
                 app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/see_current_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="7dp"
+            android:text="Voir ma session"
+            android:textAllCaps="false"
+            android:textColor="@color/purple_200"
+            android:background="@null"/>
     </LinearLayout>
 
     <LinearLayout
