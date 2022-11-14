@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -263,7 +264,7 @@ public class HomeFragment extends Fragment {
         // If this return null, mean there is no running session
         if (dbManager.getLastRunningEntry() == null) {
 
-            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
+            ScrollView linearLayout = view.findViewById(R.id.layout_session_active);
             linearLayout.setVisibility(View.GONE);
 
             LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
@@ -279,7 +280,7 @@ public class HomeFragment extends Fragment {
                 return true;
             });
         } else {
-            LinearLayout linearLayout = view.findViewById(R.id.layout_session_active);
+            ScrollView linearLayout = view.findViewById(R.id.layout_session_active);
             linearLayout.setVisibility(View.VISIBLE);
 
             LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);

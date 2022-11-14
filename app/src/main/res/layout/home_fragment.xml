@@ -7,27 +7,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/layout_session_active"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="27sp"
-            android:layout_marginStart="15dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            app:layout_constraintTop_toBottomOf="@id/text_view_progress"
-            app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
-            app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
-            android:text="En ce moment: " />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:elevation="7dp"
+            android:background="@drawable/home_current_session_background">
+
+            <TextView
+                android:id="@+id/righ_now_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="27sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="15dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="En ce moment: " />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress_bar_main"
@@ -37,8 +46,7 @@
                 android:layout_marginTop="10dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/righ_now_text"
                 app:indicatorSize="300dp"
                 app:trackThickness="17dp"
                 app:trackColor="#515151"
@@ -101,8 +109,63 @@
                 app:layout_constraintStart_toStartOf="@id/progress_bar_main"
                 app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:id="@+id/info_session"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/progress_bar_main"
+                android:layout_marginVertical="15dp"
+                android:baselineAligned="false">
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:layout_marginStart="45dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        android:text="Début:"
+                        tools:text="Début:"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="19 février à 14h22"
+                        tools:text="19 février à 14h22"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="end"
+                    android:layout_marginEnd="45dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        android:text="Fin estimée:"
+                        tools:text="Fin estimée:"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="20 février à 6h22"
+                        tools:text="19 février à 6h22"/>
+                </LinearLayout>
+        </LinearLayout>
         <Button
             android:id="@+id/see_current_session"
             android:layout_width="wrap_content"
@@ -112,8 +175,53 @@
             android:text="Voir ma session"
             android:textAllCaps="false"
             android:textColor="@color/purple_200"
-            android:background="@null"/>
-    </LinearLayout>
+            android:background="@null"
+            app:layout_constraintTop_toBottomOf="@id/info_session"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:elevation="7dp"
+            android:background="@drawable/home_current_session_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Depuis minuit, porté: "/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/layout_no_session_active"
@@ -144,6 +252,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="30dp"
         android:layout_marginEnd="30dp"
+        android:contentDescription="@string/create_new_entry"
         app:srcCompat="@drawable/baseline_add_24"
         tools:ignore="VectorDrawableCompat,SpeakableTextPresentCheck" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
