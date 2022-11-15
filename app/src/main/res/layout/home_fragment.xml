@@ -8,243 +8,257 @@
     android:orientation="vertical">
 
     <ScrollView
-        android:id="@+id/layout_session_active"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:layout_marginBottom="15dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:elevation="7dp"
-            android:background="@drawable/home_current_session_background">
-
-            <TextView
-                android:id="@+id/righ_now_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="27sp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="15dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="En ce moment: " />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/progress_bar_main"
-                android:layout_width="350dp"
-                android:layout_height="350dp"
-                app:trackCornerRadius="15dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/righ_now_text"
-                app:indicatorSize="300dp"
-                app:trackThickness="17dp"
-                app:trackColor="#515151"
-                app:indicatorColor="@color/blue_main_bar"
-                app:indicatorDirectionCircular="clockwise"
-                tools:progress="30"
-                app:indicatorInset="5dp"/>
-
-            <TextView
-                android:id="@+id/text_view_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="40sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintBottom_toTopOf="@+id/text_view_break"
-                app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
-                app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
-                app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
-                android:text="07h42mn" />
-
-            <TextView
-                android:id="@+id/on_needed_time_to_complete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:textSize="20sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintTop_toBottomOf="@id/text_view_progress"
-                app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
-                app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
-                android:text="/ 15h00mn" />
-
-            <TextView
-                android:id="@+id/text_view_break"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintBottom_toBottomOf="@+id/progress_bar_main"
-                app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
-                app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
-                app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
-                app:layout_constraintVertical_bias="0.550"
-                android:textColor="@color/yellow"
-                android:text="text_view_break"/>
-
-            <Button
-                android:id="@+id/button_start_break"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:paddingHorizontal="8dp"
-                android:layout_marginTop="19dp"
-                android:textColor="@color/white"
-                android:layout_height="wrap_content"
-                android:textAllCaps="false"
-                android:textSize="17sp"
-                android:background="@drawable/basic_button"
-                android:text="@string/widget_start_break"
-                app:layout_constraintTop_toBottomOf="@+id/text_view_break"
-                app:layout_constraintStart_toStartOf="@id/progress_bar_main"
-                app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"/>
-
-            <LinearLayout
-                android:id="@+id/info_session"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_session_active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/progress_bar_main"
-                android:layout_marginVertical="15dp"
-                android:baselineAligned="false">
+                android:layout_marginHorizontal="15dp"
+                android:elevation="7dp"
+                android:background="@drawable/home_current_session_background">
+
+                <TextView
+                    android:id="@+id/righ_now_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="27sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:text="@string/right_now" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progress_bar_main"
+                    android:layout_width="350dp"
+                    android:layout_height="350dp"
+                    app:trackCornerRadius="15dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/righ_now_text"
+                    app:indicatorSize="300dp"
+                    app:trackThickness="17dp"
+                    app:trackColor="#515151"
+                    app:indicatorColor="@color/blue_main_bar"
+                    app:indicatorDirectionCircular="clockwise"
+                    tools:progress="30"
+                    app:indicatorInset="5dp"/>
+
+                <TextView
+                    android:id="@+id/text_view_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintBottom_toTopOf="@+id/text_view_break"
+                    app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
+                    app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
+                    app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
+                    android:text="07h42mn" />
+
+                <TextView
+                    android:id="@+id/on_needed_time_to_complete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textSize="20sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintTop_toBottomOf="@id/text_view_progress"
+                    app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
+                    app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
+                    android:text="/ 15h00mn" />
+
+                <TextView
+                    android:id="@+id/text_view_break"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintBottom_toBottomOf="@+id/progress_bar_main"
+                    app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
+                    app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
+                    app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
+                    app:layout_constraintVertical_bias="0.550"
+                    android:textColor="@color/yellow"
+                    android:text="text_view_break"/>
+
+                <Button
+                    android:id="@+id/button_start_break"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="8dp"
+                    android:layout_marginTop="19dp"
+                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textSize="17sp"
+                    android:background="@drawable/basic_button"
+                    android:text="@string/widget_start_break"
+                    app:layout_constraintTop_toBottomOf="@+id/text_view_break"
+                    app:layout_constraintStart_toStartOf="@id/progress_bar_main"
+                    app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"/>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:layout_marginStart="45dp"
-                    android:orientation="vertical">
+                    android:id="@+id/info_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/progress_bar_main"
+                    android:layout_marginVertical="15dp"
+                    android:baselineAligned="false">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textSize="19sp"
-                        android:textStyle="bold"
-                        android:text="Début:"
-                        tools:text="Début:"/>
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:layout_marginStart="45dp"
+                        android:orientation="vertical">
 
-                    <TextView
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="19sp"
+                            android:textStyle="bold"
+                            android:text="Début:"
+                            tools:text="Début:"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="19 février à 14h22"
+                            tools:text="19 février à 14h22"/>
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:text="19 février à 14h22"
-                        tools:text="19 février à 14h22"/>
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="end"
+                        android:layout_marginEnd="45dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:textSize="19sp"
+                            android:textStyle="bold"
+                            android:text="Fin estimée:"
+                            tools:text="Fin estimée:"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="20 février à 6h22"
+                            tools:text="19 février à 6h22"/>
+                    </LinearLayout>
                 </LinearLayout>
-
-                <LinearLayout
+                <Button
+                    android:id="@+id/see_current_session"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="end"
-                    android:layout_marginEnd="45dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textSize="19sp"
-                        android:textStyle="bold"
-                        android:text="Fin estimée:"
-                        tools:text="Fin estimée:"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:text="20 février à 6h22"
-                        tools:text="19 février à 6h22"/>
-                </LinearLayout>
-        </LinearLayout>
-        <Button
-            android:id="@+id/see_current_session"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="7dp"
-            android:text="Voir ma session"
-            android:textAllCaps="false"
-            android:textColor="@color/purple_200"
-            android:background="@null"
-            app:layout_constraintTop_toBottomOf="@id/info_session"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="10dp"
-            android:elevation="7dp"
-            android:background="@drawable/home_current_session_background">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="7dp"
+                    android:text="Voir ma session"
+                    android:textAllCaps="false"
+                    android:textColor="@color/purple_200"
+                    android:background="@null"
+                    app:layout_constraintTop_toBottomOf="@id/info_session"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/layout_no_session_active"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="150dp"
+                android:layout_marginHorizontal="15dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:elevation="7dp"
+                android:background="@drawable/home_current_session_background"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Depuis minuit, porté: "/>
+                    android:textSize="27sp"
+                    android:text="@string/right_now" />
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:text="@string/no_active_session"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                android:elevation="7dp"
+                android:background="@drawable/home_current_session_background">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="15dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:text="Depuis minuit, porté: "
+                        tools:text="Depuis minuit, porté: "/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        tools:text="7h24mn"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:text="Dans les dernières 24h, porté:"
+                        tools:text="Dans les dernières 24h, porté:"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        tools:text="13h37mn"/>
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-        </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/layout_no_session_active"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="@string/right_now"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:text="@string/no_active_session"/>
-    </LinearLayout>
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

@@ -81,7 +81,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 ArrayList<RingSession> session_breaks = dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true);
 
                 if (session_breaks.size() > 0) {
-                    if (session_breaks.get(0).getIsRunning() == 1) {
+                    if (session_breaks.get(0).getIsRunning()) {
                         remoteViews.setTextViewText(R.id.widget_button_start_stop_break_session, context.getString(R.string.widget_stop_break));
                         intent3.setAction(WIDGET_BUTTON_STOP_BREAK);
                     } else {

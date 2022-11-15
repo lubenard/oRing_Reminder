@@ -131,11 +131,11 @@ public class DbManager extends SQLiteOpenHelper {
      * Get the datas list for a the main List
      * @return The datas fetched from the DB as a LinkedHashMap
      */
-    public LinkedHashMap<Integer, RingSession> getAllDatasForMainList(boolean isDesc) {
+    public LinkedHashMap<Integer, RingSession> getAllDatasForMainList(boolean reversed) {
         LinkedHashMap<Integer, RingSession> entryDatas = new LinkedHashMap<>();
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
-        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, (isDesc) ? ringTableId + " DESC" : null);
+        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, (reversed) ? ringTableId + " DESC" : null);
 
         while (cursor.moveToNext()) {
             entryDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)), new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
@@ -143,29 +143,6 @@ public class DbManager extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
-        }
-        cursor.close();
-        return entryDatas;
-    }
-
-    public ArrayList<RingSession> getHistoryForMainView(boolean isDesc) {
-        ArrayList<RingSession> entryDatas = new ArrayList<>();
-
-        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};
-        Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, (isDesc) ? ringTableId + " DESC" : null);
-
-        int i = 0;
-
-        while (cursor.moveToNext() && i != 10) {
-            // Only get the last 10 NON-RUNNING entrys
-            if (cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)) == 0) {
-                entryDatas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
-                        cursor.getString(cursor.getColumnIndex(ringTablePut)),
-                        cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
-                        0,
-                        cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
-                i++;
-            }
         }
         cursor.close();
         return entryDatas;

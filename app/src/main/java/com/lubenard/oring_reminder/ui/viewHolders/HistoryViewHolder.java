@@ -84,7 +84,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
 
         if (dataModel.getDatePut().split(" ")[0].equals(dataModel.getDateRemoved().split(" ")[0]))
             worn_date.setText(Utils.convertDateIntoReadable(dataModel.getDatePut().split(" ")[0], false));
-        else if (dataModel.getIsRunning() == 0)
+        else if (!dataModel.getIsRunning())
             worn_date.setText(Utils.convertDateIntoReadable(dataModel.getDatePut().split(" ")[0], false) + " -> " + Utils.convertDateIntoReadable(dataModel.getDateRemoved().split(" ")[0], false));
 
         weared_from.setText(datePut[1]);
@@ -95,7 +95,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
         } else
             weared_to.setText(dataModel.getDateRemoved());
 
-        if (dataModel.getIsRunning() == 0) {
+        if (!dataModel.getIsRunning()) {
             int totalTimePause = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
             if (totalTimePause / 60 >= 15)
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));

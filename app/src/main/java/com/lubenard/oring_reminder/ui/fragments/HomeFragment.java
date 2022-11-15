@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -237,8 +238,14 @@ public class HomeFragment extends Fragment {
             else
                 progress_bar.setIndicatorColor(getResources().getColor(R.color.blue_main_bar));
             progress_bar.setProgress((int)progress_percentage);
+
+            //Calendar c = Calendar.getInstance();
+
+            //int totalTimeSinceMidnight = recomputeLastWearingTime(c.get(Calendar.HOUR_OF_DAY) * -1, c.get(Calendar.MINUTE) * -1);
+            //wornSinceMidnightData = String.format(getString(R.string.since_midnight_worn_for) + "%dh%02dm", totalTimeSinceMidnight / 60, totalTimeSinceMidnight % 60);
+
             if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
-                dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning() == 1) {
+                dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
                 text_view_break.setText(String.format("%s: %d mn", getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 text_view_break.setVisibility(View.VISIBLE);
                 button_start_break.setText(getString(R.string.widget_stop_break));
@@ -264,7 +271,7 @@ public class HomeFragment extends Fragment {
         // If this return null, mean there is no running session
         if (dbManager.getLastRunningEntry() == null) {
 
-            ScrollView linearLayout = view.findViewById(R.id.layout_session_active);
+            ConstraintLayout linearLayout = view.findViewById(R.id.layout_session_active);
             linearLayout.setVisibility(View.GONE);
 
             LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
@@ -280,7 +287,7 @@ public class HomeFragment extends Fragment {
                 return true;
             });
         } else {
-            ScrollView linearLayout = view.findViewById(R.id.layout_session_active);
+            ConstraintLayout linearLayout = view.findViewById(R.id.layout_session_active);
             linearLayout.setVisibility(View.VISIBLE);
 
             LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);

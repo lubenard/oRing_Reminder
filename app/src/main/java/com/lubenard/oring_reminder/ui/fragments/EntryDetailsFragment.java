@@ -117,7 +117,7 @@ public class EntryDetailsFragment extends Fragment {
                 if (isThereAlreadyARunningPause) {
                     Log.d(TAG, "Error: Already a running pause");
                     Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-                } else if (entryDetails.getIsRunning() == 1) {
+                } else if (entryDetails.getIsRunning()) {
                     String date = Utils.getdateFormatted(new Date());
                     long id = dbManager.createNewPause(entryId, date, "NOT SET YET", 1);
                     // Cancel alarm until breaks are set as finished.
@@ -185,10 +185,10 @@ public class EntryDetailsFragment extends Fragment {
             } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.getDatePut(), pauseEndingText, TimeUnit.SECONDS) <= 0) {
                 Log.d(TAG, "Error: End of pause < start of entry");
                 Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
-            } else if (isRunning == 0 && entryDetails.getIsRunning() == 0 && Utils.getDateDiff(pauseEndingText, entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+            } else if (isRunning == 0 && !entryDetails.getIsRunning() && Utils.getDateDiff(pauseEndingText, entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
                 Log.d(TAG, "Error: End of pause > end of entry");
                 Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
-            } else if (entryDetails.getIsRunning() == 0 && Utils.getDateDiff(pauseBeginningText, entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+            } else if (!entryDetails.getIsRunning() && Utils.getDateDiff(pauseBeginningText, entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
                 Log.d(TAG, "Error: Start of pause > end of entry");
                 Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
             } else {
@@ -211,7 +211,7 @@ public class EntryDetailsFragment extends Fragment {
                 recomputeWearingTime();
 
                 // Only recompute alarm if session is running, else cancel it.
-                if (entryDetails.getIsRunning() == 1) {
+                if (entryDetails.getIsRunning()) {
                     if (pause_ending.getText().toString().equals("NOT SET YET")) {
                         Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                         EditEntryFragment.cancelAlarm(context, entryId);
@@ -280,7 +280,7 @@ public class EntryDetailsFragment extends Fragment {
         // If session is running,
         // OldTimeWeared is the time in minute between the starting of the entry and the current Date
         // Or, oldTimeWeared is the time between the start of the entry and it's pause
-        if (entryDetails.getIsRunning() == 1)
+        if (entryDetails.getIsRunning())
             oldTimeWeared = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         else
             oldTimeWeared = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES);
@@ -290,7 +290,7 @@ public class EntryDetailsFragment extends Fragment {
         isThereAlreadyARunningPause = false;
 
         for (int i = 0; i < pausesDatas.size(); i++) {
-            if (pausesDatas.get(i).getIsRunning() == 0) {
+            if (!pausesDatas.get(i).getIsRunning()) {
                 totalTimePause += pausesDatas.get(i).getTimeWeared();
             } else {
                 long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
@@ -379,7 +379,7 @@ public class EntryDetailsFragment extends Fragment {
 
             TextView textView_worn_for = view.findViewById(R.id.custom_view_date_time_weared);
 
-            if (pausesDatas.get(i).getIsRunning() == 0) {
+            if (!pausesDatas.get(i).getIsRunning()) {
                 String[] datePut = pausesDatas.get(i).getDatePut().split(" ");
                 textView_hour_to.setText(datePut[1]);
                 if (!dateRemoved[0].equals(datePut[0]))
@@ -409,7 +409,7 @@ public class EntryDetailsFragment extends Fragment {
                                 dbManager.deletePauseEntry(object.getId());
                                 updatePauseList();
                                 recomputeWearingTime();
-                                if (entryDetails.getIsRunning() == 1) {
+                                if (entryDetails.getIsRunning()) {
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
                                     calendar.add(Calendar.MINUTE, newAlarmDate);
@@ -446,7 +446,7 @@ public class EntryDetailsFragment extends Fragment {
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
-            if (entryDetails.getIsRunning() == 0) {
+            if (!entryDetails.getIsRunning()) {
                 if ((entryDetails.getTimeWeared() - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId)) / 60 >= weared_time)
                     textview_progress.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 else
@@ -460,7 +460,7 @@ public class EntryDetailsFragment extends Fragment {
             Log.d(TAG, "Compute total time pause is " + AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId));
 
             // Display the datas relative to the session
-            if (entryDetails.getIsRunning() == 1) {
+            if (entryDetails.getIsRunning()) {
                 timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
 
                 removed.setText(entryDetails.getDateRemoved());

@@ -93,7 +93,7 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
         } else
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
 
-        if (dataModel.getIsRunning() == 0) {
+        if (!dataModel.getIsRunning()) {
             int totalTimePause = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
             if (totalTimePause / 60 >= 15)
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));

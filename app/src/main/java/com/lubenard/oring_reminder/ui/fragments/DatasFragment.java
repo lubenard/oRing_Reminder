@@ -26,27 +26,27 @@ public class DatasFragment extends Fragment {
 
     private static final String TAG = "DataFragment";
 
+    private DbManager dbManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.datas_fragment, container, false);
     }
 
     /**
      * Compute all pause time into interval
-     * @param dbManager The database manager, avoiding to create a new instance
      * @param entryId entry for the wanted session
      * @param date24HoursAgo oldest boundaries
      * @param dateNow interval newest boundaries
      * @return the time in Minutes of pauses between the interval
      */
-    public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
+    public int computeTotalTimePauseForId(long entryId, String date24HoursAgo, String dateNow) {
         ArrayList<RingSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
             RingSession currentBreak = pausesDatas.get(i);
-            if (pausesDatas.get(i).getIsRunning() == 0) {
+            if (!pausesDatas.get(i).getIsRunning()) {
                 if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) > 0 &&
                         Utils.getDateDiff(currentBreak.getDatePut(), dateNow, TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeWeared());
@@ -69,47 +69,107 @@ public class DatasFragment extends Fragment {
         return totalTimePause;
     }
 
-    /**
-     * Recompute last 24 h textView, removing break from the computation
-     */
-    private static int recomputeLastWearingTime(int hour_since, int minute_since) {
-        ArrayList<RingSession> dataModels = new ArrayList<>();
-        int totalTimeLastDay = 0;
-        int pauseTimeForThisEntry = 0;
-        DbManager dbManager = MainActivity.getDbManager();
+    private int getSinceMidnightWearingTime() {
+        int totalTimeSinceMidnight = 0;
+        int pauseTimeForThisEntry;
 
         LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(true);
-        for (LinkedHashMap.Entry<Integer, RingSession> oneElemData : entrysDatas.entrySet())
-            dataModels.add(oneElemData.getValue());
+        ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
 
         Calendar calendar = Calendar.getInstance();
         String todayDate = Utils.getdateFormatted(calendar.getTime());
-        calendar.add(Calendar.HOUR_OF_DAY, hour_since);
-        if (minute_since > 0)
-            calendar.add(Calendar.MINUTE, minute_since);
-        String last24Hours = Utils.getdateFormatted(calendar.getTime());
-        Log.d(TAG, "Computing last 24 hours: interval is between: " + last24Hours + " and " + todayDate);
+
+        // We set the calendar at midnight
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        String sinceMidnigt = Utils.getdateFormatted(calendar.getTime());
+        Log.d(TAG, "Computing since midnight: interval is between: " + sinceMidnigt + " and " + todayDate);
+
         RingSession currentModel;
-        for (int i = 0; i != ((dataModels.size() > 5) ? 5 : dataModels.size()); i++) {
+        for (int i = 0; i != (Math.min(dataModels.size(), 5)); i++) {
             currentModel = dataModels.get(i);
-            pauseTimeForThisEntry = computeTotalTimePauseForId(dbManager, currentModel.getId(), last24Hours, todayDate);
-            if (currentModel.getIsRunning() == 0) {
-                if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
+            pauseTimeForThisEntry = computeTotalTimePauseForId(currentModel.getId(), sinceMidnigt, todayDate);
+            Log.d(TAG, "Session id: " + currentModel.getId()
+                    + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
+                    + ", getDatePut: " + currentModel.getDatePut()
+                    + ", datediff datePut: " + Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, "
+                    + ", datediff dateRemoved: " + Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS));
+            if (!currentModel.getIsRunning()) {
+                if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
                         Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "entry at index " + i + " is added: " + dataModels.get(i).getTimeWeared());
-                    totalTimeLastDay += currentModel.getTimeWeared() - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeLastDay += Utils.getDateDiff(last24Hours, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                    // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
+                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
+                    totalTimeSinceMidnight += currentModel.getTimeWeared() - pauseTimeForThisEntry;
+                } else if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
+                        Utils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
+                    // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += Utils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             } else {
-                if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
+                if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running entry at index " + i + " is added: " + Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                } else if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(sinceMidnigt, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimeSinceMidnight += Utils.getDateDiff(sinceMidnigt, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                }
+            }
+        }
+        Log.d("DataFragment", "Computed last since midnight is: " + totalTimeSinceMidnight + "mn");
+        return totalTimeSinceMidnight;
+    }
+
+    /**
+     * Get all session wearing time with the breaks removed for the last 24 hours.
+     * @return time in minute of worn time on the last 24 hours
+     */
+    private int getLast24hWearingTime() {
+        int totalTimeLastDay = 0;
+        int pauseTimeForThisEntry;
+
+        LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(true);
+        ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
+
+        Calendar calendar = Calendar.getInstance();
+        String todayDate = Utils.getdateFormatted(calendar.getTime());
+
+        // We set the calendar 24h earlier
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+        String oneDayEarlier = Utils.getdateFormatted(calendar.getTime());
+        Log.d(TAG, "Computing last 24 hours: interval is between: " + oneDayEarlier + " and " + todayDate);
+
+        RingSession currentModel;
+        for (int i = 0; i != (Math.min(dataModels.size(), 5)); i++) {
+            currentModel = dataModels.get(i);
+            pauseTimeForThisEntry = computeTotalTimePauseForId(currentModel.getId(), oneDayEarlier, todayDate);
+            Log.d(TAG, "Session id: " + currentModel.getId()
+                    + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
+                    + ", getDatePut: " + currentModel.getDatePut()
+                    + ", datediff datePut: " + Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, "
+                    + ", datediff dateRemoved: " + Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS));
+            if (!currentModel.getIsRunning()) {
+                if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
+                        Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
+                    // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
+                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
+                    totalTimeLastDay += currentModel.getTimeWeared() - pauseTimeForThisEntry;
+                } else if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
+                        Utils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
+                    // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.SECONDS));
+                    totalTimeLastDay += Utils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                }
+            } else {
+                if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "running entry at index " + i + " is added: " + Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
                     totalTimeLastDay += Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(last24Hours, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimeLastDay += Utils.getDateDiff(last24Hours, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                } else if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(oneDayEarlier, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimeLastDay += Utils.getDateDiff(oneDayEarlier, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             }
         }
@@ -125,7 +185,7 @@ public class DatasFragment extends Fragment {
 
         getActivity().setTitle(R.string.data_fragment_title);
 
-        DbManager dbManager = MainActivity.getDbManager();
+        dbManager = MainActivity.getDbManager();
 
         ArrayList<RingSession> datas = dbManager.getAllDatasForAllEntrys();
 
@@ -154,12 +214,10 @@ public class DatasFragment extends Fragment {
             int minutes = (((seconds % 604800) % 86400) % 3600) / 60;
             timeBetweenLastAndFirstData = String.format(getString(R.string.time_worn_appr), weeks, days, hours, minutes);
 
-            Calendar c = Calendar.getInstance();
-
-            int totalTimeSinceMidnight = recomputeLastWearingTime(c.get(Calendar.HOUR_OF_DAY) * -1, c.get(Calendar.MINUTE) * -1);
+            int totalTimeSinceMidnight = getSinceMidnightWearingTime();
             wornSinceMidnightData = String.format(getString(R.string.since_midnight_worn_for) + "%dh%02dm", totalTimeSinceMidnight / 60, totalTimeSinceMidnight % 60);
 
-            int totalTimeLastDay = recomputeLastWearingTime(-24, 0);
+            int totalTimeLastDay = getLast24hWearingTime();
             wornLast24hoursData = String.format(getString(R.string.last_day_string_header) + "%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60);
         } else {
             lastEntryData = getString(R.string.not_set_yet);

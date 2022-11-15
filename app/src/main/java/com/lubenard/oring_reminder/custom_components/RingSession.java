@@ -5,11 +5,17 @@ import com.lubenard.oring_reminder.utils.Utils;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+enum SessionStatus {
+    NOT_RUNNING,
+    RUNNING,
+    IN_BREAK
+}
+
 public class RingSession {
     private long id;
     private String datePut;
     private String dateRemoved;
-    private int isRunning;
+    private SessionStatus status;
     private int timeWeared;
 
     /**
@@ -25,9 +31,14 @@ public class RingSession {
         this.id = id;
         this.datePut = datePut;
         this.dateRemoved = dateRemoved;
-        this.isRunning = isRunning;
         this.timeWeared = timeWeared;
-        if (this.timeWeared == 0 && this.isRunning == 0) {
+
+        if (isRunning == 1)
+            this.status = SessionStatus.RUNNING;
+        else
+            this.status = SessionStatus.NOT_RUNNING;
+
+        if (this.timeWeared == 0 && this.status == SessionStatus.NOT_RUNNING) {
             this.timeWeared = (int)Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
         }
     }
@@ -56,8 +67,12 @@ public class RingSession {
         return calendar;
     }
 
-    public int getIsRunning() {
-        return isRunning;
+    public boolean getIsInBreak() {
+        return status == SessionStatus.IN_BREAK;
+    }
+
+    public boolean getIsRunning() {
+        return status == SessionStatus.RUNNING;
     }
 
     public int getTimeWeared() {

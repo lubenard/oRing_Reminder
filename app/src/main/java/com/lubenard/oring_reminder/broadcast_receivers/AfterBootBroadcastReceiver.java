@@ -36,7 +36,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
     private static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
         ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
         for (int i = 0; i != allPauses.size(); i++) {
-            if (allPauses.get(i).getIsRunning() == 1)
+            if (allPauses.get(i).getIsRunning())
                 return true;
         }
         return false;
@@ -52,7 +52,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
         int totalTimePause = 0;
         for (int i = 0; i != allPauses.size(); i++) {
-            if (allPauses.get(i).getIsRunning() == 0)
+            if (!allPauses.get(i).getIsRunning())
                 totalTimePause += allPauses.get(i).getTimeWeared();
             else
                 totalTimePause += Utils.getDateDiff(allPauses.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);

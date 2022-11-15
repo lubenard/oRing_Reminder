@@ -106,7 +106,7 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
             RingSession currentBreak = pausesDatas.get(i);
-            if (pausesDatas.get(i).getIsRunning() == 0) {
+            if (!pausesDatas.get(i).getIsRunning()) {
                 if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) > 0 &&
                         Utils.getDateDiff(currentBreak.getDatePut(), dateNow, TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeWeared());

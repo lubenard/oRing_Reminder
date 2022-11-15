@@ -70,7 +70,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
             ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setText(String.valueOf(position));
 
             if (session != null) {
-                if (session.getIsRunning() == 1)
+                if (session.getIsRunning())
                     ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
                 else {
                     if (session.getTimeWeared() >= (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60))

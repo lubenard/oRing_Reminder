@@ -232,7 +232,7 @@ public class BackupRestore extends Activity{
                 xmlWriter.writeEntity("session");
                 xmlWriter.writeAttribute("dateTimePut", datas.get(i).getDatePut());
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
-                xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning()));
+                xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning() ? 1 : 0));
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
                 ArrayList<RingSession> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
                 if (pauses.size() > 0) {
@@ -242,7 +242,7 @@ public class BackupRestore extends Activity{
                         xmlWriter.writeEntity("pause");
                         xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(j).getDateRemoved());
                         xmlWriter.writeAttribute("dateTimePut", pauses.get(j).getDatePut());
-                        xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(j).getIsRunning()));
+                        xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(j).getIsRunning() ? 1 : 0));
                         xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(j).getTimeWeared()));
                         xmlWriter.endEntity();
                     }
@@ -498,12 +498,12 @@ public class BackupRestore extends Activity{
                 formattedDatas.add(datePut[1]);
                 formattedDatas.add(dateRemoved[0]);
                 formattedDatas.add(dateRemoved[1]);
-                if (rawDatas.get(i).getIsRunning() == 0)
+                if (!rawDatas.get(i).getIsRunning())
                     formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared()));
                 else
                     formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 formattedDatas.add(String.valueOf(totalTimePauses));
-                if (rawDatas.get(i).getIsRunning() == 0)
+                if (!rawDatas.get(i).getIsRunning())
                     formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared() - totalTimePauses));
                 else
                     formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
