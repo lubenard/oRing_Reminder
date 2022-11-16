@@ -34,7 +34,7 @@
                     android:textSize="27sp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginStart="15dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:text="@string/right_now" />
@@ -44,7 +44,7 @@
                     android:layout_width="350dp"
                     android:layout_height="350dp"
                     app:trackCornerRadius="15dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="7dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/righ_now_text"
@@ -230,6 +230,7 @@
                         tools:text="Depuis minuit, porté: "/>
 
                     <TextView
+                        android:id="@+id/home_since_midnight_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
@@ -240,16 +241,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
+                    android:layout_marginBottom="5dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
+                        android:layout_marginTop="5dp"
                         android:text="Dans les dernières 24h, porté:"
                         tools:text="Dans les dernières 24h, porté:"/>
 
                     <TextView
+                        android:id="@+id/home_last_24h_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"

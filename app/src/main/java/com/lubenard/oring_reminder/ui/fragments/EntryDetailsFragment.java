@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
@@ -67,11 +68,46 @@ public class EntryDetailsFragment extends Fragment {
     private ProgressBar progressBar;
     private static ViewGroup viewGroup;
 
+    private MenuProvider menuProvider = new MenuProvider() {
+        @Override
+        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            menuInflater.inflate(R.menu.menu_entry_details, menu);
+        }
+
+        @Override
+        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+            int id = menuItem.getItemId();
+            switch (id) {
+                case R.id.action_edit_entry:
+                    EditEntryFragment fragment = new EditEntryFragment(getContext());
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putLong("entryId", entryId);
+                    fragment.setArguments(bundle2);
+                    fragmentManager.beginTransaction()
+                            .replace(android.R.id.content, fragment, null)
+                            .addToBackStack(null).commit();
+                    return true;
+                case R.id.action_delete_entry:
+                    // Warn user then delete entry in the db
+                    new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
+                            .setMessage(R.string.alertdialog_delete_contact_body)
+                            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                                dbManager.deleteEntry(entryId);
+                                fragmentManager.popBackStackImmediate();
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .setIcon(android.R.drawable.ic_dialog_alert).show();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    };
+
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.entry_details_fragment, container, false);
     }
 
@@ -133,6 +169,7 @@ public class EntryDetailsFragment extends Fragment {
                 return true;
             }
         });
+        requireActivity().addMenuProvider(menuProvider);
     }
 
     private void createNewBreak(long id, String startDate, String endDate, int isRunning) {
@@ -440,7 +477,7 @@ public class EntryDetailsFragment extends Fragment {
             TextView isRunning = view.findViewById(R.id.details_entry_isRunning);
             ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
             whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
-            progressBar = view.findViewById(R.id.progress_bar);
+            //progressBar = view.findViewById(R.id.progress_bar);
 
             put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0], false) + " " + entryDetails.getDatePut().split(" ")[1]);
 
@@ -498,11 +535,11 @@ public class EntryDetailsFragment extends Fragment {
 
             Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             if (updateProgressBar) {
-                progressBar.setProgressDrawable(null);
-                progressBar.setProgressDrawable(context.getDrawable(R.drawable.calendar_circle_red));
-                progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+                //progressBar.setProgressDrawable(null);
+                //progressBar.setProgressDrawable(context.getDrawable(R.drawable.calendar_circle_red));
+                //progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
             }
-            Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
+            //Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();
             updatePauseList();
         } else {
@@ -520,37 +557,9 @@ public class EntryDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_entry_details, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_edit_entry:
-                EditEntryFragment fragment = new EditEntryFragment(getContext());
-                Bundle bundle2 = new Bundle();
-                bundle2.putLong("entryId", entryId);
-                fragment.setArguments(bundle2);
-                fragmentManager.beginTransaction()
-                        .replace(android.R.id.content, fragment, null)
-                        .addToBackStack(null).commit();
-                return true;
-            case R.id.action_delete_entry:
-                // Warn user then delete entry in the db
-                new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
-                        .setMessage(R.string.alertdialog_delete_contact_body)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                            dbManager.deleteEntry(entryId);
-                            fragmentManager.popBackStackImmediate();
-                        })
-                        .setNegativeButton(android.R.string.no, null)
-                        .setIcon(android.R.drawable.ic_dialog_alert).show();
-                return true;
-            default:
-                return false;
-        }
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "OnDestroyView called");
+        requireActivity().removeMenuProvider(menuProvider);
     }
 }
