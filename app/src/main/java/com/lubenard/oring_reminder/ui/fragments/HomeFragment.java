@@ -492,9 +492,9 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        Log.d(TAG, "OnStop called");
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView called");
         requireActivity().removeMenuProvider(menuProvider);
-        super.onStop();
+        super.onDestroyView();
     }
 }

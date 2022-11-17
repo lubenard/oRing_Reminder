@@ -66,7 +66,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
                     app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
                     app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
-                    android:text="07h42mn" />
+                    tools:text="07h42mn" />
 
                 <TextView
                     android:id="@+id/on_needed_time_to_complete"
@@ -78,7 +78,7 @@
                     app:layout_constraintTop_toBottomOf="@id/text_view_progress"
                     app:layout_constraintEnd_toEndOf="@+id/progress_bar_main"
                     app:layout_constraintStart_toStartOf="@+id/progress_bar_main"
-                    android:text="/ 15h00mn" />
+                    tools:text="/ 15h00mn" />
 
                 <TextView
                     android:id="@+id/text_view_break"
@@ -92,7 +92,7 @@
                     app:layout_constraintTop_toTopOf="@+id/progress_bar_main"
                     app:layout_constraintVertical_bias="0.550"
                     android:textColor="@color/yellow"
-                    android:text="text_view_break"/>
+                    tools:text="text_view_break"/>
 
                 <Button
                     android:id="@+id/button_start_break"
@@ -131,14 +131,14 @@
                             android:textAlignment="center"
                             android:textSize="19sp"
                             android:textStyle="bold"
-                            android:text="Début:"
+                            android:text="@string/start"
                             tools:text="Début:"/>
 
                         <TextView
+                            android:id="@+id/start_session_data"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
-                            android:text="19 février à 14h22"
                             tools:text="19 février à 14h22"/>
                     </LinearLayout>
 
@@ -156,14 +156,14 @@
                             android:textAlignment="center"
                             android:textSize="19sp"
                             android:textStyle="bold"
-                            android:text="Fin estimée:"
+                            android:text="@string/estimated_end"
                             tools:text="Fin estimée:"/>
 
                         <TextView
+                            android:id="@+id/estimated_end_data"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
-                            android:text="20 février à 6h22"
                             tools:text="19 février à 6h22"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -173,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="7dp"
-                    android:text="Voir ma session"
+                    android:text="@string/see_current_session"
                     android:textAllCaps="false"
                     android:textColor="@color/purple_200"
                     android:background="@null"
@@ -226,7 +226,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
-                        android:text="Depuis minuit, porté: "
+                        android:text="@string/since_midnight_worn_for"
                         tools:text="Depuis minuit, porté: "/>
 
                     <TextView
@@ -249,7 +249,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:layout_marginTop="5dp"
-                        android:text="Dans les dernières 24h, porté:"
+                        android:text="@string/last_day_string_header"
                         tools:text="Dans les dernières 24h, porté:"/>
 
                     <TextView

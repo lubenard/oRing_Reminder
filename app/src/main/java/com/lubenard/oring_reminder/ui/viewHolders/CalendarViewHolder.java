@@ -30,6 +30,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
     private CalendarItemAdapter.onListItemClickListener onGridItemClickListener;
     private GridView calendarGridDays;
     private TextView calendarMonth;
+    private int todayIndex = -1;
 
     public CalendarViewHolder(@NonNull View itemView, CalendarAdapter.onListItemClickListener onListItemClickListener, Context context) {
         super(itemView);
@@ -55,6 +56,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
         ArrayList<String> num = listOfDatesInMonth(date, calendarOffset);
 
         Calendar calendar = Calendar.getInstance();
+
         HashMap<Integer, RingSession> mappedSessions = new HashMap<>();
 
         Log.d("CalendarItemViewHolder", "Have " + sessions.size() + " in this month");
@@ -65,7 +67,17 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
             mappedSessions.put(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i));
         }
 
-        final CalendarItemAdapter adapter = new CalendarItemAdapter(context, num, mappedSessions,calendarOffset, onGridItemClickListener);
+        Calendar todayDate = Calendar.getInstance();
+
+        Log.d("CalendarViewHolder", "Lubenard: date say: " + Utils.getdateFormatted(date.getTime()) + ", todayDate say: " + Utils.getdateFormatted(todayDate.getTime()));
+
+        if (date.get(Calendar.YEAR) == todayDate.get(Calendar.YEAR)
+                && date.get(Calendar.MONTH) == todayDate.get(Calendar.MONTH)) {
+            todayIndex = todayDate.get(Calendar.DAY_OF_MONTH);
+        } else
+            todayIndex = -1;
+
+        final CalendarItemAdapter adapter = new CalendarItemAdapter(context, num, mappedSessions,calendarOffset, todayIndex,  onGridItemClickListener);
 
         calendarGridDays.setAdapter(adapter);
     }
@@ -82,6 +94,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
         for(int j = 0; j != calendarOffset; j++) {list.add("0");}
 
         for (int i = 1; i < selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH) + 1; i++) {
+            Log.d("CalendarViewHolder", "Adding " + i + " to list days");
             list.add(String.valueOf(i));
         }
 

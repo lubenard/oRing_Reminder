@@ -66,7 +66,7 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
         dividerItemDecoration.setDrawable(getDrawable(requireContext(), R.drawable.empty_tall_divider_calendar));
         calendarRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        adapter = new CalendarAdapter(entries.get(0).getDatePutCalendar(), entries.get(entries.size() - 1).getDatePutCalendar(), onListItemClickListener);
+        adapter = new CalendarAdapter(entries.get(0).getDatePutCalendar(), onListItemClickListener);
         calendarRecyclerView.setAdapter(adapter);
 
         Log.d("CalendarFragment", "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");

@@ -26,17 +26,19 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private Context context;
     private onListItemClickListener onListItemClickListener;
 
-    public CalendarAdapter(Calendar firstSession, Calendar lastSession, onListItemClickListener onListItemClickListener) {
+    public CalendarAdapter(Calendar firstSession, onListItemClickListener onListItemClickListener) {
 
         Log.d("CalendarItemAdapter", "firstSession say is " + Utils.getdateFormatted(firstSession.getTime()));
 
         monthList = new ArrayList<>();
 
-        int diffYear = lastSession.get(Calendar.YEAR) - firstSession.get(Calendar.YEAR);
-        int diffMonth = diffYear * 12 + lastSession.get(Calendar.MONTH) - firstSession.get(Calendar.MONTH);
+        Calendar todayDate = Calendar.getInstance();
 
-        if (diffMonth == 0)
-            diffMonth = 1;
+        int diffYear = todayDate.get(Calendar.YEAR) - firstSession.get(Calendar.YEAR);
+        Log.d("CalendarItemAdapter", "diffYear is " + diffYear);
+        int diffMonth = diffYear * 12 + todayDate.get(Calendar.MONTH) - firstSession.get(Calendar.MONTH);
+
+        diffMonth++;
 
         Log.d("CalendarItemAdapter", "diffMonth is " + diffMonth);
 

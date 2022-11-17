@@ -99,7 +99,7 @@
     <string name="settings_ui_action_on_plus_button_long_click">Appui -> interface avancée de session\nAppui long -> Session en cours rapide</string>
     <string name="when_get_it_off_negative">(Il y a environ -%dh%02dm)</string>
     <string name="removed_during">Retiré pendant :</string>
-    <string name="last_day_string_header">Dans les dernières 24h, porté :&#160;</string>
+    <string name="last_day_string_header">Dans les dernières 24h, porté :</string>
     <string name="action_calculators">Calculateurs</string>
     <string name="calculators_title">Calculateurs</string>
     <string name="number_of_spermato_per_ml">Nombre de spermatozoïdes / ml</string>
@@ -160,11 +160,11 @@
     <string name="total_search">Nombre de résultats :</string>
     <string name="action_edit_spermo">Editer ce spermogramme</string>
     <string name="alertdialog_edit_spermo_title">Entrez la nouvelle date</string>
-    <string name="since_midnight_worn_for">Depuis minuit, porté pendant :&#160;</string>
+    <string name="since_midnight_worn_for">Depuis minuit, porté pendant :</string>
     <string name="entries">entrées</string>
     <string name="see_full_history">Voir tout l\'historique</string>
     <string name="no_active_session">Pas de session active</string>
-    <string name="see_current_session">Voir ma session actuelle</string>
+    <string name="see_current_session">Voir ma session</string>
     <string name="history_colon">Historique :</string>
     <string name="time_worn_appr">Temps porté approximatif:\n%d semaines\n%d jours\n%d heures\n%d minutes</string>
     <string name="today">Aujourd\'hui :</string>

@@ -25,13 +25,17 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
     private Context context;
     private SharedPreferences sharedPreferences;
     private int calendarOffset;
+    // Variables used to display today mark if today is in current month.
+    // It's value is either -1 if not present, or [1..31] if present
+    private int todayIndex;
     private HashMap<Integer, RingSession> monthEntries;
     private CalendarItemAdapter.onListItemClickListener onListItemClickListener;
 
-    public CalendarItemAdapter(Context context, ArrayList<String> dayList, HashMap<Integer, RingSession> monthEntries, int calendarOffset, CalendarItemAdapter.onListItemClickListener onListItemClickListener) {
+    public CalendarItemAdapter(Context context, ArrayList<String> dayList, HashMap<Integer, RingSession> monthEntries, int calendarOffset, int todayCounter , CalendarItemAdapter.onListItemClickListener onListItemClickListener) {
         this.dayList = dayList;
         this.monthEntries = monthEntries;
         this.context = context;
+        this.todayIndex = todayCounter;
         this.calendarOffset = calendarOffset;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.onListItemClickListener = onListItemClickListener;
@@ -61,22 +65,29 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridItem = inflater.inflate(R.layout.calendar_grid_item, null);
 
+        Log.d("CalendarItemAdapter", "Iterate over  " + dayList.get(position));
+
         if (!dayList.get(position).equals("0")) {
+
+            TextView numberTextView = gridItem.findViewById(R.id.calendar_grid_item_layout);
 
             RingSession session = monthEntries.get(position);
 
             Log.d("CalendarItemAdapter", "session found is " + session);
 
-            ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setText(String.valueOf(position));
+            numberTextView.setText(dayList.get(position));
+
+            if (todayIndex != -1 && todayIndex == Integer.parseInt(dayList.get(position)))
+                numberTextView.setTextColor(context.getResources().getColor(android.R.color.holo_blue_light));
 
             if (session != null) {
                 if (session.getIsRunning())
-                    ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
+                    numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
                 else {
                     if (session.getTimeWeared() >= (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60))
-                        ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
+                        numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
                     else
-                        ((TextView) gridItem.findViewById(R.id.calendar_grid_item_layout)).setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));
+                        numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));
                 }
             }
         }

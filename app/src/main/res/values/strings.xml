@@ -101,7 +101,7 @@
     <string name="settings_ui_action_on_plus_button_long_click">Press -> advanced session ui \nlong press -> quick running session</string>
     <string name="when_get_it_off_negative">(about -%dh%02dm ago)</string>
     <string name="removed_during">Removed during:</string>
-    <string name="last_day_string_header">In last 24h, you wore it during:&#160;</string>
+    <string name="last_day_string_header">In last 24h, you wore it during:</string>
     <string name="create_new_entry">Create new entry</string>
     <string name="time_remaining">Time remaining:</string>
     <string name="no_running_session">No running session</string>
@@ -157,11 +157,11 @@
 	<string name="total_search">Total results:</string>
 	<string name="action_edit_spermo">Edit this spermogram</string>
 	<string name="alertdialog_edit_spermo_title">Please enter the new date</string>
-	<string name="since_midnight_worn_for">Since midnight, worn for :&#160;</string>
+	<string name="since_midnight_worn_for">Since midnight, worn for:</string>
     <string name="entries">entries</string>
     <string name="see_full_history">See full history</string>
     <string name="no_active_session">No active session</string>
-    <string name="see_current_session">See my current session</string>
+    <string name="see_current_session">See my session</string>
     <string name="history_colon">History:</string>
     <string name="time_worn_appr">Time worn approximately:\n%d weeks\n%d days\n%d hours\n%d minutes\n</string>
     <string name="today">Today:</string>
@@ -169,4 +169,6 @@
 	<string name="calendar_fragment_title">Calendar</string>
 	<string name="right_now">Right now:</string>
     <string name="in_break_for">In break for</string>
+    <string name="start">Start:</string>
+    <string name="estimated_end">Estimated end</string>
 </resources>

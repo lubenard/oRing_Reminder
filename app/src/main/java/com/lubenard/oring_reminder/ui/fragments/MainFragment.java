@@ -91,4 +91,11 @@ public class MainFragment extends Fragment {
             return true;
         });
     }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView called");
+        super.onDestroyView();
+    }
+
 }
