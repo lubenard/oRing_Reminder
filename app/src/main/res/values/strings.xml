@@ -102,7 +102,7 @@
     <string name="when_get_it_off_negative">(about -%dh%02dm ago)</string>
     <string name="removed_during">Removed during:</string>
     <string name="last_day_string_header">In last 24h, you wore it during:</string>
-    <string name="create_new_entry">Create new entry</string>
+    <string name="create_new_entry">New entry</string>
     <string name="time_remaining">Time remaining:</string>
     <string name="no_running_session">No running session</string>
     <string name="you_can_get_it_on_again">"You should get it on at: "</string>

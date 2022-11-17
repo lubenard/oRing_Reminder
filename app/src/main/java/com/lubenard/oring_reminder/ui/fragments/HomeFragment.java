@@ -384,12 +384,6 @@ public class HomeFragment extends Fragment {
                 progress_bar.setIndicatorColor(getResources().getColor(R.color.blue_main_bar));
             progress_bar.setProgress((int)progress_percentage);
 
-            int totalTimeSinceMidnight = getSinceMidnightWearingTime();
-            home_since_midnight_data.setText(String.format("%dh%02dm", totalTimeSinceMidnight / 60, totalTimeSinceMidnight % 60));
-
-            int totalTimeLastDay = getLast24hWearingTime();
-            home_last_24h_data.setText(String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60));
-
             if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
                 dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
                 text_view_break.setText(String.format("%s: %d mn", getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
@@ -414,6 +408,13 @@ public class HomeFragment extends Fragment {
      * Update whole design on MainFragment, including fab
      */
     private void updateDesign() {
+
+        int totalTimeSinceMidnight = getSinceMidnightWearingTime();
+        home_since_midnight_data.setText(String.format("%dh%02dm", totalTimeSinceMidnight / 60, totalTimeSinceMidnight % 60));
+
+        int totalTimeLastDay = getLast24hWearingTime();
+        home_last_24h_data.setText(String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60));
+
         // If this return null, mean there is no running session
         if (dbManager.getLastRunningEntry() == null) {
 
@@ -464,6 +465,9 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getActivity().setTitle(R.string.app_name);
+        requireActivity().addMenuProvider(menuProvider);
+
         dbManager = MainActivity.getDbManager();
         dataModels = new ArrayList<>();
 
@@ -485,10 +489,6 @@ public class HomeFragment extends Fragment {
         button_see_curr_session = view.findViewById(R.id.see_current_session);
 
         this.view = view;
-
-        getActivity().setTitle(R.string.app_name);
-
-        requireActivity().addMenuProvider(menuProvider);
     }
 
     @Override

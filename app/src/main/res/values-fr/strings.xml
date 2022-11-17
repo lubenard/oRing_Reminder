@@ -112,7 +112,7 @@
     <string name="finish_session">Terminer cette session</string>
     <string name="datas_export_data_csv_title">Exportez vos données en CSV</string>
     <string name="datas_export_data_csv">Exportez vos données en format CSV</string>
-    <string name="create_new_entry">Créer une nouvelle entrée</string>
+    <string name="create_new_entry">Nouvelle entrée</string>
     <string name="time_remaining">Temps restant :</string>
     <string name="no_running_session">Pas de session active en cours</string>
     <string name="you_can_get_it_on_again">Vous devriez pouvoir le remettre à :</string>

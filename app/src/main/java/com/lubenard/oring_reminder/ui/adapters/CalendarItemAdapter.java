@@ -71,7 +71,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
 
             TextView numberTextView = gridItem.findViewById(R.id.calendar_grid_item_layout);
 
-            RingSession session = monthEntries.get(position);
+            RingSession session = monthEntries.get(Integer.parseInt(dayList.get(position)));
 
             Log.d("CalendarItemAdapter", "session found is " + session);
 
