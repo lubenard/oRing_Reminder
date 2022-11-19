@@ -38,6 +38,7 @@
     <string name="set_auto_date_and_time">Pré-remplir la date et l\'heure</string>
     <string name="to">Jusqu\'à : </string>
     <string name="from">Depuis : </string>
+    <string name="from_the">Depuis le: </string>
     <string name="you_weared_your_protection_from">Vous portez votre protection depuis : </string>
     <string name="that_make_about">Cela fait :</string>
     <string name="worn_for">Porté pendant :</string>
@@ -171,4 +172,6 @@
 	<string name="right_now">En ce moment:</string>
     <string name="calendar_fragment_title">Calendrier</string>
     <string name="in_break_for">En pause depuis</string>
+    <string name="start">Début:</string>
+    <string name="estimated_end">Fin estimée :</string>
 </resources>

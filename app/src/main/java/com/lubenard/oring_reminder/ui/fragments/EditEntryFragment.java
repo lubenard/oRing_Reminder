@@ -170,13 +170,7 @@ public class EditEntryFragment extends Fragment {
         int mMinute = c.get(Calendar.MINUTE);
 
         // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
-            new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            filling_textview.setText(hourOfDay + ":" + minute + ":00");
-                }
-            }, mHour, mMinute, false);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> filling_textview.setText(hourOfDay + ":" + minute + ":00"), mHour, mMinute, false);
             timePickerDialog.show();
     }
 

@@ -169,5 +169,6 @@
 	<string name="right_now">Right now:</string>
     <string name="in_break_for">In break for</string>
     <string name="start">Start:</string>
-    <string name="estimated_end">Estimated end</string>
+    <string name="estimated_end">Estimated end:</string>
+    <string name="from_the">Since:</string>
 </resources>

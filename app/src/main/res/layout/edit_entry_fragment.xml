@@ -1,63 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/create_new_session_dialog_background"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/create_new_session_cancel"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/outline_close_24"
+            android:background="@null"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/baseline_save_24"
+            android:background="@null"/>
+
+
+    </LinearLayout>
 
     <TextView
         style="@style/base_text_all_wrap"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:textSize="30dp"
-        android:text="@string/from" />
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:text="@string/from_the" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
         android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:textSize="25dp"
-            android:text="Le :" />
 
         <EditText
             android:id="@+id/new_entry_date_from"
             style="@style/base_text_all_wrap"
-            android:layout_gravity="center"
             android:ems="6"
             android:digits="0123456789-"
-            android:layout_weight="1"
             android:hint="Ex: 2020-03-30" />
 
         <ImageButton
             android:id="@+id/new_entry_datepicker_from"
             android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:layout_gravity="center"
             android:src="@drawable/outline_event_24" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
         android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:textSize="25dp"
-            android:text=" A :" />
 
         <EditText
             android:id="@+id/new_entry_hour_from"
@@ -80,8 +92,8 @@
         android:id="@+id/new_entry_auto_date_from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_gravity="center"
+        android:layout_marginTop="5dp"
         android:background="@drawable/basic_button"
         android:paddingHorizontal="8dp"
         android:textAllCaps="false"
@@ -89,25 +101,17 @@
 
     <TextView
         style="@style/base_text_all_wrap"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:textSize="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
         android:text="@string/to" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:textSize="25dp"
-            android:text="Le :" />
 
         <EditText
             android:id="@+id/new_entry_date_to"
@@ -131,16 +135,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:textSize="25dp"
-            android:text=" A :" />
 
         <EditText
             android:id="@+id/new_entry_hour_to"
@@ -163,8 +159,9 @@
         android:id="@+id/new_entry_auto_date_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_gravity="center"
+
+        android:layout_marginTop="5dp"
         android:background="@drawable/basic_button"
         android:paddingHorizontal="8dp"
         android:textAllCaps="false"
@@ -175,6 +172,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
-        android:text="get_it_on_before" />
+        tools:text="get_it_on_before" />
 </LinearLayout>
