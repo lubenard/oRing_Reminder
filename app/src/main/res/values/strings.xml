@@ -48,7 +48,6 @@
     <string name="alertdialog_multiple_running_session_title">Warning: Multiple running sessions detected!</string>
     <string name="settings_prevent_me_when_started_session">Prevent me when a session has already started</string>
     <string name="toast_session_ended">Session with the following id has been set as finished:&#160;</string>
-    <string name="action_reload_datas">Reload data</string>
     <string name="debug_menu_title">Debug menu</string>
     <string name="debug_menu_description">If you need to debug this app, this is the right place!</string>
     <string name="custom_backup_title_alertdialog">What do you plan to backup?</string>

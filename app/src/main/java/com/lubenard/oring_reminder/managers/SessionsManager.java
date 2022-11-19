@@ -10,14 +10,17 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class SessionsManager {
 
@@ -97,5 +100,60 @@ public class SessionsManager {
             Log.d(TAG, "Error: Already a running pause");
             Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Get the total time pause for one session
+     * @param datePut The datetime the user put the protection
+     * @param entryId the entry id of the session
+     * @param dateRemoved The datetime the user removed the protection
+     * @return the total time in Minutes of new wearing time
+     */
+    public static int getWearingTimeWithoutPause(String datePut, long entryId, String dateRemoved) {
+        long oldTimeBeforeRemove;
+        int newValue;
+        long totalTimePause;
+
+        if (dateRemoved == null)
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        else
+            oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
+
+        totalTimePause = computeTotalTimePause(MainActivity.getDbManager(), entryId);
+        newValue = (int) (oldTimeBeforeRemove - totalTimePause);
+        return Math.max(newValue, 0);
+    }
+
+    /**
+     * Compute the total pause time by adding each one
+     * @param dbManager dbManager
+     * @param entryId entry to check
+     * @return the int value of all pause time in minutes
+     */
+    public static int computeTotalTimePause(DbManager dbManager, long entryId) {
+        ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
+        int totalTimePause = 0;
+        for (int i = 0; i != allPauses.size(); i++) {
+            if (!allPauses.get(i).getIsRunning())
+                totalTimePause += allPauses.get(i).getTimeWeared();
+            else
+                totalTimePause += Utils.getDateDiff(allPauses.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+        }
+        return totalTimePause;
+    }
+
+    /**
+     * Check if given session have running pause ongoing
+     * @param dbManager dbManager
+     * @param entryId entry to check
+     * @return true if running break has been found, else false
+     */
+    public static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
+        ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
+        for (int i = 0; i != allPauses.size(); i++) {
+            if (allPauses.get(i).getIsRunning())
+                return true;
+        }
+        return false;
     }
 }

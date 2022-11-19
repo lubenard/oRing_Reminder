@@ -495,7 +495,7 @@ public class BackupRestoreManager extends Activity{
             for (int i = 0; i < rawDatas.size(); i++) {
                 String[] datePut = rawDatas.get(i).getDatePut().split(" ");
                 String[] dateRemoved = rawDatas.get(i).getDateRemoved().split(" ");
-                int totalTimePauses = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, rawDatas.get(i).getId());
+                int totalTimePauses = SessionsManager.computeTotalTimePause(dbManager, rawDatas.get(i).getId());
                 formattedDatas.add(datePut[0]);
                 formattedDatas.add(datePut[1]);
                 formattedDatas.add(dateRemoved[0]);

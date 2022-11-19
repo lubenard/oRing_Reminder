@@ -48,7 +48,6 @@
     <string name="alertdialog_multiple_running_session_title">Warnung: Mehrere laufende Sitzungen entdeckt!</string>
     <string name="settings_prevent_me_when_started_session">Mich daran hindern, wenn eine Sitzung bereits begonnen hat</string>
     <string name="toast_session_ended">Die Sitzung mit der folgenden ID wurde als beendet markiert:&#160;</string>
-    <string name="action_reload_datas">Daten neu laden</string>
     <string name="debug_menu_title">Menü Fehlersuche</string>
     <string name="debug_menu_description">Wenn Sie diese Anwendung debuggen müssen, sind Sie hier richtig!</string>
     <string name="custom_backup_title_alertdialog">Was wollen Sie sichern?</string>

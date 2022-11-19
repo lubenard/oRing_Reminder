@@ -142,11 +142,8 @@ public class Utils {
      * @param timeWeared timeWeared is in minutes
      * @return a string containing the time the user weared the protection
      */
-    public static String convertTimeWeared(Context context, int timeWeared) {
-        if (timeWeared < 60)
-            return timeWeared + context.getString(R.string.minute_with_M_uppercase);
-        else
-            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
+    public static String convertTimeWeared(int timeWeared) {
+        return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
     }
 
 

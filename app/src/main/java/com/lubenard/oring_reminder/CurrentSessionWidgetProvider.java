@@ -94,7 +94,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 0, intent3, getIntentMutableFlag());
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_start_stop_break_session, pendingIntent3);
 
-                int totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, lastEntry.getId());
+                int totalTimePause = SessionsManager.computeTotalTimePause(dbManager, lastEntry.getId());
                 long wornFor = Utils.getDateDiff(lastEntry.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 wornFor -= totalTimePause;
 

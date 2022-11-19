@@ -10,12 +10,6 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_reload_datas"
-        android:title="@string/action_reload_datas"
-        android:icon="@drawable/baseline_refresh_36"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/action_my_spermogramms"
         android:title="@string/action_my_spermograms"
         app:showAsAction="never" />

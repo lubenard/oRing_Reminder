@@ -40,6 +40,7 @@ import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceive
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
+import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -69,6 +70,10 @@ public class EntryDetailsFragment extends Fragment {
     private SettingsManager settingsManager;
     private ProgressBar progressBar;
     private static ViewGroup viewGroup;
+
+    private TextView put;
+    private TextView removed;
+    private TextView isRunning;
 
     private MenuProvider menuProvider = new MenuProvider() {
         @Override
@@ -139,6 +144,13 @@ public class EntryDetailsFragment extends Fragment {
         weared_time =  settingsManager.getWearingTimeInt();
 
         stopSessionButton = view.findViewById(R.id.button_finish_session);
+
+        put = view.findViewById(R.id.details_entry_put);
+        removed = view.findViewById(R.id.details_entry_removed);
+        isRunning = view.findViewById(R.id.details_entry_isRunning);
+        textview_progress = view.findViewById(R.id.text_view_progress);
+        ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
+        whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
 
         stopSessionButton.setOnClickListener(view13 -> {
             dbManager.endSession(entryId);
@@ -387,7 +399,7 @@ public class EntryDetailsFragment extends Fragment {
                 if (!dateRemoved[0].equals(datePut[0]))
                     textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + Utils.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                textView_worn_for.setText(Utils.convertTimeWeared(getContext(), pausesDatas.get(i).getTimeWeared()));
+                textView_worn_for.setText(Utils.convertTimeWeared(pausesDatas.get(i).getTimeWeared()));
             } else {
                 long timeworn = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));
@@ -436,20 +448,13 @@ public class EntryDetailsFragment extends Fragment {
             long timeBeforeRemove;
             // Load datas from the db and put them at the right place
             entryDetails = dbManager.getEntryDetails(entryId);
-            TextView put = view.findViewById(R.id.details_entry_put);
-            TextView removed = view.findViewById(R.id.details_entry_removed);
-            textview_progress = view.findViewById(R.id.text_view_progress);
-            TextView isRunning = view.findViewById(R.id.details_entry_isRunning);
-            ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
-            whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
-            //progressBar = view.findViewById(R.id.progress_bar);
 
             put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0], false) + " " + entryDetails.getDatePut().split(" ")[1]);
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
             if (!entryDetails.getIsRunning()) {
-                if ((entryDetails.getTimeWeared() - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId)) / 60 >= weared_time)
+                if ((entryDetails.getTimeWeared() - SessionsManager.computeTotalTimePause(dbManager, entryId)) / 60 >= weared_time)
                     textview_progress.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
                 else
                     textview_progress.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
@@ -459,11 +464,11 @@ public class EntryDetailsFragment extends Fragment {
             // Check if the session is finished and display the corresponding text
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
-            Log.d(TAG, "Compute total time pause is " + AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId));
+            Log.d(TAG, "Compute total time pause is " + SessionsManager.computeTotalTimePause(dbManager, entryId));
 
             // Display the datas relative to the session
             if (entryDetails.getIsRunning()) {
-                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
+                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
 
                 removed.setText(entryDetails.getDateRemoved());
                 textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
@@ -478,7 +483,7 @@ public class EntryDetailsFragment extends Fragment {
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
             } else {
-                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - AfterBootBroadcastReceiver.computeTotalTimePause(dbManager, entryId);
+                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
                 Log.d(TAG, "TimeBeforeRemove is " + timeBeforeRemove);
                 removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0], false) + " " + entryDetails.getDateRemoved().split(" ")[1]);
                 int time_spent_wearing = entryDetails.getTimeWeared();

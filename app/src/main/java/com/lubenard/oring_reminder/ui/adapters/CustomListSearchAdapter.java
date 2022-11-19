@@ -11,6 +11,7 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -28,28 +29,6 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
 
     public CustomListSearchAdapter(ArrayList<RingSession> data, Context context) {
         super(context, R.layout.main_history_one_elem, data);
-    }
-
-    /**
-     * Get the total time pause for one session
-     * @param datePut The datetime the user put the protection
-     * @param entryId the entry id of the session
-     * @param dateRemoved The datetime the user removed the protection
-     * @return the total time in Minutes of new wearing time
-     */
-    private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
-        long oldTimeBeforeRemove;
-        int newValue;
-        long totalTimePause = 0;
-
-        if (dateRemoved == null)
-            oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-        else
-            oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
-
-        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(MainActivity.getDbManager(), entryId);
-        newValue = (int) (oldTimeBeforeRemove - totalTimePause);
-        return (newValue < 0) ? 0 : newValue;
     }
 
     @Override
@@ -82,15 +61,15 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
 
         if (!dataModel.getIsRunning()) {
-            int totalTimePause = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
+            int totalTimePause = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
             if (totalTimePause / 60 >= 15)
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(Utils.convertTimeWeared(getContext(), totalTimePause));
+            viewHolder.weared_during.setText(Utils.convertTimeWeared(totalTimePause));
         }
         else {
-            long timeBeforeRemove = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), null);
+            long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), null);
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(R.color.yellow));
             viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         }

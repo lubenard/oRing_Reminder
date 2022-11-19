@@ -64,7 +64,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         language.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "Language value has changed for " + newValue);
             Utils.applyLanguage(getContext(), newValue.toString());
-            fragmentManager.popBackStackImmediate();
+            settingsManager.reloadSettings();
             return true;
         });
 
@@ -88,6 +88,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             .setPositiveButton(android.R.string.yes, null)
                             .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
+                settingsManager.reloadSettings();
                 return true;
             } else {
                 new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_please_enter_digits_title)
@@ -216,29 +217,26 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             builder.setTitle(R.string.custom_backup_title_alertdialog);
             final View customLayout = getLayoutInflater().inflate(R.layout.custom_view_backup_dialog, null);
             builder.setView(customLayout);
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    MainActivity.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE, () -> null, () -> {
-                        Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
-                        return null;
-                    });
+            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                MainActivity.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE, () -> null, () -> {
+                    Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
+                    return null;
+                });
 
-                    Intent intent = new Intent(getContext(), BackupRestoreManager.class);
-                    intent.putExtra("mode", 1);
+                Intent intent = new Intent(getContext(), BackupRestoreManager.class);
+                intent.putExtra("mode", 1);
 
-                    boolean isDatasChecked =
-                            ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_datas)).isChecked();
-                    boolean isSettingsChecked =
-                            ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).isChecked();
+                boolean isDatasChecked =
+                        ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_datas)).isChecked();
+                boolean isSettingsChecked =
+                        ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).isChecked();
 
-                    if (!isDatasChecked && !isSettingsChecked)
-                        return;
+                if (!isDatasChecked && !isSettingsChecked)
+                    return;
 
-                    intent.putExtra("shouldBackupRestoreDatas", isDatasChecked);
-                    intent.putExtra("shouldBackupRestoreSettings", isSettingsChecked);
-                    startActivity(intent);
-                }
+                intent.putExtra("shouldBackupRestoreDatas", isDatasChecked);
+                intent.putExtra("shouldBackupRestoreSettings", isSettingsChecked);
+                startActivity(intent);
             });
             builder.setNegativeButton(android.R.string.cancel,null);
             AlertDialog dialog = builder.create();

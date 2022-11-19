@@ -1,7 +1,6 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
 import android.app.DatePickerDialog;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,18 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -49,13 +47,13 @@ public class HomeFragment extends Fragment {
     private TextView text_view_break;
     private View view;
     private Button button_see_curr_session;
+    private TextView time_needed_to_complete_session;
 
     private ArrayList<RingSession> dataModels;
     private DbManager dbManager;
     private TextView textview_progress;
     private TextView home_since_midnight_data;
     private TextView home_last_24h_data;
-    private SharedPreferences sharedPreferences;
 
     private MenuProvider menuProvider = new MenuProvider() {
         @Override
@@ -84,9 +82,6 @@ public class HomeFragment extends Fragment {
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new DatasFragment(), null)
                             .addToBackStack(null).commit();
-                    return true;
-                case R.id.action_reload_datas:
-                    updateCurrSessionDatas();
                     return true;
                 default:
                     return false;
@@ -317,34 +312,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /**
-     * Get the total time pause for one session
-     * @param datePut The datetime the user put the protection
-     * @param entryId the entry id of the session
-     * @param dateRemoved The datetime the user removed the protection
-     * @return the total time in Minutes of new wearing time
-     */
-    private int getTotalTimePause(String datePut, long entryId, String dateRemoved) {
-        long oldTimeBeforeRemove;
-        int newValue;
-        long totalTimePause = 0;
-
-        if (dateRemoved == null)
-            oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-        else
-            oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
-
-        totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(MainActivity.getDbManager(), entryId);
-        newValue = (int) (oldTimeBeforeRemove - totalTimePause);
-        return (newValue < 0) ? 0 : newValue;
-    }
-
     private void updateCurrSessionDatas() {
         RingSession lastRunningEntry = dbManager.getLastRunningEntry();
 
         if (lastRunningEntry != null) {
-            long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
-            textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
+            long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
+            textview_progress.setText(Utils.convertTimeWeared((int)timeBeforeRemove));
+            time_needed_to_complete_session.setText("/ " + Utils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60));
             float progress_percentage = ((float) timeBeforeRemove / (float) (new SettingsManager(getContext()).getWearingTimeInt() * 60)) * 100;
             Log.d(TAG, "MainView percentage is " + progress_percentage);
             if (progress_percentage < 1f)
@@ -381,14 +355,13 @@ public class HomeFragment extends Fragment {
     private void updateDesign() {
 
         int totalTimeSinceMidnight = getSinceMidnightWearingTime();
-        home_since_midnight_data.setText(String.format("%dh%02dm", totalTimeSinceMidnight / 60, totalTimeSinceMidnight % 60));
+        home_since_midnight_data.setText(Utils.convertTimeWeared(totalTimeSinceMidnight));
 
         int totalTimeLastDay = getLast24hWearingTime();
-        home_last_24h_data.setText(String.format("%dh%02dm", totalTimeLastDay / 60, totalTimeLastDay % 60));
+        home_last_24h_data.setText(Utils.convertTimeWeared(totalTimeLastDay));
 
         // If this return null, mean there is no running session
         if (dbManager.getLastRunningEntry() == null) {
-
             ConstraintLayout linearLayout = view.findViewById(R.id.layout_session_active);
             linearLayout.setVisibility(View.GONE);
 
@@ -414,6 +387,11 @@ public class HomeFragment extends Fragment {
             fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
             fab.setImageDrawable(getContext().getDrawable(R.drawable.outline_close_24));
 
+            fab.setOnClickListener(v -> {
+                dbManager.endSession(dbManager.getLastRunningEntry().getId());
+                updateDesign();
+            });
+
             button_see_curr_session.setOnClickListener(v -> {
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
                 Bundle bundle = new Bundle();
@@ -425,10 +403,6 @@ public class HomeFragment extends Fragment {
             });
 
             updateCurrSessionDatas();
-            fab.setOnClickListener(v -> {
-                dbManager.endSession(dbManager.getLastRunningEntry().getId());
-                updateDesign();
-            });
         }
     }
 
@@ -437,6 +411,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         getActivity().setTitle(R.string.app_name);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         requireActivity().addMenuProvider(menuProvider);
 
         dbManager = MainActivity.getDbManager();
@@ -455,9 +430,8 @@ public class HomeFragment extends Fragment {
         home_since_midnight_data = view.findViewById(R.id.home_since_midnight_data);
         home_last_24h_data = view.findViewById(R.id.home_last_24h_data);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-
         button_see_curr_session = view.findViewById(R.id.see_current_session);
+        time_needed_to_complete_session = view.findViewById(R.id.on_needed_time_to_complete);
 
         this.view = view;
     }

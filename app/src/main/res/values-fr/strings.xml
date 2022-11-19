@@ -50,7 +50,6 @@
     <string name="action_validate">Sauvegarder cette entrée</string>
     <string name="alertdialog_multiple_running_session_title">Attention : plusieurs sessions en cours détectées !</string>
     <string name="toast_session_ended">La session avec l\'id suivant a été marquée comme terminée : &#160;</string>
-    <string name="action_reload_datas">Recharger les données</string>
     <string name="debug_menu_title">Menu de debug</string>
     <string name="debug_menu_description">Si vous avez besoin de débugger cette app, vous êtes au bon endroid !</string>
     <string name="custom_backup_title_alertdialog">Que prévoyez-vous de sauvegarder ?</string>

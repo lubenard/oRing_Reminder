@@ -73,7 +73,7 @@ public class SearchFragment extends Fragment {
             search_result.setText("No entry found for this date");
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
-            RingSession dataModel= dataModels.get(position);
+            RingSession dataModel = dataModels.get(position);
             Log.d(TAG, "Element " + dataModel.getId());
             EntryDetailsFragment fragment = new EntryDetailsFragment();
             Bundle bundle1 = new Bundle();

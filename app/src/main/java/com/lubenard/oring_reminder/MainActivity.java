@@ -34,7 +34,7 @@ import java.util.concurrent.Callable;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
-    private SettingsManager settingsManager;
+    private static SettingsManager settingsManager;
     private static DbManager dbManager;
 
     private static Callable onPermissionSuccess;
@@ -118,11 +118,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                getSupportFragmentManager().popBackStackImmediate();
-                return true;
+        // Respond to the action bar's Up/Home button
+        if (item.getItemId() == android.R.id.home) {
+            getSupportFragmentManager().popBackStackImmediate();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -181,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static DbManager getDbManager() {
         return dbManager;
+    }
+    public static SettingsManager getSettingsManager() {
+        return settingsManager;
     }
 
     @Override
