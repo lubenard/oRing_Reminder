@@ -279,24 +279,11 @@ public class HomeFragment extends Fragment {
      * Launch the new Entry fragment, and specify we do not want to update a entry
      */
     private void startEditEntryFragment() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        final View customLayout = getLayoutInflater().inflate(R.layout.edit_entry_fragment, null);
-        builder.setView(customLayout);
-        AlertDialog dialog = builder.create();
-
-        customLayout.findViewById(R.id.create_new_session_cancel).setOnClickListener((v) -> {
-            dialog.dismiss();
-        });
-
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
-        dialog.show();
-        /*EditEntryFragment fragment = new EditEntryFragment();
+        EditEntryFragment fragment = new EditEntryFragment();
         Bundle bundle = new Bundle();
         bundle.putLong("entryId", -1);
         fragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, fragment, null)
-                .addToBackStack(null).commit();*/
+        fragment.show(getChildFragmentManager(), null);
     }
 
     /**

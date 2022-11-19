@@ -1,27 +1,34 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,6 +38,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -51,7 +59,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class EditEntryFragment extends Fragment {
+public class EditEntryFragment extends DialogFragment {
 
     private static final String TAG = "EditEntryFragment";
 
@@ -77,81 +85,6 @@ public class EditEntryFragment extends Fragment {
         @Override public final void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         @Override public final void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
     }
-
-    private MenuProvider menuProvider = new MenuProvider() {
-        @Override
-        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-            menuInflater.inflate(R.menu.menu_add_entry, menu);
-        }
-
-        @Override
-        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-            int id = menuItem.getItemId();
-            switch (id) {
-                case R.id.action_validate:
-
-                    String formattedDatePut = new_entry_date_from.getText().toString() + " " + new_entry_time_from.getText().toString();
-                    String formattedDateRemoved = new_entry_date_to.getText().toString() + " " + new_entry_time_to.getText().toString();
-
-                    Log.d(TAG, "formattedDatePut: '" + formattedDatePut + "' formattedDateRemoved: '" + formattedDateRemoved + "'");
-
-                    // If entry already exist in the db.
-                    if (entryId != -1) {
-                        if (formattedDateRemoved.length() == 1 || formattedDateRemoved.equals("NOT SET")) {
-                            if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
-                                dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-                                updateWidget(context);
-                                // Recompute alarm if the entry already exist, but has no ending time
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                                SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()) , entryId,true);
-                                getActivity().getSupportFragmentManager().popBackStackImmediate();
-                            } else {
-                                Log.d(TAG, "DateFormat wrong check 1");
-                                showToastBadFormattedDate();
-                            }
-                        } else {
-                            if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
-                                dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
-                                dbManager.endPause(entryId);
-                                updateWidget(context);
-                                // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
-                                SessionsAlarmsManager.cancelAlarm(context, entryId);
-                                getActivity().getSupportFragmentManager().popBackStackImmediate();
-                            } else {
-                                Log.d(TAG, "DateFormat wrong check 2");
-                                showToastBadFormattedDate();
-                            }
-                        }
-                    } else {
-                        if (formattedDateRemoved.length() == 1) {
-                            if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
-                                SessionsManager.insertNewEntry(context, formattedDatePut);
-                                updateWidget(context);
-                            } else {
-                                Log.d(TAG, "DateFormat wrong check 3");
-                                showToastBadFormattedDate();
-                            }
-                        } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-                            if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
-                                dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
-                                updateWidget(context);
-                                // Get back to the last element in the fragment stack
-                                getActivity().getSupportFragmentManager().popBackStackImmediate();
-                            } else {
-                                Log.d(TAG, "DateFormat wrong check 4");
-                                showToastBadFormattedDate();
-                            }
-                        } else
-                            // If the diff time is too short, trigger this error
-                            Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
-                    }
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -194,34 +127,94 @@ public class EditEntryFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        requireActivity().addMenuProvider(menuProvider);
-
         Bundle bundle = this.getArguments();
         entryId = bundle.getLong("entryId", -1);
 
         context = getContext();
 
         new_entry_date_from = view.findViewById(R.id.new_entry_date_from);
+        new_entry_datepicker_from = view.findViewById(R.id.new_entry_datepicker_from);
+
         new_entry_time_from = view.findViewById(R.id.new_entry_hour_from);
+        new_entry_timepicker_from = view.findViewById(R.id.new_entry_timepicker_from);
 
         new_entry_date_to = view.findViewById(R.id.new_entry_date_to);
+        new_entry_datepicker_to = view.findViewById(R.id.new_entry_datepicker_to);
+
         new_entry_time_to = view.findViewById(R.id.new_entry_hour_to);
+        new_entry_timepicker_to =view.findViewById(R.id.new_entry_timepicker_to);
 
         getItOnBeforeTextView = view.findViewById(R.id.get_it_on_before);
 
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
 
-        new_entry_datepicker_from = view.findViewById(R.id.new_entry_datepicker_from);
-        new_entry_timepicker_from = view.findViewById(R.id.new_entry_timepicker_from);
-        new_entry_datepicker_to = view.findViewById(R.id.new_entry_datepicker_to);
-        new_entry_timepicker_to =view.findViewById(R.id.new_entry_timepicker_to);
-
         new_entry_datepicker_from.setOnClickListener(v -> openCalendarPicker(new_entry_date_from));
         new_entry_timepicker_from.setOnClickListener(v -> openTimePicker(new_entry_time_from));
 
         new_entry_datepicker_to.setOnClickListener(v -> openCalendarPicker(new_entry_date_to));
         new_entry_timepicker_to.setOnClickListener(v -> openTimePicker(new_entry_time_to));
+
+        view.findViewById(R.id.create_new_session_cancel).setOnClickListener(v -> dismiss());
+        view.findViewById(R.id.create_new_session_save).setOnClickListener(v -> {
+            String formattedDatePut = new_entry_date_from.getText().toString() + " " + new_entry_time_from.getText().toString();
+            String formattedDateRemoved = new_entry_date_to.getText().toString() + " " + new_entry_time_to.getText().toString();
+
+            Log.d(TAG, "formattedDatePut: '" + formattedDatePut + "' formattedDateRemoved: '" + formattedDateRemoved + "'");
+
+            // If entry already exist in the db.
+            if (entryId != -1) {
+                if (formattedDateRemoved.length() == 1 || formattedDateRemoved.equals("NOT SET")) {
+                    if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
+                        dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
+                        updateWidget(context);
+                        // Recompute alarm if the entry already exist, but has no ending time
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                        SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()) , entryId,true);
+                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    } else {
+                        Log.d(TAG, "DateFormat wrong check 1");
+                        showToastBadFormattedDate();
+                    }
+                } else {
+                    if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
+                        dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
+                        dbManager.endPause(entryId);
+                        updateWidget(context);
+                        // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
+                        SessionsAlarmsManager.cancelAlarm(context, entryId);
+                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    } else {
+                        Log.d(TAG, "DateFormat wrong check 2");
+                        showToastBadFormattedDate();
+                    }
+                }
+            } else {
+                if (formattedDateRemoved.length() == 1) {
+                    if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
+                        SessionsManager.insertNewEntry(context, formattedDatePut);
+                        updateWidget(context);
+                    } else {
+                        Log.d(TAG, "DateFormat wrong check 3");
+                        showToastBadFormattedDate();
+                    }
+                } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
+                    if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
+                        dbManager.createNewDatesRing(formattedDatePut, formattedDateRemoved, 0);
+                        updateWidget(context);
+                        // Get back to the last element in the fragment stack
+                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                    } else {
+                        Log.d(TAG, "DateFormat wrong check 4");
+                        showToastBadFormattedDate();
+                    }
+                } else
+                    // If the diff time is too short, trigger this error
+                    Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
+            }
+            dismiss();
+        });
 
         // Fill datas into new fields
         if (entryId != -1) {
@@ -267,6 +260,18 @@ public class EditEntryFragment extends Fragment {
                 computeTimeBeforeGettingItAgain();
             }
         });
+
+        dbManager = MainActivity.getDbManager();
+
+        Window window = getDialog().getWindow();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(window.getAttributes());
+        //This makes the dialog take up the full width
+        lp.width = 1000;
+        lp.height = WRAP_CONTENT;
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setAttributes(lp);
+        window.setGravity(Gravity.BOTTOM);
 
         preFillStartDatas();
     }
@@ -316,13 +321,6 @@ public class EditEntryFragment extends Fragment {
             getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + Utils.getdateFormatted(calendar.getTime()));
         } else
             getItOnBeforeTextView.setText(R.string.not_enough_datas_to_compute_get_it_on);
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.d(TAG, "onDestroyView called");
-        requireActivity().removeMenuProvider(menuProvider);
-        super.onDestroyView();
     }
 
     //TODO: To move elsewhere
