@@ -25,6 +25,7 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
+import com.lubenard.oring_reminder.utils.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,22 +79,6 @@ public class SpermogramsDetailsFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
-    /**
-     * Check if the input string is valid
-     * @param text the given input string
-     * @return 1 if the string is valid, else 0
-     */
-    public static boolean checkDateInputSanity(String text) {
-        if (text.equals(""))
-            return false;
-        try {
-            new SimpleDateFormat("yyyy-MM-dd").parse(text);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -104,31 +89,25 @@ public class SpermogramsDetailsFragment extends Fragment {
                 final View customLayout = getLayoutInflater().inflate(R.layout.alertdialog_edit_spermo, null);
                 EditText textview_newdate = customLayout.findViewById(R.id.spermogram_new_date);
                 ImageButton new_date_picker = customLayout.findViewById(R.id.new_date_datepicker);
-                new_date_picker.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final Calendar c = Calendar.getInstance();
-                        int mYear = c.get(Calendar.YEAR);
-                        int mMonth = c.get(Calendar.MONTH);
-                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                new_date_picker.setOnClickListener(v -> {
+                    final Calendar c = Calendar.getInstance();
+                    int mYear = c.get(Calendar.YEAR);
+                    int mMonth = c.get(Calendar.MONTH);
+                    int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                                (view, year, monthOfYear, dayOfMonth) -> textview_newdate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
-                        datePickerDialog.show();
-                    }
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                            (view, year, monthOfYear, dayOfMonth) -> textview_newdate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
+                    datePickerDialog.show();
                 });
                 builder.setView(customLayout);
-                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (checkDateInputSanity(textview_newdate.getText().toString())) {
-                            dbManager.updateSpermogram(entryId, textview_newdate.getText().toString());
-                            // Used to refresh the date
-                            date.setText(getContext().getString(R.string.added_the) + textview_newdate.getText().toString());
-                        }
-                        else
-                            Toast.makeText(getContext(),"The date is not correct, please fix it", Toast.LENGTH_LONG).show();
+                builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    if (Utils.checkDateInputSanity(textview_newdate.getText().toString()) == 1) {
+                        dbManager.updateSpermogram(entryId, textview_newdate.getText().toString());
+                        // Used to refresh the date
+                        date.setText(getContext().getString(R.string.added_the) + textview_newdate.getText().toString());
                     }
+                    else
+                        Toast.makeText(getContext(),"The date is not correct, please fix it", Toast.LENGTH_LONG).show();
                 });
                 builder.setNegativeButton(android.R.string.cancel,null);
                 AlertDialog dialog_edit = builder.create();

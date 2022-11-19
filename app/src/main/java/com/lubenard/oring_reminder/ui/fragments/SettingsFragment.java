@@ -25,7 +25,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import com.lubenard.oring_reminder.BackupRestore;
+import com.lubenard.oring_reminder.managers.BackupRestoreManager;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
@@ -39,7 +39,7 @@ import java.util.Calendar;
  */
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    public static final String TAG = "SettingsFragment";
+    private static final String TAG = "SettingsFragment";
     private static Activity activity;
     private FragmentManager fragmentManager;
 
@@ -222,7 +222,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         return null;
                     });
 
-                    Intent intent = new Intent(getContext(), BackupRestore.class);
+                    Intent intent = new Intent(getContext(), BackupRestoreManager.class);
                     intent.putExtra("mode", 1);
 
                     boolean isDatasChecked =
@@ -250,7 +250,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
                 return null;
             });
-            Intent intent = new Intent(getContext(), BackupRestore.class);
+            Intent intent = new Intent(getContext(), BackupRestoreManager.class);
             intent.putExtra("mode", 3);
             startActivity(intent);
             return true;
@@ -273,7 +273,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getContext(), BackupRestore.class);
+                    Intent intent = new Intent(getContext(), BackupRestoreManager.class);
                     intent.putExtra("mode", 2);
 
                     boolean isDatasChecked =

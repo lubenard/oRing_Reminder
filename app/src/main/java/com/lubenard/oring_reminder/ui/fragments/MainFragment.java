@@ -80,5 +80,4 @@ public class MainFragment extends Fragment {
         Log.d(TAG, "onDestroyView called");
         super.onDestroyView();
     }
-
 }

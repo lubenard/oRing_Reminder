@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.managers;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -15,9 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.ui.fragments.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
@@ -37,7 +38,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class BackupRestore extends Activity{
+public class BackupRestoreManager extends Activity{
 
     public static final String TAG = "BackupAndRestore";
     private AlertDialog dialog;
@@ -284,7 +285,7 @@ public class BackupRestore extends Activity{
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(Utils.getdateParsed(myParser.getAttributeValue(null, "dateTimePut")));
                             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(preferences.getString("myring_wearing_time", "15")));
-                            EditEntryFragment.setAlarm(this, Utils.getdateFormatted(calendar.getTime()), lastEntryInsertedId, true);
+                            SessionsAlarmsManager.setAlarm(this, Utils.getdateFormatted(calendar.getTime()), lastEntryInsertedId, true);
                         }
                     } else {
                         Toast.makeText(this, R.string.bad_import_date_xml, Toast.LENGTH_SHORT).show();
@@ -298,7 +299,7 @@ public class BackupRestore extends Activity{
                         if (lastEntryInsertedId != 0) {
                             dbManager.createNewPause(lastEntryInsertedId, myParser.getAttributeValue(null, "dateTimeRemoved"), myParser.getAttributeValue(null, "dateTimePut"), isRunning);
                             if (isRunning == 1)
-                                EditEntryFragment.cancelAlarm(this, lastEntryInsertedId);
+                                SessionsAlarmsManager.cancelAlarm(this, lastEntryInsertedId);
                         }
                     } else
                         Toast.makeText(this, R.string.bad_import_date_pause_xml ,Toast.LENGTH_SHORT).show();

@@ -40,6 +40,8 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
+import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -50,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EditEntryFragment extends Fragment {
 
-    public static final String TAG = "EditEntryFragment";
+    private static final String TAG = "EditEntryFragment";
 
     private DbManager dbManager;
     private long entryId;
@@ -70,11 +72,9 @@ public class EditEntryFragment extends Fragment {
 
     private SharedPreferences sharedPreferences;
     private int weared_time;
-    private boolean should_warn_user;
 
     private Context context;
     HashMap <Integer, String> runningSessions;
-    private static boolean shouldUpdateMainList;
 
     abstract class LightTextWatcher implements TextWatcher {
         @Override public final void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -107,7 +107,7 @@ public class EditEntryFragment extends Fragment {
                                 // Recompute alarm if the entry already exist, but has no ending time
                                 Calendar calendar = Calendar.getInstance();
                                 calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                                setAlarm(context, Utils.getdateFormatted(calendar.getTime()) , entryId,true);
+                                SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()) , entryId,true);
                                 getActivity().getSupportFragmentManager().popBackStackImmediate();
                             } else {
                                 Log.d(TAG, "DateFormat wrong check 1");
@@ -119,7 +119,7 @@ public class EditEntryFragment extends Fragment {
                                 dbManager.endPause(entryId);
                                 updateWidget(context);
                                 // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
-                                cancelAlarm(context, entryId);
+                                SessionsAlarmsManager.cancelAlarm(context, entryId);
                                 getActivity().getSupportFragmentManager().popBackStackImmediate();
                             } else {
                                 Log.d(TAG, "DateFormat wrong check 2");
@@ -129,7 +129,7 @@ public class EditEntryFragment extends Fragment {
                     } else {
                         if (formattedDateRemoved.length() == 1) {
                             if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
-                                insertNewEntry(formattedDatePut, true);
+                                SessionsManager.insertNewEntry(context, formattedDatePut);
                                 updateWidget(context);
                             } else {
                                 Log.d(TAG, "DateFormat wrong check 3");
@@ -156,110 +156,10 @@ public class EditEntryFragment extends Fragment {
         }
     };
 
-    /**
-     * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
-     * @param alarmDate The date of the alarm in the form 2020-12-30 10:42:00
-     * @param entryId the id entry of the entry to update
-     */
-    public static void setAlarm(Context context, String alarmDate, long entryId, boolean cancelOldAlarm) {
-        // From the doc, just create the exact same intent, and cancel it.
-        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
-        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
-                .putExtra("action", 1)
-                .putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
-        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-
-        if (cancelOldAlarm)
-            am.cancel(pendingIntent);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(alarmDate));
-
-        if (SDK_INT < Build.VERSION_CODES.M)
-            am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        else
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-    }
-
-    public static void setUpdateMainList(boolean newStatus) {
-        shouldUpdateMainList = newStatus;
-    }
-
-    /**
-     * Used to have headless fragment from mainFragment
-     * @param context context used to get get db
-     */
-    public EditEntryFragment(Context context) {
-        this.entryId = -1;
-        this.context = context;
-        dbManager = MainActivity.getDbManager();
-        if (dbManager == null)
-            dbManager = new DbManager(context);
-        runningSessions = dbManager.getAllRunningSessions();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
-        should_warn_user = sharedPreferences.getBoolean("myring_prevent_me_when_started_session", true);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
-    }
-
-    /**
-     * Save entry into db
-     * @param formattedDatePut DatePut
-     * @param shouldGoBack if we need to bo back after saving entry
-     */
-    private void saveEntry(String formattedDatePut, boolean shouldGoBack) {
-        if (entryId != -1)
-            dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-        else {
-            long newlyInsertedEntry = dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
-            // Set alarm only for new entry
-            if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true)) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(Utils.getdateParsed(formattedDatePut));
-                calendar.add(Calendar.HOUR_OF_DAY, weared_time);
-                Log.d(TAG, "New entry: setting alarm at " + calendar.getTimeInMillis());
-                setAlarm(context, Utils.getdateFormatted(calendar.getTime()), newlyInsertedEntry, false);
-            }
-        }
-        // We do not need to go back if this is a long click on '+' on mainFragment
-        if (shouldGoBack)
-            // Get back to the last element in the fragment stack
-            getActivity().getSupportFragmentManager().popBackStackImmediate();
-        // We should update listmainview if long click.
-        // We could have merged with the condition above, but i wanted to have better granular control
-        // if needed
-        /*if (shouldUpdateMainList)
-            OldMainFragment.updateElementList(true);*/
-    }
-
-    /**
-     * Used to help inserting entry when long click from '+'
-     * @param formattedDatePut formatted using utils tools string from date
-     * @param shouldGoBack if inside new entryFragment, go back, else no
-     */
-    public void insertNewEntry(String formattedDatePut, boolean shouldGoBack) {
-            if (!runningSessions.isEmpty() && should_warn_user) {
-                new AlertDialog.Builder(context).setTitle(R.string.alertdialog_multiple_running_session_title)
-                        .setMessage(R.string.alertdialog_multiple_running_session_body)
-                        .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, (dialog, which) -> {
-                            for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
-                                Log.d(TAG, "Set session " + sessions.getKey() + " to finished");
-                                dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), Utils.getdateFormatted(new Date()), 0);
-                            }
-                            saveEntry(formattedDatePut, shouldGoBack);
-                        })
-                        .setNegativeButton(R.string.alertdialog_multiple_running_session_choice2, (dialog, which) -> saveEntry(formattedDatePut, shouldGoBack))
-                        .setIcon(android.R.drawable.ic_dialog_alert).show();
-            } else {
-                saveEntry(formattedDatePut, shouldGoBack);
-            }
     }
 
     /**
@@ -432,6 +332,7 @@ public class EditEntryFragment extends Fragment {
         super.onDestroyView();
     }
 
+    //TODO: To move elsewhere
     /**
      * Instantly update the widget
      * @param context
@@ -449,19 +350,5 @@ public class EditEntryFragment extends Fragment {
      */
     private void showToastBadFormattedDate() {
         Toast.makeText(context, R.string.bad_date_format, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Only cancel alarm for given entryId
-     */
-    public static void cancelAlarm(Context context, long entryId) {
-        // From the doc, just create the exact same intent, and cancel it.
-        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
-        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
-                .putExtra("action", 1)
-                .putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
-        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-        am.cancel(pendingIntent);
     }
 }

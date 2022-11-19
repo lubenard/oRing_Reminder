@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BackupRestore"/>
+        <activity android:name=".managers.BackupRestoreManager"/>
         <receiver android:name=".broadcast_receivers.NotificationSenderBroadcastReceiver"/>
         <receiver android:name=".broadcast_receivers.NotificationSenderBreaksBroadcastReceiver"/>
         <receiver android:name=".broadcast_receivers.NotificationReceiverBroadcastReceiver"/>

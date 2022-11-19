@@ -39,6 +39,7 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EntryDetailsFragment extends Fragment {
 
-    public static final String TAG = "EntryDetailsFragment";
+    private static final String TAG = "EntryDetailsFragment";
 
     private long entryId = -1;
     private DbManager dbManager;
@@ -79,7 +80,7 @@ public class EntryDetailsFragment extends Fragment {
             int id = menuItem.getItemId();
             switch (id) {
                 case R.id.action_edit_entry:
-                    EditEntryFragment fragment = new EditEntryFragment(getContext());
+                    EditEntryFragment fragment = new EditEntryFragment();
                     Bundle bundle2 = new Bundle();
                     bundle2.putLong("entryId", entryId);
                     fragment.setArguments(bundle2);
@@ -147,31 +148,29 @@ public class EntryDetailsFragment extends Fragment {
 
         ImageButton pauseButton = view.findViewById(R.id.new_pause_button);
         pauseButton.setOnClickListener(view1 -> showPauseAlertDialog(null, -1));
-        pauseButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (isThereAlreadyARunningPause) {
-                    Log.d(TAG, "Error: Already a running pause");
-                    Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-                } else if (entryDetails.getIsRunning()) {
-                    String date = Utils.getdateFormatted(new Date());
-                    long id = dbManager.createNewPause(entryId, date, "NOT SET YET", 1);
-                    // Cancel alarm until breaks are set as finished.
-                    // Only then set a new alarm date
-                    Log.d(TAG, "Cancelling alarm for entry: " + entryId);
-                    EditEntryFragment.cancelAlarm(context, entryId);
-                    setBreakAlarm(sharedPreferences, Utils.getdateFormatted(new Date()), context, entryId);
-                    createNewBreak(id, date, "NOT SET YET", 1);
-                    updatePauseList();
-                    EditEntryFragment.updateWidget(getContext());
-                } else
-                    Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        pauseButton.setOnLongClickListener(view12 -> {
+            if (isThereAlreadyARunningPause) {
+                Log.d(TAG, "Error: Already a running pause");
+                Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+            } else if (entryDetails.getIsRunning()) {
+                String date = Utils.getdateFormatted(new Date());
+                long id = dbManager.createNewPause(entryId, date, "NOT SET YET", 1);
+                // Cancel alarm until breaks are set as finished.
+                // Only then set a new alarm date
+                Log.d(TAG, "Cancelling alarm for entry: " + entryId);
+                SessionsAlarmsManager.cancelAlarm(context, entryId);
+                SessionsAlarmsManager.setBreakAlarm(sharedPreferences, context ,Utils.getdateFormatted(new Date()), entryId);
+                createNewBreak(id, date, "NOT SET YET", 1);
+                updatePauseList();
+                EditEntryFragment.updateWidget(getContext());
+            } else
+                Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
+            return true;
         });
         requireActivity().addMenuProvider(menuProvider);
     }
 
+    // TODO: See if this method is still useful after huge code refactor
     private void createNewBreak(long id, String startDate, String endDate, int isRunning) {
         pausesDatas.add(0, new RingSession((int)id, endDate, startDate, isRunning, 0));
     }
@@ -251,7 +250,7 @@ public class EntryDetailsFragment extends Fragment {
                 if (entryDetails.getIsRunning()) {
                     if (pause_ending.getText().toString().equals("NOT SET YET")) {
                         Log.d(TAG, "Cancelling alarm for entry: " + entryId);
-                        EditEntryFragment.cancelAlarm(context, entryId);
+                        SessionsAlarmsManager.cancelAlarm(context, entryId);
                     } else {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
@@ -265,38 +264,16 @@ public class EntryDetailsFragment extends Fragment {
                             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                             am.cancel(pendingIntent);
                         }
-                        EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                        SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
                     }
                 }
                 if (isRunning == 1)
-                    setBreakAlarm(sharedPreferences, pause_beginning.getText().toString(), context, entryId);
+                    SessionsAlarmsManager.setBreakAlarm(sharedPreferences, context, pause_beginning.getText().toString(),  entryId);
                 updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             }
         });
         alertDialog.show();
-    }
-
-    /**
-     * Add alarm if break is too long (only if break is running and option enabled in settings)
-     * @param pauseBeginning
-     */
-    public static void setBreakAlarm(SharedPreferences sharedPreferences, String pauseBeginning, Context context, long entryId) {
-        if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Utils.getdateParsed(pauseBeginning));
-            calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
-            Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
-            Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
-                    .putExtra("action", 1);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
-            AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-
-            if (SDK_INT < Build.VERSION_CODES.M)
-                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            else
-                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        }
     }
 
     private View.OnClickListener clickInLinearLayout() {
@@ -377,18 +354,6 @@ public class EntryDetailsFragment extends Fragment {
     }
 
     /**
-     * Convert the timeWeared from a int into a readable hour:minutes format
-     * @param timeWeared timeWeared is in minutes
-     * @return a string containing the time the user weared the protection
-     */
-    private String convertTimeWeared(int timeWeared) {
-        if (timeWeared < 60)
-            return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
-        else
-            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
-    }
-
-    /**
      * Update the listView by fetching all elements from the db
      */
     private void updatePauseList() {
@@ -422,7 +387,7 @@ public class EntryDetailsFragment extends Fragment {
                 if (!dateRemoved[0].equals(datePut[0]))
                     textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + Utils.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                textView_worn_for.setText(convertTimeWeared(pausesDatas.get(i).getTimeWeared()));
+                textView_worn_for.setText(Utils.convertTimeWeared(getContext(), pausesDatas.get(i).getTimeWeared()));
             } else {
                 long timeworn = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));
@@ -451,7 +416,7 @@ public class EntryDetailsFragment extends Fragment {
                                     calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
                                     calendar.add(Calendar.MINUTE, newAlarmDate);
                                     Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
-                                    EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                                    SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
                                 }
                             })
                             .setNegativeButton(android.R.string.no, null)

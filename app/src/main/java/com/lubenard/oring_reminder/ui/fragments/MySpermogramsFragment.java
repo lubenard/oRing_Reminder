@@ -51,7 +51,6 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.my_spermograms_fragment, container, false);
     }
 

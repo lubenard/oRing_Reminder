@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HistoryFragment extends Fragment implements HistoryListAdapter.onListItemClickListener{
 
-    public static final String TAG = "HistoryFragment";
+    private static final String TAG = "HistoryFragment";
 
     // We can set thoses variables as static, because we know the view is going to be created
     private static ArrayList<RingSession> dataModels;

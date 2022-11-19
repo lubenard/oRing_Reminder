@@ -29,6 +29,7 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -279,8 +280,8 @@ public class HomeFragment extends Fragment {
     /**
      * Launch the new Entry fragment, and specify we do not want to update a entry
      */
-    private void createNewEntry() {
-        EditEntryFragment fragment = new EditEntryFragment(getContext());
+    private void startEditEntryFragment() {
+        EditEntryFragment fragment = new EditEntryFragment();
         Bundle bundle = new Bundle();
         bundle.putLong("entryId", -1);
         fragment.setArguments(bundle);
@@ -298,21 +299,19 @@ public class HomeFragment extends Fragment {
 
         if (isLongClick) {
             if (action.equals("default")) {
-                createNewEntry();
+                startEditEntryFragment();
             } else {
                 Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                //EditEntryFragment.setUpdateMainList(true);
-                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                SessionsManager.insertNewEntry(getContext(), Utils.getdateFormatted(new Date()));
                 updateDesign();
             }
         } else {
             if (action.equals("default")) {
                 Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                //EditEntryFragment.setUpdateMainList(true);
-                new EditEntryFragment(getContext()).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                SessionsManager.insertNewEntry(getContext(), Utils.getdateFormatted(new Date()));
                 updateDesign();
             } else {
-                createNewEntry();
+                startEditEntryFragment();
             }
         }
     }
@@ -337,28 +336,6 @@ public class HomeFragment extends Fragment {
         totalTimePause = AfterBootBroadcastReceiver.computeTotalTimePause(MainActivity.getDbManager(), entryId);
         newValue = (int) (oldTimeBeforeRemove - totalTimePause);
         return (newValue < 0) ? 0 : newValue;
-    }
-
-    /**
-     * Start break on MainFragment
-     */
-    private void startBreak() {
-        RingSession lastRunningEntry = dbManager.getLastRunningEntry();
-
-        if (dbManager.getLastRunningPauseForId(lastRunningEntry.getId()) == null) {
-            Log.d(TAG, "No running pause");
-            dbManager.createNewPause(lastRunningEntry.getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
-            // Cancel alarm until breaks are set as finished.
-            // Only then set a new alarm date
-            Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
-            EditEntryFragment.cancelAlarm(getContext(), lastRunningEntry.getId());
-            EntryDetailsFragment.setBreakAlarm(PreferenceManager.getDefaultSharedPreferences(getContext()),
-                    Utils.getdateFormatted(new Date()), getContext(), lastRunningEntry.getId());
-            EditEntryFragment.updateWidget(getContext());
-        } else {
-            Log.d(TAG, "Error: Already a running pause");
-            Toast.makeText(getContext(), getContext().getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void updateCurrSessionDatas() {
@@ -390,7 +367,7 @@ public class HomeFragment extends Fragment {
                 text_view_break.setVisibility(View.INVISIBLE);
                 button_start_break.setText(getString(R.string.widget_start_break));
                 button_start_break.setOnClickListener(v -> {
-                    startBreak();
+                    SessionsManager.startBreak(getContext());
                     updateCurrSessionDatas();
                 });
             }

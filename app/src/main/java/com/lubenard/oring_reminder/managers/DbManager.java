@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DbManager extends SQLiteOpenHelper {
 
-    public static final String TAG = "DBManager";
+    private static final String TAG = "DBManager";
 
     private static final String dbName = "dataDB";
     private static final int DATABASE_VERSION = 3;

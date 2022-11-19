@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -80,7 +81,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
                 // Set alarms for session not finished
                 Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
-                EditEntryFragment.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
+                SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
             }
         }
     }

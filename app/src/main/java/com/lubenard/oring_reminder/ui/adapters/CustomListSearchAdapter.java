@@ -31,18 +31,6 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
     }
 
     /**
-     * Convert the timeWeared from a int into a readable hour:minutes format
-     * @param timeWeared timeWeared is in minutes
-     * @return a string containing the time the user weared the protection
-     */
-    private String convertTimeWeared(int timeWeared) {
-        if (timeWeared < 60)
-            return timeWeared + getContext().getString(R.string.minute_with_M_uppercase);
-        else
-            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
-    }
-
-    /**
      * Get the total time pause for one session
      * @param datePut The datetime the user put the protection
      * @param entryId the entry id of the session
@@ -99,7 +87,7 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(convertTimeWeared(totalTimePause));
+            viewHolder.weared_during.setText(Utils.convertTimeWeared(getContext(), totalTimePause));
         }
         else {
             long timeBeforeRemove = getTotalTimePause(dataModel.getDatePut(), dataModel.getId(), null);

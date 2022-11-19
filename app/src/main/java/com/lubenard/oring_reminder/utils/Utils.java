@@ -77,6 +77,7 @@ public class Utils {
      * @param text the given input string
      * @return 1 if the string is valid, else 0
      */
+    //TODO: Refactor this method to make return boolean
     public static int checkDateInputSanity(String text) {
         if (text.equals("") || text.equals("NOT SET YET") || Utils.getdateParsed(text) == null)
             return 0;
@@ -133,6 +134,19 @@ public class Utils {
     public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+
+    /**
+     * Convert the timeWeared from a int into a readable hour:minutes format
+     * @param timeWeared timeWeared is in minutes
+     * @return a string containing the time the user weared the protection
+     */
+    public static String convertTimeWeared(Context context, int timeWeared) {
+        if (timeWeared < 60)
+            return timeWeared + context.getString(R.string.minute_with_M_uppercase);
+        else
+            return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
     }
 
 

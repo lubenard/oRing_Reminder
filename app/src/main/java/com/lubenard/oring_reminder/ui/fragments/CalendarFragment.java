@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 public class CalendarFragment extends Fragment implements CalendarAdapter.onListItemClickListener {
 
+    private final static String TAG = "CalendarFragment";
+
     RecyclerView calendarRecyclerView;
     CalendarAdapter adapter;
     DbManager dbManager;

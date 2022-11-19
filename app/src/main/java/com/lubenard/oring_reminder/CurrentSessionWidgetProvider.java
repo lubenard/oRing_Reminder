@@ -23,6 +23,8 @@ import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceive
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
+import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
+import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -191,24 +193,6 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         am.cancel(mPendingIntent);
     }
 
-    private void setBreakAlarm(Context context, String pauseBeginning, long entryId) {
-        if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Utils.getdateParsed(pauseBeginning));
-            calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
-            Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
-            Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
-                    .putExtra("action", 1);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
-            AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-
-            if (SDK_INT < Build.VERSION_CODES.M)
-                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            else
-                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        }
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
@@ -222,12 +206,11 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), CurrentSessionWidgetProvider.class.getName());
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
 
-        if (intent != null && intent.getAction() != null) {
+        if (intent.getAction() != null) {
             switch (intent.getAction()) {
                 // Clicked on the 'Start Session' button
                 case WIDGET_BUTTON_START:
-                    EditEntryFragment.setUpdateMainList(false);
-                    new EditEntryFragment(context).insertNewEntry(Utils.getdateFormatted(new Date()), false);
+                    SessionsManager.saveEntry(context, Utils.getdateFormatted(new Date()));
                     break;
                 // Clicked on the 'Stop Session' button
                 case WIDGET_BUTTON_STOP:
@@ -239,8 +222,8 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     // Cancel alarm until breaks are set as finished.
                     // Only then set a new alarm date
                     Log.d(TAG, "Cancelling alarm for entry: " + dbManager.getLastRunningEntry().getId());
-                    EditEntryFragment.cancelAlarm(context, dbManager.getLastRunningEntry().getId());
-                    setBreakAlarm(context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
+                    SessionsAlarmsManager.cancelAlarm(context, dbManager.getLastRunningEntry().getId());
+                    SessionsAlarmsManager.setBreakAlarm(sharedPreferences, context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
                     break;
                 // Clicked on the 'Stop break' button
                 case WIDGET_BUTTON_STOP_BREAK:
