@@ -24,11 +24,13 @@ public class SessionsAlarmsManager {
      * Add alarm if break is too long (only if break is running and option enabled in settings)
      * @param pauseBeginning
      */
-    public static void setBreakAlarm(SharedPreferences sharedPreferences, Context context, String pauseBeginning, long entryId) {
-        if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
+    public static void setBreakAlarm(Context context, String pauseBeginning, long entryId) {
+        SettingsManager settingsManager = new SettingsManager(context);
+
+        if (settingsManager.getShouldSendNotifWhenBreakTooLong()) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(Utils.getdateParsed(pauseBeginning));
-            calendar.add(Calendar.MINUTE, sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0));
+            calendar.add(Calendar.MINUTE, settingsManager.getShouldSendNotifWhenBreakTooLongDate());
             Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
             Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
                     .putExtra("action", 1);

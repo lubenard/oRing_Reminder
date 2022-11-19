@@ -40,6 +40,7 @@ import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceive
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class EntryDetailsFragment extends Fragment {
     private TextView textview_progress;
     private FloatingActionButton stopSessionButton;
     private boolean isThereAlreadyARunningPause = false;
-    private SharedPreferences sharedPreferences;
+    private SettingsManager settingsManager;
     private ProgressBar progressBar;
     private static ViewGroup viewGroup;
 
@@ -133,10 +134,9 @@ public class EntryDetailsFragment extends Fragment {
 
         viewGroup = view.findViewById(R.id.listview_pauses);
 
-        sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(context);
+        settingsManager = new SettingsManager(context);
 
-        weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+        weared_time =  settingsManager.getWearingTimeInt();
 
         stopSessionButton = view.findViewById(R.id.button_finish_session);
 
@@ -159,7 +159,7 @@ public class EntryDetailsFragment extends Fragment {
                 // Only then set a new alarm date
                 Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
-                SessionsAlarmsManager.setBreakAlarm(sharedPreferences, context ,Utils.getdateFormatted(new Date()), entryId);
+                SessionsAlarmsManager.setBreakAlarm(context ,Utils.getdateFormatted(new Date()), entryId);
                 createNewBreak(id, date, "NOT SET YET", 1);
                 updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
@@ -238,7 +238,7 @@ public class EntryDetailsFragment extends Fragment {
                     // Cancel the break notification if it is set as finished.
                     if (isRunning == 0) {
                         Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) ((dataModel != null) ? dataModel.getId() : entryId), intent, PendingIntent.FLAG_MUTABLE);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) dataModel.getId(), intent, PendingIntent.FLAG_MUTABLE);
                         AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                         am.cancel(pendingIntent);
                     }
@@ -257,7 +257,7 @@ public class EntryDetailsFragment extends Fragment {
                         calendar.add(Calendar.MINUTE, newAlarmDate);
                         Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
                         // Cancel break alarm is session is set as finished
-                        if (sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false)) {
+                        if (settingsManager.getShouldSendNotifWhenBreakTooLong()) {
                             Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
                                     .putExtra("action", 1);
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) entryId, intent, 0);
@@ -268,7 +268,7 @@ public class EntryDetailsFragment extends Fragment {
                     }
                 }
                 if (isRunning == 1)
-                    SessionsAlarmsManager.setBreakAlarm(sharedPreferences, context, pause_beginning.getText().toString(),  entryId);
+                    SessionsAlarmsManager.setBreakAlarm(context, pause_beginning.getText().toString(),  entryId);
                 updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             }
@@ -495,14 +495,14 @@ public class EntryDetailsFragment extends Fragment {
                 whenGetItOff.setVisibility(View.GONE);
                 stopSessionButton.setVisibility(View.GONE);
             }
-            Log.d(TAG, "Preference is " + (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"))));
+            Log.d(TAG, "Preference is " + (float) settingsManager.getWearingTimeInt());
             Log.d(TAG, "timeBeforeRemove is " + (float)timeBeforeRemove);
 
-            Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+            Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (settingsManager.getWearingTimeInt() * 60)) * 100));
             if (updateProgressBar) {
                 //progressBar.setProgressDrawable(null);
                 //progressBar.setProgressDrawable(context.getDrawable(R.drawable.calendar_circle_red));
-                //progressBar.setProgress((int) (((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100));
+                //progressBar.setProgress((int) (((float) timeBeforeRemove / (float) ( * 60)) * 100));
             }
             //Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();

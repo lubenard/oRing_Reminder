@@ -30,6 +30,7 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -42,6 +43,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String TAG = "SettingsFragment";
     private static Activity activity;
     private FragmentManager fragmentManager;
+    private SettingsManager settingsManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.settings_fragment, rootKey);
         activity = getActivity();
         fragmentManager = getActivity().getSupportFragmentManager();
+        settingsManager = new SettingsManager(getContext());
 
         activity.setTitle(R.string.action_settings);
 
@@ -98,16 +101,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         Preference choosingAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_date");
-        choosingAlarmIfNoSessionStarted.setEnabled(sharedPreferences.getBoolean("myring_prevent_me_when_no_session_started_for_today", false));
-        choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) +
-                sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "Not set"));
+        choosingAlarmIfNoSessionStarted.setEnabled(settingsManager.getShouldPreventIfNoSessionStartedToday());
+        choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) + settingsManager.getShouldPreventIfNoSessionStartedTodayDate());
 
         // Boolean if prevented about session not started for the day preference click listener
         Preference optionAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_for_today");
         optionAlarmIfNoSessionStarted.setOnPreferenceChangeListener((preference, newValue) -> {
             choosingAlarmIfNoSessionStarted.setEnabled((boolean) newValue);
             Log.d(TAG, "Alarm if no session started set : " + newValue);
-            if ((boolean) newValue == false) {
+            if (!((boolean) newValue)) {
                 Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
                         .putExtra("action", 2);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
@@ -126,7 +128,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             builder.setView(customLayout);
             TimePicker timePicker = customLayout.findViewById(R.id.time_picker);
             timePicker.setIs24HourView(true);
-            String oldTime = sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "12:00");
+            String oldTime = settingsManager.getShouldPreventIfNoSessionStartedTodayDate();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 timePicker.setCurrentHour(Integer.parseInt(oldTime.split(":")[0]));
                 timePicker.setCurrentMinute(Integer.parseInt(oldTime.split(":")[1]));
@@ -177,9 +179,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         Preference choosingAlarmIfPauseTooLong = findPreference("myring_prevent_me_when_pause_too_long_date");
-        choosingAlarmIfPauseTooLong.setEnabled(sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false));
+        choosingAlarmIfPauseTooLong.setEnabled(settingsManager.getShouldSendNotifWhenBreakTooLong());
         choosingAlarmIfPauseTooLong.setSummary(getString(R.string.settings_around) +
-                sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0) + getString(R.string.minute_with_M_uppercase));
+                settingsManager.getShouldSendNotifWhenBreakTooLongDate() + getString(R.string.minute_with_M_uppercase));
 
         // Boolean if prevented about session not started for the day preference click listener
         Preference optionAlarmIfPauseTooLong = findPreference("myring_prevent_me_when_pause_too_long");
@@ -193,7 +195,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             final View customLayout = getLayoutInflater().inflate(R.layout.prevent_me_when_pause_too_long, null);
             builder.setView(customLayout);
             EditText numberOfMinutes = customLayout.findViewById(R.id.editTextBreakTooLong);
-            int oldTime = sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0);
+            int oldTime = settingsManager.getShouldSendNotifWhenBreakTooLongDate();
             numberOfMinutes.setText(String.valueOf(oldTime));
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
                 int alarmTime = Integer.parseInt(numberOfMinutes.getText().toString());

@@ -42,6 +42,7 @@ import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadca
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -70,11 +71,7 @@ public class EditEntryFragment extends Fragment {
 
     private TextView getItOnBeforeTextView;
 
-    private SharedPreferences sharedPreferences;
-    private int weared_time;
-
     private Context context;
-    HashMap <Integer, String> runningSessions;
 
     abstract class LightTextWatcher implements TextWatcher {
         @Override public final void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -311,10 +308,12 @@ public class EditEntryFragment extends Fragment {
 
         int is_new_entry_datetime_to_valid = Utils.checkDateInputSanity(datetime_to);
 
+        SettingsManager settingsManager = new SettingsManager(context);
+
         // If new_entry_datetime_from is valid but new_entry_datetime_to is not valid
         if (is_new_entry_datetime_to_valid == 0 && Utils.checkDateInputSanity(datetime_from) == 1) {
             calendar.setTime(Utils.getdateParsed(datetime_from));
-            calendar.add(Calendar.HOUR_OF_DAY, weared_time + 9);
+            calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt() + 9);
             getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + Utils.getdateFormatted(calendar.getTime()));
         } else if (is_new_entry_datetime_to_valid == 1) {
             // Only if new_entry_datetime_to is valid (meaning a session is supposed to have a end date)

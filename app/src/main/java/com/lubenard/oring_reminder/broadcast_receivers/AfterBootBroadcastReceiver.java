@@ -11,6 +11,7 @@ import androidx.preference.PreferenceManager;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -65,8 +66,9 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         // Set all alarms for running sessions, because they have been erased after reboot
         // Also called when user change time, and when app is updated
         DbManager dbManager = new DbManager(context);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int userSettingWearingTime = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+        SettingsManager settingsManager = new SettingsManager(context);
+
+        int userSettingWearingTime = settingsManager.getWearingTimeInt();
         HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();
         Calendar calendar = Calendar.getInstance();
 

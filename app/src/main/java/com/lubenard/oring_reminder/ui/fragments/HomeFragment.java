@@ -30,6 +30,7 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsManager;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -295,7 +296,7 @@ public class HomeFragment extends Fragment {
      * @param isLongClick act if it is a long click or not
      */
     private void actionOnPlusButton(boolean isLongClick) {
-        String action = sharedPreferences.getString("ui_action_on_plus_button", "default");
+        String action = new SettingsManager(getContext()).getActionUIFab();
 
         if (isLongClick) {
             if (action.equals("default")) {
@@ -344,7 +345,7 @@ public class HomeFragment extends Fragment {
         if (lastRunningEntry != null) {
             long timeBeforeRemove = getTotalTimePause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
             textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
-            float progress_percentage = ((float) timeBeforeRemove / (float) (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60)) * 100;
+            float progress_percentage = ((float) timeBeforeRemove / (float) (new SettingsManager(getContext()).getWearingTimeInt() * 60)) * 100;
             Log.d(TAG, "MainView percentage is " + progress_percentage);
             if (progress_percentage < 1f)
                 progress_percentage = 1f;

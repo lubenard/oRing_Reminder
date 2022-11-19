@@ -1,6 +1,5 @@
 package com.lubenard.oring_reminder;
 
-import static android.os.Build.VERSION.SDK_INT;
 import static com.lubenard.oring_reminder.utils.Utils.getIntentMutableFlag;
 
 import android.app.Activity;
@@ -11,13 +10,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-
-import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
@@ -25,7 +20,7 @@ import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
-import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -35,9 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
-    private static SharedPreferences sharedPreferences;
+    private static SettingsManager settingsManager;
     private static DbManager dbManager;
-    private static RemoteViews remoteViews;
 
     public static final String WIDGET_BUTTON_START = "com.lubenard.oring_reminder.WIDGET_BUTTON_START";
     public static final String WIDGET_BUTTON_STOP = "com.lubenard.oring_reminder.WIDGET_BUTTON_STOP";
@@ -56,22 +50,20 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
     // Update the Widget datas
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        final int N = appWidgetIds.length;
 
         Log.d(TAG, "Updating widget");
 
         // Perform this loop procedure for each App Widget that belongs to this provider
-        for (int i = 0; i < N; i++) {
-            int appWidgetId = appWidgetIds[i];
-
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        for (int appWidgetId : appWidgetIds) {
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
             Intent intent = new Intent(context, MainActivity.class);
 
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
             if (dbManager == null)
                 dbManager = new DbManager(context);
+
+            if (settingsManager == null)
+                settingsManager = new SettingsManager(context);
 
             RingSession lastEntry = dbManager.getLastRunningEntry();
 
@@ -108,7 +100,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(Utils.getdateParsed(lastEntry.getDatePut()));
-                calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")));
+                calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt());
 
                 int textResourceWhenGetItOff;
 
@@ -129,7 +121,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.widget_date_from, Utils.convertDateIntoReadable(lastEntrySplitted[0], true) + "\n" + lastEntrySplitted[1]);
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
                 remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60) + "\n"
-                + timeRemoval);
+                        + timeRemoval);
 
                 // Change 'Start session' button into 'Stop session'
                 remoteViews.setTextViewText(R.id.widget_button_new_stop_session, context.getString(R.string.stop_active_session));
@@ -156,7 +148,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 Intent intent2 = new Intent(context, getClass());
                 intent2.setAction(WIDGET_BUTTON_START);
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(context, 0, intent2, getIntentMutableFlag());
-                remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2 );
+                remoteViews.setOnClickPendingIntent(R.id.widget_button_new_stop_session, pendingIntent2);
             }
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, getIntentMutableFlag());
@@ -202,6 +194,9 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         if (dbManager == null)
             dbManager = new DbManager(context);
 
+        if (settingsManager == null)
+            settingsManager = new SettingsManager(context);
+
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName thisAppWidget = new ComponentName(context.getPackageName(), CurrentSessionWidgetProvider.class.getName());
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
@@ -223,7 +218,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     // Only then set a new alarm date
                     Log.d(TAG, "Cancelling alarm for entry: " + dbManager.getLastRunningEntry().getId());
                     SessionsAlarmsManager.cancelAlarm(context, dbManager.getLastRunningEntry().getId());
-                    SessionsAlarmsManager.setBreakAlarm(sharedPreferences, context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
+                    SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
                     break;
                 // Clicked on the 'Stop break' button
                 case WIDGET_BUTTON_STOP_BREAK:

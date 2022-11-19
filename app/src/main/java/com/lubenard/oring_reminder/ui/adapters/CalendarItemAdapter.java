@@ -13,6 +13,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,7 +24,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
 
     private ArrayList<String> dayList;
     private Context context;
-    private SharedPreferences sharedPreferences;
+    private SettingsManager settingsManager;
     private int calendarOffset;
     // Variables used to display today mark if today is in current month.
     // It's value is either -1 if not present, or [1..31] if present
@@ -37,7 +38,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
         this.context = context;
         this.todayIndex = todayCounter;
         this.calendarOffset = calendarOffset;
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.settingsManager = new SettingsManager(context);
         this.onListItemClickListener = onListItemClickListener;
     }
 
@@ -84,7 +85,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
                 if (session.getIsRunning())
                     numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
                 else {
-                    if (session.getTimeWeared() >= (Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15")) * 60))
+                    if (session.getTimeWeared() >= (settingsManager.getWearingTimeInt() * 60))
                         numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
                     else
                         numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));

@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.managers.DbManager;
+import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.fragments.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -33,6 +34,7 @@ import java.util.concurrent.Callable;
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
+    private SettingsManager settingsManager;
     private static DbManager dbManager;
 
     private static Callable onPermissionSuccess;
@@ -78,47 +80,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission is granted. Continue the action or workflow
-                    // in your app.
-                    try {
-                        onPermissionSuccess.call();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    // Explain to the user that the feature is unavailable because
-                    // the features requires a permission that the user has denied.
-                    // At the same time, respect the user's decision. Don't link to
-                    // system settings in an effort to convince the user to change
-                    // their decision.
-                    try {
-                        onPermissionError.call();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+        if (requestCode == 1) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted. Continue the action or workflow
+                // in your app.
+                try {
+                    onPermissionSuccess.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                return;
+            } else {
+                // Explain to the user that the feature is unavailable because
+                // the features requires a permission that the user has denied.
+                // At the same time, respect the user's decision. Don't link to
+                // system settings in an effort to convince the user to change
+                // their decision.
+                try {
+                    onPermissionError.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     /**
      * Apply config at app startup
      */
-    private void checkConfig() {
-        String theme_option = sharedPreferences.getString("ui_theme", "dark");
-        Utils.applyTheme(theme_option);
+    private void applyUserConfig() {
+        String theme = settingsManager.getTheme();
+        Utils.applyTheme(theme);
 
-        String language_option = sharedPreferences.getString("ui_language", "system");
+        String language_option = settingsManager.getLanguage();
         Utils.applyLanguage(this, language_option);
-
-        if (sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", null) == null) {
-            sharedPreferences.edit().putString("myring_prevent_me_when_no_session_started_date", "12:00").apply();
-        }
     }
 
     @Override
@@ -137,8 +132,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // Check the UI config (Theme and language) and apply them
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        settingsManager = new SettingsManager(this);
         dbManager = new DbManager(this);
-        checkConfig();
+
+        applyUserConfig();
         createNotifChannel();
 
         // Create dynamical quick shortcut
@@ -196,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
      * Create notif channel if no one exist
      */
     private void createNotifChannel() {
-        if (!sharedPreferences.getBoolean("has_notif_channel_created", false)) {
+        if (!settingsManager.getIsNotifChannelCreated()) {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

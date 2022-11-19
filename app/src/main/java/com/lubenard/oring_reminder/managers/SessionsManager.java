@@ -32,12 +32,12 @@ public class SessionsManager {
 
         DbManager dbManager = MainActivity.getDbManager();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SettingsManager settingsManager = new SettingsManager(context);
 
-        boolean should_warn_user = sharedPreferences.getBoolean("myring_prevent_me_when_started_session", true);
+        boolean warnUserAlreadyRunningSession = settingsManager.getShouldPreventIfOneSessionAlreadyRunning();
         HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();
 
-        if (!runningSessions.isEmpty() && should_warn_user) {
+        if (!runningSessions.isEmpty() && warnUserAlreadyRunningSession) {
             new AlertDialog.Builder(context).setTitle(R.string.alertdialog_multiple_running_session_title)
                     .setMessage(R.string.alertdialog_multiple_running_session_body)
                     .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, (dialog, which) -> {
@@ -61,24 +61,19 @@ public class SessionsManager {
     public static void saveEntry(Context context, String formattedDatePut) {
         DbManager dbManager = MainActivity.getDbManager();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SettingsManager settingsManager = new SettingsManager(context);
 
-        int weared_time = Integer.parseInt(sharedPreferences.getString("myring_wearing_time", "15"));
+        int weared_time = settingsManager.getWearingTimeInt();
 
-        //TODO: decide what to do wih this
-        /*if (entryId != -1)
-            dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-        else {*/
-            long newlyInsertedEntry = dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
-            // Set alarm only for new entry
-            if (sharedPreferences.getBoolean("myring_send_notif_when_session_over", true)) {
+        long newlyInsertedEntry = dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
+        // Set alarm only for new entry
+        if (settingsManager.getShouldSendNotifWhenSessionIsOver()) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(Utils.getdateParsed(formattedDatePut));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 Log.d(TAG, "New entry: setting alarm at " + calendar.getTimeInMillis());
                 SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), newlyInsertedEntry, false);
             }
-        //}
     }
 
     /**
@@ -96,8 +91,7 @@ public class SessionsManager {
             // Only then set a new alarm date
             Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
             SessionsAlarmsManager.cancelAlarm(context, lastRunningEntry.getId());
-            SessionsAlarmsManager.setBreakAlarm(PreferenceManager.getDefaultSharedPreferences(context), context,
-                    Utils.getdateFormatted(new Date()), lastRunningEntry.getId());
+            SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), lastRunningEntry.getId());
             EditEntryFragment.updateWidget(context);
         } else {
             Log.d(TAG, "Error: Already a running pause");
