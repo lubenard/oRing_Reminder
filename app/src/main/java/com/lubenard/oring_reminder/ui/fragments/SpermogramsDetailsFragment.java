@@ -21,7 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.github.barteksc.pdfviewer.PDFView;
-import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.Spermograms;

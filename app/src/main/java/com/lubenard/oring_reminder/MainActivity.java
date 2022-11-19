@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.fragments.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         String dynamicIntent = "com.lubenard.oring_reminder.android.action.broadcast";
 
         IntentFilter intentFilter = new IntentFilter(dynamicIntent);
-        registerReceiver(new com.lubenard.oring_reminder.ShortcutManager(), intentFilter);
+        registerReceiver(new com.lubenard.oring_reminder.managers.ShortcutManager(), intentFilter);
 
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
         ShortcutInfo manageSessionShortcut = new ShortcutInfo.Builder(this, "manage_session")

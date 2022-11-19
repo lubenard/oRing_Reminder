@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;

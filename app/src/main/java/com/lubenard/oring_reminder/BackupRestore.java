@@ -17,6 +17,7 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.ui.fragments.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
@@ -263,7 +264,7 @@ public class BackupRestore extends Activity{
         try {
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser myParser = xmlFactoryObject.newPullParser();
-            DbManager  dbManager = MainActivity.getDbManager();
+            DbManager dbManager = MainActivity.getDbManager();
             int isRunning;
             long lastEntryInsertedId = -1;
 

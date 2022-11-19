@@ -51,7 +51,7 @@
                 android:resource="@xml/current_sessions_widget_metadatas" />
         </receiver>
         <!-- Shortcut manifest -->
-        <receiver android:name=".ShortcutManager"
+        <receiver android:name=".managers.ShortcutManager"
                 android:exported="false">
             <intent-filter>
                 <action android:name="com.lubenard.oring_reminder.android.action.broadcast" />

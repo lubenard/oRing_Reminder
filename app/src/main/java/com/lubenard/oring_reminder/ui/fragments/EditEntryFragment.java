@@ -30,13 +30,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.CurrentSessionWidgetProvider;
-import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;

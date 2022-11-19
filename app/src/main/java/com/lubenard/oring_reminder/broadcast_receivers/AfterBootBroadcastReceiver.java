@@ -8,7 +8,7 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import com.lubenard.oring_reminder.DbManager;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;

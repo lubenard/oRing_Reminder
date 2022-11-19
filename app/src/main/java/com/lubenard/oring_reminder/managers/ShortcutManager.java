@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder;
+package com.lubenard.oring_reminder.managers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
