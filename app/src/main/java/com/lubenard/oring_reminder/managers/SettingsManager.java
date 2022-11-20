@@ -2,6 +2,7 @@ package com.lubenard.oring_reminder.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
@@ -21,6 +22,8 @@ public class SettingsManager {
     private Boolean shouldSendNotifWhenBreakTooLong;
     private int shouldSendNotifWhenBreakTooLongDate;
 
+    private static final String TAG = "SettingsManager";
+
     public SettingsManager(Context context) {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -28,6 +31,8 @@ public class SettingsManager {
     }
 
     public void reloadSettings() {
+        Log.d(TAG, "Reloading settings");
+
         theme = sharedPreferences.getString("ui_theme", "dark");
         language = sharedPreferences.getString("ui_language", "system");
 
@@ -36,6 +41,7 @@ public class SettingsManager {
         ui_home_action_fab = sharedPreferences.getString("ui_action_on_plus_button", "default");
 
         wearing_time = sharedPreferences.getString("myring_wearing_time", "15");
+        Log.d(TAG, "New wearing time: " + wearing_time);
 
         shouldPreventIfOneSessionAlreadyRunning = sharedPreferences.getBoolean("myring_prevent_me_when_started_session", true);
 
@@ -50,6 +56,10 @@ public class SettingsManager {
 
     public String getActionUIFab() {
         return ui_home_action_fab;
+    }
+
+    public void setWearingTime(String newWearingTime) {
+        wearing_time = newWearingTime;
     }
 
     public String getWearingTime() {

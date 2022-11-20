@@ -122,13 +122,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:layout_marginStart="45dp"
+                        android:layout_marginStart="25dp"
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
+                            android:textAlignment="textStart"
                             android:textSize="19sp"
                             android:textStyle="bold"
                             android:text="@string/start"
@@ -136,9 +136,9 @@
 
                         <TextView
                             android:id="@+id/start_session_data"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
+                            android:textAlignment="textStart"
                             tools:text="19 février à 14h22"/>
                     </LinearLayout>
 
@@ -147,13 +147,13 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="end"
-                        android:layout_marginEnd="45dp"
+                        android:layout_marginEnd="25dp"
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
+                            android:textAlignment="textEnd"
                             android:textSize="19sp"
                             android:textStyle="bold"
                             android:text="@string/estimated_end"
@@ -161,9 +161,9 @@
 
                         <TextView
                             android:id="@+id/estimated_end_data"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAlignment="center"
+                            android:textAlignment="textEnd"
                             tools:text="19 février à 6h22"/>
                     </LinearLayout>
                 </LinearLayout>

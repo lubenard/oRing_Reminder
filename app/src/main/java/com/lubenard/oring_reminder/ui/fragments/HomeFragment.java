@@ -1,7 +1,9 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -42,20 +45,24 @@ import java.util.concurrent.TimeUnit;
 public class HomeFragment extends Fragment {
     private static final String TAG = "MainFragment";
 
-    private CircularProgressIndicator progress_bar;
+    private static CircularProgressIndicator progress_bar;
     private TextView progress_bar_text;
-    private Button button_start_break;
-    private FloatingActionButton fab;
-    private TextView text_view_break;
-    private View view;
-    private Button button_see_curr_session;
-    private TextView time_needed_to_complete_session;
+    private static Button button_start_break;
+    private static FloatingActionButton fab;
+    private static TextView text_view_break;
+    private static View view;
+    private static Button button_see_curr_session;
+    private static TextView time_needed_to_complete_session;
 
     private ArrayList<RingSession> dataModels;
-    private DbManager dbManager;
-    private TextView textview_progress;
-    private TextView home_since_midnight_data;
-    private TextView home_last_24h_data;
+    private static DbManager dbManager;
+    private static TextView textview_progress;
+    private static TextView home_since_midnight_data;
+    private static TextView home_last_24h_data;
+    private static TextView start_session_data;
+    private static TextView estimated_end_session_data;
+    private static Context context;
+    private static FragmentActivity activity;
 
     private MenuProvider menuProvider = new MenuProvider() {
         @Override
@@ -103,6 +110,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume()");
         updateDesign();
     }
 
@@ -113,7 +121,7 @@ public class HomeFragment extends Fragment {
      * @param dateNow interval newest boundaries
      * @return the time in Minutes of pauses between the interval
      */
-    public int computeTotalTimePauseForId(long entryId, String date24HoursAgo, String dateNow) {
+    public static int computeTotalTimePauseForId(long entryId, String date24HoursAgo, String dateNow) {
         ArrayList<RingSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
@@ -141,7 +149,7 @@ public class HomeFragment extends Fragment {
         return totalTimePause;
     }
 
-    private int getSinceMidnightWearingTime() {
+    private static int getSinceMidnightWearingTime() {
         int totalTimeSinceMidnight = 0;
         int pauseTimeForThisEntry;
 
@@ -197,7 +205,7 @@ public class HomeFragment extends Fragment {
      * Get all session wearing time with the breaks removed for the last 24 hours.
      * @return time in minute of worn time on the last 24 hours
      */
-    private int getLast24hWearingTime() {
+    private static int getLast24hWearingTime() {
         int totalTimeLastDay = 0;
         int pauseTimeForThisEntry;
 
@@ -278,33 +286,33 @@ public class HomeFragment extends Fragment {
     /**
      * Launch the new Entry fragment, and specify we do not want to update a entry
      */
-    private void startEditEntryFragment() {
+    private static void startEditEntryFragment() {
         EditEntryFragment fragment = new EditEntryFragment();
         Bundle bundle = new Bundle();
         bundle.putLong("entryId", -1);
         fragment.setArguments(bundle);
-        fragment.show(getChildFragmentManager(), null);
+        fragment.show(activity.getSupportFragmentManager(), null);
     }
 
     /**
      * Define what action should be done on longClick on the '+' button
      * @param isLongClick act if it is a long click or not
      */
-    private void actionOnPlusButton(boolean isLongClick) {
-        String action = new SettingsManager(getContext()).getActionUIFab();
+    private static void actionOnPlusButton(boolean isLongClick) {
+        String action = MainActivity.getSettingsManager().getActionUIFab();
 
         if (isLongClick) {
             if (action.equals("default")) {
                 startEditEntryFragment();
             } else {
-                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(getContext(), Utils.getdateFormatted(new Date()));
+                Toast.makeText(context, "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, Utils.getdateFormatted(new Date()));
                 updateDesign();
             }
         } else {
             if (action.equals("default")) {
-                Toast.makeText(getContext(), "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(getContext(), Utils.getdateFormatted(new Date()));
+                Toast.makeText(context, "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, Utils.getdateFormatted(new Date()));
                 updateDesign();
             } else {
                 startEditEntryFragment();
@@ -312,37 +320,50 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void updateCurrSessionDatas() {
+    private static void updateCurrSessionDatas() {
         RingSession lastRunningEntry = dbManager.getLastRunningEntry();
 
         if (lastRunningEntry != null) {
             long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
             textview_progress.setText(Utils.convertTimeWeared((int)timeBeforeRemove));
             time_needed_to_complete_session.setText("/ " + Utils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60));
-            float progress_percentage = ((float) timeBeforeRemove / (float) (new SettingsManager(getContext()).getWearingTimeInt() * 60)) * 100;
+            float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
+
+            String[] splittedDatePut = lastRunningEntry.getDatePut().split(" ");
+
+            start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), Utils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Utils.getdateParsed(lastRunningEntry.getDatePut()));
+            calendar.add(Calendar.HOUR_OF_DAY, MainActivity.getSettingsManager().getWearingTimeInt());
+
+            String[] splittedDateEstimatedEnd = Utils.getdateFormatted(calendar.getTime()).split(" ");
+
+            estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), Utils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
+
             Log.d(TAG, "MainView percentage is " + progress_percentage);
             if (progress_percentage < 1f)
                 progress_percentage = 1f;
             if (progress_percentage > 100f)
-                progress_bar.setIndicatorColor(getResources().getColor(R.color.green_main_bar));
+                progress_bar.setIndicatorColor(context.getResources().getColor(R.color.green_main_bar));
             else
-                progress_bar.setIndicatorColor(getResources().getColor(R.color.blue_main_bar));
+                progress_bar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
             progress_bar.setProgress((int)progress_percentage);
 
             if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
                 dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
-                text_view_break.setText(String.format("%s: %d mn", getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 text_view_break.setVisibility(View.VISIBLE);
-                button_start_break.setText(getString(R.string.widget_stop_break));
+                button_start_break.setText(context.getString(R.string.widget_stop_break));
                 button_start_break.setOnClickListener(v -> {
                     dbManager.endPause(lastRunningEntry.getId());
                     updateCurrSessionDatas();
                 });
             } else {
                 text_view_break.setVisibility(View.INVISIBLE);
-                button_start_break.setText(getString(R.string.widget_start_break));
+                button_start_break.setText(context.getString(R.string.widget_start_break));
                 button_start_break.setOnClickListener(v -> {
-                    SessionsManager.startBreak(getContext());
+                    SessionsManager.startBreak(context);
                     updateCurrSessionDatas();
                 });
             }
@@ -352,7 +373,7 @@ public class HomeFragment extends Fragment {
     /**
      * Update whole design on MainFragment, including fab
      */
-    private void updateDesign() {
+    public static void updateDesign() {
 
         int totalTimeSinceMidnight = getSinceMidnightWearingTime();
         home_since_midnight_data.setText(Utils.convertTimeWeared(totalTimeSinceMidnight));
@@ -368,8 +389,8 @@ public class HomeFragment extends Fragment {
             LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
             no_active_session.setVisibility(View.VISIBLE);
 
-            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(R.color.teal_700)));
-            fab.setImageDrawable(getContext().getDrawable(R.drawable.baseline_add_24));
+            fab.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.teal_700)));
+            fab.setImageDrawable(context.getDrawable(R.drawable.baseline_add_24));
 
             fab.setOnClickListener(view12 -> actionOnPlusButton(false));
 
@@ -384,8 +405,8 @@ public class HomeFragment extends Fragment {
             LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
             no_active_session.setVisibility(View.GONE);
 
-            fab.setBackgroundTintList(ColorStateList.valueOf(getContext().getResources().getColor(android.R.color.holo_red_dark)));
-            fab.setImageDrawable(getContext().getDrawable(R.drawable.outline_close_24));
+            fab.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(android.R.color.holo_red_dark)));
+            fab.setImageDrawable(context.getDrawable(R.drawable.outline_close_24));
 
             fab.setOnClickListener(v -> {
                 dbManager.endSession(dbManager.getLastRunningEntry().getId());
@@ -397,7 +418,7 @@ public class HomeFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
                 fragment.setArguments(bundle);
-                getActivity().getSupportFragmentManager().beginTransaction()
+                activity.getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, fragment, null)
                         .addToBackStack(null).commit();
             });
@@ -413,6 +434,8 @@ public class HomeFragment extends Fragment {
         getActivity().setTitle(R.string.app_name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         requireActivity().addMenuProvider(menuProvider);
+
+        Log.d(TAG, "onViewCreated()");
 
         dbManager = MainActivity.getDbManager();
         dataModels = new ArrayList<>();
@@ -433,7 +456,14 @@ public class HomeFragment extends Fragment {
         button_see_curr_session = view.findViewById(R.id.see_current_session);
         time_needed_to_complete_session = view.findViewById(R.id.on_needed_time_to_complete);
 
-        this.view = view;
+        start_session_data = view.findViewById(R.id.start_session_data);
+        estimated_end_session_data = view.findViewById(R.id.estimated_end_data);
+
+        HomeFragment.view = view;
+
+        context = getContext();
+        activity = getActivity();
+
     }
 
     @Override

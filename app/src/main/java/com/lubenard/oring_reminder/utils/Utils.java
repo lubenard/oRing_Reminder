@@ -18,6 +18,7 @@ import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroad
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -179,7 +180,7 @@ public class Utils {
      * @param context
      * @param localeCode localCode to apply
      */
-    public static final void setAppLocale(Context context, String localeCode) {
+    public static void setAppLocale(Context context, String localeCode) {
         current_language = localeCode;
         Locale myLocale = new Locale(localeCode);
         Resources res = context.getResources();

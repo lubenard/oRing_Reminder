@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -103,7 +104,7 @@ public class EditEntryFragment extends DialogFragment {
         int mMinute = c.get(Calendar.MINUTE);
 
         // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> filling_textview.setText(hourOfDay + ":" + minute + ":00"), mHour, mMinute, false);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> filling_textview.setText(hourOfDay + ":" + minute + ":00"), mHour, mMinute, DateFormat.is24HourFormat(getContext()));
             timePickerDialog.show();
     }
 
@@ -213,6 +214,7 @@ public class EditEntryFragment extends DialogFragment {
                     // If the diff time is too short, trigger this error
                     Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
             }
+            HomeFragment.updateDesign();
             dismiss();
         });
 

@@ -171,4 +171,5 @@
     <string name="start">Start:</string>
     <string name="estimated_end">Estimated end:</string>
     <string name="from_the">Since:</string>
+    <string name="formatted_datetime">%s at %s</string>
 </resources>

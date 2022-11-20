@@ -55,7 +55,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.settings_fragment, rootKey);
         activity = getActivity();
         fragmentManager = getActivity().getSupportFragmentManager();
-        settingsManager = new SettingsManager(getContext());
+        settingsManager = MainActivity.getSettingsManager();
 
         activity.setTitle(R.string.action_settings);
 
@@ -64,7 +64,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         language.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "Language value has changed for " + newValue);
             Utils.applyLanguage(getContext(), newValue.toString());
-            settingsManager.reloadSettings();
             return true;
         });
 
@@ -88,7 +87,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             .setPositiveButton(android.R.string.yes, null)
                             .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
-                settingsManager.reloadSettings();
+                settingsManager.setWearingTime(newValue.toString());
                 return true;
             } else {
                 new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_please_enter_digits_title)
