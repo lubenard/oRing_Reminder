@@ -25,6 +25,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -326,7 +327,7 @@ public class HomeFragment extends Fragment {
         if (lastRunningEntry != null) {
             long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
             textview_progress.setText(Utils.convertTimeWeared((int)timeBeforeRemove));
-            time_needed_to_complete_session.setText("/ " + Utils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60));
+            time_needed_to_complete_session.setText(String.format("/ %s", Utils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60)));
             float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
 
             String[] splittedDatePut = lastRunningEntry.getDatePut().split(" ");
@@ -433,7 +434,7 @@ public class HomeFragment extends Fragment {
 
         getActivity().setTitle(R.string.app_name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        requireActivity().addMenuProvider(menuProvider);
+        requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
 
         Log.d(TAG, "onViewCreated()");
 
@@ -464,12 +465,5 @@ public class HomeFragment extends Fragment {
         context = getContext();
         activity = getActivity();
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        Log.d(TAG, "onDestroyView called");
-        requireActivity().removeMenuProvider(menuProvider);
-        super.onDestroyView();
     }
 }

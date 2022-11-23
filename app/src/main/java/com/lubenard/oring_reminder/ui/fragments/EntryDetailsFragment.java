@@ -30,9 +30,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
@@ -65,10 +67,12 @@ public class EntryDetailsFragment extends Fragment {
     private TextView ableToGetItOff;
     private TextView whenGetItOff;
     private TextView textview_progress;
+    private TextView textview_total_time;
+    private TextView textview_percentage_progression;
     private FloatingActionButton stopSessionButton;
     private boolean isThereAlreadyARunningPause = false;
     private SettingsManager settingsManager;
-    private ProgressBar progressBar;
+    private CircularProgressIndicator progressBar;
     private static ViewGroup viewGroup;
 
     private TextView put;
@@ -139,7 +143,7 @@ public class EntryDetailsFragment extends Fragment {
 
         viewGroup = view.findViewById(R.id.listview_pauses);
 
-        settingsManager = new SettingsManager(context);
+        settingsManager = MainActivity.getSettingsManager();
 
         weared_time =  settingsManager.getWearingTimeInt();
 
@@ -149,6 +153,9 @@ public class EntryDetailsFragment extends Fragment {
         removed = view.findViewById(R.id.details_entry_removed);
         isRunning = view.findViewById(R.id.details_entry_isRunning);
         textview_progress = view.findViewById(R.id.text_view_progress);
+        textview_percentage_progression = view.findViewById(R.id.details_percentage_completion);
+        textview_total_time = view.findViewById(R.id.text_view_total_progress);
+        progressBar = view.findViewById(R.id.details_progress_bar);
         ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
         whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
 
@@ -179,7 +186,7 @@ public class EntryDetailsFragment extends Fragment {
                 Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
             return true;
         });
-        requireActivity().addMenuProvider(menuProvider);
+        requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
     }
 
     // TODO: See if this method is still useful after huge code refactor
@@ -290,7 +297,7 @@ public class EntryDetailsFragment extends Fragment {
 
     private View.OnClickListener clickInLinearLayout() {
         return v -> {
-            Integer position = Integer.parseInt(v.getTag().toString());
+            int position = Integer.parseInt(v.getTag().toString());
             Log.d(TAG, "Clicked item at position: " + position);
 
             showPauseAlertDialog(pausesDatas.get(position), position);
@@ -408,33 +415,30 @@ public class EntryDetailsFragment extends Fragment {
             }
 
             view.setOnClickListener(clickInLinearLayout());
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
-                            .setMessage(R.string.alertdialog_delete_contact_body)
-                            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                Integer position = Integer.parseInt(v.getTag().toString());
-                                RingSession object = (RingSession) pausesDatas.get(position);
-                                Log.d(TAG, "pauseDatas size ?? " + pausesDatas.size());
-                                pausesDatas.remove(object);
-                                Log.d(TAG, "pauseDatas size " + pausesDatas.size());
-                                Log.d(TAG, "delete pause with id: " + object.getId() + " and index " + position);
-                                dbManager.deletePauseEntry(object.getId());
-                                updatePauseList();
-                                recomputeWearingTime();
-                                if (entryDetails.getIsRunning()) {
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
-                                    calendar.add(Calendar.MINUTE, newAlarmDate);
-                                    Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
-                                    SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .setIcon(android.R.drawable.ic_dialog_alert).show();
-                    return true;
-                }
+            view.setOnLongClickListener(v -> {
+                new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
+                        .setMessage(R.string.alertdialog_delete_contact_body)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            Integer position = Integer.parseInt(v.getTag().toString());
+                            RingSession object = (RingSession) pausesDatas.get(position);
+                            Log.d(TAG, "pauseDatas size ?? " + pausesDatas.size());
+                            pausesDatas.remove(object);
+                            Log.d(TAG, "pauseDatas size " + pausesDatas.size());
+                            Log.d(TAG, "delete pause with id: " + object.getId() + " and index " + position);
+                            dbManager.deletePauseEntry(object.getId());
+                            updatePauseList();
+                            recomputeWearingTime();
+                            if (entryDetails.getIsRunning()) {
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
+                                calendar.add(Calendar.MINUTE, newAlarmDate);
+                                Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
+                                SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert).show();
+                return true;
             });
             viewGroup.addView(view);
         }
@@ -449,7 +453,7 @@ public class EntryDetailsFragment extends Fragment {
             // Load datas from the db and put them at the right place
             entryDetails = dbManager.getEntryDetails(entryId);
 
-            put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0], false) + " " + entryDetails.getDatePut().split(" ")[1]);
+            put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0], false) + "\n" + entryDetails.getDatePut().split(" ")[1]);
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
@@ -465,6 +469,8 @@ public class EntryDetailsFragment extends Fragment {
             // Either 'Not set yet', saying the session is not over
             // Or the endSession date
             Log.d(TAG, "Compute total time pause is " + SessionsManager.computeTotalTimePause(dbManager, entryId));
+
+            textview_total_time.setText(String.format("/ %s", Utils.convertTimeWeared(settingsManager.getWearingTimeInt() * 60)));
 
             // Display the datas relative to the session
             if (entryDetails.getIsRunning()) {
@@ -482,10 +488,12 @@ public class EntryDetailsFragment extends Fragment {
                 calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
+
+                textview_percentage_progression.setText("40%");
             } else {
                 timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
                 Log.d(TAG, "TimeBeforeRemove is " + timeBeforeRemove);
-                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0], false) + " " + entryDetails.getDateRemoved().split(" ")[1]);
+                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0], false) + "\n" + entryDetails.getDateRemoved().split(" ")[1]);
                 int time_spent_wearing = entryDetails.getTimeWeared();
                 if (time_spent_wearing < 60)
                     textview_progress.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));
@@ -505,9 +513,12 @@ public class EntryDetailsFragment extends Fragment {
 
             Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (settingsManager.getWearingTimeInt() * 60)) * 100));
             if (updateProgressBar) {
-                //progressBar.setProgressDrawable(null);
-                //progressBar.setProgressDrawable(context.getDrawable(R.drawable.calendar_circle_red));
-                //progressBar.setProgress((int) (((float) timeBeforeRemove / (float) ( * 60)) * 100));
+                float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
+                if (progress_percentage > 100f)
+                    progressBar.setIndicatorColor(context.getResources().getColor(R.color.green_main_bar));
+                else
+                    progressBar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
+                progressBar.setProgress((int)progress_percentage);
             }
             //Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();
@@ -524,12 +535,5 @@ public class EntryDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateAllFragmentDatas(true);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG, "OnDestroyView called");
-        requireActivity().removeMenuProvider(menuProvider);
     }
 }
