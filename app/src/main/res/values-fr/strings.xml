@@ -86,7 +86,7 @@
     <string name="notif_choice_dismiss">Nettoyer</string>
     <string name="please_wait">Merci d\'attendre...</string>
     <string name="toast_session_bad_id">Il y a eu une erreur : impossible de finir la session avec l\'id :</string>
-    <string name="in_about_entry_details">(dans environ %dh%02dm)</string>
+    <string name="in_about_entry_details">dans environ %dh%02dm</string>
     <string name="ordered_by_desc">Les entrées sont triées de la plus récente à la plus ancienne</string>
     <string name="not_ordered_by_desc">Les entrées sont triées de la plus ancienne à la plus récente</string>
     <string name="pause_beginning_to_small">La date de début de la pause est avant  la date de début de l\'entrée. Merci de corriger</string>

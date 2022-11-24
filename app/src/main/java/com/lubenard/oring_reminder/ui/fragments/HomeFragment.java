@@ -44,7 +44,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment {
-    private static final String TAG = "MainFragment";
+    private static final String TAG = "HomeFragment";
 
     private static CircularProgressIndicator progress_bar;
     private TextView progress_bar_text;
@@ -465,5 +465,11 @@ public class HomeFragment extends Fragment {
         context = getContext();
         activity = getActivity();
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView() called");
+        super.onDestroyView();
     }
 }

@@ -87,7 +87,7 @@
     <string name="notif_choice_dismiss">Dismiss</string>
     <string name="please_wait">Please wait…</string>
     <string name="toast_session_bad_id">"There was an error: we could not end session with id: "</string>
-    <string name="in_about_entry_details">(in about %dh%02dm)</string>
+    <string name="in_about_entry_details">in about %dh%02dm</string>
     <string name="ordered_by_desc">The entries are now sorted from newer to older</string>
     <string name="not_ordered_by_desc">The entries are now sorted from older to newer</string>
     <string name="pause_beginning_to_small">The starting date of the pause is before the starting date of the entry. Please fix.</string>
@@ -172,4 +172,6 @@
     <string name="estimated_end">Estimated end:</string>
     <string name="from_the">Since:</string>
     <string name="formatted_datetime">%s at %s</string>
+    <string name="total_break_this_session">Nombre de pauses:</string>
+    <string name="total_time_break">Temps total des pauses:</string>
 </resources>

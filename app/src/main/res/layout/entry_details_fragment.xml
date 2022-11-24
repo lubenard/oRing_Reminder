@@ -89,6 +89,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -100,9 +101,9 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginStart="10dp"
                         android:text="@string/start"
+                        android:textAlignment="center"
+                        android:layout_marginEnd="5dp"
                         android:textSize="20dp"
                         android:textStyle="bold"
                         tools:text="Start: "/>
@@ -112,13 +113,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
                         tools:text="23 november 2022\n17h30mn"
                         android:textSize="17dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/details_entry_end"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
@@ -129,9 +131,8 @@
                         android:id="@+id/details_entry_removed_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textAlignment="textStart"
-                        android:layout_marginStart="10dp"
+                        android:textAlignment="center"
+                        android:layout_marginStart="5dp"
                         android:text="@string/to"
                         android:textSize="20dp"
                         android:textStyle="bold" />
@@ -142,84 +143,136 @@
                         android:layout_height="wrap_content"
                         android:text="@string/not_set_yet"
                         android:textAlignment="center"
+                        android:layout_marginStart="5dp"
+                        tools:text="23 november 2022\n17h30mn"
+                        android:textSize="17dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/details_entry_estimated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_weight="1"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/details_entry_estimated_end"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/estimated_end"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/details_entry_estimated_removed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/not_set_yet"
+                        android:textAlignment="center"
                         android:layout_marginStart="10dp"
                         tools:text="23 november 2022\n17h30mn"
+                        android:textSize="17dp" />
+
+                    <TextView
+                        android:id="@+id/details_entry_when_get_it_off"
+                        style="@style/base_text_centered"
+                        tools:text="when_get_it_off"
                         android:textSize="17dp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/details_entry_isRunning"
-                style="@style/base_text_centered"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_marginTop="15dp"
-                android:text="is_running"
-                android:textSize="17dp" />
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="10dp">
 
-            <TextView
-                android:id="@+id/details_entry_able_to_get_it_off"
-                style="@style/base_text_centered"
-                android:layout_marginTop="15dp"
-                android:text="able_to_get_it_off_to"
-                android:textSize="17dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_break_this_session"
+                    android:textStyle="bold"
+                    android:textSize="19dp" />
 
-            <TextView
-                android:id="@+id/details_entry_when_get_it_off"
-                style="@style/base_text_centered"
-                tools:text="when_get_it_off"
-                android:textSize="17dp" />
+                <TextView
+                    android:id="@+id/details_entry_break_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="break_number"
+                    android:textSize="17dp" />
 
-            <TextView
-                android:id="@+id/details_entry_break_number"
-                style="@style/base_text_centered"
-                android:text="break_number"
-                android:textSize="17dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/total_time_break"
+                    android:textStyle="bold"
+                    android:textSize="19dp" />
 
-            <TextView
-                android:id="@+id/details_entry_total_break_time"
-                style="@style/base_text_centered"
-                android:text="total_break_time"
-                android:layout_marginBottom="10dp"
-                android:textSize="17dp" />
+                <TextView
+                    android:id="@+id/details_entry_total_break_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="total_break_time"
+                    android:textSize="17dp" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:elevation="7dp"
+            android:background="@drawable/home_current_session_background">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="Pauses:"
-                android:textSize="30dp" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="5dp">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="Pauses:"
+                    android:textSize="30dp" />
 
-            <ImageButton
-                android:id="@+id/new_pause_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:background="@null"
-                android:src="@drawable/baseline_add_green_48"
-                android:text="Add a pause" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/new_pause_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:background="@null"
+                    android:src="@drawable/baseline_add_green_48"
+                    android:text="Add a pause" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/listview_pauses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginHorizontal="18dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical"
+                android:showDividers="middle"
+                android:divider="@drawable/empty_tall_divider" />
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/listview_pauses"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginHorizontal="18dp"
-        android:layout_marginBottom="15dp"
-        android:orientation="vertical"
-        android:showDividers="middle"
-        android:divider="@drawable/empty_tall_divider" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_finish_session"

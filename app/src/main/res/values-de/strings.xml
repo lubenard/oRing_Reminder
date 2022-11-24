@@ -87,7 +87,7 @@
     <string name="notif_choice_dismiss">Ablehnen</string>
     <string name="please_wait">Bitte warten…</string>
     <string name="toast_session_bad_id">"Es ist ein Fehler aufgetreten: Wir konnten die Sitzung mit der id nicht beenden: "</string>
-    <string name="in_about_entry_details">(in ungefähr %dh%02dm)</string>
+    <string name="in_about_entry_details">in ungefähr %dh%02dm</string>
     <string name="ordered_by_desc">Die Einträge sind nun von neu nach alt sortiert</string>
     <string name="not_ordered_by_desc">Die Einträge sind nun von älter nach neuer sortiert</string>
     <string name="pause_beginning_to_small">Das Startdatum der Pause liegt vor dem Startdatum des Eintrags. Bitte beheben.</string>

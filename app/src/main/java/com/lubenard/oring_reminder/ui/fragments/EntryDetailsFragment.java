@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,7 +65,6 @@ public class EntryDetailsFragment extends Fragment {
     private ArrayList<RingSession> pausesDatas;
     private int newAlarmDate;
     private RingSession entryDetails;
-    private TextView ableToGetItOff;
     private TextView whenGetItOff;
     private TextView textview_progress;
     private TextView textview_total_time;
@@ -73,11 +73,16 @@ public class EntryDetailsFragment extends Fragment {
     private boolean isThereAlreadyARunningPause = false;
     private SettingsManager settingsManager;
     private CircularProgressIndicator progressBar;
-    private static ViewGroup viewGroup;
+    private ViewGroup viewGroup;
+
+    private LinearLayout end_session;
+    private LinearLayout estimated_end;
 
     private TextView put;
     private TextView removed;
     private TextView isRunning;
+    private TextView estimated_end_date;
+
 
     private MenuProvider menuProvider = new MenuProvider() {
         @Override
@@ -149,14 +154,17 @@ public class EntryDetailsFragment extends Fragment {
 
         stopSessionButton = view.findViewById(R.id.button_finish_session);
 
+        end_session = view.findViewById(R.id.details_entry_end);
+        estimated_end = view.findViewById(R.id.details_entry_estimated);
+
         put = view.findViewById(R.id.details_entry_put);
         removed = view.findViewById(R.id.details_entry_removed);
-        isRunning = view.findViewById(R.id.details_entry_isRunning);
+        estimated_end_date = view.findViewById(R.id.details_entry_estimated_removed);
+        //isRunning = view.findViewById(R.id.details_entry_isRunning);
         textview_progress = view.findViewById(R.id.text_view_progress);
         textview_percentage_progression = view.findViewById(R.id.details_percentage_completion);
         textview_total_time = view.findViewById(R.id.text_view_total_progress);
         progressBar = view.findViewById(R.id.details_progress_bar);
-        ableToGetItOff = view.findViewById(R.id.details_entry_able_to_get_it_off);
         whenGetItOff = view.findViewById(R.id.details_entry_when_get_it_off);
 
         stopSessionButton.setOnClickListener(view13 -> {
@@ -362,7 +370,7 @@ public class EntryDetailsFragment extends Fragment {
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
 
         String[] ableToGetItOffStringDate = Utils.getdateFormatted(calendar.getTime()).split(" ");
-        ableToGetItOff.setText(getString(R.string._message_able_to_get_it_off) + Utils.convertDateIntoReadable(ableToGetItOffStringDate[0], false) + " " + ableToGetItOffStringDate[1]);
+        estimated_end_date.setText(Utils.convertDateIntoReadable(ableToGetItOffStringDate[0], false) + "\n" + ableToGetItOffStringDate[1]);
         if (timeBeforeRemove >= 0)
             texteRessourceWhenGetItOff = R.string.in_about_entry_details;
         else {
@@ -479,8 +487,8 @@ public class EntryDetailsFragment extends Fragment {
                 removed.setText(entryDetails.getDateRemoved());
                 textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
 
-                isRunning.setTextColor(getResources().getColor(R.color.yellow));
-                isRunning.setText(R.string.session_is_running);
+                //isRunning.setTextColor(getResources().getColor(R.color.yellow));
+                //isRunning.setText(R.string.session_is_running);
 
                 stopSessionButton.setVisibility(View.VISIBLE);
 
@@ -490,6 +498,8 @@ public class EntryDetailsFragment extends Fragment {
                 updateAbleToGetItOffUI(calendar);
 
                 textview_percentage_progression.setText("40%");
+                end_session.setVisibility(View.GONE);
+                estimated_end.setVisibility(View.VISIBLE);
             } else {
                 timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
                 Log.d(TAG, "TimeBeforeRemove is " + timeBeforeRemove);
@@ -502,11 +512,12 @@ public class EntryDetailsFragment extends Fragment {
 
                 // If the session is finished, no need to show the ableToGetItOff textView.
                 // This textview is only used to warn user when he will be able to get it off
-                isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-                isRunning.setText(R.string.session_finished);
-                ableToGetItOff.setVisibility(View.GONE);
+                //isRunning.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                //isRunning.setText(R.string.session_finished);
                 whenGetItOff.setVisibility(View.GONE);
                 stopSessionButton.setVisibility(View.GONE);
+                estimated_end.setVisibility(View.GONE);
+                end_session.setVisibility(View.VISIBLE);
             }
             Log.d(TAG, "Preference is " + (float) settingsManager.getWearingTimeInt());
             Log.d(TAG, "timeBeforeRemove is " + (float)timeBeforeRemove);
@@ -525,9 +536,9 @@ public class EntryDetailsFragment extends Fragment {
             updatePauseList();
         } else {
             // Trigger an error if the entryId is wrong, then go back to main list
-            Toast.makeText(context, context.getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT);
+            Toast.makeText(context, context.getString(R.string.error_bad_id_entry_details) + entryId, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error: Wrong Id: " + entryId);
-            getActivity().onBackPressed();
+            requireActivity().onBackPressed();
         }
     }
 
