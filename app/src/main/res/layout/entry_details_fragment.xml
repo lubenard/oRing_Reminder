@@ -204,13 +204,15 @@
                     android:id="@+id/details_entry_break_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="2dp"
                     android:text="break_number"
                     android:textSize="17dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:text="@string/total_time_break"
                     android:textStyle="bold"
                     android:textSize="19dp" />
@@ -219,6 +221,8 @@
                     android:id="@+id/details_entry_total_break_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="2dp"
                     android:text="total_break_time"
                     android:textSize="17dp" />
 
@@ -263,9 +267,10 @@
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/listview_pauses"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
+                android:layout_weight="1"
                 android:layout_marginHorizontal="18dp"
                 android:layout_marginBottom="15dp"
                 android:orientation="vertical"

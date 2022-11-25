@@ -1,15 +1,11 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
-import static android.os.Build.VERSION.SDK_INT;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,16 +27,14 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
@@ -73,7 +66,7 @@ public class EntryDetailsFragment extends Fragment {
     private boolean isThereAlreadyARunningPause = false;
     private SettingsManager settingsManager;
     private CircularProgressIndicator progressBar;
-    private ViewGroup viewGroup;
+    LinearLayout break_layout;
 
     private LinearLayout end_session;
     private LinearLayout estimated_end;
@@ -82,9 +75,11 @@ public class EntryDetailsFragment extends Fragment {
     private TextView removed;
     private TextView isRunning;
     private TextView estimated_end_date;
+    private TextView total_breaks;
+    private TextView total_time_breaks;
 
 
-    private MenuProvider menuProvider = new MenuProvider() {
+    private final MenuProvider menuProvider = new MenuProvider() {
         @Override
         public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
             menuInflater.inflate(R.menu.menu_entry_details, menu);
@@ -146,7 +141,7 @@ public class EntryDetailsFragment extends Fragment {
 
         Log.d(TAG, "pause datas is size " + pausesDatas.size());
 
-        viewGroup = view.findViewById(R.id.listview_pauses);
+        break_layout = view.findViewById(R.id.listview_pauses);
 
         settingsManager = MainActivity.getSettingsManager();
 
@@ -160,6 +155,9 @@ public class EntryDetailsFragment extends Fragment {
         put = view.findViewById(R.id.details_entry_put);
         removed = view.findViewById(R.id.details_entry_removed);
         estimated_end_date = view.findViewById(R.id.details_entry_estimated_removed);
+        total_breaks = view.findViewById(R.id.details_entry_break_number);
+        total_time_breaks = view.findViewById(R.id.details_entry_total_break_time);
+
         //isRunning = view.findViewById(R.id.details_entry_isRunning);
         textview_progress = view.findViewById(R.id.text_view_progress);
         textview_percentage_progression = view.findViewById(R.id.details_percentage_completion);
@@ -384,7 +382,7 @@ public class EntryDetailsFragment extends Fragment {
      * Update the listView by fetching all elements from the db
      */
     private void updatePauseList() {
-        viewGroup.removeAllViews();
+        break_layout.removeAllViews();
 
         LayoutInflater inflater = (LayoutInflater) getActivity().
                 getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
@@ -448,7 +446,7 @@ public class EntryDetailsFragment extends Fragment {
                         .setIcon(android.R.drawable.ic_dialog_alert).show();
                 return true;
             });
-            viewGroup.addView(view);
+            break_layout.addView(view);
         }
     }
 
@@ -479,6 +477,9 @@ public class EntryDetailsFragment extends Fragment {
             Log.d(TAG, "Compute total time pause is " + SessionsManager.computeTotalTimePause(dbManager, entryId));
 
             textview_total_time.setText(String.format("/ %s", Utils.convertTimeWeared(settingsManager.getWearingTimeInt() * 60)));
+
+            total_breaks.setText(String.valueOf(pausesDatas.size()));
+            total_time_breaks.setText(Utils.convertTimeWeared(SessionsManager.computeTotalTimePause(dbManager, entryId)));
 
             // Display the datas relative to the session
             if (entryDetails.getIsRunning()) {

@@ -152,7 +152,7 @@
     <string name="save_this_entry">Diesen Eintrag speichern</string>
 	<string name="history">Geschichte</string>
     <string name="action_search_datas">Eintrag suchen</string>
-    <string name="search_result">Suchergebnisse</string>
+    <string name="search_result">Ergebnisse</string>
 	<string name="total_search">Ergebnisse insgesamt:</string>
 	<string name="action_edit_spermo">Dieses Spermiogramm bearbeiten</string>
 	<string name="alertdialog_edit_spermo_title">Bitte geben Sie das neue Datum ein</string>

@@ -152,7 +152,7 @@
     <string name="save_this_entry">Save this entry</string>
 	<string name="history">History</string>
     <string name="action_search_datas">Search entry</string>
-    <string name="search_result">Search results</string>
+    <string name="search_result">Results</string>
 	<string name="total_search">Total results:</string>
 	<string name="action_edit_spermo">Edit this spermogram</string>
 	<string name="alertdialog_edit_spermo_title">Please enter the new date</string>
