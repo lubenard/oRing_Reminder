@@ -186,7 +186,7 @@ public class EntryDetailsFragment extends Fragment {
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
                 SessionsAlarmsManager.setBreakAlarm(context ,Utils.getdateFormatted(new Date()), entryId);
                 createNewBreak(id, date, "NOT SET YET", 1);
-                updatePauseList();
+                //updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             } else
                 Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
@@ -294,7 +294,7 @@ public class EntryDetailsFragment extends Fragment {
                 }
                 if (isRunning == 1)
                     SessionsAlarmsManager.setBreakAlarm(context, pause_beginning.getText().toString(),  entryId);
-                updatePauseList();
+                //updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             }
         });
@@ -384,11 +384,11 @@ public class EntryDetailsFragment extends Fragment {
     private void updatePauseList() {
         break_layout.removeAllViews();
 
-        LayoutInflater inflater = (LayoutInflater) getActivity().
-                getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         for (int i = 0; i != pausesDatas.size(); i++) {
-            View view = inflater.inflate(R.layout.main_history_one_elem, null);
+            Log.d(TAG, "Inflating breaks");
+            View view = inflater.inflate(R.layout.main_history_one_elem, break_layout, false);
             view.setTag(Integer.toString(i));
 
             String[] dateRemoved = pausesDatas.get(i).getDateRemoved().split(" ");
@@ -425,14 +425,14 @@ public class EntryDetailsFragment extends Fragment {
                 new AlertDialog.Builder(context).setTitle(R.string.alertdialog_delete_entry)
                         .setMessage(R.string.alertdialog_delete_contact_body)
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                            Integer position = Integer.parseInt(v.getTag().toString());
+                            int position = Integer.parseInt(v.getTag().toString());
                             RingSession object = (RingSession) pausesDatas.get(position);
                             Log.d(TAG, "pauseDatas size ?? " + pausesDatas.size());
                             pausesDatas.remove(object);
                             Log.d(TAG, "pauseDatas size " + pausesDatas.size());
                             Log.d(TAG, "delete pause with id: " + object.getId() + " and index " + position);
                             dbManager.deletePauseEntry(object.getId());
-                            updatePauseList();
+                            //updatePauseList();
                             recomputeWearingTime();
                             if (entryDetails.getIsRunning()) {
                                 Calendar calendar = Calendar.getInstance();
@@ -498,7 +498,9 @@ public class EntryDetailsFragment extends Fragment {
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
 
-                textview_percentage_progression.setText("40%");
+                int progress_percentage = (int) (((float) timeBeforeRemove / (float) (settingsManager.getWearingTimeInt() * 60)) * 100);
+
+                textview_percentage_progression.setText(String.format("%d%%", progress_percentage));
                 end_session.setVisibility(View.GONE);
                 estimated_end.setVisibility(View.VISIBLE);
             } else {

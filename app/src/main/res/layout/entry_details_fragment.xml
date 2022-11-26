@@ -7,6 +7,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -232,7 +236,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
             android:elevation="7dp"
@@ -263,21 +267,18 @@
                     android:layout_marginEnd="5dp"
                     android:background="@null"
                     android:src="@drawable/baseline_add_green_48"
-                    android:text="Add a pause" />
+                    android:text="@string/add_break" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/listview_pauses"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="18dp"
-                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:showDividers="middle"
                 android:divider="@drawable/empty_tall_divider" />
         </LinearLayout>
     </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_finish_session"

@@ -1,0 +1,12 @@
+appId: com.lubenard.oring_reminder
+---
+- launchApp
+- assertVisible:
+    text: "oRing - Reminder"
+- assertVisible:
+    text: "Home"
+- assertVisible:
+    text: "Calendar"
+- assertVisible:
+    text: "Settings"
+
