@@ -186,7 +186,7 @@ public class EntryDetailsFragment extends Fragment {
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
                 SessionsAlarmsManager.setBreakAlarm(context ,Utils.getdateFormatted(new Date()), entryId);
                 createNewBreak(id, date, "NOT SET YET", 1);
-                //updatePauseList();
+                updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             } else
                 Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
@@ -294,7 +294,7 @@ public class EntryDetailsFragment extends Fragment {
                 }
                 if (isRunning == 1)
                     SessionsAlarmsManager.setBreakAlarm(context, pause_beginning.getText().toString(),  entryId);
-                //updatePauseList();
+                updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             }
         });
@@ -388,7 +388,7 @@ public class EntryDetailsFragment extends Fragment {
 
         for (int i = 0; i != pausesDatas.size(); i++) {
             Log.d(TAG, "Inflating breaks");
-            View view = inflater.inflate(R.layout.main_history_one_elem, break_layout, false);
+            View view = inflater.inflate(R.layout.details_break_one_elem, break_layout, false);
             view.setTag(Integer.toString(i));
 
             String[] dateRemoved = pausesDatas.get(i).getDateRemoved().split(" ");
@@ -432,7 +432,7 @@ public class EntryDetailsFragment extends Fragment {
                             Log.d(TAG, "pauseDatas size " + pausesDatas.size());
                             Log.d(TAG, "delete pause with id: " + object.getId() + " and index " + position);
                             dbManager.deletePauseEntry(object.getId());
-                            //updatePauseList();
+                            updatePauseList();
                             recomputeWearingTime();
                             if (entryDetails.getIsRunning()) {
                                 Calendar calendar = Calendar.getInstance();

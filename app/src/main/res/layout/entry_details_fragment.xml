@@ -239,6 +239,7 @@
             android:orientation="vertical"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:elevation="7dp"
             android:background="@drawable/home_current_session_background">
 
@@ -275,7 +276,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:showDividers="middle"
-                android:divider="@drawable/empty_tall_divider" />
+                android:layout_marginBottom="3dp"
+                android:divider="@drawable/list_separator"/>
         </LinearLayout>
     </LinearLayout>
     </ScrollView>
