@@ -1,0 +1,5 @@
+appId: com.lubenard.oring_reminder
+---
+- runFlow: ../utils/start_app_no_data.yaml
+- tapOn:
+    text: "Calendar"

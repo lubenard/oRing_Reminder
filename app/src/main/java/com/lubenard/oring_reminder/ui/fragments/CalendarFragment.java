@@ -20,6 +20,7 @@ import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.adapters.CalendarAdapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class CalendarFragment extends Fragment implements CalendarAdapter.onListItemClickListener {
 
@@ -67,7 +68,10 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
         dividerItemDecoration.setDrawable(getDrawable(requireContext(), R.drawable.empty_tall_divider_calendar));
         calendarRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        adapter = new CalendarAdapter(entries.get(0).getDatePutCalendar(), onListItemClickListener);
+        if (entries.size() > 0)
+            adapter = new CalendarAdapter(entries.get(0).getDatePutCalendar(), onListItemClickListener);
+        else
+            adapter = new CalendarAdapter(Calendar.getInstance(), onListItemClickListener);
         calendarRecyclerView.setAdapter(adapter);
 
         Log.d("CalendarFragment", "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");
