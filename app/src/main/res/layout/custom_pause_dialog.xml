@@ -1,51 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Commencer une pause:" />
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="parent"
+        android:background="@drawable/create_new_session_dialog_background"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/edittext_beginning_pause"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ex: 2020-03-30 11:10:20" />
+            <ImageButton
+                android:id="@+id/create_new_session_cancel"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/outline_close_24"
+                android:background="@null"/>
 
-    <Button
-        android:id="@+id/prefill_beginning_pause"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Préremplir" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="25dp"
-        android:text="Terminer une pause:" />
+            <ImageButton
+                android:id="@+id/validate_pause"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/baseline_save_24"
+                android:background="@null"/>
 
-    <EditText
-        android:id="@+id/edittext_finish_pause"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ex: 2020-03-30 11:10:20" />
 
-    <Button
-        android:id="@+id/prefill_finish_pause"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Préremplir" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/validate_pause"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sauvegarder" />
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:text="Commencer une pause:" />
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/new_entry_datepicker_from"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="3dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/outline_event_24" />
+
+            <EditText
+                android:id="@+id/edittext_beginning_pause"
+                android:layout_width="145dp"
+                android:layout_height="match_parent"
+                android:ems="6"
+                android:digits="0123456789-"
+                android:hint="Ex: 2020-03-30" />
+
+            <EditText
+                android:id="@+id/new_entry_hour_from"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="6"
+                android:digits="0123456789:"
+                android:hint="Ex: 10:04:20" />
+
+            <ImageButton
+                android:id="@+id/new_entry_timepicker_from"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:background="@null"
+                android:layout_gravity="center"
+                android:src="@drawable/outline_schedule_24" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/prefill_beginning_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/basic_button"
+            android:paddingHorizontal="8dp"
+            android:textAllCaps="false"
+            android:text="@string/set_auto_date_and_time" />
+
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:text="@string/to" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/new_entry_datepicker_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:layout_gravity="center"
+                android:src="@drawable/outline_event_24" />
+
+            <EditText
+                android:id="@+id/edittext_finish_pause"
+                android:layout_width="145dp"
+                android:layout_height="match_parent"
+                android:ems="6"
+                android:layout_weight="1"
+                android:digits="0123456789-"
+                android:hint="Ex: 2020-03-30" />
+
+            <EditText
+                android:id="@+id/new_entry_hour_to"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="6"
+                android:layout_marginLeft="10dp"
+                android:digits="0123456789:"
+                android:hint="Ex: 10:04:20" />
+
+            <ImageButton
+                android:id="@+id/new_entry_timepicker_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:layout_gravity="center"
+                android:src="@drawable/outline_schedule_24" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/prefill_finish_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/basic_button"
+            android:paddingHorizontal="8dp"
+            android:layout_marginBottom="20dp"
+            android:textAllCaps="false"
+            android:text="@string/set_auto_date_and_time" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

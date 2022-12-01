@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
@@ -47,7 +48,6 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
 
     private static CircularProgressIndicator progress_bar;
-    private TextView progress_bar_text;
     private static Button button_start_break;
     private static FloatingActionButton fab;
     private static TextView text_view_break;
@@ -123,25 +123,25 @@ public class HomeFragment extends Fragment {
      * @return the time in Minutes of pauses between the interval
      */
     public static int computeTotalTimePauseForId(long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<RingSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        ArrayList<BreakSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
-            RingSession currentBreak = pausesDatas.get(i);
+            BreakSession currentBreak = pausesDatas.get(i);
             if (!pausesDatas.get(i).getIsRunning()) {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) > 0 &&
-                        Utils.getDateDiff(currentBreak.getDatePut(), dateNow, TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeWeared());
-                    totalTimePause += currentBreak.getTimeWeared();
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(date24HoursAgo, currentBreak.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, currentBreak.getDatePut(), TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(date24HoursAgo, currentBreak.getDatePut(), TimeUnit.MINUTES);
+                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
+                        Utils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeRemoved());
+                    totalTimePause += currentBreak.getTimeRemoved();
+                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
+                        Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
+                    totalTimePause += Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
                 }
             } else {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running pause at index " + i + " is added: " + Utils.getDateDiff(currentBreak.getDateRemoved(), dateNow, TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(currentBreak.getDateRemoved(), dateNow, TimeUnit.MINUTES);
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running pause at index " + i + " is added: " + Utils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
+                    totalTimePause += Utils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
+                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
                     Log.d(TAG, "running pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
                     totalTimePause += Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 }
@@ -353,7 +353,7 @@ public class HomeFragment extends Fragment {
 
             if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
                 dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
-                text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 text_view_break.setVisibility(View.VISIBLE);
                 button_start_break.setText(context.getString(R.string.widget_stop_break));
                 button_start_break.setOnClickListener(v -> {
@@ -432,9 +432,12 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle(R.string.app_name);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+        context = requireContext();
+        activity = requireActivity();
+
+        activity.setTitle(R.string.app_name);
+        ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        activity.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
 
         Log.d(TAG, "onViewCreated()");
 
@@ -442,7 +445,6 @@ public class HomeFragment extends Fragment {
         dataModels = new ArrayList<>();
 
         progress_bar = view.findViewById(R.id.progress_bar_main);
-        progress_bar_text = view.findViewById(R.id.text_view_progress);
 
         textview_progress = view.findViewById(R.id.text_view_progress);
 
@@ -461,10 +463,6 @@ public class HomeFragment extends Fragment {
         estimated_end_session_data = view.findViewById(R.id.estimated_end_data);
 
         HomeFragment.view = view;
-
-        context = getContext();
-        activity = getActivity();
-
     }
 
     @Override

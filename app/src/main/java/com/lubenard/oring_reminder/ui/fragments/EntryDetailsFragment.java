@@ -33,6 +33,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
+import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
@@ -55,7 +56,7 @@ public class EntryDetailsFragment extends Fragment {
     private View view;
     private Context context;
     private FragmentManager fragmentManager;
-    private ArrayList<RingSession> pausesDatas;
+    private ArrayList<BreakSession> pausesDatas;
     private int newAlarmDate;
     private RingSession entryDetails;
     private TextView whenGetItOff;
@@ -197,7 +198,7 @@ public class EntryDetailsFragment extends Fragment {
 
     // TODO: See if this method is still useful after huge code refactor
     private void createNewBreak(long id, String startDate, String endDate, int isRunning) {
-        pausesDatas.add(0, new RingSession((int)id, endDate, startDate, isRunning, 0));
+        pausesDatas.add(0, new BreakSession((int)id, endDate, startDate, isRunning, 0, 0));
     }
 
     /**
@@ -206,8 +207,8 @@ public class EntryDetailsFragment extends Fragment {
      * @param dataModel If the pause already exist, give it datas to load
      * @param position inside the pauseDatas Array. Will be ignored if dataModel is Null
      */
-    private void showPauseAlertDialog(RingSession dataModel, int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    private void showPauseAlertDialog(BreakSession dataModel, int position) {
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
         ViewGroup viewGroup = view.findViewById(android.R.id.content);
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_pause_dialog, viewGroup, false);
         builder.setView(dialogView);
@@ -227,7 +228,7 @@ public class EntryDetailsFragment extends Fragment {
         Button fill_end = dialogView.findViewById(R.id.prefill_finish_pause);
         fill_end.setOnClickListener(view -> pause_ending.setText(Utils.getdateFormatted(new Date())));
 
-        Button save_entry = dialogView.findViewById(R.id.validate_pause);
+        ImageButton save_entry = dialogView.findViewById(R.id.validate_pause);
         save_entry.setOnClickListener(view -> {
             int isRunning = 0;
             String pauseEndingText = pause_ending.getText().toString();
@@ -259,7 +260,7 @@ public class EntryDetailsFragment extends Fragment {
                 } else {
                     long id = dbManager.updatePause(dataModel.getId(), pauseBeginningText, pauseEndingText, isRunning);
                     long timeWorn = Utils.getDateDiff(pauseBeginningText, pauseEndingText, TimeUnit.MINUTES);
-                    pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
+                    pausesDatas.set(position, new BreakSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn, 0));
                     // Cancel the break notification if it is set as finished.
                     if (isRunning == 0) {
                         Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
@@ -298,7 +299,7 @@ public class EntryDetailsFragment extends Fragment {
                 EditEntryFragment.updateWidget(getContext());
             }
         });
-        alertDialog.show();
+        alertDialog.show();*/
     }
 
     private View.OnClickListener clickInLinearLayout() {
@@ -330,9 +331,9 @@ public class EntryDetailsFragment extends Fragment {
 
         for (int i = 0; i < pausesDatas.size(); i++) {
             if (!pausesDatas.get(i).getIsRunning()) {
-                totalTimePause += pausesDatas.get(i).getTimeWeared();
+                totalTimePause += pausesDatas.get(i).getTimeRemoved();
             } else {
-                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 totalTimePause += timeToRemove;
                 isThereAlreadyARunningPause = true;
             }
@@ -391,7 +392,7 @@ public class EntryDetailsFragment extends Fragment {
             View view = inflater.inflate(R.layout.details_break_one_elem, break_layout, false);
             view.setTag(Integer.toString(i));
 
-            String[] dateRemoved = pausesDatas.get(i).getDateRemoved().split(" ");
+            String[] dateRemoved = pausesDatas.get(i).getStartDate().split(" ");
 
             TextView wornForTextView = view.findViewById(R.id.worn_for_history);
             wornForTextView.setText(R.string.removed_during);
@@ -407,14 +408,14 @@ public class EntryDetailsFragment extends Fragment {
             TextView textView_worn_for = view.findViewById(R.id.custom_view_date_time_weared);
 
             if (!pausesDatas.get(i).getIsRunning()) {
-                String[] datePut = pausesDatas.get(i).getDatePut().split(" ");
+                String[] datePut = pausesDatas.get(i).getEndDate().split(" ");
                 textView_hour_to.setText(datePut[1]);
                 if (!dateRemoved[0].equals(datePut[0]))
                     textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + Utils.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                textView_worn_for.setText(Utils.convertTimeWeared(pausesDatas.get(i).getTimeWeared()));
+                textView_worn_for.setText(Utils.convertTimeWeared(pausesDatas.get(i).getTimeRemoved()));
             } else {
-                long timeworn = Utils.getDateDiff(pausesDatas.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                long timeworn = Utils.getDateDiff(pausesDatas.get(i).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));
                 textView_worn_for.setText(String.format("%dh%02dm", timeworn / 60, timeworn % 60));
                 textView_hour_to.setText("Not set yet");
@@ -426,7 +427,7 @@ public class EntryDetailsFragment extends Fragment {
                         .setMessage(R.string.alertdialog_delete_contact_body)
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             int position = Integer.parseInt(v.getTag().toString());
-                            RingSession object = (RingSession) pausesDatas.get(position);
+                            BreakSession object = (BreakSession) pausesDatas.get(position);
                             Log.d(TAG, "pauseDatas size ?? " + pausesDatas.size());
                             pausesDatas.remove(object);
                             Log.d(TAG, "pauseDatas size " + pausesDatas.size());

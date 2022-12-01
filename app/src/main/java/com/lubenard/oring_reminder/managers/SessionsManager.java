@@ -11,6 +11,7 @@ import androidx.preference.PreferenceManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
+import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -68,7 +69,7 @@ public class SessionsManager {
 
         int weared_time = settingsManager.getWearingTimeInt();
 
-        long newlyInsertedEntry = dbManager.createNewDatesRing(formattedDatePut, "NOT SET YET", 1);
+        long newlyInsertedEntry = dbManager.createNewEntry(formattedDatePut, "NOT SET YET", 1);
         // Set alarm only for new entry
         if (settingsManager.getShouldSendNotifWhenSessionIsOver()) {
                 Calendar calendar = Calendar.getInstance();
@@ -131,13 +132,13 @@ public class SessionsManager {
      * @return the int value of all pause time in minutes
      */
     public static int computeTotalTimePause(DbManager dbManager, long entryId) {
-        ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
+        ArrayList<BreakSession> allPauses = dbManager.getAllPausesForId(entryId, false);
         int totalTimePause = 0;
         for (int i = 0; i != allPauses.size(); i++) {
             if (!allPauses.get(i).getIsRunning())
-                totalTimePause += allPauses.get(i).getTimeWeared();
+                totalTimePause += allPauses.get(i).getTimeRemoved();
             else
-                totalTimePause += Utils.getDateDiff(allPauses.get(i).getDateRemoved(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                totalTimePause += Utils.getDateDiff(allPauses.get(i).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         }
         return totalTimePause;
     }
@@ -149,7 +150,7 @@ public class SessionsManager {
      * @return true if running break has been found, else false
      */
     public static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
-        ArrayList<RingSession> allPauses = dbManager.getAllPausesForId(entryId, false);
+        ArrayList<BreakSession> allPauses = dbManager.getAllPausesForId(entryId, false);
         for (int i = 0; i != allPauses.size(); i++) {
             if (allPauses.get(i).getIsRunning())
                 return true;

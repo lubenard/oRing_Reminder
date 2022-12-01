@@ -16,6 +16,7 @@ import android.widget.RemoteViews;
 
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
+import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
@@ -73,7 +74,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
                 Intent intent3 = new Intent(context, getClass());
 
-                ArrayList<RingSession> session_breaks = dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true);
+                ArrayList<BreakSession> session_breaks = dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true);
 
                 if (session_breaks.size() > 0) {
                     if (session_breaks.get(0).getIsRunning()) {

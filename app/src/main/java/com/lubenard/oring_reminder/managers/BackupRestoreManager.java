@@ -18,6 +18,7 @@ import androidx.preference.PreferenceManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
+import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.ui.fragments.SettingsFragment;
@@ -236,16 +237,16 @@ public class BackupRestoreManager extends Activity{
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
                 xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning() ? 1 : 0));
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
-                ArrayList<RingSession> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
+                ArrayList<BreakSession> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
                 if (pauses.size() > 0) {
                     Log.d(TAG, "Break exist for session " + datas.get(i).getId() + ". There is " + pauses.size() + " breaks");
                     for (int j = 0; j != pauses.size(); j++) {
                         Log.d(TAG, "Looping through the break of session " + datas.get(i).getId());
                         xmlWriter.writeEntity("pause");
-                        xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(j).getDateRemoved());
-                        xmlWriter.writeAttribute("dateTimePut", pauses.get(j).getDatePut());
+                        xmlWriter.writeAttribute("dateTimeRemoved", pauses.get(j).getStartDate());
+                        xmlWriter.writeAttribute("dateTimePut", pauses.get(j).getEndDate());
                         xmlWriter.writeAttribute("isRunning", String.valueOf(pauses.get(j).getIsRunning() ? 1 : 0));
-                        xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(j).getTimeWeared()));
+                        xmlWriter.writeAttribute("timeRemoved", String.valueOf(pauses.get(j).getTimeRemoved()));
                         xmlWriter.endEntity();
                     }
                 }
@@ -279,7 +280,7 @@ public class BackupRestoreManager extends Activity{
                     if (myParser.getAttributeValue(null, "dateTimePut") != null && myParser.getAttributeValue(null, "dateTimeRemoved") != null
                     && Utils.checkDateInputSanity(myParser.getAttributeValue(null, "dateTimePut")) == 1) {
                         isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
-                        lastEntryInsertedId = dbManager.createNewDatesRing(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
+                        lastEntryInsertedId = dbManager.createNewEntry(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
                         if (isRunning == 1) {
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                             Calendar calendar = Calendar.getInstance();

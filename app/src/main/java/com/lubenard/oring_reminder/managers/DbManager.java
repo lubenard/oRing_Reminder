@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder.managers;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
+import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -149,13 +151,12 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Create a new contact only if non existent:
-     * Example: The contact named Toto does not exist, so let's create it
+     *
      * @param dateRemoved date at which user has removed the protection
      * @param datePut date at which user has put the protection
      * @param isRunning if the current session is running
      */
-    public long createNewDatesRing(String datePut, String dateRemoved, int isRunning) {
+    public long createNewEntry(String datePut, String dateRemoved, int isRunning) {
         ContentValues cv = new ContentValues();
         cv.put(ringTablePut, datePut);
         cv.put(ringTableRemoved, dateRemoved);
@@ -403,19 +404,21 @@ public class DbManager extends SQLiteOpenHelper {
      * @return A ringModel containing last Running entry.
      * Primarily used for widget
      */
-    public RingSession getLastRunningPauseForId(long entryId) {
-        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved};
+    public BreakSession getLastRunningPauseForId(long entryId) {
+        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved, pauseTableEntryId};
         Cursor cursor = readableDB.query(pausesTable,  columns, pauseTableEntryId + "=? AND " + pauseTableIsRunning + "=?", new String[]{String.valueOf(entryId), "1"},
                 null, null, pauseTableId + " DESC");
 
-        RingSession datas = null;
+        BreakSession datas = null;
 
         if (cursor.moveToFirst()) {
-            datas = new RingSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
+            datas = new BreakSession(
+                    cursor.getInt(cursor.getColumnIndex(pauseTableId)),
                     cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
-                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)));
+                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableEntryId)));
         }
         cursor.close();
         return datas;
@@ -476,22 +479,45 @@ public class DbManager extends SQLiteOpenHelper {
      * @param isDesc set if the pauses should be desc or not
      * @return a Arraylist containing RingModel objects of all pauses
      */
-    public ArrayList<RingSession> getAllPausesForId(long entryId, boolean isDesc) {
-        ArrayList<RingSession> datas = new ArrayList<>();
+    public ArrayList<BreakSession> getAllPausesForId(long entryId, boolean isDesc) {
+        ArrayList<BreakSession> datas = new ArrayList<>();
 
-        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved};
+        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved, pauseTableEntryId};
         Cursor cursor = readableDB.query(pausesTable,  columns, pauseTableEntryId + "=?", new String[]{String.valueOf(entryId)}, null, null,
                 (isDesc) ? pauseTableId + " DESC": null);
 
         while (cursor.moveToNext()) {
-            datas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
+            datas.add(new BreakSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
                     cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
-                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved))));
+                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableEntryId))));
         }
         cursor.close();
         return datas;
+    }
+
+    /**
+     * Return a array list of all pauses for given id
+     * @param entryId id to look for
+     * @return a Break Session in the form of a RingSession
+     */
+    public BreakSession getBreakForId(long entryId) {
+        BreakSession breakSession;
+
+        String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTableEntryId, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved};
+        Cursor cursor = readableDB.query(pausesTable,  columns, pauseTableId + "=?", new String[]{String.valueOf(entryId)}, null, null, null);
+
+        cursor.moveToFirst();
+        breakSession = new BreakSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
+                    cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(pauseTableEntryId)));
+        cursor.close();
+        return breakSession;
     }
 
     /**
