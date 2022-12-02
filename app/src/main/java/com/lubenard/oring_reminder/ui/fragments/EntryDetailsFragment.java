@@ -173,7 +173,7 @@ public class EntryDetailsFragment extends Fragment {
         });
 
         ImageButton pauseButton = view.findViewById(R.id.new_pause_button);
-        pauseButton.setOnClickListener(view1 -> showPauseAlertDialog(null, -1));
+        pauseButton.setOnClickListener(view1 -> showPauseEditBreakFragment(null));
         pauseButton.setOnLongClickListener(view12 -> {
             if (isThereAlreadyARunningPause) {
                 Log.d(TAG, "Error: Already a running pause");
@@ -202,104 +202,21 @@ public class EntryDetailsFragment extends Fragment {
     }
 
     /**
-     * Show user pause alert dialog
+     * Show user pause Edit break fragment
      * Also compute if pause it in the session interval
      * @param dataModel If the pause already exist, give it datas to load
-     * @param position inside the pauseDatas Array. Will be ignored if dataModel is Null
      */
-    private void showPauseAlertDialog(BreakSession dataModel, int position) {
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        ViewGroup viewGroup = view.findViewById(android.R.id.content);
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_pause_dialog, viewGroup, false);
-        builder.setView(dialogView);
-        AlertDialog alertDialog = builder.create();
-
-        EditText pause_beginning = dialogView.findViewById(R.id.edittext_beginning_pause);
-        EditText pause_ending = dialogView.findViewById(R.id.edittext_finish_pause);
-
-        if (dataModel != null) {
-            pause_beginning.setText(dataModel.getDateRemoved());
-            pause_ending.setText(dataModel.getDatePut());
-        }
-
-        Button fill_beginning = dialogView.findViewById(R.id.prefill_beginning_pause);
-        fill_beginning.setOnClickListener(view -> pause_beginning.setText(Utils.getdateFormatted(new Date())));
-
-        Button fill_end = dialogView.findViewById(R.id.prefill_finish_pause);
-        fill_end.setOnClickListener(view -> pause_ending.setText(Utils.getdateFormatted(new Date())));
-
-        ImageButton save_entry = dialogView.findViewById(R.id.validate_pause);
-        save_entry.setOnClickListener(view -> {
-            int isRunning = 0;
-            String pauseEndingText = pause_ending.getText().toString();
-            String pauseBeginningText = pause_beginning.getText().toString();
-            if (pauseEndingText.isEmpty() || pauseEndingText.equals("NOT SET YET")) {
-                pauseEndingText = "NOT SET YET" ;
-                isRunning = 1;
-            }
-
-            if (isThereAlreadyARunningPause && isRunning == 1) {
-                Log.d(TAG, "Error: Already a running pause");
-                Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-            } else if (Utils.getDateDiff(entryDetails.getDatePut(), pauseBeginningText, TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: Start of pause < start of entry");
-                Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
-            } else if (isRunning == 0 && Utils.getDateDiff(entryDetails.getDatePut(), pauseEndingText, TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: End of pause < start of entry");
-                Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
-            } else if (isRunning == 0 && !entryDetails.getIsRunning() && Utils.getDateDiff(pauseEndingText, entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: End of pause > end of entry");
-                Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
-            } else if (!entryDetails.getIsRunning() && Utils.getDateDiff(pauseBeginningText, entryDetails.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: Start of pause > end of entry");
-                Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
-            } else {
-                if (dataModel == null) {
-                    long id = dbManager.createNewPause(entryId, pauseBeginningText, pauseEndingText, isRunning);
-                    createNewBreak(id, pauseBeginningText, pauseEndingText, isRunning);
-                } else {
-                    long id = dbManager.updatePause(dataModel.getId(), pauseBeginningText, pauseEndingText, isRunning);
-                    long timeWorn = Utils.getDateDiff(pauseBeginningText, pauseEndingText, TimeUnit.MINUTES);
-                    pausesDatas.set(position, new BreakSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn, 0));
-                    // Cancel the break notification if it is set as finished.
-                    if (isRunning == 0) {
-                        Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) dataModel.getId(), intent, PendingIntent.FLAG_MUTABLE);
-                        AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
-                        am.cancel(pendingIntent);
-                    }
-                }
-                alertDialog.dismiss();
-                recomputeWearingTime();
-
-                // Only recompute alarm if session is running, else cancel it.
-                if (entryDetails.getIsRunning()) {
-                    if (pause_ending.getText().toString().equals("NOT SET YET")) {
-                        Log.d(TAG, "Cancelling alarm for entry: " + entryId);
-                        SessionsAlarmsManager.cancelAlarm(context, entryId);
-                    } else {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
-                        calendar.add(Calendar.MINUTE, newAlarmDate);
-                        Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
-                        // Cancel break alarm is session is set as finished
-                        if (settingsManager.getShouldSendNotifWhenBreakTooLong()) {
-                            Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
-                                    .putExtra("action", 1);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) entryId, intent, 0);
-                            AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
-                            am.cancel(pendingIntent);
-                        }
-                        SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
-                    }
-                }
-                if (isRunning == 1)
-                    SessionsAlarmsManager.setBreakAlarm(context, pause_beginning.getText().toString(),  entryId);
-                updatePauseList();
-                EditEntryFragment.updateWidget(getContext());
-            }
-        });
-        alertDialog.show();*/
+    private void showPauseEditBreakFragment(BreakSession dataModel) {
+        EditBreakFragment fragment = new EditBreakFragment();
+        Bundle bundle = new Bundle();
+        long breakId;
+        if (dataModel != null)
+            breakId = dataModel.getId();
+        else
+            breakId = -1;
+        bundle.putLong("breakId", breakId);
+        fragment.setArguments(bundle);
+        fragment.show(getActivity().getSupportFragmentManager(), null);
     }
 
     private View.OnClickListener clickInLinearLayout() {
@@ -307,7 +224,7 @@ public class EntryDetailsFragment extends Fragment {
             int position = Integer.parseInt(v.getTag().toString());
             Log.d(TAG, "Clicked item at position: " + position);
 
-            showPauseAlertDialog(pausesDatas.get(position), position);
+            showPauseEditBreakFragment(pausesDatas.get(position));
         };
     }
 

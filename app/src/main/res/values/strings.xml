@@ -175,4 +175,13 @@
     <string name="total_break_this_session">Nombre de pauses:</string>
     <string name="total_time_break">Temps total des pauses:</string>
     <string name="add_break">Add break</string>
+    <string name="example_hint_start_date">Ex: 2020–03–30</string>
+    <string name="example_hint_end_date">Ex: 2020–03–30</string>
+    <string name="example_hint_start_time">Ex: 10:04:20</string>
+    <string name="example_hint_end_hour">Ex: 13:37:00</string>
+    <string name="save_icon">Save icon</string>
+    <string name="close_icon">close icon</string>
+    <string name="calendar_icon">Calendar icon</string>
+    <string name="clock_icon">Clock icon</string>
+    <string name="start_break">Start break :</string>
 </resources>

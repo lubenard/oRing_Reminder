@@ -174,4 +174,5 @@
     <string name="in_break_for">En pause depuis</string>
     <string name="start">Début:</string>
     <string name="estimated_end">Fin estimée :</string>
+    <string name="start_break">Commencer une pause:</string>
 </resources>

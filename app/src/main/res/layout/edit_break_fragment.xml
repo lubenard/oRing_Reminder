@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -20,12 +19,13 @@
             android:layout_height="wrap_content">
 
             <ImageButton
-                android:id="@+id/create_new_session_cancel"
+                android:id="@+id/create_new_break_cancel"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/outline_close_24"
-                android:background="@null"/>
+                android:background="@null"
+                android:contentDescription="@string/close_icon" />
 
             <View
                 android:layout_width="0dp"
@@ -38,8 +38,8 @@
                 android:layout_height="30dp"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/baseline_save_24"
-                android:background="@null"/>
-
+                android:background="@null"
+                android:contentDescription="@string/save_icon" />
 
         </LinearLayout>
 
@@ -48,7 +48,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:textSize="20sp"
-            android:text="Commencer une pause:" />
+            android:text="@string/start_break" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -57,40 +57,44 @@
             android:layout_gravity="center"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/new_entry_datepicker_from"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="3dp"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:src="@drawable/outline_event_24" />
+                android:src="@drawable/outline_event_24"
+                android:contentDescription="@string/calendar_icon" />
 
             <EditText
                 android:id="@+id/edittext_beginning_pause"
                 android:layout_width="145dp"
                 android:layout_height="match_parent"
                 android:ems="6"
-                android:digits="0123456789-"
-                android:hint="Ex: 2020-03-30" />
+                android:inputType="none"
+                android:hint="@string/example_hint_start_date"
+                android:autofillHints="" />
 
             <EditText
                 android:id="@+id/new_entry_hour_from"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:ems="6"
-                android:digits="0123456789:"
-                android:hint="Ex: 10:04:20" />
+                android:inputType="none"
+                android:autofillHints=""
+                android:hint="@string/example_hint_start_time" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/new_entry_timepicker_from"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:background="@null"
                 android:layout_gravity="center"
-                android:src="@drawable/outline_schedule_24" />
+                android:src="@drawable/outline_schedule_24"
+                android:contentDescription="@string/clock_icon" />
 
         </LinearLayout>
 
@@ -119,13 +123,14 @@
             android:layout_gravity="center"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/new_entry_datepicker_to"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:layout_gravity="center"
-                android:src="@drawable/outline_event_24" />
+                android:src="@drawable/outline_event_24"
+                android:contentDescription="@string/calendar_icon" />
 
             <EditText
                 android:id="@+id/edittext_finish_pause"
@@ -133,25 +138,28 @@
                 android:layout_height="match_parent"
                 android:ems="6"
                 android:layout_weight="1"
-                android:digits="0123456789-"
-                android:hint="Ex: 2020-03-30" />
+                android:autofillHints=""
+                android:inputType="none"
+                android:hint="@string/example_hint_end_date" />
 
             <EditText
                 android:id="@+id/new_entry_hour_to"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:ems="6"
-                android:layout_marginLeft="10dp"
-                android:digits="0123456789:"
-                android:hint="Ex: 10:04:20" />
+                android:layout_marginStart="10dp"
+                android:inputType="none"
+                android:autofillHints=""
+                android:hint="@string/example_hint_end_hour" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/new_entry_timepicker_to"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:layout_gravity="center"
-                android:src="@drawable/outline_schedule_24" />
+                android:src="@drawable/outline_schedule_24"
+                android:contentDescription="@string/clock_icon" />
         </LinearLayout>
 
         <Button
