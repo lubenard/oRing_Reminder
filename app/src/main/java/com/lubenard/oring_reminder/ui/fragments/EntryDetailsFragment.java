@@ -207,16 +207,22 @@ public class EntryDetailsFragment extends Fragment {
      * @param dataModel If the pause already exist, give it datas to load
      */
     private void showPauseEditBreakFragment(BreakSession dataModel) {
-        EditBreakFragment fragment = new EditBreakFragment();
-        Bundle bundle = new Bundle();
-        long breakId;
-        if (dataModel != null)
-            breakId = dataModel.getId();
-        else
-            breakId = -1;
-        bundle.putLong("breakId", breakId);
-        fragment.setArguments(bundle);
-        fragment.show(getActivity().getSupportFragmentManager(), null);
+        if (isThereAlreadyARunningPause) {
+            Log.d(TAG, "Error: Already a running pause");
+            Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+        } else {
+            EditBreakFragment fragment = new EditBreakFragment();
+            Bundle bundle = new Bundle();
+            long breakId;
+            if (dataModel != null)
+                breakId = dataModel.getId();
+            else
+                breakId = -1;
+            bundle.putLong("breakId", breakId);
+            bundle.putLong("sessionId", entryId);
+            fragment.setArguments(bundle);
+            fragment.show(getActivity().getSupportFragmentManager(), null);
+        }
     }
 
     private View.OnClickListener clickInLinearLayout() {

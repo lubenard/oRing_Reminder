@@ -81,6 +81,50 @@ public class SessionsManager {
     }
 
     /**
+     * Try to start given break for given session.
+     * the method will try to check if the break is inserable in the session.
+     * If the session could not be inserted, return false.
+     * else return true.
+     */
+    public static boolean startBreak2(Context context, RingSession session, BreakSession breakSession, boolean isNewEntry) {
+        DbManager dbManager = MainActivity.getDbManager();
+        if (Utils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
+            Log.w(TAG, "Error: Start of pause < start of entry");
+            Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (!breakSession.getIsRunning() && Utils.getDateDiff(session.getDatePut(), breakSession.getEndDate(), TimeUnit.SECONDS) <= 0) {
+            Log.w(TAG, "Error: End of pause < start of entry");
+            Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (!breakSession.getIsRunning() && !session.getIsRunning() && Utils.getDateDiff(breakSession.getEndDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+            Log.w(TAG, "Error: End of pause > end of entry");
+            Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (!session.getIsRunning() && Utils.getDateDiff(breakSession.getStartDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+            Log.w(TAG, "Error: Start of pause > end of entry");
+            Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            // Session can be inserted
+            if (isNewEntry) {
+                long id = dbManager.createNewPause(session.getId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getIsRunning()) ? 1 : 0);
+            } else {
+                /*long id = dbManager.updatePause(pausesDatas.getId(), pauseBeginningText, pauseEndingText, isRunning);
+                long timeWorn = Utils.getDateDiff(pauseBeginningText, pauseEndingText, TimeUnit.MINUTES);
+                //pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
+                // Cancel the break notification if it is set as finished.
+                if (isRunning == 0) {
+                    Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) pausesDatas.getId(), intent, PendingIntent.FLAG_MUTABLE);
+                    AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+                    am.cancel(pendingIntent);
+                }*/
+            }
+            return true;
+        }
+    }
+
+    /**
      * Start break on MainFragment
      */
     public static void startBreak(Context context) {

@@ -35,6 +35,7 @@ import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
+import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -50,6 +51,7 @@ public class EditBreakFragment extends DialogFragment {
     private BreakSession pausesDatas;
     private RingSession sessionDatas;
     private long breakId;
+    private long sessionId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class EditBreakFragment extends DialogFragment {
 
         Bundle bundle = this.getArguments();
         breakId = bundle.getLong("breakId", -1);
+        sessionId = bundle.getLong("sessionId", -1);
 
         Context context = requireContext();
 
@@ -83,13 +86,18 @@ public class EditBreakFragment extends DialogFragment {
 
         dbManager = MainActivity.getDbManager();
 
+        sessionDatas = dbManager.getEntryDetails(sessionId);
+
         if (breakId != -1) {
             pausesDatas = dbManager.getBreakForId(breakId);
-            sessionDatas = dbManager.getEntryDetails(pausesDatas.getSessionId());
-
             if (pausesDatas != null) {
-                pause_beginning_date.setText(pausesDatas.getStartDate());
-                pause_ending_date.setText(pausesDatas.getEndDate());
+                String[] startDateSplitted = pausesDatas.getStartDate().split(" ");
+                String[] endDateSplitted = pausesDatas.getEndDate().split(" ");
+
+                pause_beginning_date.setText(startDateSplitted[0]);
+                pause_beginning_time.setText(startDateSplitted[1]);
+                pause_ending_date.setText(endDateSplitted[0]);
+                pause_ending_date.setText(endDateSplitted[1]);
             }
         }
 
@@ -123,48 +131,31 @@ public class EditBreakFragment extends DialogFragment {
         ImageButton save_entry = view.findViewById(R.id.validate_pause);
         save_entry.setOnClickListener(v -> {
             int isRunning = 0;
-            String pauseEndingText = pause_ending_date.getText().toString();
-            String pauseBeginningText = pause_beginning_date.getText().toString();
-            if (pauseEndingText.isEmpty() || pauseEndingText.equals("NOT SET YET")) {
-                pauseEndingText = "NOT SET YET" ;
+            String pauseEndingDateText = pause_ending_date.getText().toString();
+            String pauseEndingTimeText = pause_ending_time.getText().toString();
+            String pauseBeginningDateText = pause_beginning_date.getText().toString();
+            String pauseBeginningTimeText = pause_beginning_time.getText().toString();
+            if ((pauseEndingDateText.isEmpty() || pauseEndingDateText.equals("NOT SET YET"))
+                    && (pauseEndingTimeText.isEmpty() || pauseEndingTimeText.equals("NOT SET YET"))) {
                 isRunning = 1;
             }
 
-            if (/*isThereAlreadyARunningPause && */isRunning == 1) {
-                Log.d(TAG, "Error: Already a running pause");
-                Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-            } else if (Utils.getDateDiff(sessionDatas.getDatePut(), pauseBeginningText, TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: Start of pause < start of entry");
-                Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
-            } else if (isRunning == 0 && Utils.getDateDiff(sessionDatas.getDatePut(), pauseEndingText, TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: End of pause < start of entry");
-                Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
-            } else if (isRunning == 0 && !sessionDatas.getIsRunning() && Utils.getDateDiff(pauseEndingText, sessionDatas.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: End of pause > end of entry");
-                Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
-            } else if (!sessionDatas.getIsRunning() && Utils.getDateDiff(pauseBeginningText, sessionDatas.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
-                Log.d(TAG, "Error: Start of pause > end of entry");
-                Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
-            } else {
-                if (pausesDatas == null) {
-                    long id = dbManager.createNewPause(sessionDatas.getId(), pauseBeginningText, pauseEndingText, isRunning);
-                    //createNewBreak(id, pauseBeginningText, pauseEndingText, isRunning);
-                } else {
-                    long id = dbManager.updatePause(pausesDatas.getId(), pauseBeginningText, pauseEndingText, isRunning);
-                    long timeWorn = Utils.getDateDiff(pauseBeginningText, pauseEndingText, TimeUnit.MINUTES);
-                    //pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
-                    // Cancel the break notification if it is set as finished.
-                    if (isRunning == 0) {
-                        Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) pausesDatas.getId(), intent, PendingIntent.FLAG_MUTABLE);
-                        AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
-                        am.cancel(pendingIntent);
-                    }
-                }
+            String pauseBeginningText = String.format("%s %s", pauseBeginningDateText, pauseBeginningTimeText);
+            String pauseEndingText = String.format("%s %s", pauseEndingDateText, pauseEndingTimeText);
+
+            if (isRunning == 1) {
+                pauseEndingText = "NOT SET YET";
+            }
+
+            if (SessionsManager.startBreak2(context, sessionDatas,
+                    new BreakSession(-1, pauseBeginningText, pauseEndingText,
+                                          isRunning, 0, sessionDatas.getId()),
+                                pausesDatas == null))
+            {
                 dismiss();
+            }
 
-                //recomputeWearingTime();
-
+            /*
                 // Only recompute alarm if session is running, else cancel it.
                 if (sessionDatas.getIsRunning()) {
                     if (pause_ending_date.getText().toString().equals("NOT SET YET")) {
@@ -191,7 +182,7 @@ public class EditBreakFragment extends DialogFragment {
                     SessionsAlarmsManager.setBreakAlarm(context, pause_beginning_date.getText().toString(),  sessionDatas.getId());
                 //updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
-            }
+            }*/
         });
     }
 

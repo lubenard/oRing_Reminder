@@ -16,7 +16,7 @@ public class BreakSession {
     private String dateRemoved;
     private BreakStatus status;
     private int timeRemoved;
-    private int sessionId;
+    private long sessionId;
 
     /**
      *
@@ -25,7 +25,7 @@ public class BreakSession {
      * Normal session: id: 1, datePut 2021-04-10 11:42:00, dateRemoved 2021-04-11 02:42:00, isRunning 0, time worn 900 (15h in Minutes)
      * Break:          id: 3, datePut 2021-04-10 16:36:00, dateRemoved 2021-04-10 14:21:00, isRunning 0, time worn 135 (2h15 in Minutes)
      */
-    public BreakSession(int id, String datePut, String dateRemoved, int isRunning, int timeWeared, int sessionId) {
+    public BreakSession(int id, String dateRemoved, String datePut, int isRunning, int timeWeared, long sessionId) {
         this.id = id;
         this.datePut = datePut;
         this.dateRemoved = dateRemoved;
@@ -66,7 +66,7 @@ public class BreakSession {
         return calendar;
     }
 
-    public int getSessionId() {return sessionId; }
+    public long getSessionId() { return sessionId; }
 
     public boolean getIsRunning() {
         return status == BreakStatus.RUNNING;
