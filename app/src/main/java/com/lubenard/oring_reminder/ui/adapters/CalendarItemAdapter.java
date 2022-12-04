@@ -20,7 +20,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CalendarItemAdapter extends BaseAdapter implements View.OnClickListener{
+public class CalendarItemAdapter extends BaseAdapter {
+
+    private static final String TAG = "CalendarItemAdapter";
 
     private ArrayList<String> dayList;
     private Context context;
@@ -30,16 +32,14 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
     // It's value is either -1 if not present, or [1..31] if present
     private int todayIndex;
     private HashMap<Integer, RingSession> monthEntries;
-    private CalendarItemAdapter.onListItemClickListener onListItemClickListener;
 
-    public CalendarItemAdapter(Context context, ArrayList<String> dayList, HashMap<Integer, RingSession> monthEntries, int calendarOffset, int todayCounter , CalendarItemAdapter.onListItemClickListener onListItemClickListener) {
+    public CalendarItemAdapter(Context context, ArrayList<String> dayList, HashMap<Integer, RingSession> monthEntries, int calendarOffset, int todayCounter) {
         this.dayList = dayList;
         this.monthEntries = monthEntries;
         this.context = context;
         this.todayIndex = todayCounter;
         this.calendarOffset = calendarOffset;
         this.settingsManager = new SettingsManager(context);
-        this.onListItemClickListener = onListItemClickListener;
     }
 
 
@@ -66,7 +66,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridItem = inflater.inflate(R.layout.calendar_grid_item, null);
 
-        Log.d("CalendarItemAdapter", "Iterate over  " + dayList.get(position));
+        Log.d("CalendarItemAdapter", "Iterate over  " + dayList.get(position) + " with position " + position);
 
         if (!dayList.get(position).equals("0")) {
 
@@ -90,6 +90,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
                     else
                         numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));
                 }
+                numberTextView.setOnClickListener(v -> Log.d(TAG, "Clicked on item " + dayList.get(position)));
             }
         }
         return gridItem;
@@ -97,17 +98,7 @@ public class CalendarItemAdapter extends BaseAdapter implements View.OnClickList
 
     @Override
     public boolean isEnabled(int position) {
-        if (dayList.get(position).equals("0") || monthEntries.get(position) == null)
-            return false;
-        return true;
-    }
-
-    @Override
-    public void onClick(View view) {
-        Log.d("CalendarItemAdapter", "Clicked on item");
-    }
-
-    public interface onListItemClickListener {
-        void onListItemClickListener(int position);
+        Log.d(TAG, "is " + position + " enabled ? answer is " + (!dayList.get(position).equals("0") && monthEntries.get(Integer.parseInt(dayList.get(position))) != null));
+        return !dayList.get(position).equals("0") && monthEntries.get(Integer.parseInt(dayList.get(position))) != null;
     }
 }

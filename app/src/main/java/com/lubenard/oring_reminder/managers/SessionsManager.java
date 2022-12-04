@@ -88,7 +88,11 @@ public class SessionsManager {
      */
     public static boolean startBreak2(Context context, RingSession session, BreakSession breakSession, boolean isNewEntry) {
         DbManager dbManager = MainActivity.getDbManager();
-        if (Utils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
+        if (session.getStatus() == RingSession.SessionStatus.IN_BREAK && breakSession.getIsRunning()) {
+            Log.w(TAG, "Error: Already in break !");
+            Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (Utils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
             return false;
@@ -107,18 +111,20 @@ public class SessionsManager {
         } else {
             // Session can be inserted
             if (isNewEntry) {
-                long id = dbManager.createNewPause(session.getId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getIsRunning()) ? 1 : 0);
+                long id = dbManager.createNewPause(breakSession);
             } else {
-                /*long id = dbManager.updatePause(pausesDatas.getId(), pauseBeginningText, pauseEndingText, isRunning);
-                long timeWorn = Utils.getDateDiff(pauseBeginningText, pauseEndingText, TimeUnit.MINUTES);
+                long id = dbManager.updatePause(breakSession);
+                long timeWorn = Utils.getDateDiff(breakSession.getStartDate(), breakSession.getEndDate(), TimeUnit.MINUTES);
+
                 //pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
                 // Cancel the break notification if it is set as finished.
-                if (isRunning == 0) {
-                    Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) pausesDatas.getId(), intent, PendingIntent.FLAG_MUTABLE);
-                    AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
-                    am.cancel(pendingIntent);
-                }*/
+                if (!breakSession.getIsRunning()) {
+                    SessionsAlarmsManager.cancelBreakAlarm(context, breakSession.getId());
+                } else {
+                    SessionsAlarmsManager.cancelAlarm(context, session.getId());
+                    SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), breakSession.getId());
+                    EditEntryFragment.updateWidget(context);
+                }
             }
             return true;
         }

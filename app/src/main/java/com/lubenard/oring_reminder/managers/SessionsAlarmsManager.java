@@ -3,6 +3,7 @@ package com.lubenard.oring_reminder.managers;
 import static android.os.Build.VERSION.SDK_INT;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -35,13 +36,20 @@ public class SessionsAlarmsManager {
             Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
                     .putExtra("action", 1);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
-            android.app.AlarmManager am = (android.app.AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+            AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
             if (SDK_INT < Build.VERSION_CODES.M)
-                am.setExact(android.app.AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
             else
-                am.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
+    }
+
+    public static void cancelBreakAlarm(Context context, long entryId) {
+        Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class).putExtra("action", 1);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        am.cancel(pendingIntent);
     }
 
     /**
@@ -56,7 +64,7 @@ public class SessionsAlarmsManager {
                 .putExtra("action", 1)
                 .putExtra("entryId", entryId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
-        android.app.AlarmManager am = (android.app.AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
         if (cancelOldAlarm)
             am.cancel(pendingIntent);
@@ -65,9 +73,9 @@ public class SessionsAlarmsManager {
         calendar.setTime(Utils.getdateParsed(alarmDate));
 
         if (SDK_INT < Build.VERSION_CODES.M)
-            am.setExact(android.app.AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         else
-            am.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     /**
@@ -80,7 +88,7 @@ public class SessionsAlarmsManager {
                 .putExtra("action", 1)
                 .putExtra("entryId", entryId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
-        android.app.AlarmManager am = (android.app.AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
         am.cancel(pendingIntent);
     }
 }

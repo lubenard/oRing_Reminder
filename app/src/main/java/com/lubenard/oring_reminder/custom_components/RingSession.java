@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class RingSession {
-    enum SessionStatus {
+    public enum SessionStatus {
         NOT_RUNNING,
         RUNNING,
         IN_BREAK
@@ -42,6 +42,10 @@ public class RingSession {
 
     public long getId() {
         return id;
+    }
+
+    public SessionStatus getStatus() {
+        return status;
     }
 
     public String getDatePut() {

@@ -26,8 +26,9 @@ import java.util.Map;
 
 public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+    private static final String TAG = "CalendarViewHolder";
+
     private CalendarAdapter.onListItemClickListener onListItemClickListener;
-    private CalendarItemAdapter.onListItemClickListener onGridItemClickListener;
     private GridView calendarGridDays;
     private TextView calendarMonth;
     private int todayIndex = -1;
@@ -59,11 +60,12 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
 
         HashMap<Integer, RingSession> mappedSessions = new HashMap<>();
 
-        Log.d("CalendarItemViewHolder", "Have " + sessions.size() + " in this month");
+        Log.d("CalendarItemViewHolder", "Have " + sessions.size() + " sessions in this month");
 
         for (int i = 0; i != sessions.size(); i++) {
-            Log.d("CalendarItemViewHolder", "Adding session numero " + i + " to hashmap");
+            Log.d("CalendarItemViewHolder", "Adding session numero " + i + " to hashmap, with key: " + calendar.get(Calendar.DAY_OF_MONTH));
             calendar.setTime(Utils.getdateParsed(sessions.get(i).getDatePut()));
+            Log.d(TAG, "calendar time is now " + calendar.getTime().getTime());
             mappedSessions.put(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i));
         }
 
@@ -77,7 +79,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
         } else
             todayIndex = -1;
 
-        final CalendarItemAdapter adapter = new CalendarItemAdapter(context, num, mappedSessions,calendarOffset, todayIndex,  onGridItemClickListener);
+        final CalendarItemAdapter adapter = new CalendarItemAdapter(context, num, mappedSessions,calendarOffset, todayIndex);
 
         calendarGridDays.setAdapter(adapter);
     }

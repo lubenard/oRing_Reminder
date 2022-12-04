@@ -334,6 +334,10 @@ public class DbManager extends SQLiteOpenHelper {
         return writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
+    public long createNewPause(BreakSession breakSession) {
+        return createNewPause(breakSession.getSessionId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getIsRunning()) ? 1 : 0);
+    }
+
     /**
      * Updated the datas contained in a entry
      * @param pauseId the entry we want to update
@@ -359,6 +363,10 @@ public class DbManager extends SQLiteOpenHelper {
             return writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         }
         return -1;
+    }
+
+    public long updatePause(BreakSession breakSession) {
+        return updatePause(breakSession.getId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getIsRunning()) ? 1 : 0);
     }
 
     public ArrayList<RingSession> searchEntryInDb(String date) {
