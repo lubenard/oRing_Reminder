@@ -237,7 +237,7 @@ public class BackupRestoreManager extends Activity{
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
                 xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning() ? 1 : 0));
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
-                ArrayList<BreakSession> pauses = dbManager.getAllPausesForId(datas.get(i).getId(), true);
+                ArrayList<BreakSession> pauses = dbManager.getAllBreaksForId(datas.get(i).getId(), true);
                 if (pauses.size() > 0) {
                     Log.d(TAG, "Break exist for session " + datas.get(i).getId() + ". There is " + pauses.size() + " breaks");
                     for (int j = 0; j != pauses.size(); j++) {

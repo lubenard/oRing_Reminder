@@ -103,7 +103,7 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
      * @return the time in Minutes of pauses between the interval
      */
     public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<BreakSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        ArrayList<BreakSession> pausesDatas = dbManager.getAllBreaksForId(entryId, true);
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
             BreakSession currentBreak = pausesDatas.get(i);

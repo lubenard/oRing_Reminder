@@ -88,7 +88,12 @@ public class SessionsManager {
      */
     public static boolean startBreak2(Context context, RingSession session, BreakSession breakSession, boolean isNewEntry) {
         DbManager dbManager = MainActivity.getDbManager();
-        if (session.getStatus() == RingSession.SessionStatus.IN_BREAK && breakSession.getIsRunning()) {
+        if (breakSession.getSessionId() == -1) {
+            Log.w(TAG, "Error: Wrong breakSession parent ID !!");
+            //Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if (session.getStatus() == RingSession.SessionStatus.IN_BREAK && breakSession.getIsRunning()) {
             Log.w(TAG, "Error: Already in break !");
             Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             return false;
@@ -182,7 +187,7 @@ public class SessionsManager {
      * @return the int value of all pause time in minutes
      */
     public static int computeTotalTimePause(DbManager dbManager, long entryId) {
-        ArrayList<BreakSession> allPauses = dbManager.getAllPausesForId(entryId, false);
+        ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
         int totalTimePause = 0;
         for (int i = 0; i != allPauses.size(); i++) {
             if (!allPauses.get(i).getIsRunning())
@@ -200,7 +205,7 @@ public class SessionsManager {
      * @return true if running break has been found, else false
      */
     public static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
-        ArrayList<BreakSession> allPauses = dbManager.getAllPausesForId(entryId, false);
+        ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
         for (int i = 0; i != allPauses.size(); i++) {
             if (allPauses.get(i).getIsRunning())
                 return true;

@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.Lifecycle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -138,7 +139,7 @@ public class EntryDetailsFragment extends Fragment {
 
         dbManager = MainActivity.getDbManager();
 
-        pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        pausesDatas = dbManager.getAllBreaksForId(entryId, true);
 
         Log.d(TAG, "pause datas is size " + pausesDatas.size());
 
@@ -221,7 +222,13 @@ public class EntryDetailsFragment extends Fragment {
             bundle.putLong("breakId", breakId);
             bundle.putLong("sessionId", entryId);
             fragment.setArguments(bundle);
-            fragment.show(getActivity().getSupportFragmentManager(), null);
+            getChildFragmentManager().setFragmentResultListener("updateBreakList", this, (requestKey, bundle1) -> {
+                boolean result = bundle1.getBoolean("shouldUpdateBreakList", true);
+                Log.d(TAG, "got result from fragment: " + result);
+                if (result)
+                    updatePauseList();
+            });
+            fragment.show(getChildFragmentManager(), null);
         }
     }
 

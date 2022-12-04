@@ -74,7 +74,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
                 Intent intent3 = new Intent(context, getClass());
 
-                ArrayList<BreakSession> session_breaks = dbManager.getAllPausesForId(dbManager.getLastRunningEntry().getId(), true);
+                ArrayList<BreakSession> session_breaks = dbManager.getAllBreaksForId(dbManager.getLastRunningEntry().getId(), true);
 
                 if (session_breaks.size() > 0) {
                     if (session_breaks.get(0).getIsRunning()) {

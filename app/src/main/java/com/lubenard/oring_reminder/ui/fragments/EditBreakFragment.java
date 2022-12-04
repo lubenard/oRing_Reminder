@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EditBreakFragment extends DialogFragment {
 
-    private static final String TAG = "EditEntryFragment";
+    private static final String TAG = "EditBreakFragment";
 
     private DbManager dbManager;
     private BreakSession pausesDatas;
@@ -81,12 +81,15 @@ public class EditBreakFragment extends DialogFragment {
 
         EditText pause_beginning_date = view.findViewById(R.id.edittext_beginning_pause);
         EditText pause_beginning_time = view.findViewById(R.id.new_entry_hour_from);
+
         EditText pause_ending_date = view.findViewById(R.id.edittext_finish_pause);
         EditText pause_ending_time = view.findViewById(R.id.new_entry_hour_to);
 
         dbManager = MainActivity.getDbManager();
 
         sessionDatas = dbManager.getEntryDetails(sessionId);
+
+        Log.d(TAG, "Session id is " + sessionDatas.getId());
 
         if (breakId != -1) {
             pausesDatas = dbManager.getBreakForId(breakId);
@@ -126,7 +129,12 @@ public class EditBreakFragment extends DialogFragment {
         });
 
         ImageButton close_fragment_button = view.findViewById(R.id.create_new_break_cancel);
-        close_fragment_button.setOnClickListener(v -> dismiss());
+        close_fragment_button.setOnClickListener(v -> {
+            Bundle result = new Bundle();
+            result.putBoolean("updateBreakList", false);
+            getParentFragmentManager().setFragmentResult("shouldUpdateBreakList", result);
+            dismiss();
+        });
 
         ImageButton save_entry = view.findViewById(R.id.validate_pause);
         save_entry.setOnClickListener(v -> {
@@ -147,11 +155,15 @@ public class EditBreakFragment extends DialogFragment {
                 pauseEndingText = "NOT SET YET";
             }
 
-            if (SessionsManager.startBreak2(context, sessionDatas,
-                    new BreakSession(-1, pauseBeginningText, pauseEndingText,
-                                          isRunning, 0, sessionDatas.getId()),
-                                pausesDatas == null))
-            {
+            BreakSession newBreakSession = new BreakSession(-1, pauseBeginningText, pauseEndingText, isRunning, 0, sessionDatas.getId());
+
+            Log.d(TAG, "new BreakSession has " + newBreakSession.getStartDate() + " as starting date");
+
+            if (SessionsManager.startBreak2(context, sessionDatas, newBreakSession, pausesDatas == null)) {
+                // break inserted successfully
+                Bundle result = new Bundle();
+                result.putBoolean("updateBreakList", true);
+                getParentFragmentManager().setFragmentResult("shouldUpdateBreakList", result);
                 dismiss();
             }
 

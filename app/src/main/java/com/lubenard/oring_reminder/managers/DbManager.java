@@ -44,10 +44,10 @@ public class DbManager extends SQLiteOpenHelper {
     // Computed by doing dateTimeRemoved - dateTimePut
     private static final String ringTableTimeWeared = "timeWeared";
 
-    // Table registering pauses
+    // Table registering break
     private static final String pausesTable = "pauseTable";
     private static final String pauseTableId = "id";
-    // The link to ringTable
+    // The link to break table
     private static final String pauseTableEntryId = "entryId";
     private static final String pauseTableIsRunning = "isRunning";
     private static final String pauseTablePut = "datetimePut";
@@ -224,12 +224,12 @@ public class DbManager extends SQLiteOpenHelper {
         if (entryId <= 0)
             return null;
 
-        String[] columns = new String[]{ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
         Cursor cursor = readableDB.query(ringTable, columns,ringTableId + "=?",
                 new String[]{String.valueOf(entryId)}, null, null, null);
 
         cursor.moveToFirst();
-        RingSession data = new RingSession(-1, cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+        RingSession data = new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)), cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                 cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)), cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
 
         cursor.close();
@@ -324,7 +324,8 @@ public class DbManager extends SQLiteOpenHelper {
         cv.put(pauseTableRemoved, dateRemoved);
         cv.put(pauseTablePut, datePut);
         cv.put(pauseTableEntryId, entryId);
-        Log.d(TAG, "pauseTablePut = " + datePut);
+        Log.d(TAG, "pauseTableRemoved = " + cv.get(pauseTableRemoved));
+        Log.d(TAG, "pauseTablePut = " + cv.get(pauseTablePut));
         if (datePut.equals("NOT SET YET"))
             cv.put(pauseTableTimeRemoved, datePut);
         else
@@ -422,8 +423,8 @@ public class DbManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             datas = new BreakSession(
                     cursor.getInt(cursor.getColumnIndex(pauseTableId)),
-                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableEntryId)));
@@ -487,7 +488,7 @@ public class DbManager extends SQLiteOpenHelper {
      * @param isDesc set if the pauses should be desc or not
      * @return a Arraylist containing RingModel objects of all pauses
      */
-    public ArrayList<BreakSession> getAllPausesForId(long entryId, boolean isDesc) {
+    public ArrayList<BreakSession> getAllBreaksForId(long entryId, boolean isDesc) {
         ArrayList<BreakSession> datas = new ArrayList<>();
 
         String[] columns = new String[]{pauseTableId, pauseTableRemoved, pauseTablePut, pauseTableIsRunning, pauseTableTimeRemoved, pauseTableEntryId};
@@ -496,8 +497,8 @@ public class DbManager extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             datas.add(new BreakSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
-                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableEntryId))));
@@ -519,8 +520,8 @@ public class DbManager extends SQLiteOpenHelper {
 
         cursor.moveToFirst();
         breakSession = new BreakSession(cursor.getInt(cursor.getColumnIndex(pauseTableId)),
-                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getString(cursor.getColumnIndex(pauseTableRemoved)),
+                    cursor.getString(cursor.getColumnIndex(pauseTablePut)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableIsRunning)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableTimeRemoved)),
                     cursor.getInt(cursor.getColumnIndex(pauseTableEntryId)));

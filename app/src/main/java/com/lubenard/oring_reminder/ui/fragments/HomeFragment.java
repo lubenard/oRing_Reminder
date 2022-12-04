@@ -123,10 +123,11 @@ public class HomeFragment extends Fragment {
      * @return the time in Minutes of pauses between the interval
      */
     public static int computeTotalTimePauseForId(long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<BreakSession> pausesDatas = dbManager.getAllPausesForId(entryId, true);
+        ArrayList<BreakSession> pausesDatas = dbManager.getAllBreaksForId(entryId, true);
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
             BreakSession currentBreak = pausesDatas.get(i);
+            Log.d(TAG, "BreakSession is " + currentBreak);
             if (!pausesDatas.get(i).getIsRunning()) {
                 if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
                         Utils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
@@ -351,8 +352,8 @@ public class HomeFragment extends Fragment {
                 progress_bar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
             progress_bar.setProgress((int)progress_percentage);
 
-            if (dbManager.getAllPausesForId(lastRunningEntry.getId(), true).size() > 0 &&
-                dbManager.getAllPausesForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
+            if (dbManager.getAllBreaksForId(lastRunningEntry.getId(), true).size() > 0 &&
+                dbManager.getAllBreaksForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
                 text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 text_view_break.setVisibility(View.VISIBLE);
                 button_start_break.setText(context.getString(R.string.widget_stop_break));
