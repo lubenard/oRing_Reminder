@@ -120,6 +120,7 @@ public class SessionsManager {
                 Log.d(TAG, "New break with id: " + id + " has been successfully inserted");
             } else {
                 long id = dbManager.updatePause(breakSession);
+                Log.d(TAG, "Break with id: " + id + " has been successfully updated");
                 long timeWorn = Utils.getDateDiff(breakSession.getStartDate(), breakSession.getEndDate(), TimeUnit.MINUTES);
 
                 //pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));

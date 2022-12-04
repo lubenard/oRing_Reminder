@@ -155,7 +155,13 @@ public class EditBreakFragment extends DialogFragment {
                 pauseEndingText = "NOT SET YET";
             }
 
-            BreakSession newBreakSession = new BreakSession(-1, pauseBeginningText, pauseEndingText, isRunning, 0, sessionDatas.getId());
+            BreakSession newBreakSession;
+
+            if (pausesDatas != null) {
+                newBreakSession = new BreakSession(pausesDatas.getId(), pauseBeginningText, pauseEndingText, isRunning, 0, sessionDatas.getId());
+            } else {
+                newBreakSession = new BreakSession(-1, pauseBeginningText, pauseEndingText, isRunning, 0, sessionDatas.getId());
+            }
 
             Log.d(TAG, "new BreakSession has " + newBreakSession.getStartDate() + " as starting date");
 

@@ -25,7 +25,7 @@ public class BreakSession {
      * Normal session: id: 1, datePut 2021-04-10 11:42:00, dateRemoved 2021-04-11 02:42:00, isRunning 0, time worn 900 (15h in Minutes)
      * Break:          id: 3, datePut 2021-04-10 16:36:00, dateRemoved 2021-04-10 14:21:00, isRunning 0, time worn 135 (2h15 in Minutes)
      */
-    public BreakSession(int id, String dateRemoved, String datePut, int isRunning, int timeRemoved, long sessionId) {
+    public BreakSession(long id, String dateRemoved, String datePut, int isRunning, int timeRemoved, long sessionId) {
         this.id = id;
         this.dateRemoved = dateRemoved;
         this.datePut = datePut;
