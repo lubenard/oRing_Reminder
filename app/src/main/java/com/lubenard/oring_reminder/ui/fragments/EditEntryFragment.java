@@ -195,7 +195,6 @@ public class EditEntryFragment extends DialogFragment {
                     // If the diff time is too short, trigger this error
                     Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
             }
-            HomeFragment.updateDesign();
             dismiss();
         });
 

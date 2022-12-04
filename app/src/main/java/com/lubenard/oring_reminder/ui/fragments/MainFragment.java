@@ -79,7 +79,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        Log.d(TAG, "onDestroyView called");
+        Log.d(TAG, "onDestroyView() called");
         super.onDestroyView();
     }
 }

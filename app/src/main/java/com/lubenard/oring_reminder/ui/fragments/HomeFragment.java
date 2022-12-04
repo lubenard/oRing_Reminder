@@ -79,16 +79,19 @@ public class HomeFragment extends Fragment {
                     searchEntry();
                     return true;
                 case R.id.action_my_spermogramms:
+                    activity.removeMenuProvider(menuProvider);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new MySpermogramsFragment(), null)
                             .addToBackStack(null).commit();
                     return true;
                 case R.id.action_calculators:
+                    activity.removeMenuProvider(menuProvider);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new CalculatorsFragment(), null)
                             .addToBackStack(null).commit();
                     return true;
                 case R.id.action_datas:
+                    activity.removeMenuProvider(menuProvider);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new DatasFragment(), null)
                             .addToBackStack(null).commit();
@@ -300,7 +303,7 @@ public class HomeFragment extends Fragment {
      * Define what action should be done on longClick on the '+' button
      * @param isLongClick act if it is a long click or not
      */
-    private static void actionOnPlusButton(boolean isLongClick) {
+    private void actionOnPlusButton(boolean isLongClick) {
         String action = MainActivity.getSettingsManager().getActionUIFab();
 
         if (isLongClick) {
@@ -375,7 +378,7 @@ public class HomeFragment extends Fragment {
     /**
      * Update whole design on MainFragment, including fab
      */
-    public static void updateDesign() {
+    public void updateDesign() {
 
         int totalTimeSinceMidnight = getSinceMidnightWearingTime();
         home_since_midnight_data.setText(Utils.convertTimeWeared(totalTimeSinceMidnight));
@@ -416,6 +419,7 @@ public class HomeFragment extends Fragment {
             });
 
             button_see_curr_session.setOnClickListener(v -> {
+                activity.removeMenuProvider(menuProvider);
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
@@ -469,6 +473,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView() called");
+        activity.removeMenuProvider(menuProvider);
         super.onDestroyView();
     }
 }
