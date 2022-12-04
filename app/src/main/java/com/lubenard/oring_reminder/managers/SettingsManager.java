@@ -2,7 +2,7 @@ package com.lubenard.oring_reminder.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 
 import androidx.preference.PreferenceManager;
 

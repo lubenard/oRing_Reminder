@@ -3,7 +3,7 @@ package com.lubenard.oring_reminder.broadcast_receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.R;

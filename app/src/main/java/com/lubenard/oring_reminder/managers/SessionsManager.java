@@ -3,7 +3,7 @@ package com.lubenard.oring_reminder.managers;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
@@ -117,6 +117,7 @@ public class SessionsManager {
             // Session can be inserted
             if (isNewEntry) {
                 long id = dbManager.createNewPause(breakSession);
+                Log.d(TAG, "New break with id: " + id + " has been successfully inserted");
             } else {
                 long id = dbManager.updatePause(breakSession);
                 long timeWorn = Utils.getDateDiff(breakSession.getStartDate(), breakSession.getEndDate(), TimeUnit.MINUTES);

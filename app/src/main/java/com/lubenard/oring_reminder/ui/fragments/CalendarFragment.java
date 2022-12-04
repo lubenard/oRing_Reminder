@@ -3,7 +3,7 @@ package com.lubenard.oring_reminder.ui.fragments;
 import static androidx.core.content.ContextCompat.getDrawable;
 
 import android.os.Bundle;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

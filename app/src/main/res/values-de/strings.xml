@@ -94,7 +94,7 @@
     <string name="pause_ending_too_big">Das Enddatum der Pause liegt nach dem Enddatum des Eintrags. Bitte beheben.</string>
     <string name="pause_starting_too_big">Das Anfangsdatum der Pause liegt nach dem Enddatum des Eintrags. Bitte beheben.</string>
     <string name="pause_ending_too_small">Das Enddatum der Pause liegt vor dem Anfangsdatum des Eintrags. Bitte beheben.</string>
-    <string name="already_running_pause">Es scheint bereits eine laufende Pause zu geben. Bitte beheben. Sie können nicht mehr als eine laufende Pause haben.</string>
+    <string name="already_running_pause">Es scheint bereits eine laufende Pause zu geben</string>
     <string name="ui_action_on_plus_button_title">Aktion bei Klick auf (+) Taste auf der Homepage</string>
     <string name="settings_ui_action_on_plus_button_default">(Standard)\nDrücken Sie -> quick running session \nLong Drücken Sie -> advanced session ui</string>
     <string name="settings_ui_action_on_plus_button_long_click">Press -> advanced session ui \nlong press -> quick running session</string>

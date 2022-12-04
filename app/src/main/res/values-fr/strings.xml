@@ -93,7 +93,7 @@
     <string name="pause_ending_too_big">La date de fin de la pause est après la date de fin de l\'entrée. Merci de corriger</string>
     <string name="pause_starting_too_big">La date de début de la pause est après la date de fin de l\'entrée. Merci de corriger</string>
     <string name="pause_ending_too_small">La date de fin de la pause est avant la date de début de l\'entrée. Merci de corriger</string>
-    <string name="already_running_pause">Il semble qu\'il y ait déjà une pause en cours. Vous ne pouvez pas avoir plus d\'une pause en cours en même temps. Merci de corriger.</string>
+    <string name="already_running_pause">Il semble qu\'il y ait déjà une pause en cours.</string>
     <string name="ui_action_on_plus_button_title">Action pendant un click sur le bouton (+) de la page principale</string>
     <string name="settings_ui_action_on_plus_button_default">(Défaut)\nAppui -> Session en cours rapide\nAppui long -> Interface avancée de session</string>
     <string name="settings_ui_action_on_plus_button_long_click">Appui -> interface avancée de session\nAppui long -> Session en cours rapide</string>

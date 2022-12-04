@@ -7,7 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -96,9 +96,7 @@ public class EntryDetailsFragment extends Fragment {
                     Bundle bundle2 = new Bundle();
                     bundle2.putLong("entryId", entryId);
                     fragment.setArguments(bundle2);
-                    fragmentManager.beginTransaction()
-                            .replace(android.R.id.content, fragment, null)
-                            .addToBackStack(null).commit();
+                    fragment.show(requireActivity().getSupportFragmentManager(), null);
                     return true;
                 case R.id.action_delete_entry:
                     // Warn user then delete entry in the db
@@ -208,7 +206,7 @@ public class EntryDetailsFragment extends Fragment {
      * @param dataModel If the pause already exist, give it datas to load
      */
     private void showPauseEditBreakFragment(BreakSession dataModel) {
-        if (isThereAlreadyARunningPause) {
+        if (isThereAlreadyARunningPause && dataModel == null) {
             Log.d(TAG, "Error: Already a running pause");
             Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
         } else {

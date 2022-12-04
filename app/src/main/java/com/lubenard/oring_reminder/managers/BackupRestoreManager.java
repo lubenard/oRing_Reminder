@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.view.View;
 import android.widget.Toast;
 

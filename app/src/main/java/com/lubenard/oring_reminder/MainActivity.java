@@ -13,7 +13,7 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.RequiresApi;

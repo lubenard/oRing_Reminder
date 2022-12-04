@@ -2,7 +2,7 @@ package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

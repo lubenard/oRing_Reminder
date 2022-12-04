@@ -2,7 +2,7 @@ package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

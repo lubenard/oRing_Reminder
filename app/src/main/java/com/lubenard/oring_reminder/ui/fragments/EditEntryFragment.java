@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
+import com.lubenard.oring_reminder.utils.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,6 +111,8 @@ public class EditEntryFragment extends DialogFragment {
 
         Bundle bundle = this.getArguments();
         entryId = bundle.getLong("entryId", -1);
+
+        dbManager = MainActivity.getDbManager();
 
         context = getContext();
 
@@ -242,8 +244,6 @@ public class EditEntryFragment extends DialogFragment {
                 computeTimeBeforeGettingItAgain();
             }
         });
-
-        dbManager = MainActivity.getDbManager();
 
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
