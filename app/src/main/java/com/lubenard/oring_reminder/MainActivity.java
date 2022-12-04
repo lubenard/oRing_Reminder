@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private static SettingsManager settingsManager;
     private static DbManager dbManager;
+    private static Log logManager;
 
     private static Callable onPermissionSuccess;
     private static Callable onPermissionError;
@@ -129,6 +130,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Init log module
+        logManager = new Log(this);
+
         // Check the UI config (Theme and language) and apply them
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         settingsManager = new SettingsManager(this);
@@ -189,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         dbManager.closeDb();
+        logManager.closeFile();
     }
 
     /**
