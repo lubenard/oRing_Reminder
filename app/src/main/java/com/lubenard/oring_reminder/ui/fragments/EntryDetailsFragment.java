@@ -427,9 +427,6 @@ public class EntryDetailsFragment extends Fragment {
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
 
-                int progress_percentage = (int) (((float) timeBeforeRemove / (float) (settingsManager.getWearingTimeInt() * 60)) * 100);
-
-                textview_percentage_progression.setText(String.format("%d%%", progress_percentage));
                 end_session.setVisibility(View.GONE);
                 estimated_end.setVisibility(View.VISIBLE);
             } else {
@@ -455,13 +452,16 @@ public class EntryDetailsFragment extends Fragment {
             Log.d(TAG, "timeBeforeRemove is " + (float)timeBeforeRemove);
 
             Log.d(TAG, "MainView percentage is " + (int) (((float) timeBeforeRemove / (float) (settingsManager.getWearingTimeInt() * 60)) * 100));
+            int progress_percentage = (int) (((float) timeBeforeRemove / (float) (settingsManager.getWearingTimeInt() * 60)) * 100);
+
+            textview_percentage_progression.setText(String.format("%d%%", progress_percentage));
+
             if (updateProgressBar) {
-                float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
                 if (progress_percentage > 100f)
                     progressBar.setIndicatorColor(context.getResources().getColor(R.color.green_main_bar));
                 else
                     progressBar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
-                progressBar.setProgress((int)progress_percentage);
+                progressBar.setProgress(progress_percentage);
             }
             //Log.d(TAG, "Progress is supposed to be at " + progressBar.getProgress());
             recomputeWearingTime();
