@@ -10,6 +10,8 @@ public class SettingsManager {
 
     private SharedPreferences sharedPreferences;
 
+
+    // Shared Preferences settings
     private String ui_home_action_fab;
     private String wearing_time;
     private String theme;
@@ -21,6 +23,9 @@ public class SettingsManager {
     private Boolean shouldSendNotifWhenSessionIsOver;
     private Boolean shouldSendNotifWhenBreakTooLong;
     private int shouldSendNotifWhenBreakTooLongDate;
+
+    // Current session settings
+    private int bottomNavigationViewCurrentIndex = -1;
 
     private static final String TAG = "SettingsManager";
 
@@ -104,6 +109,15 @@ public class SettingsManager {
 
     public String getShouldPreventIfNoSessionStartedTodayDate() {
         return shouldPreventIfNoSessionStartedTodayDate;
+    }
+
+
+    public void setBottomNavigationViewCurrentIndex(int newStatus) {
+        bottomNavigationViewCurrentIndex = newStatus;
+    }
+
+    public int getBottomNavigationViewCurrentIndex() {
+        return bottomNavigationViewCurrentIndex;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.managers.DbManager;
@@ -21,15 +23,17 @@ import java.util.Calendar;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
-    private ArrayList <Calendar> monthList;
+    private final ArrayList <Calendar> monthList;
     private Context context;
-    private onListItemClickListener onListItemClickListener;
+    private final FragmentActivity activity;
 
-    public CalendarAdapter(Calendar firstSession, onListItemClickListener onListItemClickListener) {
+    public CalendarAdapter(FragmentActivity activity, Calendar firstSession) {
 
         Log.d("CalendarItemAdapter", "firstSession say is " + Utils.getdateFormatted(firstSession.getTime()));
 
         monthList = new ArrayList<>();
+
+        this.activity = activity;
 
         Calendar todayDate = Calendar.getInstance();
 
@@ -59,7 +63,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
             monthDiffCounter++;
         }
 
-        this.onListItemClickListener = onListItemClickListener;
         Log.d("CalendarItemAdapter", "CalendarItemAdapter is initialised");
     }
 
@@ -70,22 +73,17 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         View view = inflater.inflate(R.layout.calendar_item, parent, false);
         context = parent.getContext();
         Log.d("CalendarItemAdapter", "CalendarItemAdapter: returning ViewHolder");
-        return new CalendarViewHolder(view, onListItemClickListener, context);
+        return new CalendarViewHolder(view, activity, context);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
         DbManager dbManager = MainActivity.getDbManager();
-        ArrayList<RingSession> allDatas = dbManager.getAllDatasForAllEntrys();
         holder.updateDatas(monthList.get(position), dbManager.getEntriesForMonth(monthList.get(position)), context);
     }
 
     @Override
     public int getItemCount() {
         return monthList.size();
-    }
-
-    public interface onListItemClickListener {
-        void onListItemClickListener(int position);
     }
 }

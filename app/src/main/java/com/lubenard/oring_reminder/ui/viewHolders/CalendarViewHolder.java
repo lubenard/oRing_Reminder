@@ -2,12 +2,15 @@ package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
 import com.lubenard.oring_reminder.utils.Log;
+
+import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
@@ -21,25 +24,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TAG = "CalendarViewHolder";
 
-    private CalendarAdapter.onListItemClickListener onListItemClickListener;
     private GridView calendarGridDays;
     private TextView calendarMonth;
     private int todayIndex = -1;
+    private FragmentActivity activity;
 
-    public CalendarViewHolder(@NonNull View itemView, CalendarAdapter.onListItemClickListener onListItemClickListener, Context context) {
+    public CalendarViewHolder(@NonNull View itemView, FragmentActivity activity, Context context) {
         super(itemView);
 
+        this.activity = activity;
         calendarGridDays = itemView.findViewById(R.id.calendarGridDays);
         calendarMonth = itemView.findViewById(R.id.calendarMonth);
-        this.onListItemClickListener = onListItemClickListener;
-        itemView.setOnClickListener(this);
     }
 
     /**
@@ -58,7 +61,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
 
         Calendar calendar = Calendar.getInstance();
 
-        HashMap<Integer, RingSession> mappedSessions = new HashMap<>();
+        List<Pair<Integer, RingSession>> mappedSessions = new ArrayList<>();
 
         Log.d("CalendarItemViewHolder", "Have " + sessions.size() + " sessions in this month");
 
@@ -66,7 +69,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
             Log.d("CalendarItemViewHolder", "Adding session numero " + i + " to hashmap, with key: " + calendar.get(Calendar.DAY_OF_MONTH));
             calendar.setTime(Utils.getdateParsed(sessions.get(i).getDatePut()));
             Log.d(TAG, "calendar time is now " + calendar.getTime().getTime());
-            mappedSessions.put(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i));
+            mappedSessions.add(new Pair<>(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i)));
         }
 
         Calendar todayDate = Calendar.getInstance();
@@ -79,7 +82,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
         } else
             todayIndex = -1;
 
-        final CalendarItemAdapter adapter = new CalendarItemAdapter(context, num, mappedSessions,calendarOffset, todayIndex);
+        final CalendarItemAdapter adapter = new CalendarItemAdapter(activity, context, num, mappedSessions,calendarOffset, todayIndex);
 
         calendarGridDays.setAdapter(adapter);
     }
@@ -111,10 +114,5 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder implements View.
         String day = new SimpleDateFormat("EEE").format(currentDate.getTime()).toUpperCase();
         String month = new SimpleDateFormat("MMM").format(currentDate.getTime()).toUpperCase();
         return Arrays.asList(daysOfWeek).indexOf(day);
-    }
-
-    @Override
-    public void onClick(View view) {
-        //onListItemClickListener.onListItemClickListener(getAdapterPosition());
     }
 }

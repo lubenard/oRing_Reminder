@@ -1,24 +1,29 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+
+import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
 import com.lubenard.oring_reminder.utils.Log;
+
+import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.preference.PreferenceManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class CalendarItemAdapter extends BaseAdapter {
 
@@ -26,22 +31,23 @@ public class CalendarItemAdapter extends BaseAdapter {
 
     private ArrayList<String> dayList;
     private Context context;
+    private FragmentActivity activity;
     private SettingsManager settingsManager;
     private int calendarOffset;
     // Variables used to display today mark if today is in current month.
     // It's value is either -1 if not present, or [1..31] if present
     private int todayIndex;
-    private HashMap<Integer, RingSession> monthEntries;
+    private List<Pair<Integer, RingSession>> monthEntries;
 
-    public CalendarItemAdapter(Context context, ArrayList<String> dayList, HashMap<Integer, RingSession> monthEntries, int calendarOffset, int todayCounter) {
+    public CalendarItemAdapter(FragmentActivity activity, Context context, ArrayList<String> dayList, List<Pair<Integer, RingSession>> monthEntries, int calendarOffset, int todayCounter) {
         this.dayList = dayList;
         this.monthEntries = monthEntries;
         this.context = context;
         this.todayIndex = todayCounter;
         this.calendarOffset = calendarOffset;
+        this.activity = activity;
         this.settingsManager = new SettingsManager(context);
     }
-
 
     @Override
     public int getCount() {
@@ -72,33 +78,64 @@ public class CalendarItemAdapter extends BaseAdapter {
 
             TextView numberTextView = gridItem.findViewById(R.id.calendar_grid_item_layout);
 
-            RingSession session = monthEntries.get(Integer.parseInt(dayList.get(position)));
-
-            Log.d("CalendarItemAdapter", "session found is " + session);
-
             numberTextView.setText(dayList.get(position));
+
+            List<RingSession> sessions = filterSessions(monthEntries, Integer.parseInt(dayList.get(position)));
+
+            Log.d(TAG, "Sessions for " + dayList.get(position) + " are size " + sessions.size());
 
             if (todayIndex != -1 && todayIndex == Integer.parseInt(dayList.get(position)))
                 numberTextView.setTextColor(context.getResources().getColor(android.R.color.holo_blue_light));
 
-            if (session != null) {
-                if (session.getIsRunning())
-                    numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
-                else {
-                    if (session.getTimeWeared() >= (settingsManager.getWearingTimeInt() * 60))
-                        numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
-                    else
-                        numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));
+            if (sessions.size() > 0) {
+                RingSession session = sessions.get(sessions.size() - 1);
+                Log.d("CalendarItemAdapter", "session found is " + session);
+
+                if (session != null) {
+                    if (session.getIsRunning())
+                        numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
+                    else {
+                        if (session.getTimeWeared() >= (settingsManager.getWearingTimeInt() * 60))
+                            numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
+                        else
+                            numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));
+                    }
+                    numberTextView.setOnClickListener(v -> {
+                        Log.d(TAG, "Clicked on item " + dayList.get(position));
+                        if (sessions.size() > 1)
+                            Toast.makeText(context, "Plus de 1 entrée !", Toast.LENGTH_SHORT).show();
+                        else {
+                            Log.d(TAG, "Launching EntryDetailsFragment");
+                            Bundle bundle = new Bundle();
+                            bundle.putLong("entryId", session.getId());
+                            Fragment fragment = new EntryDetailsFragment();
+                            fragment.setArguments(bundle);
+                            activity.getSupportFragmentManager().beginTransaction()
+                                    .replace(android.R.id.content, fragment, null)
+                                    .addToBackStack(null).commit();
+                        }
+                    });
                 }
-                numberTextView.setOnClickListener(v -> Log.d(TAG, "Clicked on item " + dayList.get(position)));
             }
         }
         return gridItem;
     }
 
+    private List<RingSession> filterSessions(List<Pair<Integer, RingSession>> sessions, int day) {
+        List<RingSession> filteredSessions = new ArrayList<>();
+
+        for (Pair<Integer, RingSession> session : sessions) {
+            if (session.first == day)
+                filteredSessions.add(session.second);
+        }
+
+        return filteredSessions;
+    }
+
+
     @Override
     public boolean isEnabled(int position) {
-        Log.d(TAG, "is " + position + " enabled ? answer is " + (!dayList.get(position).equals("0") && monthEntries.get(Integer.parseInt(dayList.get(position))) != null));
-        return !dayList.get(position).equals("0") && monthEntries.get(Integer.parseInt(dayList.get(position))) != null;
+        Log.d(TAG, "is " + dayList.get(position) + " enabled ? answer is " + (!dayList.get(position).equals("0") && filterSessions(monthEntries, Integer.parseInt(dayList.get(position))).size() > 0));
+        return !dayList.get(position).equals("0") && filterSessions(monthEntries, Integer.parseInt(dayList.get(position))).size() > 0;
     }
 }

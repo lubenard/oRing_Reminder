@@ -22,7 +22,7 @@ import com.lubenard.oring_reminder.ui.adapters.CalendarAdapter;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class CalendarFragment extends Fragment implements CalendarAdapter.onListItemClickListener {
+public class CalendarFragment extends Fragment {
 
     private final static String TAG = "CalendarFragment";
 
@@ -30,7 +30,6 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
     CalendarAdapter adapter;
     DbManager dbManager;
 
-    private CalendarAdapter.onListItemClickListener onListItemClickListener;
     private LinearLayoutManager linearLayoutManager;
 
     @Override
@@ -38,7 +37,6 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.calendar_fragment, container, false);
 
-        onListItemClickListener = this;
         calendarRecyclerView = view.findViewById(R.id.calendar_list);
         return view;
     }
@@ -69,9 +67,9 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
         calendarRecyclerView.addItemDecoration(dividerItemDecoration);
 
         if (entries.size() > 0)
-            adapter = new CalendarAdapter(entries.get(0).getDatePutCalendar(), onListItemClickListener);
+            adapter = new CalendarAdapter(requireActivity(), entries.get(0).getDatePutCalendar());
         else
-            adapter = new CalendarAdapter(Calendar.getInstance(), onListItemClickListener);
+            adapter = new CalendarAdapter(requireActivity(), Calendar.getInstance());
         calendarRecyclerView.setAdapter(adapter);
 
         Log.d("CalendarFragment", "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");
@@ -83,13 +81,5 @@ public class CalendarFragment extends Fragment implements CalendarAdapter.onList
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    /**
-     * onClickManager handling clicks on the main List
-     */
-    @Override
-    public void onListItemClickListener(int position) {
-
     }
 }

@@ -95,42 +95,6 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     }
 
     /**
-     * Compute all pause time into interval
-     * @param dbManager The database manager, avoiding to create a new instance
-     * @param entryId entry for the wanted session
-     * @param date24HoursAgo oldest boundaries
-     * @param dateNow interval newest boundaries
-     * @return the time in Minutes of pauses between the interval
-     */
-    public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<BreakSession> pausesDatas = dbManager.getAllBreaksForId(entryId, true);
-        int totalTimePause = 0;
-        for (int i = 0; i < pausesDatas.size(); i++) {
-            BreakSession currentBreak = pausesDatas.get(i);
-            if (!pausesDatas.get(i).getIsRunning()) {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
-                        Utils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeRemoved());
-                    totalTimePause += currentBreak.getTimeRemoved();
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
-                }
-            } else {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running pause at index " + i + " is added: " + Utils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimePause += Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                }
-            }
-        }
-        return totalTimePause;
-    }
-
-    /**
      * Each time the app is resumed, fetch new entry
      */
     @Override
