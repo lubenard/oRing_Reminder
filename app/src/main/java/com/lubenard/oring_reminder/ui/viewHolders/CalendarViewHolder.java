@@ -51,7 +51,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
      * @param context context
      */
     public void updateDatas(Calendar date, ArrayList<RingSession> sessions, Context context) {
-        Log.d("CalendarViewHolder", "Received date" + date);
+        Log.d(TAG, "Received date" + date);
 
         calendarMonth.setText(String.format("%s %d", date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), date.get(Calendar.YEAR)));
 
@@ -63,10 +63,10 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         List<Pair<Integer, RingSession>> mappedSessions = new ArrayList<>();
 
-        Log.d("CalendarItemViewHolder", "Have " + sessions.size() + " sessions in this month");
+        Log.d(TAG, "Have " + sessions.size() + " sessions in this month");
 
         for (int i = 0; i != sessions.size(); i++) {
-            Log.d("CalendarItemViewHolder", "Adding session numero " + i + " to hashmap, with key: " + calendar.get(Calendar.DAY_OF_MONTH));
+            Log.d(TAG, "Adding session numero " + i + " to hashmap, with key: " + calendar.get(Calendar.DAY_OF_MONTH));
             calendar.setTime(Utils.getdateParsed(sessions.get(i).getDatePut()));
             Log.d(TAG, "calendar time is now " + calendar.getTime().getTime());
             mappedSessions.add(new Pair<>(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i)));
@@ -74,7 +74,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         Calendar todayDate = Calendar.getInstance();
 
-        Log.d("CalendarViewHolder", "Lubenard: date say: " + Utils.getdateFormatted(date.getTime()) + ", todayDate say: " + Utils.getdateFormatted(todayDate.getTime()));
+        Log.d(TAG, "Lubenard: date say: " + Utils.getdateFormatted(date.getTime()) + ", todayDate say: " + Utils.getdateFormatted(todayDate.getTime()));
 
         if (date.get(Calendar.YEAR) == todayDate.get(Calendar.YEAR)
                 && date.get(Calendar.MONTH) == todayDate.get(Calendar.MONTH)) {
@@ -82,7 +82,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
         } else
             todayIndex = -1;
 
-        final CalendarItemAdapter adapter = new CalendarItemAdapter(activity, context, num, mappedSessions,calendarOffset, todayIndex);
+        final CalendarItemAdapter adapter = new CalendarItemAdapter(activity, context, num, mappedSessions, calendarOffset, todayIndex, date);
 
         calendarGridDays.setAdapter(adapter);
     }
@@ -92,14 +92,14 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
         nextMonthFirstDay.set(selectedMonthFirstDay.get(Calendar.YEAR),
                 selectedMonthFirstDay.get(Calendar.DAY_OF_MONTH) + 1, selectedMonthFirstDay.get(Calendar.DAY_OF_MONTH));
 
-        Log.d("CalendarItemViewHolder", "listOfDatesInMonth: nextMonthFirstDay is " + selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Log.d(TAG, "listOfDatesInMonth: nextMonthFirstDay is " + selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         ArrayList<String> list = new ArrayList<>();
 
         for(int j = 0; j != calendarOffset; j++) {list.add("0");}
 
         for (int i = 1; i < selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH) + 1; i++) {
-            Log.d("CalendarViewHolder", "Adding " + i + " to list days");
+            Log.d(TAG, "Adding " + i + " to list days");
             list.add(String.valueOf(i));
         }
 
@@ -107,12 +107,11 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
     }
 
     int getIndexOfFirstDayInMonth(Calendar currentDate) {
-        Log.d("CalendarItemViewHolder", "currentDate: " + currentDate);
+        Log.d(TAG, "currentDate: " + currentDate);
 
         String[] daysOfWeek = { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
 
         String day = new SimpleDateFormat("EEE").format(currentDate.getTime()).toUpperCase();
-        String month = new SimpleDateFormat("MMM").format(currentDate.getTime()).toUpperCase();
         return Arrays.asList(daysOfWeek).indexOf(day);
     }
 }

@@ -49,8 +49,6 @@ public class SearchFragment extends Fragment {
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getActivity().setTitle(R.string.search_result);
-
         DbManager dbManager = MainActivity.getDbManager();
 
         Bundle bundle = this.getArguments();
@@ -61,16 +59,20 @@ public class SearchFragment extends Fragment {
 
         ArrayList<RingSession> results = dbManager.searchEntryInDb(date_searched);
 
-        TextView search_result = view.findViewById(R.id.result_search_textview);
+        TextView search_result = view.findViewById(R.id.no_result_found_search);
 
         listView = view.findViewById(R.id.result_search_listview);
 
-        dataModels = new ArrayList<>();
+        if (results.size() > 0) {
+            getActivity().setTitle(String.format("%s: %d", getString(R.string.search_result), results.size()));
+            search_result.setVisibility(View.GONE);
+        } else {
+            getActivity().setTitle(R.string.search_result);
+            search_result.setText(R.string.no_entry_found_for_date);
+            listView.setVisibility(View.GONE);
+        }
 
-        if (results.size() > 0)
-            search_result.setText(getString(R.string.total_search) + " " + results.size());
-        else
-            search_result.setText("No entry found for this date");
+        dataModels = new ArrayList<>();
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             RingSession dataModel = dataModels.get(position);

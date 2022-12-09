@@ -184,4 +184,5 @@
     <string name="calendar_icon">Calendar icon</string>
     <string name="clock_icon">Clock icon</string>
     <string name="start_break">Start break :</string>
+    <string name="no_entry_found_for_date">No entry found for this date</string>
 </resources>

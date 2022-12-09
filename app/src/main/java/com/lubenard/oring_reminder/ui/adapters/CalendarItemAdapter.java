@@ -3,6 +3,7 @@ package com.lubenard.oring_reminder.ui.adapters;
 import android.content.Context;
 
 import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
+import com.lubenard.oring_reminder.ui.fragments.SearchFragment;
 import com.lubenard.oring_reminder.utils.Log;
 
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class CalendarItemAdapter extends BaseAdapter {
@@ -37,15 +39,17 @@ public class CalendarItemAdapter extends BaseAdapter {
     // Variables used to display today mark if today is in current month.
     // It's value is either -1 if not present, or [1..31] if present
     private int todayIndex;
+    private Calendar date;
     private List<Pair<Integer, RingSession>> monthEntries;
 
-    public CalendarItemAdapter(FragmentActivity activity, Context context, ArrayList<String> dayList, List<Pair<Integer, RingSession>> monthEntries, int calendarOffset, int todayCounter) {
+    public CalendarItemAdapter(FragmentActivity activity, Context context, ArrayList<String> dayList, List<Pair<Integer, RingSession>> monthEntries, int calendarOffset, int todayCounter, Calendar date) {
         this.dayList = dayList;
         this.monthEntries = monthEntries;
         this.context = context;
         this.todayIndex = todayCounter;
         this.calendarOffset = calendarOffset;
         this.activity = activity;
+        this.date = date;
         this.settingsManager = new SettingsManager(context);
     }
 
@@ -100,11 +104,21 @@ public class CalendarItemAdapter extends BaseAdapter {
                         else
                             numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));
                     }
+
                     numberTextView.setOnClickListener(v -> {
                         Log.d(TAG, "Clicked on item " + dayList.get(position));
-                        if (sessions.size() > 1)
-                            Toast.makeText(context, "Plus de 1 entrée !", Toast.LENGTH_SHORT).show();
-                        else {
+                        if (sessions.size() > 1) {
+                            SearchFragment fragment = new SearchFragment();
+                            Bundle bundle = new Bundle();
+                            String day = dayList.get(position);
+                            if (Integer.parseInt(dayList.get(position)) < 10)
+                                day = "0" + dayList.get(position);
+                            bundle.putString("date_searched", date.get(Calendar.YEAR) + "-" + (date.get(Calendar.MONTH) + 1) + "-" + day);
+                            fragment.setArguments(bundle);
+                            activity.getSupportFragmentManager().beginTransaction()
+                                    .replace(android.R.id.content, fragment, null)
+                                    .addToBackStack(null).commit();
+                        } else {
                             Log.d(TAG, "Launching EntryDetailsFragment");
                             Bundle bundle = new Bundle();
                             bundle.putLong("entryId", session.getId());

@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:gravity="center"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:orientation="vertical">
 
 	<TextView
-		android:id="@+id/result_search_textview"
+		android:id="@+id/no_result_found_search"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="30dp"
-		android:layout_marginStart="15dp"
 		android:textSize="25sp"
-		android:text="result_search : "/>
+		tools:text="No results found for this date"/>
 
 	<ListView
 		android:id="@+id/result_search_listview"
