@@ -2,6 +2,8 @@ package com.lubenard.oring_reminder.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+
+import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,14 +28,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private final ArrayList <Calendar> monthList;
     private Context context;
     private final FragmentActivity activity;
+    private CalendarFragment calendarFragment;
 
-    public CalendarAdapter(FragmentActivity activity, Calendar firstSession) {
+    public CalendarAdapter(FragmentActivity activity, CalendarFragment calendarFragment, Calendar firstSession) {
 
         Log.d("CalendarItemAdapter", "firstSession say is " + Utils.getdateFormatted(firstSession.getTime()));
 
         monthList = new ArrayList<>();
 
         this.activity = activity;
+        this.calendarFragment = calendarFragment;
 
         Calendar todayDate = Calendar.getInstance();
 
@@ -73,7 +77,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         View view = inflater.inflate(R.layout.calendar_item, parent, false);
         context = parent.getContext();
         Log.d("CalendarItemAdapter", "CalendarItemAdapter: returning ViewHolder");
-        return new CalendarViewHolder(view, activity, context);
+        return new CalendarViewHolder(view, activity, context, calendarFragment);
     }
 
     @Override

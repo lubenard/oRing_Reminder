@@ -45,6 +45,7 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onViewCreated()");
         return inflater.inflate(R.layout.full_history_fragment, container, false);
     }
 

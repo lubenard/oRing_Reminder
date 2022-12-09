@@ -1,6 +1,8 @@
 package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
+
+import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
 import com.lubenard.oring_reminder.utils.Log;
 
 import android.util.Pair;
@@ -36,13 +38,15 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
     private TextView calendarMonth;
     private int todayIndex = -1;
     private FragmentActivity activity;
+    private CalendarFragment calendarFragment;
 
-    public CalendarViewHolder(@NonNull View itemView, FragmentActivity activity, Context context) {
+    public CalendarViewHolder(@NonNull View itemView, FragmentActivity activity, Context context, CalendarFragment calendarFragment) {
         super(itemView);
 
         this.activity = activity;
         calendarGridDays = itemView.findViewById(R.id.calendarGridDays);
         calendarMonth = itemView.findViewById(R.id.calendarMonth);
+        this.calendarFragment = calendarFragment;
     }
 
     /**
@@ -82,7 +86,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
         } else
             todayIndex = -1;
 
-        final CalendarItemAdapter adapter = new CalendarItemAdapter(activity, context, num, mappedSessions, calendarOffset, todayIndex, date);
+        final CalendarItemAdapter adapter = new CalendarItemAdapter(activity, calendarFragment, context, num, mappedSessions, calendarOffset, todayIndex, date);
 
         calendarGridDays.setAdapter(adapter);
     }
@@ -99,7 +103,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
         for(int j = 0; j != calendarOffset; j++) {list.add("0");}
 
         for (int i = 1; i < selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH) + 1; i++) {
-            Log.d(TAG, "Adding " + i + " to list days");
+            //Log.d(TAG, "Adding " + i + " to list days");
             list.add(String.valueOf(i));
         }
 

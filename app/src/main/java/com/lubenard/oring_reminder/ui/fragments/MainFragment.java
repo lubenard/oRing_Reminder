@@ -20,9 +20,6 @@ public class MainFragment extends Fragment {
 
     private BottomNavigationView bottom_navigation_view;
     private int bottomNavigationViewCurrentIndex = -1;
-    private HomeFragment homeFragment = null;
-    private CalendarFragment calendarFragment = null;
-    private SettingsFragment settingsFragment = null;
     private SettingsManager settingsManager;
 
     @Override
@@ -47,25 +44,29 @@ public class MainFragment extends Fragment {
             // Avoid recreating new fragment each time, we record the current fragment
             settingsManager.setBottomNavigationViewCurrentIndex(R.id.bottom_nav_bar_home);
 
-            homeFragment = new HomeFragment();
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_fragment, homeFragment, null).addToBackStack(null).commit();
+            Log.d(TAG, "No Fragment found in settingsManager, creating homeFragment");
+
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_fragment, HomeFragment.class, null).commit();
         } else {
             switch (bottomNavigationViewCurrentIndex) {
                 case R.id.bottom_nav_bar_home:
                     settingsManager.setBottomNavigationViewCurrentIndex(R.id.bottom_nav_bar_home);
+                    Log.d(TAG, "Launching HomeFragment");
                     requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, new HomeFragment(), null).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, HomeFragment.class, null).addToBackStack(null).commit();
                     break;
                 case R.id.bottom_nav_bar_calendar:
                     settingsManager.setBottomNavigationViewCurrentIndex(R.id.bottom_nav_bar_calendar);
+                    Log.d(TAG, "Launching CalendarFragment");
                     requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, new CalendarFragment(), null).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, CalendarFragment.class, null).commit();
                     break;
                 case R.id.bottom_nav_bar_settings:
                     settingsManager.setBottomNavigationViewCurrentIndex(R.id.bottom_nav_bar_settings);
+                    Log.d(TAG, "Launching SettingsFragment");
                     requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, new SettingsFragment(), null).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, SettingsFragment.class, null).commit();
                     break;
             }
         }
@@ -74,30 +75,27 @@ public class MainFragment extends Fragment {
             int id = menuItem.getItemId();
             Log.d(TAG, "id = " + id + ", bottomNavigationViewCurrentIndex = " + bottomNavigationViewCurrentIndex);
             if (settingsManager.getBottomNavigationViewCurrentIndex() == id) {
-                Log.d(TAG, "id = bottomNavigationViewCurrentIndex");
+                Log.d(TAG, "id == bottomNavigationViewCurrentIndex");
                 return true;
             }
             switch (id) {
                 case R.id.bottom_nav_bar_home:
                     // Navigate to settings screen
-                    if (homeFragment == null) { homeFragment = new HomeFragment(); }
                     settingsManager.setBottomNavigationViewCurrentIndex(id);
                     requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, homeFragment, null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, HomeFragment.class, null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
                     break;
                 case R.id.bottom_nav_bar_calendar:
                     // Navigate to settings screen
-                    if (calendarFragment == null) { calendarFragment = new CalendarFragment(); }
                     settingsManager.setBottomNavigationViewCurrentIndex(id);
                     requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, calendarFragment, null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, CalendarFragment.class, null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
                     break;
                 case R.id.bottom_nav_bar_settings:
                     // Navigate to settings screen
-                    if (settingsFragment == null) { settingsFragment = new SettingsFragment(); }
                     settingsManager.setBottomNavigationViewCurrentIndex(R.id.bottom_nav_bar_settings);
                     requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, settingsFragment, null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
+                            .replace(R.id.content_fragment, SettingsFragment.class, null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE).addToBackStack(null).commit();
                     break;
             }
             return true;

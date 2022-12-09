@@ -2,13 +2,22 @@ package com.lubenard.oring_reminder.ui.fragments;
 
 import static androidx.core.content.ContextCompat.getDrawable;
 
+import android.app.Activity;
 import android.os.Bundle;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,18 +35,39 @@ public class CalendarFragment extends Fragment {
 
     private final static String TAG = "CalendarFragment";
 
-    RecyclerView calendarRecyclerView;
-    CalendarAdapter adapter;
-    DbManager dbManager;
+    private RecyclerView calendarRecyclerView;
+    private CalendarAdapter adapter;
+    private DbManager dbManager;
+    private static FragmentActivity activity;
 
     private LinearLayoutManager linearLayoutManager;
+
+    private final MenuProvider menuProvider = new MenuProvider() {
+        @Override
+        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            menuInflater.inflate(R.menu.menu_calendar, menu);
+        }
+
+        @Override
+        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+            int id = menuItem.getItemId();
+            if (id == R.id.action_view_as_history) {
+                activity.removeMenuProvider(menuProvider);
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new HistoryFragment(), null)
+                        .addToBackStack(null).commit();
+                return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.calendar_fragment, container, false);
 
-        calendarRecyclerView = view.findViewById(R.id.calendar_list);
+        Log.d(TAG, "onCreateView()");
         return view;
     }
 
@@ -47,8 +77,14 @@ public class CalendarFragment extends Fragment {
 
         getActivity().setTitle(R.string.calendar_fragment_title);
 
-        Log.d("CalendarFragment", "View is created");
+        Log.d(TAG, "onViewCreated()");
 
+        activity = requireActivity();
+
+        ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        activity.addMenuProvider(menuProvider);
+
+        calendarRecyclerView = view.findViewById(R.id.calendar_list);
         // Since the recyclerView has fixed size (according to screen size),
         // this is used for optimization
         calendarRecyclerView.setHasFixedSize(true);
@@ -67,12 +103,16 @@ public class CalendarFragment extends Fragment {
         calendarRecyclerView.addItemDecoration(dividerItemDecoration);
 
         if (entries.size() > 0)
-            adapter = new CalendarAdapter(requireActivity(), entries.get(0).getDatePutCalendar());
+            adapter = new CalendarAdapter(activity, this, entries.get(0).getDatePutCalendar());
         else
-            adapter = new CalendarAdapter(requireActivity(), Calendar.getInstance());
+            adapter = new CalendarAdapter(activity, this, Calendar.getInstance());
         calendarRecyclerView.setAdapter(adapter);
 
-        Log.d("CalendarFragment", "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");
+        Log.d(TAG, "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");
+    }
+
+    public void removeMenuProvider() {
+        activity.removeMenuProvider(menuProvider);
     }
 
     /**
@@ -81,5 +121,24 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d(TAG, "onPause()");
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(TAG, "onStop()");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "onDestroyView()");
+        activity.removeMenuProvider(menuProvider);
+        super.onDestroyView();
     }
 }

@@ -2,6 +2,7 @@ package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
 
+import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
 import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.fragments.SearchFragment;
 import com.lubenard.oring_reminder.utils.Log;
@@ -40,9 +41,10 @@ public class CalendarItemAdapter extends BaseAdapter {
     // It's value is either -1 if not present, or [1..31] if present
     private int todayIndex;
     private Calendar date;
+    private CalendarFragment calendarFragment;
     private List<Pair<Integer, RingSession>> monthEntries;
 
-    public CalendarItemAdapter(FragmentActivity activity, Context context, ArrayList<String> dayList, List<Pair<Integer, RingSession>> monthEntries, int calendarOffset, int todayCounter, Calendar date) {
+    public CalendarItemAdapter(FragmentActivity activity, CalendarFragment calendarFragment, Context context, ArrayList<String> dayList, List<Pair<Integer, RingSession>> monthEntries, int calendarOffset, int todayCounter, Calendar date) {
         this.dayList = dayList;
         this.monthEntries = monthEntries;
         this.context = context;
@@ -50,6 +52,7 @@ public class CalendarItemAdapter extends BaseAdapter {
         this.calendarOffset = calendarOffset;
         this.activity = activity;
         this.date = date;
+        this.calendarFragment = calendarFragment;
         this.settingsManager = new SettingsManager(context);
     }
 
@@ -76,7 +79,7 @@ public class CalendarItemAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridItem = inflater.inflate(R.layout.calendar_grid_item, null);
 
-        Log.d("CalendarItemAdapter", "Iterate over  " + dayList.get(position) + " with position " + position);
+        //Log.d(TAG, "Iterate over " + dayList.get(position) + " with position " + position);
 
         if (!dayList.get(position).equals("0")) {
 
@@ -86,14 +89,14 @@ public class CalendarItemAdapter extends BaseAdapter {
 
             List<RingSession> sessions = filterSessions(monthEntries, Integer.parseInt(dayList.get(position)));
 
-            Log.d(TAG, "Sessions for " + dayList.get(position) + " are size " + sessions.size());
+            //Log.d(TAG, "Sessions for " + dayList.get(position) + " are size " + sessions.size());
 
             if (todayIndex != -1 && todayIndex == Integer.parseInt(dayList.get(position)))
                 numberTextView.setTextColor(context.getResources().getColor(android.R.color.holo_blue_light));
 
             if (sessions.size() > 0) {
                 RingSession session = sessions.get(sessions.size() - 1);
-                Log.d("CalendarItemAdapter", "session found is " + session);
+                Log.d(TAG, "session found is " + session);
 
                 if (session != null) {
                     if (session.getIsRunning())
@@ -108,6 +111,7 @@ public class CalendarItemAdapter extends BaseAdapter {
                     numberTextView.setOnClickListener(v -> {
                         Log.d(TAG, "Clicked on item " + dayList.get(position));
                         if (sessions.size() > 1) {
+                            calendarFragment.removeMenuProvider();
                             SearchFragment fragment = new SearchFragment();
                             Bundle bundle = new Bundle();
                             String day = dayList.get(position);
@@ -119,6 +123,7 @@ public class CalendarItemAdapter extends BaseAdapter {
                                     .replace(android.R.id.content, fragment, null)
                                     .addToBackStack(null).commit();
                         } else {
+                            calendarFragment.removeMenuProvider();
                             Log.d(TAG, "Launching EntryDetailsFragment");
                             Bundle bundle = new Bundle();
                             bundle.putLong("entryId", session.getId());
@@ -149,7 +154,7 @@ public class CalendarItemAdapter extends BaseAdapter {
 
     @Override
     public boolean isEnabled(int position) {
-        Log.d(TAG, "is " + dayList.get(position) + " enabled ? answer is " + (!dayList.get(position).equals("0") && filterSessions(monthEntries, Integer.parseInt(dayList.get(position))).size() > 0));
+        //Log.d(TAG, "is " + dayList.get(position) + " enabled ? answer is " + (!dayList.get(position).equals("0") && filterSessions(monthEntries, Integer.parseInt(dayList.get(position))).size() > 0));
         return !dayList.get(position).equals("0") && filterSessions(monthEntries, Integer.parseInt(dayList.get(position))).size() > 0;
     }
 }

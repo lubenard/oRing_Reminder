@@ -1,13 +1,10 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import com.lubenard.oring_reminder.utils.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +32,6 @@ import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
-import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -48,24 +44,24 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
 
     private static CircularProgressIndicator progress_bar;
-    private static Button button_start_break;
+    private Button button_start_break;
     private static FloatingActionButton fab;
-    private static TextView text_view_break;
-    private static View view;
-    private static Button button_see_curr_session;
-    private static TextView time_needed_to_complete_session;
+    private TextView text_view_break;
+    private View view;
+    private Button button_see_curr_session;
+    private TextView time_needed_to_complete_session;
 
     private ArrayList<RingSession> dataModels;
     private static DbManager dbManager;
-    private static TextView textview_progress;
-    private static TextView home_since_midnight_data;
-    private static TextView home_last_24h_data;
-    private static TextView start_session_data;
-    private static TextView estimated_end_session_data;
-    private static Context context;
+    private TextView textview_progress;
+    private TextView home_since_midnight_data;
+    private TextView home_last_24h_data;
+    private TextView start_session_data;
+    private TextView estimated_end_session_data;
+    private Context context;
     private static FragmentActivity activity;
 
-    private MenuProvider menuProvider = new MenuProvider() {
+    private final MenuProvider menuProvider = new MenuProvider() {
         @Override
         public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
             menuInflater.inflate(R.menu.menu_main, menu);
@@ -79,20 +75,17 @@ public class HomeFragment extends Fragment {
                     searchEntry();
                     return true;
                 case R.id.action_my_spermogramms:
-                    activity.removeMenuProvider(menuProvider);
-                    getActivity().getSupportFragmentManager().beginTransaction()
+                    requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new MySpermogramsFragment(), null)
                             .addToBackStack(null).commit();
                     return true;
                 case R.id.action_calculators:
-                    activity.removeMenuProvider(menuProvider);
-                    getActivity().getSupportFragmentManager().beginTransaction()
+                    requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new CalculatorsFragment(), null)
                             .addToBackStack(null).commit();
                     return true;
                 case R.id.action_datas:
-                    activity.removeMenuProvider(menuProvider);
-                    getActivity().getSupportFragmentManager().beginTransaction()
+                    requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new DatasFragment(), null)
                             .addToBackStack(null).commit();
                     return true;
@@ -105,6 +98,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreateView()");
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
@@ -325,7 +319,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private static void updateCurrSessionDatas() {
+    private void updateCurrSessionDatas() {
         RingSession lastRunningEntry = dbManager.getLastRunningEntry();
 
         if (lastRunningEntry != null) {
@@ -419,7 +413,6 @@ public class HomeFragment extends Fragment {
             });
 
             button_see_curr_session.setOnClickListener(v -> {
-                activity.removeMenuProvider(menuProvider);
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
@@ -442,7 +435,8 @@ public class HomeFragment extends Fragment {
 
         activity.setTitle(R.string.app_name);
         ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        activity.addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
+        Log.d(TAG, "onCreate activity is " + activity.toString() + ", menuProvider: " + menuProvider);
+        activity.addMenuProvider(menuProvider);
 
         Log.d(TAG, "onViewCreated()");
 
@@ -467,12 +461,14 @@ public class HomeFragment extends Fragment {
         start_session_data = view.findViewById(R.id.start_session_data);
         estimated_end_session_data = view.findViewById(R.id.estimated_end_data);
 
-        HomeFragment.view = view;
+        this.view = view;
     }
 
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView() called");
+        Log.d(TAG, "onDestroy activity is " + activity.toString() + ", menuProvider: " + menuProvider);
+
         activity.removeMenuProvider(menuProvider);
         super.onDestroyView();
     }

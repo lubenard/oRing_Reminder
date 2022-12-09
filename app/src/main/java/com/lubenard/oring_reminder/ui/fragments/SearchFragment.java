@@ -29,6 +29,7 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreateView()");
         return inflater.inflate(R.layout.search_fragment, container, false);
     }
 
