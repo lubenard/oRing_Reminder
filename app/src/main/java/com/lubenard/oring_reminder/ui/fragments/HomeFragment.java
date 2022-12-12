@@ -413,6 +413,7 @@ public class HomeFragment extends Fragment {
             });
 
             button_see_curr_session.setOnClickListener(v -> {
+                activity.removeMenuProvider(menuProvider);
                 EntryDetailsFragment fragment = new EntryDetailsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());

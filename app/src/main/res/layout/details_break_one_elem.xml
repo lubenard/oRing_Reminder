@@ -70,7 +70,7 @@
 				android:id="@+id/worn_for_history"
 				style="@style/base_text_all_wrap"
 				android:textSize="16sp"
-				android:text="@string/worn_for" />
+				android:text="@string/removed_during" />
 
 			<TextView
 				android:id="@+id/custom_view_date_time_weared"

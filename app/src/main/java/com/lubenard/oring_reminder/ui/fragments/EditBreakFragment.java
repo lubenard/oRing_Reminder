@@ -131,8 +131,8 @@ public class EditBreakFragment extends DialogFragment {
         ImageButton close_fragment_button = view.findViewById(R.id.create_new_break_cancel);
         close_fragment_button.setOnClickListener(v -> {
             Bundle result = new Bundle();
-            result.putBoolean("updateBreakList", false);
-            getParentFragmentManager().setFragmentResult("shouldUpdateBreakList", result);
+            result.putBoolean("shouldUpdateBreakList", false);
+            getParentFragmentManager().setFragmentResult("EditBreakFragmentResult", result);
             dismiss();
         });
 
@@ -168,8 +168,8 @@ public class EditBreakFragment extends DialogFragment {
             if (SessionsManager.startBreak2(context, sessionDatas, newBreakSession, pausesDatas == null)) {
                 // break inserted successfully
                 Bundle result = new Bundle();
-                result.putBoolean("updateBreakList", true);
-                getParentFragmentManager().setFragmentResult("shouldUpdateBreakList", result);
+                result.putBoolean("shouldUpdateBreakList", true);
+                getParentFragmentManager().setFragmentResult("EditBreakFragmentResult", result);
                 dismiss();
             }
 
@@ -215,7 +215,7 @@ public class EditBreakFragment extends DialogFragment {
         int mMinute = c.get(Calendar.MINUTE);
 
         // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> filling_textview.setText(hourOfDay + ":" + minute + ":00"), mHour, mMinute, DateFormat.is24HourFormat(getContext()));
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> filling_textview.setText(hourOfDay + ":" + minute + ":00"), mHour, mMinute, DateFormat.is24HourFormat(requireContext()));
         timePickerDialog.show();
     }
 

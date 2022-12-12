@@ -1,12 +1,9 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,10 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,14 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.Lifecycle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
@@ -220,7 +214,7 @@ public class EntryDetailsFragment extends Fragment {
             bundle.putLong("breakId", breakId);
             bundle.putLong("sessionId", entryId);
             fragment.setArguments(bundle);
-            getChildFragmentManager().setFragmentResultListener("updateBreakList", this, (requestKey, bundle1) -> {
+            getChildFragmentManager().setFragmentResultListener("EditBreakFragmentResult", this, (requestKey, bundle1) -> {
                 boolean result = bundle1.getBoolean("shouldUpdateBreakList", true);
                 Log.d(TAG, "got result from fragment: " + result);
                 if (result)
@@ -309,9 +303,13 @@ public class EntryDetailsFragment extends Fragment {
 
     /**
      * Update the listView by fetching all elements from the db
+     * Yes i thought i could use a ListView or RecyclerView, but they do not fit inside of a scrollView
+     * https://stackoverflow.com/a/3496042
      */
     private void updatePauseList() {
         break_layout.removeAllViews();
+
+        pausesDatas = dbManager.getAllBreaksForId(entryId, true);
 
         LayoutInflater inflater = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
