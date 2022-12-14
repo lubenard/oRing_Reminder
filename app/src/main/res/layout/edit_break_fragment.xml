@@ -33,6 +33,15 @@
                 android:layout_weight="1"/>
 
             <ImageButton
+                android:id="@+id/manual_edit_pause"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/edit_48px"
+                android:background="@null"
+                android:contentDescription="@string/save_icon" />
+
+            <ImageButton
                 android:id="@+id/validate_pause"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -138,8 +147,7 @@
                 android:layout_height="match_parent"
                 android:ems="6"
                 android:layout_weight="1"
-                android:autofillHints=""
-                android:inputType="none"
+                android:digits="0123456789-"
                 android:hint="@string/example_hint_end_date" />
 
             <EditText

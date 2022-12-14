@@ -14,6 +14,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import com.lubenard.oring_reminder.utils.Log;
+
+import android.text.method.KeyListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,7 @@ public class EditBreakFragment extends DialogFragment {
     private RingSession sessionDatas;
     private long breakId;
     private long sessionId;
+    private boolean isManualEditEnabled = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -134,6 +137,28 @@ public class EditBreakFragment extends DialogFragment {
             result.putBoolean("shouldUpdateBreakList", false);
             getParentFragmentManager().setFragmentResult("EditBreakFragmentResult", result);
             dismiss();
+        });
+
+        ImageButton manualEditButton = view.findViewById(R.id.manual_edit_pause);
+        manualEditButton.setOnClickListener(v -> {
+            if (isManualEditEnabled) {
+                Log.d(TAG, "Disabling editTexts");
+                disableEditText(pause_beginning_date);
+                disableEditText(pause_ending_date);
+                disableEditText(pause_beginning_time);
+                disableEditText(pause_ending_time);
+                Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
+
+                isManualEditEnabled = false;
+            } else {
+                Log.d(TAG, "Enabling editTexts");
+                enableEditText(pause_beginning_date);
+                enableEditText(pause_ending_date);
+                enableEditText(pause_beginning_time);
+                enableEditText(pause_ending_time);
+                Toast.makeText(requireContext(), R.string.manual_mode_enabled, Toast.LENGTH_SHORT).show();
+                isManualEditEnabled = true;
+            }
         });
 
         ImageButton save_entry = view.findViewById(R.id.validate_pause);
@@ -219,11 +244,13 @@ public class EditBreakFragment extends DialogFragment {
         timePickerDialog.show();
     }
 
+    private void enableEditText(EditText editText) {
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+    }
 
     private void disableEditText(EditText editText) {
         editText.setFocusable(false);
-        editText.setCursorVisible(false);
-        editText.setKeyListener(null);
     }
 
 

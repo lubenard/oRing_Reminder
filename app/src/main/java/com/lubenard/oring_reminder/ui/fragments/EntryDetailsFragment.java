@@ -179,7 +179,6 @@ public class EntryDetailsFragment extends Fragment {
                 Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
                 SessionsAlarmsManager.setBreakAlarm(context ,Utils.getdateFormatted(new Date()), entryId);
-                createNewBreak(id, date, "NOT SET YET", 1);
                 updatePauseList();
                 EditEntryFragment.updateWidget(getContext());
             } else
@@ -187,11 +186,6 @@ public class EntryDetailsFragment extends Fragment {
             return true;
         });
         requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner(), Lifecycle.State.CREATED);
-    }
-
-    // TODO: See if this method is still useful after huge code refactor
-    private void createNewBreak(long id, String startDate, String endDate, int isRunning) {
-        pausesDatas.add(0, new BreakSession((int)id, endDate, startDate, isRunning, 0, 0));
     }
 
     /**
