@@ -28,8 +28,6 @@ public class Utils {
 
     private static final String TAG = "Utils";
 
-    private static String current_language;
-
     /**
      * Apply theme based on newValue
      * @param newValue the new Theme to apply
@@ -81,99 +79,9 @@ public class Utils {
      */
     //TODO: Refactor this method to make return boolean
     public static int checkDateInputSanity(String text) {
-        if (text.equals("") || text.equals("NOT SET YET") || Utils.getdateParsed(text) == null)
+        if (text.equals("") || text.equals("NOT SET YET") || DateUtils.getdateParsed(text) == null)
             return 0;
         return 1;
-    }
-
-    /**
-     * Format date from Date to string using "yyyy-MM-dd HH:mm:ss" format
-     * @param date The date to format
-     * @return The string formatted
-     */
-    public static String getdateFormatted(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-    }
-
-    /**
-     * Parse a string date into a Date object
-     * @param date the string date to parse
-     * @return The Date format parsed
-     */
-    public static Date getdateParsed(String date) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Compute the diff between two given dates
-     * The formula is date2 - date1
-     * @param sDate1 First date in the form of a string
-     * @param sDate2 Second date in the form of a string
-     * @param timeUnit The timeUnit we want to return (Mostly minutes)
-     * @return the time in unit between two dates in the form of a long
-     */
-    public static long getDateDiff(String sDate1, String sDate2, TimeUnit timeUnit) {
-        Date date1 = getdateParsed(sDate1);
-        Date date2 = getdateParsed(sDate2);
-
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * getDateDiff methord overload. Same as abovfe, but take 2 dates instead of 2 Strings
-     * Compute the diff between two given dates
-     * The formula is date2 - date1
-     * @param date1 First date in the form of a Date
-     * @param date2 Second date in the form of a Date
-     * @param timeUnit The timeUnit we want to return (Mostly minutes)
-     * @return the time in minutes between two dates
-     */
-    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
-    }
-
-
-    /**
-     * Convert the timeWeared from a int into a readable hour:minutes format
-     * @param timeWeared timeWeared is in minutes
-     * @return a string containing the time the user weared the protection
-     */
-    public static String convertTimeWeared(int timeWeared) {
-        return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
-    }
-
-
-    /**
-     * Convert date into readable one:
-     * Example : 2021-10-12 -> 12 October 2021
-     * @param s
-     * @return
-     */
-    public static String convertDateIntoReadable(String s, boolean shorterVersion) {
-        Date date = null;
-        try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(s);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        SimpleDateFormat simpleDateFormat;
-
-        if (current_language == null)
-            current_language = Resources.getSystem().getConfiguration().locale.getLanguage();
-
-        if (shorterVersion)
-            simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", new Locale(current_language));
-        else
-            simpleDateFormat = new SimpleDateFormat("dd LLLL yyyy", new Locale(current_language));
-
-        return simpleDateFormat.format(date);
     }
 
     /**
@@ -182,7 +90,7 @@ public class Utils {
      * @param localeCode localCode to apply
      */
     public static void setAppLocale(Context context, String localeCode) {
-        current_language = localeCode;
+        DateUtils.setAppLocale(localeCode);
         Locale myLocale = new Locale(localeCode);
         Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();

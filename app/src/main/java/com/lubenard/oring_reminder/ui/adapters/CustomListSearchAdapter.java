@@ -12,6 +12,7 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsManager;
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -49,13 +50,13 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
 
         // Forced to split with a space because the date format is YYYY-MM-dd hh:MM:ss
         String[] datePut = dataModel.getDatePut().split(" ");
-        viewHolder.worn_date.setText(Utils.convertDateIntoReadable(datePut[0], false));
+        viewHolder.worn_date.setText(DateUtils.convertDateIntoReadable(datePut[0], false));
 
         viewHolder.weared_from.setText(datePut[1]);
 
         if (!dataModel.getDateRemoved().equals("NOT SET YET")) {
             String[] dateRemoved = dataModel.getDateRemoved().split(" ");
-            viewHolder.worn_date.setText(Utils.convertDateIntoReadable(datePut[0], false) + " -> " + Utils.convertDateIntoReadable(dateRemoved[0], false));
+            viewHolder.worn_date.setText(DateUtils.convertDateIntoReadable(datePut[0], false) + " -> " + DateUtils.convertDateIntoReadable(dateRemoved[0], false));
             viewHolder.weared_to.setText(dateRemoved[1]);
         } else
             viewHolder.weared_to.setText(dataModel.getDateRemoved());
@@ -66,7 +67,7 @@ public class CustomListSearchAdapter extends ArrayAdapter<RingSession> {
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(Utils.convertTimeWeared(totalTimePause));
+            viewHolder.weared_during.setText(DateUtils.convertTimeWeared(totalTimePause));
         }
         else {
             long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), null);

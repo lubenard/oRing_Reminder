@@ -3,6 +3,8 @@ package com.lubenard.oring_reminder.managers;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.widget.Toast;
 
@@ -47,7 +49,7 @@ public class SessionsManager {
                     .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, (dialog, which) -> {
                         for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
                             Log.d(TAG, "Set session " + sessions.getKey() + " to finished");
-                            dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), Utils.getdateFormatted(new Date()), 0);
+                            dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), DateUtils.getdateFormatted(new Date()), 0);
                         }
                         saveEntry(context, formattedDatePut);
                     })
@@ -73,10 +75,10 @@ public class SessionsManager {
         // Set alarm only for new entry
         if (settingsManager.getShouldSendNotifWhenSessionIsOver()) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(Utils.getdateParsed(formattedDatePut));
+                calendar.setTime(DateUtils.getdateParsed(formattedDatePut));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 Log.d(TAG, "New entry: setting alarm at " + calendar.getTimeInMillis());
-                SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), newlyInsertedEntry, false);
+                SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), newlyInsertedEntry, false);
             }
     }
 
@@ -97,19 +99,19 @@ public class SessionsManager {
             Log.w(TAG, "Error: Already in break !");
             Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (Utils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
+        } else if (DateUtils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!breakSession.getIsRunning() && Utils.getDateDiff(session.getDatePut(), breakSession.getEndDate(), TimeUnit.SECONDS) <= 0) {
+        } else if (!breakSession.getIsRunning() && DateUtils.getDateDiff(session.getDatePut(), breakSession.getEndDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: End of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!breakSession.getIsRunning() && !session.getIsRunning() && Utils.getDateDiff(breakSession.getEndDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+        } else if (!breakSession.getIsRunning() && !session.getIsRunning() && DateUtils.getDateDiff(breakSession.getEndDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: End of pause > end of entry");
             Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!session.getIsRunning() && Utils.getDateDiff(breakSession.getStartDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+        } else if (!session.getIsRunning() && DateUtils.getDateDiff(breakSession.getStartDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause > end of entry");
             Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
             return false;
@@ -121,7 +123,7 @@ public class SessionsManager {
             } else {
                 long id = dbManager.updatePause(breakSession);
                 Log.d(TAG, "Break with id: " + id + " has been successfully updated");
-                long timeWorn = Utils.getDateDiff(breakSession.getStartDate(), breakSession.getEndDate(), TimeUnit.MINUTES);
+                long timeWorn = DateUtils.getDateDiff(breakSession.getStartDate(), breakSession.getEndDate(), TimeUnit.MINUTES);
 
                 //pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
                 // Cancel the break notification if it is set as finished.
@@ -129,7 +131,7 @@ public class SessionsManager {
                     SessionsAlarmsManager.cancelBreakAlarm(context, breakSession.getId());
                 } else {
                     SessionsAlarmsManager.cancelAlarm(context, session.getId());
-                    SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), breakSession.getId());
+                    SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), breakSession.getId());
                     Utils.updateWidget(context);
                 }
             }
@@ -147,12 +149,12 @@ public class SessionsManager {
 
         if (dbManager.getLastRunningPauseForId(lastRunningEntry.getId()) == null) {
             Log.d(TAG, "No running pause");
-            dbManager.createNewPause(lastRunningEntry.getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
+            dbManager.createNewPause(lastRunningEntry.getId(), DateUtils.getdateFormatted(new Date()), "NOT SET YET", 1);
             // Cancel alarm until breaks are set as finished.
             // Only then set a new alarm date
             Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
             SessionsAlarmsManager.cancelAlarm(context, lastRunningEntry.getId());
-            SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), lastRunningEntry.getId());
+            SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), lastRunningEntry.getId());
             Utils.updateWidget(context);
         } else {
             Log.d(TAG, "Error: Already a running pause");
@@ -173,9 +175,9 @@ public class SessionsManager {
         long totalTimePause;
 
         if (dateRemoved == null)
-            oldTimeBeforeRemove = Utils.getDateDiff(datePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+            oldTimeBeforeRemove = DateUtils.getDateDiff(datePut, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         else
-            oldTimeBeforeRemove = Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
+            oldTimeBeforeRemove = DateUtils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
 
         totalTimePause = computeTotalTimePause(MainActivity.getDbManager(), entryId);
         newValue = (int) (oldTimeBeforeRemove - totalTimePause);
@@ -195,7 +197,7 @@ public class SessionsManager {
             if (!allPauses.get(i).getIsRunning())
                 totalTimePause += allPauses.get(i).getTimeRemoved();
             else
-                totalTimePause += Utils.getDateDiff(allPauses.get(i).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         }
         return totalTimePause;
     }

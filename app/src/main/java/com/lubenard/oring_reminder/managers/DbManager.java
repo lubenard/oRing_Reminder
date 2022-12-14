@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
 import com.lubenard.oring_reminder.custom_components.BreakSession;
@@ -163,7 +165,7 @@ public class DbManager extends SQLiteOpenHelper {
         if (dateRemoved.equals("NOT SET YET"))
             cv.put(ringTableTimeWeared, dateRemoved);
         else
-            cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+            cv.put(ringTableTimeWeared, DateUtils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
         cv.put(ringTableIsRunning, isRunning);
 
         return writableDB.insertWithOnConflict(ringTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
@@ -204,7 +206,7 @@ public class DbManager extends SQLiteOpenHelper {
         if (dateRemoved.equals("NOT SET YET"))
             cv.put(ringTableTimeWeared, dateRemoved);
         else
-            cv.put(ringTableTimeWeared, Utils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
+            cv.put(ringTableTimeWeared, DateUtils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
         cv.put(ringTableIsRunning, isRunning);
 
         int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(id)});
@@ -265,10 +267,10 @@ public class DbManager extends SQLiteOpenHelper {
         // Then we set our values:
         // We need to recompute the date
         // And set the isRunning to 0
-        String dateRemoved = Utils.getdateFormatted(new Date());
+        String dateRemoved = DateUtils.getdateFormatted(new Date());
         ContentValues cv = new ContentValues();
         cv.put(ringTableRemoved, dateRemoved);
-        cv.put(ringTableTimeWeared, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));
+        cv.put(ringTableTimeWeared, DateUtils.getDateDiff(cursor.getString(cursor.getColumnIndex(ringTablePut)), dateRemoved, TimeUnit.MINUTES));
         cv.put(ringTableIsRunning, 0);
 
         int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(entryId)});
@@ -296,10 +298,10 @@ public class DbManager extends SQLiteOpenHelper {
             // Then we set our values:
             // We need to recompute the date
             // And set the isRunning to 0
-            String datePut = Utils.getdateFormatted(new Date());
+            String datePut = DateUtils.getdateFormatted(new Date());
             ContentValues cv = new ContentValues();
             cv.put(pauseTablePut, datePut);
-            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(cursor.getString(cursor.getColumnIndex(pauseTableRemoved)), datePut, TimeUnit.MINUTES));
+            cv.put(pauseTableTimeRemoved, DateUtils.getDateDiff(cursor.getString(cursor.getColumnIndex(pauseTableRemoved)), datePut, TimeUnit.MINUTES));
             cv.put(pauseTableIsRunning, 0);
 
             int u = writableDB.update(pausesTable, cv, pauseTableEntryId + "=? AND " + pauseTableIsRunning + "=?",
@@ -329,7 +331,7 @@ public class DbManager extends SQLiteOpenHelper {
         if (datePut.equals("NOT SET YET"))
             cv.put(pauseTableTimeRemoved, datePut);
         else
-            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
+            cv.put(pauseTableTimeRemoved, DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
         cv.put(pauseTableIsRunning, isRunning);
 
         return writableDB.insertWithOnConflict(pausesTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
@@ -355,7 +357,7 @@ public class DbManager extends SQLiteOpenHelper {
         if (datePut.equals("NOT SET YET"))
             cv.put(pauseTableTimeRemoved, datePut);
         else
-            cv.put(pauseTableTimeRemoved, Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
+            cv.put(pauseTableTimeRemoved, DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES));
         cv.put(pauseTableIsRunning, isRunning);
 
         int u = writableDB.update(pausesTable, cv, pauseTableId + "=?", new String[]{String.valueOf(pauseId)});
@@ -561,7 +563,7 @@ public class DbManager extends SQLiteOpenHelper {
 
     public long importNewSpermo(String uri) {
         ContentValues cv = new ContentValues();
-        cv.put(spermoTableDateAdded, Utils.getdateFormatted(new Date()).split(" ")[0]);
+        cv.put(spermoTableDateAdded, DateUtils.getdateFormatted(new Date()).split(" ")[0]);
         cv.put(spermoTableFileLocation, uri);
 
         return writableDB.insertWithOnConflict(spermoTable, null, cv, SQLiteDatabase.CONFLICT_REPLACE);

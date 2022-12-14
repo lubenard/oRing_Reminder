@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
 import androidx.preference.PreferenceManager;
@@ -45,13 +47,13 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
             // to end.
             // Only set a new alarm when the end time of the pause is known
             if (!SessionsManager.doesSessionHaveRunningPause(dbManager, sessions.getKey())) {
-                calendar.setTime(Utils.getdateParsed(sessions.getValue()));
+                calendar.setTime(DateUtils.getdateParsed(sessions.getValue()));
                 calendar.add(Calendar.HOUR_OF_DAY, userSettingWearingTime);
                 calendar.add(Calendar.MINUTE, SessionsManager.computeTotalTimePause(dbManager, sessions.getKey()));
 
                 // Set alarms for session not finished
-                Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + Utils.getdateFormatted(calendar.getTime()));
-                SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
+                Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + DateUtils.getdateFormatted(calendar.getTime()));
+                SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
             }
         }
     }

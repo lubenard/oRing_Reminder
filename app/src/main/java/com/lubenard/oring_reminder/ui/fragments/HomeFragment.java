@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -127,22 +129,22 @@ public class HomeFragment extends Fragment {
             BreakSession currentBreak = pausesDatas.get(i);
             Log.d(TAG, "BreakSession is " + currentBreak);
             if (!pausesDatas.get(i).getIsRunning()) {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
-                        Utils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
+                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeRemoved());
                     totalTimePause += currentBreak.getTimeRemoved();
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
+                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
+                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
                 }
             } else {
-                if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running pause at index " + i + " is added: " + Utils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
-                    totalTimePause += Utils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
-                } else if (Utils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running pause at index " + i + " is between the born: " + Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimePause += Utils.getDateDiff(date24HoursAgo, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running pause at index " + i + " is added: " + DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
+                    totalTimePause += DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
+                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 }
             }
         }
@@ -157,14 +159,14 @@ public class HomeFragment extends Fragment {
         ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
 
         Calendar calendar = Calendar.getInstance();
-        String todayDate = Utils.getdateFormatted(calendar.getTime());
+        String todayDate = DateUtils.getdateFormatted(calendar.getTime());
 
         // We set the calendar at midnight
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        String sinceMidnigt = Utils.getdateFormatted(calendar.getTime());
+        String sinceMidnigt = DateUtils.getdateFormatted(calendar.getTime());
         Log.d(TAG, "Computing since midnight: interval is between: " + sinceMidnigt + " and " + todayDate);
 
         RingSession currentModel;
@@ -174,26 +176,26 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "Session id: " + currentModel.getId()
                     + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
                     + ", getDatePut: " + currentModel.getDatePut()
-                    + ", datediff datePut: " + Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
+                    + ", datediff datePut: " + DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
             if (!currentModel.getIsRunning()) {
-                if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
+                if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
                     Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
                     totalTimeSinceMidnight += currentModel.getTimeWeared() - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
+                } else if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += Utils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             } else {
-                if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(sinceMidnigt, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimeSinceMidnight += Utils.getDateDiff(sinceMidnigt, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             }
         }
@@ -213,12 +215,12 @@ public class HomeFragment extends Fragment {
         ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
 
         Calendar calendar = Calendar.getInstance();
-        String todayDate = Utils.getdateFormatted(calendar.getTime());
+        String todayDate = DateUtils.getdateFormatted(calendar.getTime());
 
         // We set the calendar 24h earlier
         calendar.add(Calendar.DAY_OF_MONTH, -1);
 
-        String oneDayEarlier = Utils.getdateFormatted(calendar.getTime());
+        String oneDayEarlier = DateUtils.getdateFormatted(calendar.getTime());
         Log.d(TAG, "Computing last 24 hours: interval is between: " + oneDayEarlier + " and " + todayDate);
 
         RingSession currentModel;
@@ -228,26 +230,26 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, "Session id: " + currentModel.getId()
                     + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
                     + ", getDatePut: " + currentModel.getDatePut()
-                    + ", datediff datePut: " + Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
+                    + ", datediff datePut: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
             if (!currentModel.getIsRunning()) {
-                if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        Utils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
+                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
                     Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
                     totalTimeLastDay += currentModel.getTimeWeared() - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        Utils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
+                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + Utils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeLastDay += Utils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.SECONDS));
+                    totalTimeLastDay += DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             } else {
-                if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeLastDay += Utils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (Utils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running entry at index " + i + " is between the born: " + Utils.getDateDiff(oneDayEarlier, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimeLastDay += Utils.getDateDiff(oneDayEarlier, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
+                    totalTimeLastDay += DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running entry at index " + i + " is between the born: " + DateUtils.getDateDiff(oneDayEarlier, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimeLastDay += DateUtils.getDateDiff(oneDayEarlier, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             }
         }
@@ -305,14 +307,14 @@ public class HomeFragment extends Fragment {
             if (action.equals("default")) {
                 startEditEntryFragment();
             } else {
-                Toast.makeText(context, "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(context, Utils.getdateFormatted(new Date()));
+                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
                 updateDesign();
             }
         } else {
             if (action.equals("default")) {
-                Toast.makeText(context, "Session started at: " + Utils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(context, Utils.getdateFormatted(new Date()));
+                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
                 updateDesign();
             } else {
                 startEditEntryFragment();
@@ -325,21 +327,21 @@ public class HomeFragment extends Fragment {
 
         if (lastRunningEntry != null) {
             long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
-            textview_progress.setText(Utils.convertTimeWeared((int)timeBeforeRemove));
-            time_needed_to_complete_session.setText(String.format("/ %s", Utils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60)));
+            textview_progress.setText(DateUtils.convertTimeWeared((int)timeBeforeRemove));
+            time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60)));
             float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
 
             String[] splittedDatePut = lastRunningEntry.getDatePut().split(" ");
 
-            start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), Utils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
+            start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
 
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Utils.getdateParsed(lastRunningEntry.getDatePut()));
+            calendar.setTime(DateUtils.getdateParsed(lastRunningEntry.getDatePut()));
             calendar.add(Calendar.HOUR_OF_DAY, MainActivity.getSettingsManager().getWearingTimeInt());
 
-            String[] splittedDateEstimatedEnd = Utils.getdateFormatted(calendar.getTime()).split(" ");
+            String[] splittedDateEstimatedEnd = DateUtils.getdateFormatted(calendar.getTime()).split(" ");
 
-            estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), Utils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
+            estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
 
             Log.d(TAG, "MainView percentage is " + progress_percentage);
             if (progress_percentage < 1f)
@@ -352,7 +354,7 @@ public class HomeFragment extends Fragment {
 
             if (dbManager.getAllBreaksForId(lastRunningEntry.getId(), true).size() > 0 &&
                 dbManager.getAllBreaksForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
-                text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,Utils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,DateUtils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 text_view_break.setVisibility(View.VISIBLE);
                 button_start_break.setText(context.getString(R.string.widget_stop_break));
                 button_start_break.setOnClickListener(v -> {
@@ -376,10 +378,10 @@ public class HomeFragment extends Fragment {
     public void updateDesign() {
 
         int totalTimeSinceMidnight = getSinceMidnightWearingTime();
-        home_since_midnight_data.setText(Utils.convertTimeWeared(totalTimeSinceMidnight));
+        home_since_midnight_data.setText(DateUtils.convertTimeWeared(totalTimeSinceMidnight));
 
         int totalTimeLastDay = getLast24hWearingTime();
-        home_last_24h_data.setText(Utils.convertTimeWeared(totalTimeLastDay));
+        home_last_24h_data.setText(DateUtils.convertTimeWeared(totalTimeLastDay));
 
         // If this return null, mean there is no running session
         if (dbManager.getLastRunningEntry() == null) {

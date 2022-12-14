@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder.custom_components;
 
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -38,7 +39,7 @@ public class BreakSession {
             this.status = BreakStatus.FINISHED;
 
         if (this.timeRemoved == 0 && this.status == BreakStatus.FINISHED) {
-            this.timeRemoved = (int)Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
+            this.timeRemoved = (int) DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
         }
     }
 
@@ -56,13 +57,13 @@ public class BreakSession {
 
     public Calendar getStartDateCalendar() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(dateRemoved));
+        calendar.setTime(DateUtils.getdateParsed(dateRemoved));
         return calendar;
     }
 
     public Calendar getEndDateCalendar() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(datePut));
+        calendar.setTime(DateUtils.getdateParsed(datePut));
         return calendar;
     }
 

@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
@@ -30,9 +32,9 @@ public class SessionsAlarmsManager {
 
         if (settingsManager.getShouldSendNotifWhenBreakTooLong()) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Utils.getdateParsed(pauseBeginning));
+            calendar.setTime(DateUtils.getdateParsed(pauseBeginning));
             calendar.add(Calendar.MINUTE, settingsManager.getShouldSendNotifWhenBreakTooLongDate());
-            Log.d(TAG, "Setting break alarm at " + Utils.getdateFormatted(calendar.getTime()));
+            Log.d(TAG, "Setting break alarm at " + DateUtils.getdateFormatted(calendar.getTime()));
             Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
                     .putExtra("action", 1);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
@@ -70,7 +72,7 @@ public class SessionsAlarmsManager {
             am.cancel(pendingIntent);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(alarmDate));
+        calendar.setTime(DateUtils.getdateParsed(alarmDate));
 
         if (SDK_INT < Build.VERSION_CODES.M)
             am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

@@ -10,6 +10,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -96,16 +98,16 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_start_stop_break_session, pendingIntent3);
 
                 int totalTimePause = SessionsManager.computeTotalTimePause(dbManager, lastEntry.getId());
-                long wornFor = Utils.getDateDiff(lastEntry.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                long wornFor = DateUtils.getDateDiff(lastEntry.getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 wornFor -= totalTimePause;
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(Utils.getdateParsed(lastEntry.getDatePut()));
+                calendar.setTime(DateUtils.getdateParsed(lastEntry.getDatePut()));
                 calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt());
 
                 int textResourceWhenGetItOff;
 
-                long timeBeforeRemove = Utils.getDateDiff(Utils.getdateFormatted(new Date()), Utils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
+                long timeBeforeRemove = DateUtils.getDateDiff(DateUtils.getdateFormatted(new Date()), DateUtils.getdateFormatted(calendar.getTime()), TimeUnit.MINUTES);
                 timeBeforeRemove += totalTimePause;
 
                 if (timeBeforeRemove >= 0)
@@ -117,9 +119,9 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
                 String[] lastEntrySplitted = lastEntry.getDatePut().split(" ");
 
-                String timeRemoval = context.getString(R.string.at) + Utils.getdateFormatted(calendar.getTime()).split(" ")[1];
+                String timeRemoval = context.getString(R.string.at) + DateUtils.getdateFormatted(calendar.getTime()).split(" ")[1];
 
-                remoteViews.setTextViewText(R.id.widget_date_from, Utils.convertDateIntoReadable(lastEntrySplitted[0], true) + "\n" + lastEntrySplitted[1]);
+                remoteViews.setTextViewText(R.id.widget_date_from, DateUtils.convertDateIntoReadable(lastEntrySplitted[0], true) + "\n" + lastEntrySplitted[1]);
                 remoteViews.setTextViewText(R.id.widget_worn_for, String.format("%dh%02dm", wornFor / 60, wornFor % 60));
                 remoteViews.setTextViewText(R.id.widget_time_remaining, String.format(context.getString(textResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60) + "\n"
                         + timeRemoval);
@@ -206,7 +208,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             switch (intent.getAction()) {
                 // Clicked on the 'Start Session' button
                 case WIDGET_BUTTON_START:
-                    SessionsManager.saveEntry(context, Utils.getdateFormatted(new Date()));
+                    SessionsManager.saveEntry(context, DateUtils.getdateFormatted(new Date()));
                     break;
                 // Clicked on the 'Stop Session' button
                 case WIDGET_BUTTON_STOP:
@@ -214,12 +216,12 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     break;
                 // Clicked on the 'Start break' button
                 case WIDGET_BUTTON_START_BREAK:
-                    dbManager.createNewPause(dbManager.getLastRunningEntry().getId(), Utils.getdateFormatted(new Date()), "NOT SET YET", 1);
+                    dbManager.createNewPause(dbManager.getLastRunningEntry().getId(), DateUtils.getdateFormatted(new Date()), "NOT SET YET", 1);
                     // Cancel alarm until breaks are set as finished.
                     // Only then set a new alarm date
                     Log.d(TAG, "Cancelling alarm for entry: " + dbManager.getLastRunningEntry().getId());
                     SessionsAlarmsManager.cancelAlarm(context, dbManager.getLastRunningEntry().getId());
-                    SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
+                    SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), dbManager.getLastRunningEntry().getId());
                     break;
                 // Clicked on the 'Stop break' button
                 case WIDGET_BUTTON_STOP_BREAK:

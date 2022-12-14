@@ -1,8 +1,10 @@
 package com.lubenard.oring_reminder.custom_components;
 
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class RingSession {
@@ -14,6 +16,7 @@ public class RingSession {
 
     private long id;
     private String datePut;
+    private Calendar datePutCalendar;
     private String dateRemoved;
     private SessionStatus status;
     private int timeWeared;
@@ -30,13 +33,17 @@ public class RingSession {
         this.dateRemoved = dateRemoved;
         this.timeWeared = timeWeared;
 
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.setTime(DateUtils.getdateParsed(datePut));
+        this.datePutCalendar = calendarStart;
+
         if (isRunning == 1)
             this.status = SessionStatus.RUNNING;
         else
             this.status = SessionStatus.NOT_RUNNING;
 
         if (this.timeWeared == 0 && this.status == SessionStatus.NOT_RUNNING) {
-            this.timeWeared = (int)Utils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
+            this.timeWeared = (int) DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
         }
     }
 
@@ -57,14 +64,18 @@ public class RingSession {
     }
 
     public Calendar getDatePutCalendar() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(datePut));
-        return calendar;
+        return datePutCalendar;
     }
 
     public Calendar getDateRemovedCalendar() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(dateRemoved));
+        if (this.status == SessionStatus.RUNNING) {
+            Date date = new Date();
+            date.setTime(0);
+            calendar.setTime(date);
+        } else if (this.status == SessionStatus.NOT_RUNNING){
+            calendar.setTime(DateUtils.getdateParsed(dateRemoved));
+        }
         return calendar;
     }
 

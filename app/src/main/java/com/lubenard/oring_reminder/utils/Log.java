@@ -15,7 +15,7 @@ public class Log {
     public Log(Context context) {
         try {
             outputStreamWriter = new OutputStreamWriter(context.openFileOutput("logs.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(String.format("---------- App Start at %s ----------", Utils.getdateFormatted(new Date())));
+            outputStreamWriter.write(String.format("---------- App Start at %s ----------", DateUtils.getdateFormatted(new Date())));
         } catch (Exception e) {
             android.util.Log.e("Exception", "File opening failed: " + e);
         }

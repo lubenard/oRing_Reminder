@@ -13,6 +13,7 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class DatasFragment extends Fragment {
             lastEntryData = datas.get(datas.size() - 1).getDatePut().split(" ")[0];
             firstEntryData = datas.get(0).getDatePut().split(" ")[0];
 
-            int seconds = (int)Utils.getDateDiff(datas.get(0).getDatePut(), datas.get(datas.size() - 1).getDatePut(), TimeUnit.SECONDS);
+            int seconds = (int) DateUtils.getDateDiff(datas.get(0).getDatePut(), datas.get(datas.size() - 1).getDatePut(), TimeUnit.SECONDS);
             int weeks = seconds / 604800;
             int days = (seconds % 604800) / 86400;
             int hours = ((seconds % 604800) % 86400) / 3600;

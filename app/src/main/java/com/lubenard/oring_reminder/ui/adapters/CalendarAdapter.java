@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     public CalendarAdapter(FragmentActivity activity, CalendarFragment calendarFragment, Calendar firstSession) {
 
-        Log.d("CalendarItemAdapter", "firstSession say is " + Utils.getdateFormatted(firstSession.getTime()));
+        Log.d("CalendarItemAdapter", "firstSession say is " + DateUtils.getdateFormatted(firstSession.getTime()));
 
         monthList = new ArrayList<>();
 

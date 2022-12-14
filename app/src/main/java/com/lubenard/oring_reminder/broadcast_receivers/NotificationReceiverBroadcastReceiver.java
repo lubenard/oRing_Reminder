@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -30,7 +31,7 @@ public class NotificationReceiverBroadcastReceiver extends BroadcastReceiver {
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.HOUR_OF_DAY, 9);
                 Toast.makeText(context, context.getString(R.string.you_can_get_it_on_again) +
-                        Utils.getdateFormatted(calendar.getTime()), Toast.LENGTH_LONG).show();
+                        DateUtils.getdateFormatted(calendar.getTime()), Toast.LENGTH_LONG).show();
                 Utils.updateWidget(context);
             }
         }

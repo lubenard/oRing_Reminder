@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -172,13 +173,13 @@ public class EntryDetailsFragment extends Fragment {
                 Log.d(TAG, "Error: Already a running pause");
                 Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             } else if (entryDetails.getIsRunning()) {
-                String date = Utils.getdateFormatted(new Date());
+                String date = DateUtils.getdateFormatted(new Date());
                 long id = dbManager.createNewPause(entryId, date, "NOT SET YET", 1);
                 // Cancel alarm until breaks are set as finished.
                 // Only then set a new alarm date
                 Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
-                SessionsAlarmsManager.setBreakAlarm(context ,Utils.getdateFormatted(new Date()), entryId);
+                SessionsAlarmsManager.setBreakAlarm(context ,DateUtils.getdateFormatted(new Date()), entryId);
                 updatePauseList();
                 Utils.updateWidget(getContext());
             } else
@@ -237,9 +238,9 @@ public class EntryDetailsFragment extends Fragment {
         // OldTimeWeared is the time in minute between the starting of the entry and the current Date
         // Or, oldTimeWeared is the time between the start of the entry and it's pause
         if (entryDetails.getIsRunning())
-            oldTimeWeared = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+            oldTimeWeared = DateUtils.getDateDiff(entryDetails.getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
         else
-            oldTimeWeared = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES);
+            oldTimeWeared = DateUtils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES);
         long totalTimePause = 0;
         int newComputedTime;
 
@@ -249,7 +250,7 @@ public class EntryDetailsFragment extends Fragment {
             if (!pausesDatas.get(i).getIsRunning()) {
                 totalTimePause += pausesDatas.get(i).getTimeRemoved();
             } else {
-                long timeToRemove = Utils.getDateDiff(pausesDatas.get(i).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                long timeToRemove = DateUtils.getDateDiff(pausesDatas.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 totalTimePause += timeToRemove;
                 isThereAlreadyARunningPause = true;
             }
@@ -269,7 +270,7 @@ public class EntryDetailsFragment extends Fragment {
         Log.d(TAG, "New alarm date = " + newAlarmDate);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
+        calendar.setTime(DateUtils.getdateParsed(entryDetails.getDatePut()));
         calendar.add(Calendar.MINUTE, newAlarmDate);
         updateAbleToGetItOffUI(calendar);
     }
@@ -281,11 +282,11 @@ public class EntryDetailsFragment extends Fragment {
     private void updateAbleToGetItOffUI(Calendar calendar) {
         int texteRessourceWhenGetItOff;
 
-        long timeBeforeRemove = Utils.getDateDiff(new Date(), calendar.getTime(), TimeUnit.MINUTES);
+        long timeBeforeRemove = DateUtils.getDateDiff(new Date(), calendar.getTime(), TimeUnit.MINUTES);
         Log.d(TAG, "timeBeforeRemove = " + timeBeforeRemove);
 
-        String[] ableToGetItOffStringDate = Utils.getdateFormatted(calendar.getTime()).split(" ");
-        estimated_end_date.setText(Utils.convertDateIntoReadable(ableToGetItOffStringDate[0], false) + "\n" + ableToGetItOffStringDate[1]);
+        String[] ableToGetItOffStringDate = DateUtils.getdateFormatted(calendar.getTime()).split(" ");
+        estimated_end_date.setText(DateUtils.convertDateIntoReadable(ableToGetItOffStringDate[0], false) + "\n" + ableToGetItOffStringDate[1]);
         if (timeBeforeRemove >= 0)
             texteRessourceWhenGetItOff = R.string.in_about_entry_details;
         else {
@@ -318,7 +319,7 @@ public class EntryDetailsFragment extends Fragment {
             wornForTextView.setText(R.string.removed_during);
 
             TextView textView_date = view.findViewById(R.id.main_history_date);
-            textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0], false));
+            textView_date.setText(DateUtils.convertDateIntoReadable(dateRemoved[0], false));
 
             TextView textView_hour_from = view.findViewById(R.id.custom_view_date_weared_from);
             textView_hour_from.setText(dateRemoved[1]);
@@ -331,11 +332,11 @@ public class EntryDetailsFragment extends Fragment {
                 String[] datePut = pausesDatas.get(i).getEndDate().split(" ");
                 textView_hour_to.setText(datePut[1]);
                 if (!dateRemoved[0].equals(datePut[0]))
-                    textView_date.setText(Utils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + Utils.convertDateIntoReadable(datePut[0], false));
+                    textView_date.setText(DateUtils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + DateUtils.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                textView_worn_for.setText(Utils.convertTimeWeared(pausesDatas.get(i).getTimeRemoved()));
+                textView_worn_for.setText(DateUtils.convertTimeWeared(pausesDatas.get(i).getTimeRemoved()));
             } else {
-                long timeworn = Utils.getDateDiff(pausesDatas.get(i).getStartDate(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                long timeworn = DateUtils.getDateDiff(pausesDatas.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));
                 textView_worn_for.setText(String.format("%dh%02dm", timeworn / 60, timeworn % 60));
                 textView_hour_to.setText("Not set yet");
@@ -357,10 +358,10 @@ public class EntryDetailsFragment extends Fragment {
                             recomputeWearingTime();
                             if (entryDetails.getIsRunning()) {
                                 Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
+                                calendar.setTime(DateUtils.getdateParsed(entryDetails.getDatePut()));
                                 calendar.add(Calendar.MINUTE, newAlarmDate);
-                                Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + Utils.getdateFormatted(calendar.getTime()));
-                                SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), entryId, true);
+                                Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + DateUtils.getdateFormatted(calendar.getTime()));
+                                SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), entryId, true);
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
@@ -380,7 +381,7 @@ public class EntryDetailsFragment extends Fragment {
             // Load datas from the db and put them at the right place
             entryDetails = dbManager.getEntryDetails(entryId);
 
-            put.setText(Utils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0], false) + "\n" + entryDetails.getDatePut().split(" ")[1]);
+            put.setText(DateUtils.convertDateIntoReadable(entryDetails.getDatePut().split(" ")[0], false) + "\n" + entryDetails.getDatePut().split(" ")[1]);
 
             // Choose color if the timeWeared is enough or not
             // Depending of the timeWeared set in the settings
@@ -397,14 +398,14 @@ public class EntryDetailsFragment extends Fragment {
             // Or the endSession date
             Log.d(TAG, "Compute total time pause is " + SessionsManager.computeTotalTimePause(dbManager, entryId));
 
-            textview_total_time.setText(String.format("/ %s", Utils.convertTimeWeared(settingsManager.getWearingTimeInt() * 60)));
+            textview_total_time.setText(String.format("/ %s", DateUtils.convertTimeWeared(settingsManager.getWearingTimeInt() * 60)));
 
             total_breaks.setText(String.valueOf(pausesDatas.size()));
-            total_time_breaks.setText(Utils.convertTimeWeared(SessionsManager.computeTotalTimePause(dbManager, entryId)));
+            total_time_breaks.setText(DateUtils.convertTimeWeared(SessionsManager.computeTotalTimePause(dbManager, entryId)));
 
             // Display the datas relative to the session
             if (entryDetails.getIsRunning()) {
-                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
+                timeBeforeRemove = DateUtils.getDateDiff(entryDetails.getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
 
                 removed.setText(entryDetails.getDateRemoved());
                 textview_progress.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
@@ -415,16 +416,16 @@ public class EntryDetailsFragment extends Fragment {
                 stopSessionButton.setVisibility(View.VISIBLE);
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(Utils.getdateParsed(entryDetails.getDatePut()));
+                calendar.setTime(DateUtils.getdateParsed(entryDetails.getDatePut()));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
 
                 end_session.setVisibility(View.GONE);
                 estimated_end.setVisibility(View.VISIBLE);
             } else {
-                timeBeforeRemove = Utils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
+                timeBeforeRemove = DateUtils.getDateDiff(entryDetails.getDatePut(), entryDetails.getDateRemoved(), TimeUnit.MINUTES) - SessionsManager.computeTotalTimePause(dbManager, entryId);
                 Log.d(TAG, "TimeBeforeRemove is " + timeBeforeRemove);
-                removed.setText(Utils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0], false) + "\n" + entryDetails.getDateRemoved().split(" ")[1]);
+                removed.setText(DateUtils.convertDateIntoReadable(entryDetails.getDateRemoved().split(" ")[0], false) + "\n" + entryDetails.getDateRemoved().split(" ")[1]);
                 int time_spent_wearing = entryDetails.getTimeWeared();
                 if (time_spent_wearing < 60)
                     textview_progress.setText(entryDetails.getTimeWeared() + getString(R.string.minute_with_M_uppercase));

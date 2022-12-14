@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -284,9 +286,9 @@ public class BackupRestoreManager extends Activity{
                         if (isRunning == 1) {
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(Utils.getdateParsed(myParser.getAttributeValue(null, "dateTimePut")));
+                            calendar.setTime(DateUtils.getdateParsed(myParser.getAttributeValue(null, "dateTimePut")));
                             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(preferences.getString("myring_wearing_time", "15")));
-                            SessionsAlarmsManager.setAlarm(this, Utils.getdateFormatted(calendar.getTime()), lastEntryInsertedId, true);
+                            SessionsAlarmsManager.setAlarm(this, DateUtils.getdateFormatted(calendar.getTime()), lastEntryInsertedId, true);
                         }
                     } else {
                         Toast.makeText(this, R.string.bad_import_date_xml, Toast.LENGTH_SHORT).show();
@@ -504,12 +506,12 @@ public class BackupRestoreManager extends Activity{
                 if (!rawDatas.get(i).getIsRunning())
                     formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared()));
                 else
-                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                    formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 formattedDatas.add(String.valueOf(totalTimePauses));
                 if (!rawDatas.get(i).getIsRunning())
                     formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared() - totalTimePauses));
                 else
-                    formattedDatas.add(String.valueOf(Utils.getDateDiff(rawDatas.get(i).getDatePut(), Utils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
+                    formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
                 csvWriter.writeColumnsDatas(formattedDatas);
                 formattedDatas.clear();
             }

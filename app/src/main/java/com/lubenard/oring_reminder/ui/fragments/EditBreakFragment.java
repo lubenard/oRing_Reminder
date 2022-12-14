@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
 import android.text.method.KeyListener;
@@ -120,14 +122,14 @@ public class EditBreakFragment extends DialogFragment {
 
         Button fill_beginning = view.findViewById(R.id.prefill_beginning_pause);
         fill_beginning.setOnClickListener(v -> {
-            String[] currentDate = Utils.getdateFormatted(new Date()).split(" ");
+            String[] currentDate = DateUtils.getdateFormatted(new Date()).split(" ");
             pause_beginning_date.setText(currentDate[0]);
             pause_beginning_time.setText(currentDate[1]);
         });
 
         Button fill_end = view.findViewById(R.id.prefill_finish_pause);
         fill_end.setOnClickListener(v -> {
-            String[] currentDate = Utils.getdateFormatted(new Date()).split(" ");
+            String[] currentDate = DateUtils.getdateFormatted(new Date()).split(" ");
             pause_ending_date.setText(currentDate[0]);
             pause_ending_time.setText(currentDate[1]);
         });
@@ -208,9 +210,9 @@ public class EditBreakFragment extends DialogFragment {
                     } else {
                         //TODO: uncomment this method
                         //Calendar calendar = Calendar.getInstance();
-                        //calendar.setTime(Utils.getdateParsed(sessionDatas.getDatePut()));
+                        //calendar.setTime(DateUtils.getdateParsed(sessionDatas.getDatePut()));
                         //calendar.add(Calendar.MINUTE, newAlarmDate);
-                        //Log.d(TAG, "Setting alarm for entry: " + sessionDatas.getId() + " At: " + Utils.getdateFormatted(calendar.getTime()));
+                        //Log.d(TAG, "Setting alarm for entry: " + sessionDatas.getId() + " At: " + DateUtils.getdateFormatted(calendar.getTime()));
                         // Cancel break alarm is session is set as finished
                         if (new SettingsManager(context).getShouldSendNotifWhenBreakTooLong()) {
                             Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
@@ -219,7 +221,7 @@ public class EditBreakFragment extends DialogFragment {
                             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                             am.cancel(pendingIntent);
                         }
-                        //SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()), sessionDatas.getId(), true);
+                        //SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), sessionDatas.getId(), true);
                     }
                 }
                 if (isRunning == 1)

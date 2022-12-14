@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -75,8 +77,6 @@ public class EditEntryFragment extends DialogFragment {
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
     }
 
-
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -126,9 +126,9 @@ public class EditEntryFragment extends DialogFragment {
                         Utils.updateWidget(context);
                         // Recompute alarm if the entry already exist, but has no ending time
                         Calendar calendar = Calendar.getInstance();
-                        calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                        SessionsAlarmsManager.setAlarm(context, Utils.getdateFormatted(calendar.getTime()) , entryId,true);
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        calendar.add(Calendar.MINUTE, (int) DateUtils.getDateDiff(formattedDatePut, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                        SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()) , entryId,true);
+                        dismiss();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 1");
                         UiUtils.showToastBadFormattedDate(requireContext());
@@ -140,7 +140,7 @@ public class EditEntryFragment extends DialogFragment {
                         Utils.updateWidget(context);
                         // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
                         SessionsAlarmsManager.cancelAlarm(context, entryId);
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        dismiss();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 2");
                         UiUtils.showToastBadFormattedDate(requireContext());
@@ -155,12 +155,12 @@ public class EditEntryFragment extends DialogFragment {
                         Log.d(TAG, "DateFormat wrong check 3");
                         UiUtils.showToastBadFormattedDate(requireContext());
                     }
-                } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
+                } else if (DateUtils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
                     if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                         dbManager.createNewEntry(formattedDatePut, formattedDateRemoved, 0);
                         Utils.updateWidget(context);
                         // Get back to the last element in the fragment stack
-                        getActivity().getSupportFragmentManager().popBackStackImmediate();
+                        dismiss();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 4");
                         UiUtils.showToastBadFormattedDate(requireContext());
@@ -220,6 +220,7 @@ public class EditEntryFragment extends DialogFragment {
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(window.getAttributes());
+
         //This makes the dialog take up the full width
         lp.width = 1000;
         lp.height = WRAP_CONTENT;
@@ -231,14 +232,14 @@ public class EditEntryFragment extends DialogFragment {
     }
 
     private void preFillStartDatas() {
-        String[] datetime_formatted = Utils.getdateFormatted(new Date()).split(" ");
+        String[] datetime_formatted = DateUtils.getdateFormatted(new Date()).split(" ");
         new_entry_date_from.setText(datetime_formatted[0]);
         new_entry_time_from.setText(datetime_formatted[1]);
         computeTimeBeforeGettingItAgain();
     }
 
     private void preFillEndDatas() {
-        String[] datetime_formatted = Utils.getdateFormatted(new Date()).split(" ");
+        String[] datetime_formatted = DateUtils.getdateFormatted(new Date()).split(" ");
         new_entry_date_to.setText(datetime_formatted[0]);
         new_entry_time_to.setText(datetime_formatted[1]);
         computeTimeBeforeGettingItAgain();
@@ -266,14 +267,14 @@ public class EditEntryFragment extends DialogFragment {
 
         // If new_entry_datetime_from is valid but new_entry_datetime_to is not valid
         if (is_new_entry_datetime_to_valid == 0 && Utils.checkDateInputSanity(datetime_from) == 1) {
-            calendar.setTime(Utils.getdateParsed(datetime_from));
+            calendar.setTime(DateUtils.getdateParsed(datetime_from));
             calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt() + 9);
-            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + Utils.getdateFormatted(calendar.getTime()));
+            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + DateUtils.getdateFormatted(calendar.getTime()));
         } else if (is_new_entry_datetime_to_valid == 1) {
             // Only if new_entry_datetime_to is valid (meaning a session is supposed to have a end date)
-            calendar.setTime(Utils.getdateParsed(datetime_to));
+            calendar.setTime(DateUtils.getdateParsed(datetime_to));
             calendar.add(Calendar.HOUR_OF_DAY, 9);
-            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + Utils.getdateFormatted(calendar.getTime()));
+            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + DateUtils.getdateFormatted(calendar.getTime()));
         } else
             getItOnBeforeTextView.setText(R.string.not_enough_datas_to_compute_get_it_on);
     }

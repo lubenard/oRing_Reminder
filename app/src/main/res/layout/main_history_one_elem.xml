@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:orientation="vertical"
 	android:background="@drawable/rounded_corners_10">
 
@@ -10,7 +11,7 @@
 		android:textSize="16sp"
 		android:layout_marginVertical="7dp"
 		style="@style/base_text_all_wrap"
-		android:text="date_from" />
+		tools:text="date_from" />
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -30,10 +31,10 @@
 				android:text="@string/from" />
 
 			<TextView
-				android:id="@+id/custom_view_date_weared_from"
+				android:id="@+id/history_listview_item_hour_from"
 				style="@style/base_text_all_wrap"
 				android:textSize="16sp"
-				android:text="hour_from" />
+				tools:text="hour_from" />
 		</LinearLayout>
 
 		<LinearLayout
@@ -48,10 +49,10 @@
 				android:text="@string/to" />
 
 			<TextView
-				android:id="@+id/custom_view_date_weared_to"
+				android:id="@+id/history_listview_item_hour_to"
 				android:textSize="16sp"
 				style="@style/base_text_all_wrap"
-				android:text="hour_to" />
+				tools:text="hour_to" />
 		</LinearLayout>
 
 		<LinearLayout
@@ -68,10 +69,10 @@
 				android:text="@string/worn_for" />
 
 			<TextView
-				android:id="@+id/custom_view_date_time_weared"
+				android:id="@+id/history_listview_item_time_weared"
 				android:textSize="16sp"
 				style="@style/base_text_all_wrap"
-				android:text="worn_for" />
+				tools:text="worn_for" />
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

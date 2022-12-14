@@ -3,6 +3,7 @@ package com.lubenard.oring_reminder.ui.viewHolders;
 import android.content.Context;
 
 import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
 import android.util.Pair;
@@ -71,14 +72,14 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         for (int i = 0; i != sessions.size(); i++) {
             Log.d(TAG, "Adding session numero " + i + " to hashmap, with key: " + calendar.get(Calendar.DAY_OF_MONTH));
-            calendar.setTime(Utils.getdateParsed(sessions.get(i).getDatePut()));
+            calendar.setTime(DateUtils.getdateParsed(sessions.get(i).getDatePut()));
             Log.d(TAG, "calendar time is now " + calendar.getTime().getTime());
             mappedSessions.add(new Pair<>(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i)));
         }
 
         Calendar todayDate = Calendar.getInstance();
 
-        Log.d(TAG, "Lubenard: date say: " + Utils.getdateFormatted(date.getTime()) + ", todayDate say: " + Utils.getdateFormatted(todayDate.getTime()));
+        Log.d(TAG, "Lubenard: date say: " + DateUtils.getdateFormatted(date.getTime()) + ", todayDate say: " + DateUtils.getdateFormatted(todayDate.getTime()));
 
         if (date.get(Calendar.YEAR) == todayDate.get(Calendar.YEAR)
                 && date.get(Calendar.MONTH) == todayDate.get(Calendar.MONTH)) {
