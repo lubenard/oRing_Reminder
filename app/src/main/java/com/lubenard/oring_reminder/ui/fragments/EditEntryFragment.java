@@ -35,6 +35,7 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
+import com.lubenard.oring_reminder.utils.UiUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -74,36 +75,7 @@ public class EditEntryFragment extends DialogFragment {
         return inflater.inflate(R.layout.edit_entry_fragment, container, false);
     }
 
-    /**
-     * Open time picker
-     * @param filling_textview
-     */
-    private void openTimePicker(TextView filling_textview) {
-        // Get Current Time
-        final Calendar c = Calendar.getInstance();
-        int mHour = c.get(Calendar.HOUR_OF_DAY);
-        int mMinute = c.get(Calendar.MINUTE);
 
-        // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> filling_textview.setText(hourOfDay + ":" + minute + ":00"), mHour, mMinute, DateFormat.is24HourFormat(getContext()));
-            timePickerDialog.show();
-    }
-
-    /**
-     * Open Calendar picker
-     * @param filling_textview
-     */
-    private void openCalendarPicker(TextView filling_textview) {
-        // Get Current Date
-        final Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                (view, year, monthOfYear, dayOfMonth) -> filling_textview.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
-            datePickerDialog.show();
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -133,11 +105,11 @@ public class EditEntryFragment extends DialogFragment {
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
 
-        new_entry_datepicker_from.setOnClickListener(v -> openCalendarPicker(new_entry_date_from));
-        new_entry_timepicker_from.setOnClickListener(v -> openTimePicker(new_entry_time_from));
+        new_entry_datepicker_from.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_from));
+        new_entry_timepicker_from.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_from));
 
-        new_entry_datepicker_to.setOnClickListener(v -> openCalendarPicker(new_entry_date_to));
-        new_entry_timepicker_to.setOnClickListener(v -> openTimePicker(new_entry_time_to));
+        new_entry_datepicker_to.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_to));
+        new_entry_timepicker_to.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_to));
 
         view.findViewById(R.id.create_new_session_cancel).setOnClickListener(v -> dismiss());
         view.findViewById(R.id.create_new_session_save).setOnClickListener(v -> {
@@ -151,7 +123,7 @@ public class EditEntryFragment extends DialogFragment {
                 if (formattedDateRemoved.length() == 1 || formattedDateRemoved.equals("NOT SET")) {
                     if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                         dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-                        updateWidget(context);
+                        Utils.updateWidget(context);
                         // Recompute alarm if the entry already exist, but has no ending time
                         Calendar calendar = Calendar.getInstance();
                         calendar.add(Calendar.MINUTE, (int) Utils.getDateDiff(formattedDatePut, Utils.getdateFormatted(new Date()), TimeUnit.MINUTES));
@@ -159,39 +131,39 @@ public class EditEntryFragment extends DialogFragment {
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 1");
-                        showToastBadFormattedDate();
+                        UiUtils.showToastBadFormattedDate(requireContext());
                     }
                 } else {
                     if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                         dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
                         dbManager.endPause(entryId);
-                        updateWidget(context);
+                        Utils.updateWidget(context);
                         // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
                         SessionsAlarmsManager.cancelAlarm(context, entryId);
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 2");
-                        showToastBadFormattedDate();
+                        UiUtils.showToastBadFormattedDate(requireContext());
                     }
                 }
             } else {
                 if (formattedDateRemoved.length() == 1) {
                     if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
                         SessionsManager.insertNewEntry(context, formattedDatePut);
-                        updateWidget(context);
+                        Utils.updateWidget(context);
                     } else {
                         Log.d(TAG, "DateFormat wrong check 3");
-                        showToastBadFormattedDate();
+                        UiUtils.showToastBadFormattedDate(requireContext());
                     }
                 } else if (Utils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
                     if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
                         dbManager.createNewEntry(formattedDatePut, formattedDateRemoved, 0);
-                        updateWidget(context);
+                        Utils.updateWidget(context);
                         // Get back to the last element in the fragment stack
                         getActivity().getSupportFragmentManager().popBackStackImmediate();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 4");
-                        showToastBadFormattedDate();
+                        UiUtils.showToastBadFormattedDate(requireContext());
                     }
                 } else
                     // If the diff time is too short, trigger this error
@@ -272,6 +244,7 @@ public class EditEntryFragment extends DialogFragment {
         computeTimeBeforeGettingItAgain();
     }
 
+    //TODO: To move elsewhere
     /**
      * Recompute time for Textview saying when user should wear it again
      * This is computed in the following way:
@@ -303,25 +276,5 @@ public class EditEntryFragment extends DialogFragment {
             getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + Utils.getdateFormatted(calendar.getTime()));
         } else
             getItOnBeforeTextView.setText(R.string.not_enough_datas_to_compute_get_it_on);
-    }
-
-    //TODO: To move elsewhere
-    /**
-     * Instantly update the widget
-     * @param context
-     */
-    public static void updateWidget(Context context) {
-        //if (CurrentSessionWidgetProvider.isThereAWidget) {
-            Log.d(TAG, "Updating Widget");
-            Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
-            context.sendBroadcast(intent);
-        //}
-    }
-
-    /**
-     * Show toast if a date has been malformed
-     */
-    private void showToastBadFormattedDate() {
-        Toast.makeText(context, R.string.bad_date_format, Toast.LENGTH_SHORT).show();
     }
 }

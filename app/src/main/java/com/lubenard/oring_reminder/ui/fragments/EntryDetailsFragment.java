@@ -162,7 +162,7 @@ public class EntryDetailsFragment extends Fragment {
         stopSessionButton.setOnClickListener(view13 -> {
             dbManager.endSession(entryId);
             updateAllFragmentDatas(false);
-            EditEntryFragment.updateWidget(context);
+            Utils.updateWidget(context);
         });
 
         ImageButton pauseButton = view.findViewById(R.id.new_pause_button);
@@ -180,7 +180,7 @@ public class EntryDetailsFragment extends Fragment {
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
                 SessionsAlarmsManager.setBreakAlarm(context ,Utils.getdateFormatted(new Date()), entryId);
                 updatePauseList();
-                EditEntryFragment.updateWidget(getContext());
+                Utils.updateWidget(getContext());
             } else
                 Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
             return true;

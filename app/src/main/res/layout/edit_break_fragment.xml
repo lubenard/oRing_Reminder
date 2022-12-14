@@ -81,19 +81,17 @@
                 android:layout_width="145dp"
                 android:layout_height="match_parent"
                 android:ems="6"
-                android:inputType="none"
-                android:hint="@string/example_hint_start_date"
-                android:autofillHints="" />
+                android:digits="0123456789-"
+                android:hint="@string/example_hint_start_date" />
 
             <EditText
                 android:id="@+id/new_entry_hour_from"
-                android:layout_marginStart="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
                 android:ems="6"
-                android:inputType="none"
-                android:autofillHints=""
-                android:hint="@string/example_hint_start_time" />
+                android:hint="@string/example_hint_start_time"
+                android:digits="0123456789:"/>
 
             <ImageView
                 android:id="@+id/new_entry_timepicker_from"
@@ -156,8 +154,7 @@
                 android:layout_height="match_parent"
                 android:ems="6"
                 android:layout_marginStart="10dp"
-                android:inputType="none"
-                android:autofillHints=""
+                android:digits="0123456789:"
                 android:hint="@string/example_hint_end_hour" />
 
             <ImageView

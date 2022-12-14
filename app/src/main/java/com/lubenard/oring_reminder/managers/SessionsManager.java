@@ -130,7 +130,7 @@ public class SessionsManager {
                 } else {
                     SessionsAlarmsManager.cancelAlarm(context, session.getId());
                     SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), breakSession.getId());
-                    EditEntryFragment.updateWidget(context);
+                    Utils.updateWidget(context);
                 }
             }
             return true;
@@ -153,7 +153,7 @@ public class SessionsManager {
             Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
             SessionsAlarmsManager.cancelAlarm(context, lastRunningEntry.getId());
             SessionsAlarmsManager.setBreakAlarm(context, Utils.getdateFormatted(new Date()), lastRunningEntry.getId());
-            EditEntryFragment.updateWidget(context);
+            Utils.updateWidget(context);
         } else {
             Log.d(TAG, "Error: Already a running pause");
             Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();

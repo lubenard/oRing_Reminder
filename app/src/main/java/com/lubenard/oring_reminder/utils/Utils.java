@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 
+import com.lubenard.oring_reminder.CurrentSessionWidgetProvider;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroadcastReceiver;
@@ -246,6 +247,18 @@ public class Utils {
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
                 .setContentIntent(pi);
         mNotificationManager.notify(0, permNotifBuilder.build());
+    }
+
+    /**
+     * Instantly update the widget
+     * @param context
+     */
+    public static void updateWidget(Context context) {
+        //if (CurrentSessionWidgetProvider.isThereAWidget) {
+        Log.d(TAG, "Updating Widget");
+        Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
+        context.sendBroadcast(intent);
+        //}
     }
 
     /**

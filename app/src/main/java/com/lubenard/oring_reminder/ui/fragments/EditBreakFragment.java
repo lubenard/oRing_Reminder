@@ -39,6 +39,7 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
+import com.lubenard.oring_reminder.utils.UiUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -107,15 +108,15 @@ public class EditBreakFragment extends DialogFragment {
             }
         }
 
-        disableEditText(pause_beginning_date);
-        disableEditText(pause_ending_date);
-        disableEditText(pause_beginning_time);
-        disableEditText(pause_ending_time);
+        UiUtils.disableEditText(pause_beginning_date);
+        UiUtils.disableEditText(pause_ending_date);
+        UiUtils.disableEditText(pause_beginning_time);
+        UiUtils.disableEditText(pause_ending_time);
 
-        pause_beginning_date.setOnClickListener(v -> openCalendarPicker(pause_beginning_date));
-        pause_beginning_time.setOnClickListener(v -> openTimePicker(pause_beginning_time));
-        pause_ending_date.setOnClickListener(v -> openCalendarPicker(pause_ending_date));
-        pause_ending_time.setOnClickListener(v -> openTimePicker(pause_ending_time));
+        pause_beginning_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_beginning_date));
+        pause_beginning_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_beginning_time));
+        pause_ending_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_ending_date));
+        pause_ending_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_ending_time));
 
         Button fill_beginning = view.findViewById(R.id.prefill_beginning_pause);
         fill_beginning.setOnClickListener(v -> {
@@ -143,19 +144,19 @@ public class EditBreakFragment extends DialogFragment {
         manualEditButton.setOnClickListener(v -> {
             if (isManualEditEnabled) {
                 Log.d(TAG, "Disabling editTexts");
-                disableEditText(pause_beginning_date);
-                disableEditText(pause_ending_date);
-                disableEditText(pause_beginning_time);
-                disableEditText(pause_ending_time);
+                UiUtils.disableEditText(pause_beginning_date);
+                UiUtils.disableEditText(pause_ending_date);
+                UiUtils.disableEditText(pause_beginning_time);
+                UiUtils.disableEditText(pause_ending_time);
                 Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
 
                 isManualEditEnabled = false;
             } else {
                 Log.d(TAG, "Enabling editTexts");
-                enableEditText(pause_beginning_date);
-                enableEditText(pause_ending_date);
-                enableEditText(pause_beginning_time);
-                enableEditText(pause_ending_time);
+                UiUtils.enableEditText(pause_beginning_date);
+                UiUtils.enableEditText(pause_ending_date);
+                UiUtils.enableEditText(pause_beginning_time);
+                UiUtils.enableEditText(pause_ending_time);
                 Toast.makeText(requireContext(), R.string.manual_mode_enabled, Toast.LENGTH_SHORT).show();
                 isManualEditEnabled = true;
             }
@@ -227,46 +228,5 @@ public class EditBreakFragment extends DialogFragment {
                 EditEntryFragment.updateWidget(getContext());
             }*/
         });
-    }
-
-    /**
-     * Open time picker
-     * @param filling_textview
-     */
-    private void openTimePicker(TextView filling_textview) {
-        // Get Current Time
-        final Calendar c = Calendar.getInstance();
-        int mHour = c.get(Calendar.HOUR_OF_DAY);
-        int mMinute = c.get(Calendar.MINUTE);
-
-        // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> filling_textview.setText(hourOfDay + ":" + minute + ":00"), mHour, mMinute, DateFormat.is24HourFormat(requireContext()));
-        timePickerDialog.show();
-    }
-
-    private void enableEditText(EditText editText) {
-        editText.setFocusable(true);
-        editText.setFocusableInTouchMode(true);
-    }
-
-    private void disableEditText(EditText editText) {
-        editText.setFocusable(false);
-    }
-
-
-    /**
-     * Open Calendar picker
-     * @param filling_textview
-     */
-    private void openCalendarPicker(TextView filling_textview) {
-        // Get Current Date
-        final Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                (view, year, monthOfYear, dayOfMonth) -> filling_textview.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
-        datePickerDialog.show();
     }
 }

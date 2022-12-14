@@ -450,7 +450,7 @@ public class BackupRestoreManager extends Activity{
                 if (shouldBackupRestoreDatas)
                     restoreDatasFromXml(inputStream);
                 // TODO: HOTFIX ! I should not need to reopen a stream (at least i think so)
-                // TODO: Find a way to fix this.
+                // Find a way to fix this.
                 // Before this fix, the settings could not be restored
                 inputStream = getContentResolver().openInputStream(uri);
                 if (shouldBackupRestoreSettings)

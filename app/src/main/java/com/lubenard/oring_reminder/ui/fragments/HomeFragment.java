@@ -112,6 +112,7 @@ public class HomeFragment extends Fragment {
         updateDesign();
     }
 
+    // TODO: To move in SessionManager
     /**
      * Compute all pause time into interval
      * @param entryId entry for the wanted session
