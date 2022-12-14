@@ -191,4 +191,11 @@
     <string name="bottom_menu_settings">Settings</string>
     <string name="manual_mode_enabled">Manual mode enabled</string>
     <string name="manual_mode_disabled">Manual mode disabled</string>
+    <string name="mon">MON</string>
+    <string name="tus">TUS</string>
+    <string name="wed">WED</string>
+    <string name="thu">THU</string>
+    <string name="fry">FRY</string>
+    <string name="sat">SAT</string>
+    <string name="sun">SUN</string>
 </resources>

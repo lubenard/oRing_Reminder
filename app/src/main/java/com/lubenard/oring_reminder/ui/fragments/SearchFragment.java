@@ -15,12 +15,12 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.ui.adapters.CustomListSearchAdapter;
+import com.lubenard.oring_reminder.ui.adapters.ListSearchAdapter;
 
 import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
-    private CustomListSearchAdapter adapter;
+    private ListSearchAdapter adapter;
     private ArrayList<RingSession> dataModels;
     private ListView listView;
 
@@ -40,7 +40,7 @@ public class SearchFragment extends Fragment {
     private void updateResultList(ArrayList<RingSession> pausesDatas) {
         dataModels.clear();
         dataModels.addAll(pausesDatas);
-        adapter = new CustomListSearchAdapter(dataModels, getContext());
+        adapter = new ListSearchAdapter(dataModels, getContext());
         listView.setAdapter(adapter);
     }
 

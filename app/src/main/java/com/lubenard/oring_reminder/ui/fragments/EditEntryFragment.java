@@ -112,12 +112,14 @@ public class EditEntryFragment extends DialogFragment {
         new_entry_timepicker_to.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_to));
 
         view.findViewById(R.id.create_new_session_cancel).setOnClickListener(v -> dismiss());
+
         view.findViewById(R.id.create_new_session_save).setOnClickListener(v -> {
             String formattedDatePut = new_entry_date_from.getText().toString() + " " + new_entry_time_from.getText().toString();
             String formattedDateRemoved = new_entry_date_to.getText().toString() + " " + new_entry_time_to.getText().toString();
 
             Log.d(TAG, "formattedDatePut: '" + formattedDatePut + "' formattedDateRemoved: '" + formattedDateRemoved + "'");
 
+            // TODO: Refactor this part
             // If entry already exist in the db.
             if (entryId != -1) {
                 if (formattedDateRemoved.length() == 1 || formattedDateRemoved.equals("NOT SET")) {
@@ -169,7 +171,6 @@ public class EditEntryFragment extends DialogFragment {
                     // If the diff time is too short, trigger this error
                     Toast.makeText(context, R.string.error_edit_entry_date, Toast.LENGTH_SHORT).show();
             }
-            dismiss();
         });
 
         // Fill datas into new fields

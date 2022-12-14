@@ -60,7 +60,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         calendarMonth.setText(String.format("%s %d", date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), date.get(Calendar.YEAR)));
 
-        int calendarOffset = getIndexOfFirstDayInMonth(date);
+        int calendarOffset = getIndexOfFirstDayInMonth(context, date);
 
         ArrayList<String> num = listOfDatesInMonth(date, calendarOffset);
 
@@ -111,10 +111,13 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
         return (list);
     }
 
-    int getIndexOfFirstDayInMonth(Calendar currentDate) {
+    int getIndexOfFirstDayInMonth(Context context, Calendar currentDate) {
         Log.d(TAG, "currentDate: " + currentDate);
 
-        String[] daysOfWeek = { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
+        String[] daysOfWeek = {context.getString(R.string.mon), context.getString(R.string.tus),
+                                context.getString(R.string.wed), context.getString(R.string.thu),
+                                context.getString(R.string.fry), context.getString(R.string.sat),
+                                context.getString(R.string.sun)};
 
         String day = new SimpleDateFormat("EEE").format(currentDate.getTime()).toUpperCase();
         return Arrays.asList(daysOfWeek).indexOf(day);
