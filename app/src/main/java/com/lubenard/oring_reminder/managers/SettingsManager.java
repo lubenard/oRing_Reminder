@@ -18,7 +18,6 @@ public class SettingsManager {
     private String language;
     private Boolean isNotifChannelCreated;
     private Boolean shouldPreventIfNoSessionStartedToday;
-    private Boolean shouldPreventIfOneSessionAlreadyRunning;
     private String shouldPreventIfNoSessionStartedTodayDate;
     private Boolean shouldSendNotifWhenSessionIsOver;
     private Boolean shouldSendNotifWhenBreakTooLong;
@@ -47,8 +46,6 @@ public class SettingsManager {
 
         wearing_time = sharedPreferences.getString("myring_wearing_time", "15");
         Log.d(TAG, "New wearing time: " + wearing_time);
-
-        shouldPreventIfOneSessionAlreadyRunning = sharedPreferences.getBoolean("myring_prevent_me_when_started_session", true);
 
         shouldSendNotifWhenBreakTooLong = sharedPreferences.getBoolean("myring_prevent_me_when_pause_too_long", false);
         shouldSendNotifWhenBreakTooLongDate = sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0);
@@ -97,10 +94,6 @@ public class SettingsManager {
 
     public int getShouldSendNotifWhenBreakTooLongDate() {
         return shouldSendNotifWhenBreakTooLongDate;
-    }
-
-    public boolean getShouldPreventIfOneSessionAlreadyRunning() {
-        return shouldPreventIfOneSessionAlreadyRunning;
     }
 
     public boolean getShouldPreventIfNoSessionStartedToday() {

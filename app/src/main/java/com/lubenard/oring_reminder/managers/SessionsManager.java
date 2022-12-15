@@ -35,15 +35,11 @@ public class SessionsManager {
      * @param formattedDatePut formatted using utils tools string from date
      */
     public static void insertNewEntry(Context context, String formattedDatePut) {
-
         DbManager dbManager = MainActivity.getDbManager();
 
-        SettingsManager settingsManager = new SettingsManager(context);
-
-        boolean warnUserAlreadyRunningSession = settingsManager.getShouldPreventIfOneSessionAlreadyRunning();
         HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();
 
-        if (!runningSessions.isEmpty() && warnUserAlreadyRunningSession) {
+        if (!runningSessions.isEmpty()) {
             new AlertDialog.Builder(context).setTitle(R.string.alertdialog_multiple_running_session_title)
                     .setMessage(R.string.alertdialog_multiple_running_session_body)
                     .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, (dialog, which) -> {

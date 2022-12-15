@@ -196,9 +196,11 @@ public class BackupRestoreManager extends Activity{
             xmlWriter.writeText(String.valueOf(preferences.getBoolean("myring_send_notif_when_session_over", true)));
             xmlWriter.endEntity();
 
+            /*
             xmlWriter.writeEntity("myring_prevent_me_when_started_session");
             xmlWriter.writeText(String.valueOf(preferences.getBoolean("myring_prevent_me_when_started_session", true)));
             xmlWriter.endEntity();
+            */
 
             xmlWriter.writeEntity("myring_prevent_me_when_no_session_started_for_today");
             xmlWriter.writeText(String.valueOf(preferences.getBoolean("myring_prevent_me_when_no_session_started_for_today", false)));
@@ -358,7 +360,7 @@ public class BackupRestoreManager extends Activity{
                         case "myring_prevent_me_when_started_session":
                             myParser.next();
                             Log.d(TAG, "myring_prevent_me_when_started_session setting = " + myParser.getText());
-                            preferences.edit().putBoolean("myring_prevent_me_when_started_session", Boolean.parseBoolean(myParser.getText())).apply();
+                            Log.d(TAG, "Option has been deprecated, ignoring");
                             break;
                         case "myring_prevent_me_when_no_session_started_for_today":
                             myParser.next();
