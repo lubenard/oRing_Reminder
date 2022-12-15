@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="2dp"
-                    android:text="break_number"
+                    tools:text="break_number"
                     android:textSize="17dp" />
 
                 <TextView
@@ -227,7 +227,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="2dp"
-                    android:text="total_break_time"
+                    tools:text="total_break_time"
                     android:textSize="17dp" />
 
             </LinearLayout>
@@ -253,8 +253,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:text="Pauses:"
-                    android:textSize="30dp" />
+                    android:text="@string/breaks"
+                    android:textSize="30dp"
+                    tools:text="Pauses:"/>
 
                 <View
                     android:layout_width="0dp"

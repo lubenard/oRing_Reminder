@@ -198,4 +198,10 @@
     <string name="fry">FRY</string>
     <string name="sat">SAT</string>
     <string name="sun">SUN</string>
+    <string name="manual_edit_icon">Manual edit icon</string>
+    <string name="new_date">New date:</string>
+    <string name="breaks">Breaks:</string>
+    <string name="link_garcon_website">garcon.link</string>
+    <string name="link_planning_familial_website">planning-familial.org</string>
+    <string name="link_love_health_website">https://www.love-health-center.org/media/ecrit/carnet-dobservation-cycles-masculins/</string>
 </resources>

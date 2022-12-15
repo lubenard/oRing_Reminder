@@ -9,13 +9,14 @@
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
 		android:textSize="20dp"
-		android:text="New date: " />
+		android:text="@string/new_date" />
 
 	<EditText
 		android:id="@+id/spermogram_new_date"
 		style="@style/base_text_all_wrap"
 		android:ems="6"
 		android:inputType="date"
+		android:layout_marginStart="3dp"
 		android:digits="0123456789-"
 		android:layout_gravity="center"
 		android:hint="Ex: 2020-03-30" />

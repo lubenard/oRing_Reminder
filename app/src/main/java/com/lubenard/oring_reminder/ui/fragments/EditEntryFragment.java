@@ -180,11 +180,11 @@ public class EditEntryFragment extends DialogFragment {
             new_entry_date_from.setText(data.getDatePut().split(" ")[0]);
             new_entry_time_from.setText(data.getDatePut().split(" ")[1]);
 
-            new_entry_date_to.setText(data.getDateRemoved().split(" ")[0]);
-            new_entry_time_to.setText(data.getDateRemoved().split(" ")[1]);
-            getActivity().setTitle(R.string.action_edit);
-        } else
-            getActivity().setTitle(R.string.create_new_entry);
+            if (!data.getIsRunning()) {
+                new_entry_date_to.setText(data.getDateRemoved().split(" ")[0]);
+                new_entry_time_to.setText(data.getDateRemoved().split(" ")[1]);
+            }
+        }
 
         auto_from_button.setOnClickListener(view1 -> {
             preFillStartDatas();
@@ -218,7 +218,7 @@ public class EditEntryFragment extends DialogFragment {
             }
         });
 
-        Window window = getDialog().getWindow();
+        Window window = requireDialog().getWindow();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(window.getAttributes());
 

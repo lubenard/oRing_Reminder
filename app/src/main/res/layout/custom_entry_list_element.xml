@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:focusable="true"
     android:clickable="true"
@@ -21,7 +22,7 @@
                 <TextView
                 android:id="@+id/custom_view_date_weared_from"
                 style="@style/base_text_all_wrap"
-                android:text="date_from" />
+                tools:text="date_from" />
         </LinearLayout>
 
         <LinearLayout
@@ -37,7 +38,7 @@
                 <TextView
                     android:id="@+id/custom_view_date_weared_to"
                     style="@style/base_text_all_wrap"
-                    android:text="date_from" />
+                    tools:text="date_from" />
         </LinearLayout>
 
         <LinearLayout
@@ -53,6 +54,6 @@
                 <TextView
                     android:id="@+id/custom_view_date_time_weared"
                     style="@style/base_text_all_wrap"
-                    android:text="weared_for" />
+                    tools:text="weared_for" />
         </LinearLayout>
 </LinearLayout>

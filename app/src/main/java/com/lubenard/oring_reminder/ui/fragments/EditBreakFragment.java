@@ -76,7 +76,7 @@ public class EditBreakFragment extends DialogFragment {
         Context context = requireContext();
 
         // Fix widget to bottom and makes the dialog take up the full width
-        Window window = getDialog().getWindow();
+        Window window = requireDialog().getWindow();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(window.getAttributes());
         lp.width = 1000;

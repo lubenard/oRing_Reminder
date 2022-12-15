@@ -9,25 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:autoLink="web"
-        android:text="garcon.link" />
+        android:text="@string/link_garcon_website" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:autoLink="web"
-        android:text="planning-familial.org" />
+        android:text="@string/link_planning_familial_website" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:autoLink="web"
-        android:text="https://www.love-health-center.org/media/ecrit/carnet-dobservation-cycles-masculins/" />
+        android:text="@string/link_love_health_website" />
 </LinearLayout>
