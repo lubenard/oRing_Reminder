@@ -91,7 +91,13 @@ public class EntryDetailsFragment extends Fragment {
                     Bundle bundle2 = new Bundle();
                     bundle2.putLong("entryId", entryId);
                     fragment.setArguments(bundle2);
-                    fragment.show(requireActivity().getSupportFragmentManager(), null);
+                    getChildFragmentManager().setFragmentResultListener("EditEntryFragmentResult", getViewLifecycleOwner(), (requestKey, bundle1) -> {
+                        boolean result = bundle1.getBoolean("shouldUpdateParent", true);
+                        Log.d(TAG, "got result from fragment: " + result);
+                        if (result)
+                            updateAllFragmentDatas(true);
+                    });
+                    fragment.show(getChildFragmentManager(), null);
                     return true;
                 case R.id.action_delete_entry:
                     // Warn user then delete entry in the db

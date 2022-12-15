@@ -74,6 +74,8 @@ public class SessionsAlarmsManager {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(DateUtils.getdateParsed(alarmDate));
 
+        Log.d(TAG, "Setting alarm for " + DateUtils.getCalendarParsed(calendar));
+
         if (SDK_INT < Build.VERSION_CODES.M)
             am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         else

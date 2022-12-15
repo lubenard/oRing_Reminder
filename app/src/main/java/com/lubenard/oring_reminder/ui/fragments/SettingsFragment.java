@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -56,6 +57,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         activity = getActivity();
         fragmentManager = getActivity().getSupportFragmentManager();
         settingsManager = MainActivity.getSettingsManager();
+
+        ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         activity.setTitle(R.string.action_settings);
 

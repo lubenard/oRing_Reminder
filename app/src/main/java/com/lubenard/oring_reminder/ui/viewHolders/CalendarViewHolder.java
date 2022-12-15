@@ -116,7 +116,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         String[] daysOfWeek = {context.getString(R.string.mon), context.getString(R.string.tus),
                                 context.getString(R.string.wed), context.getString(R.string.thu),
-                                context.getString(R.string.fry), context.getString(R.string.sat),
+                                context.getString(R.string.fri), context.getString(R.string.sat),
                                 context.getString(R.string.sun)};
 
         String day = new SimpleDateFormat("EEE").format(currentDate.getTime()).toUpperCase();

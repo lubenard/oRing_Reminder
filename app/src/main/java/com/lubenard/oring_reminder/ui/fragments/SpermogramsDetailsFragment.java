@@ -98,7 +98,7 @@ public class SpermogramsDetailsFragment extends Fragment {
                 });
                 builder.setView(customLayout);
                 builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    if (Utils.checkDateInputSanity(textview_newdate.getText().toString()) == 1) {
+                    if (Utils.isDateSane(textview_newdate.getText().toString())) {
                         dbManager.updateSpermogram(entryId, textview_newdate.getText().toString());
                         // Used to refresh the date
                         date.setText(getContext().getString(R.string.added_the) + textview_newdate.getText().toString());

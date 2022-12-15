@@ -86,7 +86,7 @@ public class EditEntryFragment extends DialogFragment {
 
         dbManager = MainActivity.getDbManager();
 
-        context = getContext();
+        context = requireContext();
 
         new_entry_date_from = view.findViewById(R.id.new_entry_date_from);
         new_entry_datepicker_from = view.findViewById(R.id.new_entry_datepicker_from);
@@ -119,53 +119,55 @@ public class EditEntryFragment extends DialogFragment {
 
             Log.d(TAG, "formattedDatePut: '" + formattedDatePut + "' formattedDateRemoved: '" + formattedDateRemoved + "'");
 
+            boolean isDateRemovedEmpty = formattedDateRemoved.length() == 1;
+
             // TODO: Refactor this part
             // If entry already exist in the db.
             if (entryId != -1) {
-                if (formattedDateRemoved.length() == 1 || formattedDateRemoved.equals("NOT SET")) {
-                    if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
+                if (isDateRemovedEmpty) {
+                    if (Utils.isDateSane(formattedDatePut)) {
+                        Log.d(TAG, "Okay 1");
                         dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
-                        Utils.updateWidget(context);
                         // Recompute alarm if the entry already exist, but has no ending time
                         Calendar calendar = Calendar.getInstance();
                         calendar.add(Calendar.MINUTE, (int) DateUtils.getDateDiff(formattedDatePut, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
                         SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()) , entryId,true);
-                        dismiss();
+                        dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 1");
-                        UiUtils.showToastBadFormattedDate(requireContext());
+                        UiUtils.showToastBadFormattedDate(context);
                     }
                 } else {
-                    if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
+                    if (Utils.isDateSane(formattedDatePut) && Utils.isDateSane(formattedDateRemoved)) {
+                        Log.d(TAG, "Okay 2");
                         dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
                         dbManager.endPause(entryId);
-                        Utils.updateWidget(context);
                         // if the entry has a ending time, just canceled it (mean it has been finished by user manually)
                         SessionsAlarmsManager.cancelAlarm(context, entryId);
-                        dismiss();
+                        dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 2");
-                        UiUtils.showToastBadFormattedDate(requireContext());
+                        UiUtils.showToastBadFormattedDate(context);
                     }
                 }
             } else {
-                if (formattedDateRemoved.length() == 1) {
-                    if (Utils.checkDateInputSanity(formattedDatePut) == 1) {
+                if (isDateRemovedEmpty) {
+                    if (Utils.isDateSane(formattedDatePut)) {
+                        Log.d(TAG, "Okay 3");
                         SessionsManager.insertNewEntry(context, formattedDatePut);
-                        Utils.updateWidget(context);
+                        dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 3");
-                        UiUtils.showToastBadFormattedDate(requireContext());
+                        UiUtils.showToastBadFormattedDate(context);
                     }
                 } else if (DateUtils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-                    if (Utils.checkDateInputSanity(formattedDatePut) == 1 && Utils.checkDateInputSanity(formattedDateRemoved) == 1) {
+                    if (Utils.isDateSane(formattedDatePut) && Utils.isDateSane(formattedDateRemoved)) {
+                        Log.d(TAG, "Okay 4");
                         dbManager.createNewEntry(formattedDatePut, formattedDateRemoved, 0);
-                        Utils.updateWidget(context);
-                        // Get back to the last element in the fragment stack
-                        dismiss();
+                        dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 4");
-                        UiUtils.showToastBadFormattedDate(requireContext());
+                        UiUtils.showToastBadFormattedDate(context);
                     }
                 } else
                     // If the diff time is too short, trigger this error
@@ -232,6 +234,14 @@ public class EditEntryFragment extends DialogFragment {
         preFillStartDatas();
     }
 
+    private void dismissDialog() {
+        Utils.updateWidget(context);
+        Bundle result = new Bundle();
+        result.putBoolean("shouldUpdateParent", true);
+        getParentFragmentManager().setFragmentResult("EditEntryFragmentResult", result);
+        dismiss();
+    }
+
     private void preFillStartDatas() {
         String[] datetime_formatted = DateUtils.getdateFormatted(new Date()).split(" ");
         new_entry_date_from.setText(datetime_formatted[0]);
@@ -262,16 +272,16 @@ public class EditEntryFragment extends DialogFragment {
 
         Log.d(TAG, "datetime_from is " + datetime_from + " datetime_to is " + datetime_to);
 
-        int is_new_entry_datetime_to_valid = Utils.checkDateInputSanity(datetime_to);
+        boolean is_new_entry_datetime_to_valid = Utils.isDateSane(datetime_to);
 
         SettingsManager settingsManager = new SettingsManager(context);
 
         // If new_entry_datetime_from is valid but new_entry_datetime_to is not valid
-        if (is_new_entry_datetime_to_valid == 0 && Utils.checkDateInputSanity(datetime_from) == 1) {
+        if (!is_new_entry_datetime_to_valid && Utils.isDateSane(datetime_from)) {
             calendar.setTime(DateUtils.getdateParsed(datetime_from));
             calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt() + 9);
             getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " " + DateUtils.getdateFormatted(calendar.getTime()));
-        } else if (is_new_entry_datetime_to_valid == 1) {
+        } else if (is_new_entry_datetime_to_valid) {
             // Only if new_entry_datetime_to is valid (meaning a session is supposed to have a end date)
             calendar.setTime(DateUtils.getdateParsed(datetime_to));
             calendar.add(Calendar.HOUR_OF_DAY, 9);

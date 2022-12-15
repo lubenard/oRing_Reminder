@@ -288,12 +288,18 @@ public class HomeFragment extends Fragment {
     /**
      * Launch the new Entry fragment, and specify we do not want to update a entry
      */
-    private static void startEditEntryFragment() {
+    private void startEditEntryFragment() {
         EditEntryFragment fragment = new EditEntryFragment();
         Bundle bundle = new Bundle();
         bundle.putLong("entryId", -1);
         fragment.setArguments(bundle);
-        fragment.show(activity.getSupportFragmentManager(), null);
+        getChildFragmentManager().setFragmentResultListener("EditEntryFragmentResult", this, (requestKey, bundle1) -> {
+            boolean result = bundle1.getBoolean("shouldUpdateParent", true);
+            Log.d(TAG, "got result from fragment: " + result);
+            if (result)
+                updateDesign();
+        });
+        fragment.show(getChildFragmentManager(), null);
     }
 
     /**

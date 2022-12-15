@@ -78,10 +78,10 @@ public class Utils {
      * @return 1 if the string is valid, else 0
      */
     //TODO: Refactor this method to make return boolean
-    public static int checkDateInputSanity(String text) {
+    public static boolean isDateSane(String text) {
         if (text.equals("") || text.equals("NOT SET YET") || DateUtils.getdateParsed(text) == null)
-            return 0;
-        return 1;
+            return false;
+        return true;
     }
 
     /**

@@ -280,7 +280,7 @@ public class BackupRestoreManager extends Activity{
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("session")) {
                     // Check if we have the minimum infos about the session to recreate
                     if (myParser.getAttributeValue(null, "dateTimePut") != null && myParser.getAttributeValue(null, "dateTimeRemoved") != null
-                    && Utils.checkDateInputSanity(myParser.getAttributeValue(null, "dateTimePut")) == 1) {
+                    && Utils.isDateSane(myParser.getAttributeValue(null, "dateTimePut"))) {
                         isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
                         lastEntryInsertedId = dbManager.createNewEntry(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
                         if (isRunning == 1) {

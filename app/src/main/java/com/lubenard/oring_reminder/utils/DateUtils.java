@@ -35,6 +35,10 @@ public class DateUtils {
         }
     }
 
+    public static String getCalendarParsed(Calendar calendar) {
+        return getdateFormatted(calendar.getTime());
+    }
+
     /**
      * Compute the diff between two given dates
      * The formula is date2 - date1
