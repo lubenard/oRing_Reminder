@@ -345,7 +345,6 @@ public class EntryDetailsFragment extends Fragment {
                 long timeworn = DateUtils.getDateDiff(pausesDatas.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));
                 textView_worn_for.setText(String.format("%dh%02dm", timeworn / 60, timeworn % 60));
-                textView_hour_to.setText("Not set yet");
             }
 
             view.setOnClickListener(clickInLinearLayout());
@@ -354,7 +353,7 @@ public class EntryDetailsFragment extends Fragment {
                         .setMessage(R.string.alertdialog_delete_contact_body)
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             int position = Integer.parseInt(v.getTag().toString());
-                            BreakSession object = (BreakSession) pausesDatas.get(position);
+                            BreakSession object = pausesDatas.get(position);
                             Log.d(TAG, "pauseDatas size ?? " + pausesDatas.size());
                             pausesDatas.remove(object);
                             Log.d(TAG, "pauseDatas size " + pausesDatas.size());

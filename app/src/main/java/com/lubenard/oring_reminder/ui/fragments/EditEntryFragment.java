@@ -110,10 +110,10 @@ public class EditEntryFragment extends DialogFragment {
         UiUtils.disableEditText(new_entry_date_to);
         UiUtils.disableEditText(new_entry_time_to);
 
-        new_entry_date_from.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_from));
-        new_entry_time_from.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_from));
-        new_entry_date_to.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_to));
-        new_entry_time_to.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_to));
+        new_entry_date_from.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_from, true));
+        new_entry_time_from.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_from, true));
+        new_entry_date_to.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_to, true));
+        new_entry_time_to.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_to, true));
 
         ImageButton manualEditButton = view.findViewById(R.id.manual_edit_session);
         manualEditButton.setOnClickListener(v -> {

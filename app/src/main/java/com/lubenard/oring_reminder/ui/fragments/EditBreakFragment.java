@@ -103,10 +103,14 @@ public class EditBreakFragment extends DialogFragment {
                 String[] startDateSplitted = pausesDatas.getStartDate().split(" ");
                 String[] endDateSplitted = pausesDatas.getEndDate().split(" ");
 
+                Log.d(TAG, "EndDate is " + pausesDatas.getEndDate());
+
                 pause_beginning_date.setText(startDateSplitted[0]);
                 pause_beginning_time.setText(startDateSplitted[1]);
-                pause_ending_date.setText(endDateSplitted[0]);
-                pause_ending_date.setText(endDateSplitted[1]);
+                if (!pausesDatas.getIsRunning()) {
+                    pause_ending_date.setText(endDateSplitted[0]);
+                    pause_ending_time.setText(endDateSplitted[1]);
+                }
             }
         }
 
@@ -115,10 +119,10 @@ public class EditBreakFragment extends DialogFragment {
         UiUtils.disableEditText(pause_beginning_time);
         UiUtils.disableEditText(pause_ending_time);
 
-        pause_beginning_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_beginning_date));
-        pause_beginning_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_beginning_time));
-        pause_ending_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_ending_date));
-        pause_ending_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_ending_time));
+        pause_beginning_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_beginning_date, true));
+        pause_beginning_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_beginning_time, true));
+        pause_ending_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_ending_date, true));
+        pause_ending_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_ending_time, true));
 
         Button fill_beginning = view.findViewById(R.id.prefill_beginning_pause);
         fill_beginning.setOnClickListener(v -> {

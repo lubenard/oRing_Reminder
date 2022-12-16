@@ -130,4 +130,12 @@ public class DateUtils {
     public static void setAppLocale(String localeCode) {
         current_language = localeCode;
     }
+
+    public static Date getTimeParsed(String toString) {
+        try {
+            return new SimpleDateFormat("HH:mm:ss").parse(toString);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
 }
