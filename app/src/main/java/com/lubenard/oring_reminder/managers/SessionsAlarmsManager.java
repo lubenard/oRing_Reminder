@@ -65,7 +65,7 @@ public class SessionsAlarmsManager {
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
                 .putExtra("action", 1)
                 .putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, Utils.getIntentMutableFlag());
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
         if (cancelOldAlarm)
@@ -91,7 +91,7 @@ public class SessionsAlarmsManager {
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
                 .putExtra("action", 1)
                 .putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, Utils.getIntentMutableFlag());
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
         am.cancel(pendingIntent);
     }

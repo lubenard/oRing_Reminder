@@ -57,10 +57,7 @@ public class EditEntryFragment extends DialogFragment {
     private EditText new_entry_date_to;
     private EditText new_entry_time_to;
 
-    private ImageButton new_entry_datepicker_from;
-    private ImageButton new_entry_timepicker_from;
-    private ImageButton new_entry_datepicker_to;
-    private ImageButton new_entry_timepicker_to;
+    private boolean isManualEditEnabled = false;
 
     private TextView getItOnBeforeTextView;
 
@@ -89,29 +86,56 @@ public class EditEntryFragment extends DialogFragment {
         context = requireContext();
 
         new_entry_date_from = view.findViewById(R.id.new_entry_date_from);
-        new_entry_datepicker_from = view.findViewById(R.id.new_entry_datepicker_from);
 
         new_entry_time_from = view.findViewById(R.id.new_entry_hour_from);
-        new_entry_timepicker_from = view.findViewById(R.id.new_entry_timepicker_from);
 
         new_entry_date_to = view.findViewById(R.id.new_entry_date_to);
-        new_entry_datepicker_to = view.findViewById(R.id.new_entry_datepicker_to);
 
         new_entry_time_to = view.findViewById(R.id.new_entry_hour_to);
-        new_entry_timepicker_to =view.findViewById(R.id.new_entry_timepicker_to);
 
         getItOnBeforeTextView = view.findViewById(R.id.get_it_on_before);
 
         Button auto_from_button = view.findViewById(R.id.new_entry_auto_date_from);
         Button new_entry_auto_date_to = view.findViewById(R.id.new_entry_auto_date_to);
 
-        new_entry_datepicker_from.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_from));
-        new_entry_timepicker_from.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_from));
+        view.findViewById(R.id.create_new_session_cancel).setOnClickListener(v -> {
+            Bundle result = new Bundle();
+            result.putBoolean("shouldUpdateParent", false);
+            getParentFragmentManager().setFragmentResult("EditEntryFragmentResult", result);
+            dismiss();
+        });
 
-        new_entry_datepicker_to.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_to));
-        new_entry_timepicker_to.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_to));
+        UiUtils.disableEditText(new_entry_date_from);
+        UiUtils.disableEditText(new_entry_time_from);
+        UiUtils.disableEditText(new_entry_date_to);
+        UiUtils.disableEditText(new_entry_time_to);
 
-        view.findViewById(R.id.create_new_session_cancel).setOnClickListener(v -> dismiss());
+        new_entry_date_from.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_from));
+        new_entry_time_from.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_from));
+        new_entry_date_to.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_to));
+        new_entry_time_to.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_to));
+
+        ImageButton manualEditButton = view.findViewById(R.id.manual_edit_session);
+        manualEditButton.setOnClickListener(v -> {
+            if (isManualEditEnabled) {
+                Log.d(TAG, "Disabling editTexts");
+                UiUtils.disableEditText(new_entry_date_from);
+                UiUtils.disableEditText(new_entry_time_from);
+                UiUtils.disableEditText(new_entry_date_to);
+                UiUtils.disableEditText(new_entry_time_to);
+                Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
+
+                isManualEditEnabled = false;
+            } else {
+                Log.d(TAG, "Enabling editTexts");
+                UiUtils.enableEditText(new_entry_date_from);
+                UiUtils.enableEditText(new_entry_time_from);
+                UiUtils.enableEditText(new_entry_date_to);
+                UiUtils.enableEditText(new_entry_time_to);
+                Toast.makeText(requireContext(), R.string.manual_mode_enabled, Toast.LENGTH_SHORT).show();
+                isManualEditEnabled = true;
+            }
+        });
 
         view.findViewById(R.id.create_new_session_save).setOnClickListener(v -> {
             String formattedDatePut = new_entry_date_from.getText().toString() + " " + new_entry_time_from.getText().toString();
@@ -186,6 +210,8 @@ public class EditEntryFragment extends DialogFragment {
                 new_entry_date_to.setText(data.getDateRemoved().split(" ")[0]);
                 new_entry_time_to.setText(data.getDateRemoved().split(" ")[1]);
             }
+        } else {
+            preFillStartDatas();
         }
 
         auto_from_button.setOnClickListener(view1 -> {
@@ -230,8 +256,6 @@ public class EditEntryFragment extends DialogFragment {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.setAttributes(lp);
         window.setGravity(Gravity.BOTTOM);
-
-        preFillStartDatas();
     }
 
     private void dismissDialog() {
