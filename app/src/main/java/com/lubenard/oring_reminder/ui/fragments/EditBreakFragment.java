@@ -155,7 +155,7 @@ public class EditBreakFragment extends DialogFragment {
                 UiUtils.disableEditText(pause_beginning_time);
                 UiUtils.disableEditText(pause_ending_time);
                 Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
-
+                Utils.hideKbd(context, getView().getRootView().getWindowToken());
                 isManualEditEnabled = false;
             } else {
                 Log.d(TAG, "Enabling editTexts");

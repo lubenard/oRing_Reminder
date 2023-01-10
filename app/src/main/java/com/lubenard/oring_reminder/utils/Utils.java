@@ -1,5 +1,7 @@
 package com.lubenard.oring_reminder.utils;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -7,7 +9,11 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
@@ -176,5 +182,10 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
             return PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE;
         return PendingIntent.FLAG_UPDATE_CURRENT;
+    }
+
+    public static void hideKbd(Context context, IBinder v) {
+        InputMethodManager inputMethodManager = (InputMethodManager)context.getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(v,0);
     }
 }

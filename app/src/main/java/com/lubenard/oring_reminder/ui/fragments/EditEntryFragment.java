@@ -124,7 +124,7 @@ public class EditEntryFragment extends DialogFragment {
                 UiUtils.disableEditText(new_entry_date_to);
                 UiUtils.disableEditText(new_entry_time_to);
                 Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
-
+                Utils.hideKbd(context, getView().getRootView().getWindowToken());
                 isManualEditEnabled = false;
             } else {
                 Log.d(TAG, "Enabling editTexts");
