@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.lubenard.oring_reminder.BuildConfig;
 import com.lubenard.oring_reminder.R;
 
 public class AboutFragment extends Fragment {
@@ -26,5 +28,7 @@ public class AboutFragment extends Fragment {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getActivity().setTitle(R.string.about_additional_software_licenses);
+
+        ((TextView)view.findViewById(R.id.app_version)).setText(BuildConfig.VERSION_NAME);
     }
 }

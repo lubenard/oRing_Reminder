@@ -397,10 +397,10 @@ public class BackupRestore extends Activity{
             int eventType = myParser.next();
             if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("app_version")) {
                 myParser.next();
-                if (myParser.getText().equals(getString(R.string.app_version)))
+                if (myParser.getText().equals(BuildConfig.VERSION_NAME))
                     Log.d(TAG, "Same app version !");
                 else
-                    Log.d(TAG, "Not same app version ! " + myParser.getText() + "/" + getString(R.string.app_version));
+                    Log.d(TAG, "Not same app version ! " + myParser.getText() + "/" + BuildConfig.VERSION_NAME);
             }
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
@@ -427,7 +427,7 @@ public class BackupRestore extends Activity{
                 // Write app version in xml export, for warning user if
                 // saves are imported from earlier version of the app
                 xmlWriter.writeEntity("app_version");
-                xmlWriter.writeText(getString(R.string.app_version));
+                xmlWriter.writeText(BuildConfig.VERSION_NAME);
                 xmlWriter.endEntity();
                 if (shouldBackupRestoreDatas)
                     saveDatasIntoXml(xmlWriter);
