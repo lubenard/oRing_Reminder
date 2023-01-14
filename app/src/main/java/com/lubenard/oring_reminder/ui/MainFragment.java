@@ -171,11 +171,11 @@ public class MainFragment extends Fragment {
                         .replace(android.R.id.content, new MySpermogramsFragment(), null)
                         .addToBackStack(null).commit();
                 return true;
-            case R.id.action_calculators:
+            /*case R.id.action_calculators:
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new CalculatorsFragment(), null)
                         .addToBackStack(null).commit();
-                return true;
+                return true;*/
             case R.id.action_datas:
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new DatasFragment(), null)

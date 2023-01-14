@@ -10,8 +10,8 @@ android {
         applicationId "com.lubenard.oring_reminder"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 13
-        versionName "2.0.3"
+        versionCode 14
+        versionName "2.0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
