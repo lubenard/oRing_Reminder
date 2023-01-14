@@ -72,7 +72,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         for (int i = 0; i != sessions.size(); i++) {
             Log.d(TAG, "Adding session numero " + i + " to hashmap, with key: " + calendar.get(Calendar.DAY_OF_MONTH));
-            calendar.setTime(DateUtils.getdateParsed(sessions.get(i).getDatePut()));
+            calendar.setTime(sessions.get(i).getDatePutCalendar().getTime());
             Log.d(TAG, "calendar time is now " + calendar.getTime().getTime());
             mappedSessions.add(new Pair<>(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i)));
         }

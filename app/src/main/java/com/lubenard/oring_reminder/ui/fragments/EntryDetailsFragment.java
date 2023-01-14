@@ -276,7 +276,7 @@ public class EntryDetailsFragment extends Fragment {
         Log.d(TAG, "New alarm date = " + newAlarmDate);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(DateUtils.getdateParsed(entryDetails.getDatePut()));
+        calendar.setTime(entryDetails.getDatePutCalendar().getTime());
         calendar.add(Calendar.MINUTE, newAlarmDate);
         updateAbleToGetItOffUI(calendar);
     }
@@ -363,7 +363,7 @@ public class EntryDetailsFragment extends Fragment {
                             recomputeWearingTime();
                             if (entryDetails.getIsRunning()) {
                                 Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(DateUtils.getdateParsed(entryDetails.getDatePut()));
+                                calendar.setTime(entryDetails.getDatePutCalendar().getTime());
                                 calendar.add(Calendar.MINUTE, newAlarmDate);
                                 Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + DateUtils.getdateFormatted(calendar.getTime()));
                                 SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), entryId, true);
@@ -421,7 +421,7 @@ public class EntryDetailsFragment extends Fragment {
                 stopSessionButton.setVisibility(View.VISIBLE);
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(DateUtils.getdateParsed(entryDetails.getDatePut()));
+                calendar.setTime(entryDetails.getDatePutCalendar().getTime());
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 updateAbleToGetItOffUI(calendar);
 

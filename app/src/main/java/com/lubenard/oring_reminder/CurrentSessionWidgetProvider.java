@@ -102,7 +102,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 wornFor -= totalTimePause;
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(DateUtils.getdateParsed(lastEntry.getDatePut()));
+                calendar.setTime(lastEntry.getDatePutCalendar().getTime());
                 calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt());
 
                 int textResourceWhenGetItOff;

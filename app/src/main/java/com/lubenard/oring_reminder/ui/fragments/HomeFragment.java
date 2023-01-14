@@ -342,7 +342,7 @@ public class HomeFragment extends Fragment {
             start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
 
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(DateUtils.getdateParsed(lastRunningEntry.getDatePut()));
+            calendar.setTime(lastRunningEntry.getDatePutCalendar().getTime());
             calendar.add(Calendar.HOUR_OF_DAY, MainActivity.getSettingsManager().getWearingTimeInt());
 
             String[] splittedDateEstimatedEnd = DateUtils.getdateFormatted(calendar.getTime()).split(" ");
