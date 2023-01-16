@@ -39,8 +39,8 @@ public class UiUtils {
         final Calendar c = Calendar.getInstance();
         int mHour;
         int mMinute;
-        if (showTextViewDate) {
-            String[] timePutSplitted = filling_textview.getText().toString().split(":");
+        String[] timePutSplitted = filling_textview.getText().toString().split(":");
+        if (showTextViewDate && timePutSplitted.length == 2) {
             mHour = Integer.parseInt(timePutSplitted[0]);
             mMinute = Integer.parseInt(timePutSplitted[1]);
         } else {
@@ -62,8 +62,8 @@ public class UiUtils {
         int mYear;
         int mMonth;
         int mDay;
-        if (showTextViewDate) {
-            String[] timePutSplitted = filling_textview.getText().toString().split("-");
+        String[] timePutSplitted = filling_textview.getText().toString().split("-");
+        if (showTextViewDate && timePutSplitted.length == 3) {
             mYear = Integer.parseInt(timePutSplitted[0]);
             mMonth = Integer.parseInt(timePutSplitted[1]);
             mDay = Integer.parseInt(timePutSplitted[2]);
@@ -74,7 +74,7 @@ public class UiUtils {
         }
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(context,
-                (view, year, monthOfYear, dayOfMonth) -> filling_textview.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
+                (view, year, monthOfYear, dayOfMonth) -> filling_textview.setText(year + "-" + ((monthOfYear < 10) ?  "0" : "") + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
         datePickerDialog.show();
     }
 }

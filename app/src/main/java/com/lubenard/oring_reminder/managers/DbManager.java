@@ -464,6 +464,10 @@ public class DbManager extends SQLiteOpenHelper {
         ArrayList<RingSession> datas = new ArrayList<>();
 
         String month = String.valueOf(date.get(Calendar.MONTH) + 1);
+
+         if (month.length() == 1)
+             month = "0" + month;
+
         String year = String.valueOf(date.get(Calendar.YEAR));
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableIsRunning, ringTableTimeWeared};

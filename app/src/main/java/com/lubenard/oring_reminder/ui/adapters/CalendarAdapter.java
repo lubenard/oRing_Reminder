@@ -26,6 +26,7 @@ import java.util.Calendar;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
+    private static final String TAG = "CalendarAdapter";
     private final ArrayList <Calendar> monthList;
     private Context context;
     private final FragmentActivity activity;
@@ -33,7 +34,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     public CalendarAdapter(FragmentActivity activity, CalendarFragment calendarFragment, Calendar firstSession) {
 
-        Log.d("CalendarItemAdapter", "firstSession say is " + DateUtils.getdateFormatted(firstSession.getTime()));
+        Log.d(TAG, "firstSession say is " + DateUtils.getdateFormatted(firstSession.getTime()));
 
         monthList = new ArrayList<>();
 
@@ -43,32 +44,32 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         Calendar todayDate = Calendar.getInstance();
 
         int diffYear = todayDate.get(Calendar.YEAR) - firstSession.get(Calendar.YEAR);
-        Log.d("CalendarItemAdapter", "diffYear is " + diffYear);
+        Log.d(TAG, "diffYear is " + diffYear);
         int diffMonth = diffYear * 12 + todayDate.get(Calendar.MONTH) - firstSession.get(Calendar.MONTH);
 
         diffMonth++;
 
-        Log.d("CalendarItemAdapter", "diffMonth is " + diffMonth);
+        Log.d(TAG, "diffMonth is " + diffMonth);
 
         int monthDiffCounter = firstSession.get(Calendar.MONTH);
         int yearCounter = firstSession.get(Calendar.YEAR);
 
-        Log.d("CalendarItemAdapter", "Before loop: " + monthDiffCounter + "/" + yearCounter);
+        Log.d(TAG, "Before loop: " + monthDiffCounter + "/" + yearCounter);
 
         for (int i = 0; i < diffMonth; i++) {
-            if (monthDiffCounter % 12 == 0) {
-                Log.d("CalendarItemAdapter", "Increasing year counter");
+            if (monthDiffCounter % 12 == 0 && i != 0) {
+                Log.d(TAG, "Increasing year counter");
                 monthDiffCounter = 0;
                 yearCounter++;
             }
-            Log.d("CalendarItemAdapter", "Creating item with datas " + monthDiffCounter + "/" + yearCounter);
+            Log.d(TAG, "Creating item with datas " + monthDiffCounter + "/" + yearCounter);
             Calendar calendarItem = Calendar.getInstance();
             calendarItem.set(yearCounter, monthDiffCounter, 1);
             monthList.add(calendarItem);
             monthDiffCounter++;
         }
 
-        Log.d("CalendarItemAdapter", "CalendarItemAdapter is initialised");
+        Log.d(TAG, "CalendarItemAdapter is initialised");
     }
 
     @NonNull
@@ -77,7 +78,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.calendar_item, parent, false);
         context = parent.getContext();
-        Log.d("CalendarItemAdapter", "CalendarItemAdapter: returning ViewHolder");
+        Log.d(TAG, "CalendarItemAdapter: returning ViewHolder");
         return new CalendarViewHolder(view, activity, context, calendarFragment);
     }
 
