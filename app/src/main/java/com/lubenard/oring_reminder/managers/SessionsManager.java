@@ -74,7 +74,7 @@ public class SessionsManager {
                 calendar.setTime(DateUtils.getdateParsed(formattedDatePut));
                 calendar.add(Calendar.HOUR_OF_DAY, weared_time);
                 Log.d(TAG, "New entry: setting alarm at " + calendar.getTimeInMillis());
-                SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), newlyInsertedEntry, false);
+                SessionsAlarmsManager.setAlarm(context, calendar, newlyInsertedEntry, false);
             }
     }
 

@@ -11,14 +11,16 @@ import java.util.Date;
 public class Log {
 
     static OutputStreamWriter outputStreamWriter;
+    static Boolean isLogEnabled = false;
 
-    public Log(Context context) {
-        try {
-            outputStreamWriter = new OutputStreamWriter(context.openFileOutput("logs.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(String.format("---------- App Start at %s ----------", DateUtils.getdateFormatted(new Date())));
-        } catch (Exception e) {
-            android.util.Log.e("Exception", "File opening failed: " + e);
-        }
+    public static void setIsLogEnabled(Boolean isLogEnabled) {
+        android.util.Log.d("CustomLogger", "File logging is " + isLogEnabled);
+        Log.isLogEnabled = isLogEnabled;
+    }
+
+    public Log(Context context, Boolean isLogEnabled) {
+        Log.isLogEnabled = isLogEnabled;
+        openFile(context);
     }
 
     public static void v(String tag, String message) {
@@ -57,18 +59,31 @@ public class Log {
         writeToFile(tag, message);
     }
 
-    private static void writeToFile(String tag, String data) {
+    private static void openFile(Context context) {
         try {
-            outputStreamWriter.write(String.format("[%s] %s\n", tag, data));
-            outputStreamWriter.flush();
+            outputStreamWriter = new OutputStreamWriter(context.openFileOutput("logs.txt", Context.MODE_PRIVATE));
+            if (isLogEnabled)
+                outputStreamWriter.write(String.format("---------- App Start at %s ----------", DateUtils.getdateFormatted(new Date())));
         } catch (Exception e) {
-            android.util.Log.e("Exception", "File write failed: " + e);
+            android.util.Log.e("Exception", "File opening failed: " + e);
+        }
+    }
+
+    private static void writeToFile(String tag, String data) {
+        if (isLogEnabled) {
+            try {
+                outputStreamWriter.write(String.format("[%s] %s\n", tag, data));
+                outputStreamWriter.flush();
+            } catch (Exception e) {
+                android.util.Log.e("Exception", "File write failed: " + e);
+            }
         }
     }
 
     public void closeFile() {
         try {
-            outputStreamWriter.write("---------- App closed ----------");
+            if (isLogEnabled)
+                outputStreamWriter.write("---------- App closed ----------");
             outputStreamWriter.flush();
             outputStreamWriter.close();
         } catch (IOException e) {

@@ -22,6 +22,7 @@ public class SettingsManager {
     private Boolean shouldSendNotifWhenSessionIsOver;
     private Boolean shouldSendNotifWhenBreakTooLong;
     private int shouldSendNotifWhenBreakTooLongDate;
+    private Boolean isLoggingEnabled;
 
     // Current session settings
     private int bottomNavigationViewCurrentIndex = -1;
@@ -54,6 +55,8 @@ public class SettingsManager {
         shouldPreventIfNoSessionStartedTodayDate = sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "Not set");
 
         shouldSendNotifWhenSessionIsOver = sharedPreferences.getBoolean("myring_send_notif_when_session_over", true);
+
+        isLoggingEnabled = sharedPreferences.getBoolean("debug_is_logging_enabled", false);
     }
 
     public String getActionUIFab() {
@@ -111,6 +114,16 @@ public class SettingsManager {
 
     public int getBottomNavigationViewCurrentIndex() {
         return bottomNavigationViewCurrentIndex;
+    }
+
+    public void setIsLoggingEnabled(Boolean newValue) {
+        isLoggingEnabled = newValue;
+        Log.setIsLogEnabled(isLoggingEnabled);
+        sharedPreferences.edit().putBoolean("debug_is_logging_enabled", isLoggingEnabled).apply();
+    }
+
+    public Boolean getIsLoggingEnabled() {
+        return isLoggingEnabled;
     }
 
 }

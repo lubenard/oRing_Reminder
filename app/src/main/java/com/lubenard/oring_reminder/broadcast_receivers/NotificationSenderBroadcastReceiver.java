@@ -3,6 +3,8 @@ package com.lubenard.oring_reminder.broadcast_receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.utils.Log;
 
 import com.lubenard.oring_reminder.managers.DbManager;
@@ -15,7 +17,7 @@ public class NotificationSenderBroadcastReceiver extends BroadcastReceiver {
         // Launch a notification
         int action = intent.getIntExtra("action", 0);
         if (action == 1) {
-            Utils.sendNotificationWithQuickAnswer(context, context.getString(R.string.notif_get_it_off_title),
+            SessionsAlarmsManager.sendNotificationWithQuickAnswer(context, context.getString(R.string.notif_get_it_off_title),
                     context.getString(R.string.notif_get_it_off_body),
                     R.drawable.baseline_done_24, intent.getLongExtra("entryId", -1));
         } else if (action == 2) {

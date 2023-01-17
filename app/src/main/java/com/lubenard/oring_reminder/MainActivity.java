@@ -131,11 +131,12 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         // Init log module
-        logManager = new Log(this);
+        logManager = new Log(this, sharedPreferences.getBoolean("debug_is_logging_enabled", false));
 
         // Check the UI config (Theme and language) and apply them
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         settingsManager = new SettingsManager(this);
         dbManager = new DbManager(this);
 

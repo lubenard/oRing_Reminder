@@ -4,12 +4,18 @@ import static android.os.Build.VERSION.SDK_INT;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 
+import androidx.core.app.NotificationCompat;
+
+import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.broadcast_receivers.NotificationReceiverBroadcastReceiver;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
@@ -55,11 +61,48 @@ public class SessionsAlarmsManager {
     }
 
     /**
+     * Send a notification on the 'normal' channel
+     * @param context current Context
+     * @param title Notification title
+     * @param content notification body
+     * @param drawable drawable icon
+     */
+    public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, long entryId) {
+        // First let's create the intent
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), Utils.getIntentMutableFlag());
+
+        //Pending intent for a notification button when user removed protection
+        PendingIntent removedProtection =
+                PendingIntent.getBroadcast(context, 1, new Intent(context, NotificationReceiverBroadcastReceiver.class)
+                                .putExtra("action", 1)
+                                .putExtra("entryId", entryId),
+                        Utils.getIntentMutableFlag());
+
+        //Pending intent for a notification button when user dismissed notification
+        PendingIntent dismissedNotif =
+                PendingIntent.getBroadcast(context, 2, new Intent(context, NotificationReceiverBroadcastReceiver.class)
+                                .putExtra("action", 0)
+                                .putExtra("entryId", entryId),
+                        Utils.getIntentMutableFlag());
+
+        // Get the notification manager and build it
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, "NORMAL_CHANNEL");
+        permNotifBuilder.setSmallIcon(drawable)
+                .setContentTitle(title)
+                .setContentText(content)
+                .addAction(android.R.drawable.checkbox_on_background, context.getString(R.string.notif_choice_do_it), removedProtection)
+                .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
+                .setContentIntent(pi);
+        mNotificationManager.notify(0, permNotifBuilder.build());
+    }
+
+    /**
      * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
-     * @param alarmDate The date of the alarm in the form 2020-12-30 10:42:00
+     * @param calendarAlarmDate The date of the alarm in the form 2020-12-30 10:42:00
      * @param entryId the id entry of the entry to update
      */
-    public static void setAlarm(Context context, String alarmDate, long entryId, boolean cancelOldAlarm) {
+    public static void setAlarm(Context context, Calendar calendarAlarmDate, long entryId, boolean cancelOldAlarm) {
         // From the doc, just create the exact same intent, and cancel it.
         // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
@@ -71,15 +114,9 @@ public class SessionsAlarmsManager {
         if (cancelOldAlarm)
             am.cancel(pendingIntent);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(DateUtils.getdateParsed(alarmDate));
+        Log.d(TAG, "Setting alarm for " + DateUtils.getCalendarParsed(calendarAlarmDate));
 
-        Log.d(TAG, "Setting alarm for " + DateUtils.getCalendarParsed(calendar));
-
-        if (SDK_INT < Build.VERSION_CODES.M)
-            am.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        else
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        am.setAlarmClock(new AlarmManager.AlarmClockInfo(calendarAlarmDate.getTimeInMillis(), pendingIntent), pendingIntent);
     }
 
     /**

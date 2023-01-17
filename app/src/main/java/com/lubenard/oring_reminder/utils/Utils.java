@@ -127,43 +127,6 @@ public class Utils {
     }
 
     /**
-     * Send a notification on the 'normal' channel
-     * @param context current Context
-     * @param title Notification title
-     * @param content notification body
-     * @param drawable drawable icon
-     */
-    public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, long entryId) {
-        // First let's create the intent
-        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), getIntentMutableFlag());
-
-        //Pending intent for a notification button when user removed protection
-        PendingIntent removedProtection =
-                PendingIntent.getBroadcast(context, 1, new Intent(context, NotificationReceiverBroadcastReceiver.class)
-                                .putExtra("action", 1)
-                                .putExtra("entryId", entryId),
-                        getIntentMutableFlag());
-
-        //Pending intent for a notification button when user dismissed notification
-        PendingIntent dismissedNotif =
-                PendingIntent.getBroadcast(context, 2, new Intent(context, NotificationReceiverBroadcastReceiver.class)
-                                .putExtra("action", 0)
-                                .putExtra("entryId", entryId),
-                        getIntentMutableFlag());
-
-        // Get the notification manager and build it
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, "NORMAL_CHANNEL");
-        permNotifBuilder.setSmallIcon(drawable)
-                .setContentTitle(title)
-                .setContentText(content)
-                .addAction(android.R.drawable.checkbox_on_background, context.getString(R.string.notif_choice_do_it), removedProtection)
-                .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
-                .setContentIntent(pi);
-        mNotificationManager.notify(0, permNotifBuilder.build());
-    }
-
-    /**
      * Instantly update the widget
      * @param context
      */

@@ -155,7 +155,7 @@ public class EditEntryFragment extends DialogFragment {
                         // Recompute alarm if the entry already exist, but has no ending time
                         Calendar calendar = Calendar.getInstance();
                         calendar.add(Calendar.MINUTE, (int) DateUtils.getDateDiff(formattedDatePut, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                        SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()) , entryId,true);
+                        SessionsAlarmsManager.setAlarm(context, calendar, entryId,true);
                         dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 1");

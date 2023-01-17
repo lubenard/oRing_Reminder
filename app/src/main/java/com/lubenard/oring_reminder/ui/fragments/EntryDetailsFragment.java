@@ -366,7 +366,7 @@ public class EntryDetailsFragment extends Fragment {
                                 calendar.setTime(entryDetails.getDatePutCalendar().getTime());
                                 calendar.add(Calendar.MINUTE, newAlarmDate);
                                 Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + DateUtils.getdateFormatted(calendar.getTime()));
-                                SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), entryId, true);
+                                SessionsAlarmsManager.setAlarm(context, calendar, entryId, true);
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)

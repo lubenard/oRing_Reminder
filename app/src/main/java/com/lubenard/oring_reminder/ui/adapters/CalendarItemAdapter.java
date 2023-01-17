@@ -115,9 +115,10 @@ public class CalendarItemAdapter extends BaseAdapter {
                             SearchFragment fragment = new SearchFragment();
                             Bundle bundle = new Bundle();
                             String day = dayList.get(position);
+                            int month = date.get(Calendar.MONTH) + 1;
                             if (Integer.parseInt(dayList.get(position)) < 10)
                                 day = "0" + dayList.get(position);
-                            bundle.putString("date_searched", date.get(Calendar.YEAR) + "-" + (date.get(Calendar.MONTH) + 1) + "-" + day);
+                            bundle.putString("date_searched", date.get(Calendar.YEAR) + "-" + ((month < 10) ? "0" : "") + month + "-" + day);
                             fragment.setArguments(bundle);
                             activity.getSupportFragmentManager().beginTransaction()
                                     .replace(android.R.id.content, fragment, null)

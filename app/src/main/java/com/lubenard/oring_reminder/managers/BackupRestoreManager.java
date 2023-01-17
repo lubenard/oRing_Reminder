@@ -290,7 +290,7 @@ public class BackupRestoreManager extends Activity{
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(DateUtils.getdateParsed(myParser.getAttributeValue(null, "dateTimePut")));
                             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(preferences.getString("myring_wearing_time", "15")));
-                            SessionsAlarmsManager.setAlarm(this, DateUtils.getdateFormatted(calendar.getTime()), lastEntryInsertedId, true);
+                            SessionsAlarmsManager.setAlarm(this, calendar, lastEntryInsertedId, true);
                         }
                     } else {
                         Toast.makeText(this, R.string.bad_import_date_xml, Toast.LENGTH_SHORT).show();

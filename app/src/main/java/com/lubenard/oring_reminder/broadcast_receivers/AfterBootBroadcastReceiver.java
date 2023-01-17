@@ -53,7 +53,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
                 // Set alarms for session not finished
                 Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + DateUtils.getdateFormatted(calendar.getTime()));
-                SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), sessions.getKey(), true);
+                SessionsAlarmsManager.setAlarm(context, calendar, sessions.getKey(), true);
             }
         }
     }
