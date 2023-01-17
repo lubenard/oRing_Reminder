@@ -14,10 +14,10 @@
         android:title="@string/action_my_spermograms"
         app:showAsAction="never" />
 
-    <item
+    <!--<item
         android:id="@+id/action_calculators"
         android:title="@string/action_calculators"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/action_datas"
