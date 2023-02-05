@@ -62,7 +62,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
                 monthDiffCounter = 0;
                 yearCounter++;
             }
-            Log.d(TAG, "Creating item with datas " + monthDiffCounter + "/" + yearCounter);
+            Log.d(TAG, "Creating item with datas " + (monthDiffCounter + 1) + "/" + yearCounter);
             Calendar calendarItem = Calendar.getInstance();
             calendarItem.set(yearCounter, monthDiffCounter, 1);
             monthList.add(calendarItem);

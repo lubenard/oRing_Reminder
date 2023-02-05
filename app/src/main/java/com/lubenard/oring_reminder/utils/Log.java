@@ -72,7 +72,7 @@ public class Log {
     private static void writeToFile(String tag, String data) {
         if (isLogEnabled) {
             try {
-                outputStreamWriter.write(String.format("[%s] %s\n", tag, data));
+                outputStreamWriter.write(String.format("%s [%s] %s\n", DateUtils.getdateFormatted(new Date()), tag, data));
                 outputStreamWriter.flush();
             } catch (Exception e) {
                 android.util.Log.e("Exception", "File write failed: " + e);

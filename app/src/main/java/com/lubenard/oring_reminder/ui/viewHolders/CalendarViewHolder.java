@@ -2,6 +2,7 @@ package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -57,6 +58,15 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         ArrayList<String> num = listOfDatesInMonth(date, calendarOffset);
 
+        Log.d(TAG, "Calendar offset is " + calendarOffset);
+
+        Log.d(TAG, "List of days in month is " + num.size() + " for " + String.format("%s %d", date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), date.get(Calendar.YEAR)));
+
+        if (num.size() > 35) {
+            calendarGridDays.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250, context.getResources().getDisplayMetrics());
+        } else {
+            calendarGridDays.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 210, context.getResources().getDisplayMetrics());
+        }
         Calendar calendar = Calendar.getInstance();
 
         List<Pair<Integer, RingSession>> mappedSessions = new ArrayList<>();
@@ -86,11 +96,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
     }
 
     ArrayList<String> listOfDatesInMonth(Calendar selectedMonthFirstDay, int calendarOffset) {
-        Calendar nextMonthFirstDay = Calendar.getInstance();
-        nextMonthFirstDay.set(selectedMonthFirstDay.get(Calendar.YEAR),
-                selectedMonthFirstDay.get(Calendar.DAY_OF_MONTH) + 1, selectedMonthFirstDay.get(Calendar.DAY_OF_MONTH));
-
-        Log.d(TAG, "listOfDatesInMonth: nextMonthFirstDay is " + selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH));
+        Log.d(TAG, "listOfDatesInMonth: selectedMonthFirstDay is " + selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         ArrayList<String> list = new ArrayList<>();
 
