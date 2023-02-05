@@ -1,14 +1,8 @@
 package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
-
-import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
-
 import android.util.Pair;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -18,18 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.ui.adapters.CalendarAdapter;
 import com.lubenard.oring_reminder.ui.adapters.CalendarItemAdapter;
-import com.lubenard.oring_reminder.utils.Utils;
+import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
@@ -101,7 +94,10 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
         ArrayList<String> list = new ArrayList<>();
 
-        for(int j = 0; j != calendarOffset; j++) {list.add("0");}
+        Log.d(TAG, "Calendar offset is " + calendarOffset);
+
+        if (calendarOffset > 0)
+            for (int j = 0; j != calendarOffset; j++) { list.add("0"); }
 
         for (int i = 1; i < selectedMonthFirstDay.getActualMaximum(Calendar.DAY_OF_MONTH) + 1; i++) {
             //Log.d(TAG, "Adding " + i + " to list days");
@@ -114,12 +110,13 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
     int getIndexOfFirstDayInMonth(Context context, Calendar currentDate) {
         Log.d(TAG, "currentDate: " + currentDate);
 
-        String[] daysOfWeek = {context.getString(R.string.mon), context.getString(R.string.tus),
+        String[] daysOfWeek = {context.getString(R.string.mon), context.getString(R.string.tue),
                                 context.getString(R.string.wed), context.getString(R.string.thu),
                                 context.getString(R.string.fri), context.getString(R.string.sat),
                                 context.getString(R.string.sun)};
 
         String day = new SimpleDateFormat("EEE").format(currentDate.getTime()).toUpperCase();
+        Log.d(TAG, "current day is " + day + " return " + Arrays.asList(daysOfWeek).indexOf(day));
         return Arrays.asList(daysOfWeek).indexOf(day);
     }
 }
