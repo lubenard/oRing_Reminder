@@ -1,9 +1,10 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.calendar;
 
 import static androidx.core.content.ContextCompat.getDrawable;
 
-import android.app.Activity;
 import android.os.Bundle;
+
+import com.lubenard.oring_reminder.pages.history.HistoryFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;

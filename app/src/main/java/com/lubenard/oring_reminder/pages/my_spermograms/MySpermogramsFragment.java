@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.my_spermograms;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+
+import com.lubenard.oring_reminder.pages.spermograms_details.SpermogramsDetailsFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;

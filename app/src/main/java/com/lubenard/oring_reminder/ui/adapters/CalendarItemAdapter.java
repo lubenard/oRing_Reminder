@@ -2,9 +2,9 @@ package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
 
-import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
-import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
-import com.lubenard.oring_reminder.ui.fragments.SearchFragment;
+import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
+import com.lubenard.oring_reminder.pages.search.SearchFragment;
 import com.lubenard.oring_reminder.utils.Log;
 
 import android.os.Bundle;
@@ -14,11 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;

@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.calculator;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

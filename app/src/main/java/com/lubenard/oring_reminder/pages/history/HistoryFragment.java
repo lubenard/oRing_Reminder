@@ -1,9 +1,11 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.history;
 
 import static androidx.core.content.ContextCompat.getDrawable;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,18 +17,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
-import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.concurrent.TimeUnit;
 
 public class HistoryFragment extends Fragment implements HistoryListAdapter.onListItemClickListener{
 

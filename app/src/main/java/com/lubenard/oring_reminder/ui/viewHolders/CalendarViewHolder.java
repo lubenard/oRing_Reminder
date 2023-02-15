@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.adapters.CalendarItemAdapter;
-import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
+import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 

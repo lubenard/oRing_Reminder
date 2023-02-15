@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.datas;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +14,6 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;

@@ -1,6 +1,8 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.search;
 
 import android.os.Bundle;
+
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;

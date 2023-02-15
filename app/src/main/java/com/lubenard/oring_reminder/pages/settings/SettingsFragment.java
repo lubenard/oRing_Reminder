@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.settings;
 
 import android.Manifest;
 import android.app.Activity;
@@ -11,6 +11,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
+import com.lubenard.oring_reminder.pages.about.AboutFragment;
+import com.lubenard.oring_reminder.pages.debug.DebugFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;

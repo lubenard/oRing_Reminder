@@ -1,9 +1,11 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.entry_details;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.lubenard.oring_reminder.ui.fragments.EditBreakFragment;
+import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
@@ -14,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 

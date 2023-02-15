@@ -1,9 +1,8 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 
-import com.lubenard.oring_reminder.ui.fragments.CalendarFragment;
+import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
@@ -17,9 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.viewHolders.CalendarViewHolder;
-import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;

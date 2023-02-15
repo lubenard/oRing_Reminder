@@ -13,6 +13,8 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
+
+import com.lubenard.oring_reminder.pages.home.HomeViewModel;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.MenuItem;
 
@@ -21,12 +23,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
-import com.lubenard.oring_reminder.ui.fragments.EntryDetailsFragment;
-import com.lubenard.oring_reminder.ui.fragments.MainFragment;
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
+import com.lubenard.oring_reminder.pages.main.MainFragment;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.concurrent.Callable;
@@ -140,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
         settingsManager = new SettingsManager(this);
         dbManager = new DbManager(this);
 
+        //initViewModels();
+
         applyUserConfig();
         createNotifChannel();
 
@@ -162,6 +167,11 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(android.R.id.content, new MainFragment());
         }
         fragmentTransaction.commit();
+    }
+
+    private void initViewModels() {
+        new ViewModelProvider(this).get(HomeViewModel.class);
+        //new ViewModelProvider(this).get(HomeViewModel.class);
     }
 
     /**

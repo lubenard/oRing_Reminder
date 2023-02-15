@@ -1,9 +1,12 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.main;
 
 import android.os.Bundle;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.managers.SettingsManager;
+import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
+import com.lubenard.oring_reminder.pages.home.HomeFragment;
+import com.lubenard.oring_reminder.pages.settings.SettingsFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +81,7 @@ public class MainFragment extends Fragment {
                 Log.d(TAG, "id == bottomNavigationViewCurrentIndex");
                 return true;
             }
+            bottomNavigationViewCurrentIndex = id;
             switch (id) {
                 case R.id.bottom_nav_bar_home:
                     // Navigate to settings screen

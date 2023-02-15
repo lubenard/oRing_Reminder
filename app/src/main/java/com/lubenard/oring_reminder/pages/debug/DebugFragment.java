@@ -1,11 +1,10 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.debug;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -15,8 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
-import com.lubenard.oring_reminder.utils.Log;
-import com.lubenard.oring_reminder.utils.Utils;
 
 public class DebugFragment extends Fragment {
 

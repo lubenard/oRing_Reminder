@@ -1,10 +1,15 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.home;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
+import com.lubenard.oring_reminder.pages.datas.DatasFragment;
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
+import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
+import com.lubenard.oring_reminder.pages.my_spermograms.MySpermogramsFragment;
+import com.lubenard.oring_reminder.pages.search.SearchFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
@@ -24,7 +29,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -34,7 +39,6 @@ import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
-import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +48,6 @@ import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
-
     private static CircularProgressIndicator progress_bar;
     private Button button_start_break;
     private static FloatingActionButton fab;
@@ -62,7 +65,7 @@ public class HomeFragment extends Fragment {
     private TextView estimated_end_session_data;
     private Context context;
     private static FragmentActivity activity;
-
+    private static HomeViewModel homeViewModel;
     private final MenuProvider menuProvider = new MenuProvider() {
         @Override
         public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -452,6 +455,9 @@ public class HomeFragment extends Fragment {
 
         dbManager = MainActivity.getDbManager();
         dataModels = new ArrayList<>();
+
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        Log.d(TAG, "vm is " + homeViewModel);
 
         progress_bar = view.findViewById(R.id.progress_bar_main);
 

@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.ui.fragments;
+package com.lubenard.oring_reminder.pages.spermograms_details;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
