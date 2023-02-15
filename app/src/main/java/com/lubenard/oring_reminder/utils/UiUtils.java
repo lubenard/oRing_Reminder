@@ -74,7 +74,7 @@ public class UiUtils {
         }
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(context,
-                (view, year, monthOfYear, dayOfMonth) -> filling_textview.setText(year + "-" + ((monthOfYear < 10) ?  "0" : "") + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
+                (view, year, monthOfYear, dayOfMonth) -> filling_textview.setText(year + "-" + ((monthOfYear < 10) ?  "0" : "") + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth - 1, mDay);
         datePickerDialog.show();
     }
 }
