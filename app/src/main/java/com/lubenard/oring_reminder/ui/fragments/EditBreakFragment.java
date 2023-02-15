@@ -4,20 +4,16 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.DatePickerDialog;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
-import android.text.method.KeyListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +23,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
@@ -44,9 +39,7 @@ import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.UiUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class EditBreakFragment extends DialogFragment {
 
@@ -54,7 +47,7 @@ public class EditBreakFragment extends DialogFragment {
 
     private DbManager dbManager;
     private BreakSession pausesDatas;
-    private RingSession sessionDatas;
+    private RingSession session;
     private long breakId;
     private long sessionId;
     private boolean isManualEditEnabled = false;
@@ -93,9 +86,9 @@ public class EditBreakFragment extends DialogFragment {
 
         dbManager = MainActivity.getDbManager();
 
-        sessionDatas = dbManager.getEntryDetails(sessionId);
+        session = dbManager.getEntryDetails(sessionId);
 
-        Log.d(TAG, "Session id is " + sessionDatas.getId());
+        Log.d(TAG, "Session id is " + session.getId());
 
         if (breakId != -1) {
             pausesDatas = dbManager.getBreakForId(breakId);
@@ -187,30 +180,25 @@ public class EditBreakFragment extends DialogFragment {
                 pauseEndingText = "NOT SET YET";
             }
 
-            BreakSession newBreakSession;
-
-            if (pausesDatas != null) {
-                newBreakSession = new BreakSession(pausesDatas.getId(), pauseBeginningText, pauseEndingText, isRunning, 0, sessionDatas.getId());
-            } else {
-                newBreakSession = new BreakSession(-1, pauseBeginningText, pauseEndingText, isRunning, 0, sessionDatas.getId());
-            }
+            BreakSession newBreakSession = new BreakSession(
+                    (pausesDatas != null) ? pausesDatas.getId() : -1,
+                    pauseBeginningText,
+                    pauseEndingText,
+                    isRunning,
+                    0,
+                    session.getId()
+            );
 
             Log.d(TAG, "new BreakSession has " + newBreakSession.getStartDate() + " as starting date");
 
-            if (SessionsManager.startBreak2(context, sessionDatas, newBreakSession, pausesDatas == null)) {
-                // break inserted successfully
-                Bundle result = new Bundle();
-                result.putBoolean("shouldUpdateBreakList", true);
-                getParentFragmentManager().setFragmentResult("EditBreakFragmentResult", result);
-                dismiss();
-            }
+            if (SessionsManager.startBreak2(context, session, newBreakSession, pausesDatas == null)) {
+                // Break inserted successfully
 
-            /*
                 // Only recompute alarm if session is running, else cancel it.
-                if (sessionDatas.getIsRunning()) {
-                    if (pause_ending_date.getText().toString().equals("NOT SET YET")) {
-                        Log.d(TAG, "Cancelling alarm for entry: " + sessionDatas.getId());
-                        SessionsAlarmsManager.cancelAlarm(context, sessionDatas.getId());
+                if (session.getIsRunning()) {
+                    if (newBreakSession.getIsRunning()) {
+                        Log.d(TAG, "Cancelling alarm for entry: " + session.getId());
+                        SessionsAlarmsManager.cancelAlarm(context, session.getId());
                     } else {
                         //TODO: uncomment this method
                         //Calendar calendar = Calendar.getInstance();
@@ -218,21 +206,26 @@ public class EditBreakFragment extends DialogFragment {
                         //calendar.add(Calendar.MINUTE, newAlarmDate);
                         //Log.d(TAG, "Setting alarm for entry: " + sessionDatas.getId() + " At: " + DateUtils.getdateFormatted(calendar.getTime()));
                         // Cancel break alarm is session is set as finished
-                        if (new SettingsManager(context).getShouldSendNotifWhenBreakTooLong()) {
+                        if (MainActivity.getSettingsManager().getShouldSendNotifWhenBreakTooLong()) {
                             Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
                                     .putExtra("action", 1);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) sessionDatas.getId(), intent, 0);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) session.getId(), intent, 0);
                             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                             am.cancel(pendingIntent);
                         }
-                        //SessionsAlarmsManager.setAlarm(context, DateUtils.getdateFormatted(calendar.getTime()), sessionDatas.getId(), true);
+                        //SessionsAlarmsManager.setAlarm(context, , true);
                     }
                 }
                 if (isRunning == 1)
-                    SessionsAlarmsManager.setBreakAlarm(context, pause_beginning_date.getText().toString(),  sessionDatas.getId());
+                    SessionsAlarmsManager.setBreakAlarm(context, pause_beginning_date.getText().toString(), session.getId());
                 //updatePauseList();
-                EditEntryFragment.updateWidget(getContext());
-            }*/
+                Utils.updateWidget(getContext());
+
+                Bundle result = new Bundle();
+                result.putBoolean("shouldUpdateBreakList", true);
+                getParentFragmentManager().setFragmentResult("EditBreakFragmentResult", result);
+                dismiss();
+            }
         });
     }
 }
