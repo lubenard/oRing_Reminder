@@ -29,6 +29,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -63,6 +64,8 @@ public class HomeFragment extends Fragment {
     private TextView home_last_24h_data;
     private TextView start_session_data;
     private TextView estimated_end_session_data;
+    private ConstraintLayout activeSessionLayout;
+    private LinearLayout noActiveSessionLayout;
     private Context context;
     private static FragmentActivity activity;
     private static HomeViewModel homeViewModel;
@@ -105,159 +108,6 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreateView()");
         return inflater.inflate(R.layout.home_fragment, container, false);
-    }
-
-    /**
-     * Each time the app is resumed, fetch new entry
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume()");
-        updateDesign();
-    }
-
-    // TODO: To move in SessionManager
-    /**
-     * Compute all pause time into interval
-     * @param entryId entry for the wanted session
-     * @param date24HoursAgo oldest boundaries
-     * @param dateNow interval newest boundaries
-     * @return the time in Minutes of pauses between the interval
-     */
-    public static int computeTotalTimePauseForId(long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<BreakSession> pausesDatas = dbManager.getAllBreaksForId(entryId, true);
-        int totalTimePause = 0;
-        for (int i = 0; i < pausesDatas.size(); i++) {
-            BreakSession currentBreak = pausesDatas.get(i);
-            Log.d(TAG, "BreakSession is " + currentBreak);
-            if (!pausesDatas.get(i).getIsRunning()) {
-                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
-                        DateUtils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeRemoved());
-                    totalTimePause += currentBreak.getTimeRemoved();
-                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
-                        DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
-                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
-                }
-            } else {
-                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running pause at index " + i + " is added: " + DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
-                    totalTimePause += DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
-                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-                }
-            }
-        }
-        return totalTimePause;
-    }
-
-    private static int getSinceMidnightWearingTime() {
-        int totalTimeSinceMidnight = 0;
-        int pauseTimeForThisEntry;
-
-        LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(true);
-        ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
-
-        Calendar calendar = Calendar.getInstance();
-        String todayDate = DateUtils.getdateFormatted(calendar.getTime());
-
-        // We set the calendar at midnight
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        String sinceMidnigt = DateUtils.getdateFormatted(calendar.getTime());
-        Log.d(TAG, "Computing since midnight: interval is between: " + sinceMidnigt + " and " + todayDate);
-
-        RingSession currentModel;
-        for (int i = 0; i != (Math.min(dataModels.size(), 5)); i++) {
-            currentModel = dataModels.get(i);
-            pauseTimeForThisEntry = computeTotalTimePauseForId(currentModel.getId(), sinceMidnigt, todayDate);
-            Log.d(TAG, "Session id: " + currentModel.getId()
-                    + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
-                    + ", getDatePut: " + currentModel.getDatePut()
-                    + ", datediff datePut: " + DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
-            if (!currentModel.getIsRunning()) {
-                if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
-                    // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
-                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
-                    totalTimeSinceMidnight += currentModel.getTimeWeared() - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
-                    // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                }
-            } else {
-                if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                }
-            }
-        }
-        Log.d(TAG, "Computed last since midnight is: " + totalTimeSinceMidnight + "mn");
-        return totalTimeSinceMidnight;
-    }
-
-    /**
-     * Get all session wearing time with the breaks removed for the last 24 hours.
-     * @return time in minute of worn time on the last 24 hours
-     */
-    private static int getLast24hWearingTime() {
-        int totalTimeLastDay = 0;
-        int pauseTimeForThisEntry;
-
-        LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(true);
-        ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
-
-        Calendar calendar = Calendar.getInstance();
-        String todayDate = DateUtils.getdateFormatted(calendar.getTime());
-
-        // We set the calendar 24h earlier
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-
-        String oneDayEarlier = DateUtils.getdateFormatted(calendar.getTime());
-        Log.d(TAG, "Computing last 24 hours: interval is between: " + oneDayEarlier + " and " + todayDate);
-
-        RingSession currentModel;
-        for (int i = 0; i != (Math.min(dataModels.size(), 5)); i++) {
-            currentModel = dataModels.get(i);
-            pauseTimeForThisEntry = computeTotalTimePauseForId(currentModel.getId(), oneDayEarlier, todayDate);
-            Log.d(TAG, "Session id: " + currentModel.getId()
-                    + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
-                    + ", getDatePut: " + currentModel.getDatePut()
-                    + ", datediff datePut: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
-            if (!currentModel.getIsRunning()) {
-                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
-                    // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
-                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
-                    totalTimeLastDay += currentModel.getTimeWeared() - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
-                    // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeLastDay += DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                }
-            } else {
-                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeLastDay += DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running entry at index " + i + " is between the born: " + DateUtils.getDateDiff(oneDayEarlier, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimeLastDay += DateUtils.getDateDiff(oneDayEarlier, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                }
-            }
-        }
-        Log.d(TAG, "Computed last 24 hours is: " + totalTimeLastDay + "mn");
-        return totalTimeLastDay;
     }
 
     private void searchEntry() {
@@ -331,116 +181,17 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void updateCurrSessionDatas() {
-        RingSession lastRunningEntry = dbManager.getLastRunningEntry();
-
-        if (lastRunningEntry != null) {
-            long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(lastRunningEntry.getDatePut(), lastRunningEntry.getId(), null);
-            textview_progress.setText(DateUtils.convertTimeWeared((int)timeBeforeRemove));
-            time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60)));
-            float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
-
-            String[] splittedDatePut = lastRunningEntry.getDatePut().split(" ");
-
-            start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(lastRunningEntry.getDatePutCalendar().getTime());
-            calendar.add(Calendar.HOUR_OF_DAY, MainActivity.getSettingsManager().getWearingTimeInt());
-
-            String[] splittedDateEstimatedEnd = DateUtils.getdateFormatted(calendar.getTime()).split(" ");
-
-            estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
-
-            Log.d(TAG, "MainView percentage is " + progress_percentage);
-            if (progress_percentage < 1f)
-                progress_percentage = 1f;
-            if (progress_percentage > 100f)
-                progress_bar.setIndicatorColor(context.getResources().getColor(R.color.green_main_bar));
-            else
-                progress_bar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
-            progress_bar.setProgress((int)progress_percentage);
-
-            if (dbManager.getAllBreaksForId(lastRunningEntry.getId(), true).size() > 0 &&
-                dbManager.getAllBreaksForId(lastRunningEntry.getId(), true).get(0).getIsRunning()) {
-                text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,DateUtils.getDateDiff(dbManager.getLastRunningPauseForId(lastRunningEntry.getId()).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
-                text_view_break.setVisibility(View.VISIBLE);
-                button_start_break.setText(context.getString(R.string.widget_stop_break));
-                button_start_break.setOnClickListener(v -> {
-                    dbManager.endPause(lastRunningEntry.getId());
-                    updateCurrSessionDatas();
-                });
-            } else {
-                text_view_break.setVisibility(View.INVISIBLE);
-                button_start_break.setText(context.getString(R.string.widget_start_break));
-                button_start_break.setOnClickListener(v -> {
-                    SessionsManager.startBreak(context);
-                    updateCurrSessionDatas();
-                });
-            }
-        }
-    }
-
     /**
      * Update whole design on MainFragment, including fab
      */
     public void updateDesign() {
-
-        int totalTimeSinceMidnight = getSinceMidnightWearingTime();
-        home_since_midnight_data.setText(DateUtils.convertTimeWeared(totalTimeSinceMidnight));
-
-        int totalTimeLastDay = getLast24hWearingTime();
-        home_last_24h_data.setText(DateUtils.convertTimeWeared(totalTimeLastDay));
-
-        // If this return null, mean there is no running session
-        if (dbManager.getLastRunningEntry() == null) {
-            ConstraintLayout linearLayout = view.findViewById(R.id.layout_session_active);
-            linearLayout.setVisibility(View.GONE);
-
-            LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
-            no_active_session.setVisibility(View.VISIBLE);
-
-            fab.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.teal_700)));
-            fab.setImageDrawable(context.getDrawable(R.drawable.baseline_add_24));
-
-            fab.setOnClickListener(view12 -> actionOnPlusButton(false));
-
-            fab.setOnLongClickListener(view1 -> {
-                actionOnPlusButton(true);
-                return true;
-            });
-        } else {
-            ConstraintLayout linearLayout = view.findViewById(R.id.layout_session_active);
-            linearLayout.setVisibility(View.VISIBLE);
-
-            LinearLayout no_active_session = view.findViewById(R.id.layout_no_session_active);
-            no_active_session.setVisibility(View.GONE);
-
-            fab.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(android.R.color.holo_red_dark)));
-            fab.setImageDrawable(context.getDrawable(R.drawable.outline_close_24));
-
-            fab.setOnClickListener(v -> {
-                dbManager.endSession(dbManager.getLastRunningEntry().getId());
-                updateDesign();
-            });
-
-            button_see_curr_session.setOnClickListener(v -> {
-                activity.removeMenuProvider(menuProvider);
-                EntryDetailsFragment fragment = new EntryDetailsFragment();
-                Bundle bundle = new Bundle();
-                bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
-                fragment.setArguments(bundle);
-                activity.getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, fragment, null)
-                        .addToBackStack(null).commit();
-            });
-
-            updateCurrSessionDatas();
-        }
+        homeViewModel.getCurrentSession();
+        homeViewModel.computeWearingTimeSinceMidnight();
+        homeViewModel.getLast24hWearingTime();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         context = requireContext();
@@ -476,6 +227,97 @@ public class HomeFragment extends Fragment {
 
         start_session_data = view.findViewById(R.id.start_session_data);
         estimated_end_session_data = view.findViewById(R.id.estimated_end_data);
+
+        activeSessionLayout = view.findViewById(R.id.layout_session_active);
+        noActiveSessionLayout = view.findViewById(R.id.layout_no_session_active);
+
+        updateDesign();
+
+        homeViewModel.wearingTimeSinceMidnight.observe(getViewLifecycleOwner(), wearingTimeSinceMidgnight -> {
+            home_since_midnight_data.setText(DateUtils.convertTimeWeared(wearingTimeSinceMidgnight));
+        });
+
+        homeViewModel.last24hWearingTime.observe(getViewLifecycleOwner(), last24hWearingTime -> {
+            home_last_24h_data.setText(DateUtils.convertTimeWeared(last24hWearingTime));
+        });
+
+        homeViewModel.currentSession.observe(getViewLifecycleOwner(), currentSession -> {
+            if (currentSession == null) {
+                activeSessionLayout.setVisibility(View.GONE);
+
+                noActiveSessionLayout.setVisibility(View.VISIBLE);
+
+                fab.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green)));
+                fab.setImageDrawable(context.getDrawable(R.drawable.baseline_add_24));
+
+                fab.setOnClickListener(view12 -> actionOnPlusButton(false));
+
+                fab.setOnLongClickListener(view1 -> {
+                    actionOnPlusButton(true);
+                    return true;
+                });
+            } else {
+                activeSessionLayout.setVisibility(View.VISIBLE);
+
+                noActiveSessionLayout.setVisibility(View.GONE);
+
+                fab.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(android.R.color.holo_red_dark)));
+                fab.setImageDrawable(context.getDrawable(R.drawable.outline_close_24));
+
+                fab.setOnClickListener(v -> {
+                    homeViewModel.endSession();
+                });
+
+                button_see_curr_session.setOnClickListener(v -> {
+                    activity.removeMenuProvider(menuProvider);
+                    EntryDetailsFragment fragment = new EntryDetailsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("entryId", dbManager.getLastRunningEntry().getId());
+                    fragment.setArguments(bundle);
+                    activity.getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, fragment, null)
+                            .addToBackStack(null).commit();
+                });
+
+                long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(currentSession.getDatePut(), currentSession.getId(), null);
+                textview_progress.setText(DateUtils.convertTimeWeared((int)timeBeforeRemove));
+                time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60)));
+                float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
+
+                String[] splittedDatePut = currentSession.getDatePut().split(" ");
+
+                start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(currentSession.getDatePutCalendar().getTime());
+                calendar.add(Calendar.HOUR_OF_DAY, MainActivity.getSettingsManager().getWearingTimeInt());
+
+                String[] splittedDateEstimatedEnd = DateUtils.getdateFormatted(calendar.getTime()).split(" ");
+
+                estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
+
+                Log.d(TAG, "MainView percentage is " + progress_percentage);
+                if (progress_percentage < 1f)
+                    progress_percentage = 1f;
+                if (progress_percentage > 100f)
+                    progress_bar.setIndicatorColor(context.getResources().getColor(R.color.green_main_bar));
+                else
+                    progress_bar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
+                progress_bar.setProgress((int)progress_percentage);
+
+                if (!homeViewModel.sessionBreaks.getValue().isEmpty()
+                        && homeViewModel.sessionBreaks.getValue().get(0).getIsRunning()) {
+                    text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,DateUtils.getDateDiff(dbManager.getLastRunningPauseForId(currentSession.getId()).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                    text_view_break.setVisibility(View.VISIBLE);
+                    button_start_break.setText(context.getString(R.string.widget_stop_break));
+                    button_start_break.setOnClickListener(v -> homeViewModel.endBreak());
+                } else {
+                    text_view_break.setVisibility(View.INVISIBLE);
+                    button_start_break.setText(context.getString(R.string.widget_start_break));
+                    button_start_break.setOnClickListener(v -> homeViewModel.startBreak(context));
+                }
+            }
+        });
 
         this.view = view;
     }

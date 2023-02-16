@@ -67,10 +67,16 @@ public class SettingsManager {
         wearing_time = newWearingTime;
     }
 
+    /**
+     Return wearing time in HOURS
+     */
     public String getWearingTime() {
         return wearing_time;
     }
 
+    /**
+     Return wearing time in HOURS
+     */
     public int getWearingTimeInt() {
         return Integer.parseInt(wearing_time);
     }
