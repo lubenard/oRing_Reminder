@@ -190,10 +190,10 @@ public class SessionsManager {
         ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
         int totalTimePause = 0;
         for (int i = 0; i != allPauses.size(); i++) {
-            if (!allPauses.get(i).getIsRunning())
-                totalTimePause += allPauses.get(i).getTimeRemoved();
+            if (allPauses.get(i).getIsRunning())
+                totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
             else
-                totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                totalTimePause += allPauses.get(i).getTimeRemoved();
         }
         return totalTimePause;
     }
