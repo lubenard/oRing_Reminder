@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
@@ -22,23 +23,43 @@ public class EntryDetailsViewModel extends ViewModel {
     private long entryId;
     MutableLiveData<RingSession> session = new MutableLiveData<>();
     MutableLiveData<Long> wornTime = new MutableLiveData<>();
+    MutableLiveData<Calendar> estimatedEnd = new MutableLiveData<>();
     MutableLiveData<ArrayList<BreakSession>> sessionBreaks = new MutableLiveData<>();
-    MutableLiveData<Float> progressPercentage = new MutableLiveData<>();
+    MutableLiveData<Integer> progressPercentage = new MutableLiveData<>();
     MutableLiveData<Integer> progressColor = new MutableLiveData<>();
+    MutableLiveData<Integer> progressBarColor = new MutableLiveData<>();
+    MutableLiveData<Boolean> isSessionRunning = new MutableLiveData<>();
+    Integer wearingTimePref;
+    Boolean isThereARunningPause = false;
 
     public EntryDetailsViewModel() {
         Log.d(TAG, "Executed normally once");
         dbManager = MainActivity.getDbManager();
     }
 
+    public void loadBreaks() {
+        sessionBreaks.setValue(dbManager.getAllBreaksForId(entryId, true));
+    }
+
+    public void loadSession() {
+        session.setValue(dbManager.getEntryDetails(entryId));
+        isSessionRunning.setValue(session.getValue().getIsRunning());
+        isThereARunningPause = session.getValue().getIsInBreak();
+    }
+
     public void loadCurrentSession(long entryId) {
         if (entryId > 0) {
             this.entryId = entryId;
-            session.postValue(dbManager.getEntryDetails(entryId));
-            recomputeWearingTime();
-            //progressPercentage.postValue();
-            sessionBreaks.postValue(dbManager.getAllBreaksForId(entryId, true));
+            loadSession();
+            getPrefValues();
+            loadBreaks();
+            computeWearingTime();
+            computeProgressBarDatas();
         }
+    }
+
+    private void getPrefValues() {
+        wearingTimePref = MainActivity.getSettingsManager().getWearingTimeInt() * 60;
     }
 
     public void deleteSession() {
@@ -46,11 +67,30 @@ public class EntryDetailsViewModel extends ViewModel {
         dbManager.deleteEntry(entryId);
     }
 
+    void computeProgressBarDatas() {
+        int progress_percentage = (int) (((float) wornTime.getValue() / (float) wearingTimePref) * 100);
+
+        if (progress_percentage > 100f)
+            progressBarColor.setValue(R.color.green_main_bar);
+        else
+            progressBarColor.setValue(R.color.blue_main_bar);
+        progressPercentage.setValue(progress_percentage);
+
+        if (session.getValue().getIsRunning()) {
+            progressColor.setValue(R.color.yellow);
+        } else {
+            if ((session.getValue().getTimeWeared() - SessionsManager.computeTotalTimePause(dbManager, entryId)) / 60 >= wearingTimePref)
+                progressColor.setValue(android.R.color.holo_green_dark);
+            else
+                progressColor.setValue(android.R.color.holo_red_dark);
+        }
+    }
+
     /**
      * Compute when user an get it off according to breaks.
      * If the user made a 1h30 break, then he should wear it 1h30 more
      */
-    void recomputeWearingTime() {
+    void computeWearingTime() {
         long oldTimeWeared;
         // If session is running,
         // OldTimeWeared is the time in minute between the starting of the entry and the current Date
@@ -60,7 +100,7 @@ public class EntryDetailsViewModel extends ViewModel {
         else
             oldTimeWeared = DateUtils.getDateDiff(session.getValue().getDatePut(), session.getValue().getDateRemoved(), TimeUnit.MINUTES);
 
-        long totalTimePause = SessionsManager.computeTotalTimePause(dbManager, entryId);
+        long totalTimePause = SessionsManager.computeTotalTimePause(sessionBreaks.getValue());
         long newComputedTime;
 
         // Avoid having more time pause than weared time
@@ -69,16 +109,21 @@ public class EntryDetailsViewModel extends ViewModel {
 
         newComputedTime = oldTimeWeared - totalTimePause;
         Log.d(TAG, "Compute newWearingTime = " + oldTimeWeared + " - " + totalTimePause + " = " + newComputedTime);
-        wornTime.postValue(newComputedTime);
+        wornTime.setValue(newComputedTime);
 
         // Time is computed as:
-        // Date of put + number_of_hour_defined_in settings + total_time_in_pause
-        newAlarmDate = (int) (weared_time * 60 + totalTimePause);
+        // Date of put + number_of_hour_defined_in_settings + total_time_in_pause
+        int newAlarmDate = (int) (newComputedTime * 60 + totalTimePause);
         Log.d(TAG, "New alarm date = " + newAlarmDate);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(entryDetailsViewModel.session.getValue().getDatePutCalendar().getTime());
+        calendar.setTime(session.getValue().getDatePutCalendar().getTime());
         calendar.add(Calendar.MINUTE, newAlarmDate);
-        updateAbleToGetItOffUI(calendar);
+        estimatedEnd.setValue(calendar);
+    }
+
+    public void endSession() {
+        dbManager.endSession(entryId);
+        isSessionRunning.setValue(false);
     }
 }

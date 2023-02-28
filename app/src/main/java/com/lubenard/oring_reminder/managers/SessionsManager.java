@@ -91,11 +91,7 @@ public class SessionsManager {
             //Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if (session.getStatus() == RingSession.SessionStatus.IN_BREAK && breakSession.getIsRunning()) {
-            Log.w(TAG, "Error: Already in break !");
-            Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (DateUtils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
+        else if (DateUtils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
             return false;
@@ -143,19 +139,14 @@ public class SessionsManager {
         DbManager dbManager = MainActivity.getDbManager();
         RingSession lastRunningEntry = dbManager.getLastRunningEntry();
 
-        if (dbManager.getLastRunningPauseForId(lastRunningEntry.getId()) == null) {
-            Log.d(TAG, "No running pause");
-            dbManager.createNewPause(lastRunningEntry.getId(), DateUtils.getdateFormatted(new Date()), "NOT SET YET", 1);
-            // Cancel alarm until breaks are set as finished.
-            // Only then set a new alarm date
-            Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
-            SessionsAlarmsManager.cancelAlarm(context, lastRunningEntry.getId());
-            SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), lastRunningEntry.getId());
-            Utils.updateWidget(context);
-        } else {
-            Log.d(TAG, "Error: Already a running pause");
-            Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-        }
+        Log.d(TAG, "No running pause");
+        dbManager.createNewPause(lastRunningEntry.getId(), DateUtils.getdateFormatted(new Date()), "NOT SET YET", 1);
+        // Cancel alarm until breaks are set as finished.
+        // Only then set a new alarm date
+        Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
+        SessionsAlarmsManager.cancelAlarm(context, lastRunningEntry.getId());
+        SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), lastRunningEntry.getId());
+        Utils.updateWidget(context);
     }
 
     /**
@@ -194,6 +185,17 @@ public class SessionsManager {
                 totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
             else
                 totalTimePause += allPauses.get(i).getTimeRemoved();
+        }
+        return totalTimePause;
+    }
+
+    public static int computeTotalTimePause(ArrayList<BreakSession> allBreaks) {
+        int totalTimePause = 0;
+        for (int i = 0; i != allBreaks.size(); i++) {
+            if (allBreaks.get(i).getIsRunning())
+                totalTimePause += DateUtils.getDateDiff(allBreaks.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
+            else
+                totalTimePause += allBreaks.get(i).getTimeRemoved();
         }
         return totalTimePause;
     }

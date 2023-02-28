@@ -1,0 +1,8 @@
+appId: com.lubenard.oring_reminder
+---
+- runFlow: launch_home.yaml
+- tapOn: "New entry"
+- assertVisible: "Right now:"
+- assertVisible: "0h00m"
+- assertVisible: "Start break"
+- assertVisible: "See my session"

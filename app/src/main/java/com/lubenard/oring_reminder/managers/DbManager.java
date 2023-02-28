@@ -294,7 +294,7 @@ public class DbManager extends SQLiteOpenHelper {
                 new String[]{String.valueOf(entryId), "1"}, null, null, null);
 
         if (cursor.moveToFirst()) {
-            Log.d(TAG, "Hello there");
+            Log.d(TAG, "Found entry for endPause");
             // Then we set our values:
             // We need to recompute the date
             // And set the isRunning to 0

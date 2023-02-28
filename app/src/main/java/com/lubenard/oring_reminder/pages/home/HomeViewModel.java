@@ -1,14 +1,17 @@
 package com.lubenard.oring_reminder.pages.home;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
@@ -24,10 +27,16 @@ import java.util.concurrent.TimeUnit;
 public class HomeViewModel extends ViewModel {
     private final static String TAG = "HomeViewModel";
 
+    private DbManager dbManager;
     public MutableLiveData<Integer> wearingTimeSinceMidnight = new MutableLiveData<>();
     public MutableLiveData<Integer> last24hWearingTime = new MutableLiveData<>();
     public MutableLiveData<RingSession> currentSession = new MutableLiveData<>();
     public MutableLiveData<List<BreakSession>> sessionBreaks = new MutableLiveData<>(Collections.emptyList());
+    public MutableLiveData<Boolean> isThereARunningBreak = new MutableLiveData<>();
+
+    public HomeViewModel() {
+        dbManager = MainActivity.getDbManager();
+    }
 
     // TODO: To move in SessionManager
     /**
@@ -38,7 +47,7 @@ public class HomeViewModel extends ViewModel {
      * @return the time in Minutes of pauses between the interval
      */
     private int computeTotalTimePauseForId(long entryId, String date24HoursAgo, String dateNow) {
-        ArrayList<BreakSession> pausesDatas = MainActivity.getDbManager().getAllBreaksForId(entryId, true);
+        ArrayList<BreakSession> pausesDatas = dbManager.getAllBreaksForId(entryId, true);
         int totalTimePause = 0;
         for (int i = 0; i < pausesDatas.size(); i++) {
             BreakSession currentBreak = pausesDatas.get(i);
@@ -74,7 +83,7 @@ public class HomeViewModel extends ViewModel {
         int totalTimeLastDay = 0;
         int pauseTimeForThisEntry;
 
-        LinkedHashMap<Integer, RingSession> entrysDatas = MainActivity.getDbManager().getAllDatasForMainList(true);
+        LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(true);
         ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
 
         Calendar calendar = Calendar.getInstance();
@@ -117,14 +126,14 @@ public class HomeViewModel extends ViewModel {
             }
         }
         Log.d(TAG, "Computed last 24 hours is: " + totalTimeLastDay + "mn");
-        last24hWearingTime.postValue(totalTimeLastDay);
+        last24hWearingTime.setValue(totalTimeLastDay);
     }
 
     public void computeWearingTimeSinceMidnight() {
         int totalTimeSinceMidnight = 0;
         int pauseTimeForThisEntry;
 
-        LinkedHashMap<Integer, RingSession> entrysDatas = MainActivity.getDbManager().getAllDatasForMainList(true);
+        LinkedHashMap<Integer, RingSession> entrysDatas = dbManager.getAllDatasForMainList(true);
         ArrayList<RingSession> dataModels = new ArrayList<>(entrysDatas.values());
 
         Calendar calendar = Calendar.getInstance();
@@ -169,27 +178,32 @@ public class HomeViewModel extends ViewModel {
             }
         }
         Log.d(TAG, "Computed last since midnight is: " + totalTimeSinceMidnight + "mn");
-        wearingTimeSinceMidnight.postValue(totalTimeSinceMidnight);
+        wearingTimeSinceMidnight.setValue(totalTimeSinceMidnight);
     }
 
     public void getCurrentSession() {
-        currentSession.postValue(MainActivity.getDbManager().getLastRunningEntry());
+        currentSession.setValue(dbManager.getLastRunningEntry());
         if (currentSession.getValue() != null)
-            sessionBreaks.postValue(MainActivity.getDbManager().getAllBreaksForId(currentSession.getValue().getId(), true));
+            sessionBreaks.setValue(dbManager.getAllBreaksForId(currentSession.getValue().getId(), true));
     }
 
     public void endSession() {
-        MainActivity.getDbManager().endSession(MainActivity.getDbManager().getLastRunningEntry().getId());
-        currentSession.postValue(null);
+        dbManager.endSession(dbManager.getLastRunningEntry().getId());
+        currentSession.setValue(null);
     }
 
     public void endBreak() {
-        MainActivity.getDbManager().endSession(MainActivity.getDbManager().getLastRunningEntry().getId());
+        dbManager.endPause(dbManager.getLastRunningEntry().getId());
         getCurrentSession();
     }
 
     public void startBreak(Context context) {
-        SessionsManager.startBreak(context);
-        getCurrentSession();
+        if (isThereARunningBreak.getValue()) {
+            Log.d(TAG, "Error: Already a running pause");
+            Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
+        } else {
+            SessionsManager.startBreak(context);
+            getCurrentSession();
+        }
     }
 }

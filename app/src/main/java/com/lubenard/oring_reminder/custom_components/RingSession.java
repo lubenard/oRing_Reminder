@@ -37,10 +37,7 @@ public class RingSession {
         calendarStart.setTime(DateUtils.getdateParsed(datePut));
         this.datePutCalendar = calendarStart;
 
-        if (isRunning == 1)
-            this.status = SessionStatus.RUNNING;
-        else
-            this.status = SessionStatus.NOT_RUNNING;
+        this.status = SessionStatus.values()[isRunning];
 
         if (this.timeWeared == 0 && this.status == SessionStatus.NOT_RUNNING) {
             this.timeWeared = (int) DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
