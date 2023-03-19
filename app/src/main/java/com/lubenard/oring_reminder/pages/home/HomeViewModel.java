@@ -1,9 +1,9 @@
 package com.lubenard.oring_reminder.pages.home;
 
 import android.content.Context;
+import android.os.Handler;
 import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -33,6 +33,9 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<RingSession> currentSession = new MutableLiveData<>();
     public MutableLiveData<List<BreakSession>> sessionBreaks = new MutableLiveData<>(Collections.emptyList());
     public MutableLiveData<Boolean> isThereARunningBreak = new MutableLiveData<>();
+
+    private Handler updateHandler;
+    private Runnable updateRunnable;
 
     public HomeViewModel() {
         dbManager = MainActivity.getDbManager();
@@ -183,8 +186,21 @@ public class HomeViewModel extends ViewModel {
 
     public void getCurrentSession() {
         currentSession.setValue(dbManager.getLastRunningEntry());
-        if (currentSession.getValue() != null)
+        if (currentSession.getValue() != null) {
             sessionBreaks.setValue(dbManager.getAllBreaksForId(currentSession.getValue().getId(), true));
+            updateHandler = new Handler();
+            updateRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "Updating wearing time");
+                    computeWearingTimeSinceMidnight();
+                    getLast24hWearingTime();
+                    // Every minute update the wearing time. No need to do it more often
+                    updateHandler.postDelayed(this, 60000);
+                }
+            };
+            updateRunnable.run();
+        }
     }
 
     public void endSession() {
@@ -205,5 +221,9 @@ public class HomeViewModel extends ViewModel {
             SessionsManager.startBreak(context);
             getCurrentSession();
         }
+    }
+
+    public void stopTimer() {
+        updateHandler.removeCallbacks(updateRunnable);
     }
 }

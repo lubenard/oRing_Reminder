@@ -1,8 +1,7 @@
-package com.lubenard.oring_reminder.ui.viewHolders;
+package com.lubenard.oring_reminder.pages.my_spermograms;
 
 import android.content.Context;
 import android.net.Uri;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
-import com.lubenard.oring_reminder.pages.my_spermograms.MySpermogramsFragment;
-import com.lubenard.oring_reminder.ui.adapters.CustomSpermoListAdapter;
+import com.lubenard.oring_reminder.utils.Log;
+import com.lubenard.oring_reminder.utils.Utils;
 
 import java.io.File;
 import java.net.URI;
@@ -45,7 +44,7 @@ public class SpermoListViewHolder extends RecyclerView.ViewHolder implements Vie
         Log.d("Pdf View", "Looking for " + dataModel.getFileAddr() + ".jpg");
         if (!fileUri.exists()) {
             Log.d("PDF View", "Thumbnail does not exist ! for file addr : " + dataModel.getFileAddr().toString().substring(7));
-            MySpermogramsFragment.generatePdfThumbnail(context, dataModel.getFileAddr().toString().substring(7));
+            Utils.generatePdfThumbnail(context, dataModel.getFileAddr().toString().substring(7));
         }
 
         pdfView.setImageURI(Uri.parse(dataModel.getFileAddr() + ".jpg"));

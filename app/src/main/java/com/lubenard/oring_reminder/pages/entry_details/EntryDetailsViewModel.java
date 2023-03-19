@@ -1,5 +1,7 @@
 package com.lubenard.oring_reminder.pages.entry_details;
 
+import android.os.Handler;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -31,6 +33,8 @@ public class EntryDetailsViewModel extends ViewModel {
     MutableLiveData<Boolean> isSessionRunning = new MutableLiveData<>();
     Integer wearingTimePref;
     Boolean isThereARunningPause = false;
+    Runnable updateRunnable;
+    Handler updateHandler;
 
     public EntryDetailsViewModel() {
         Log.d(TAG, "Executed normally once");
@@ -55,6 +59,18 @@ public class EntryDetailsViewModel extends ViewModel {
             loadBreaks();
             computeWearingTime();
             computeProgressBarDatas();
+            updateHandler = new Handler();
+            updateRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "Updating wearing time");
+                    computeWearingTime();
+                    computeProgressBarDatas();
+                    // Every minute update the wearing time. No need to do it more often
+                    updateHandler.postDelayed(this, 60000);
+                }
+            };
+            updateRunnable.run();
         }
     }
 
@@ -125,5 +141,9 @@ public class EntryDetailsViewModel extends ViewModel {
     public void endSession() {
         dbManager.endSession(entryId);
         isSessionRunning.setValue(false);
+    }
+
+    public void stopTimer() {
+        updateHandler.removeCallbacks(updateRunnable);
     }
 }

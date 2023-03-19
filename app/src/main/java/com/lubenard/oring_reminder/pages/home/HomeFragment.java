@@ -4,14 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-
-import com.lubenard.oring_reminder.pages.datas.DatasFragment;
-import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
-import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
-import com.lubenard.oring_reminder.pages.my_spermograms.MySpermogramsFragment;
-import com.lubenard.oring_reminder.pages.search.SearchFragment;
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,22 +21,26 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
+import com.lubenard.oring_reminder.pages.datas.DatasFragment;
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
+import com.lubenard.oring_reminder.pages.my_spermograms.MySpermogramsFragment;
+import com.lubenard.oring_reminder.pages.search.SearchFragment;
+import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment {
@@ -326,7 +322,7 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView() called");
         Log.d(TAG, "onDestroy activity is " + activity.toString() + ", menuProvider: " + menuProvider);
-
+        homeViewModel.stopTimer();
         activity.removeMenuProvider(menuProvider);
         super.onDestroyView();
     }
