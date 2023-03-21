@@ -3,6 +3,7 @@ package com.lubenard.oring_reminder.pages.search;
 import android.os.Bundle;
 
 import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
+import com.lubenard.oring_reminder.pages.my_spermograms.MySpermogramsViewModel;
 import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
@@ -25,7 +28,7 @@ public class SearchFragment extends Fragment {
     private ListSearchAdapter adapter;
     private ArrayList<RingSession> dataModels;
     private ListView listView;
-
+    private SearchViewModel searchViewModel;
     public static final String TAG = "SearchFragment";
 
     @Override
@@ -35,47 +38,39 @@ public class SearchFragment extends Fragment {
         return inflater.inflate(R.layout.search_fragment, container, false);
     }
 
-    /**
-     * Update Result list with result search
-     * @param pausesDatas
-     */
-    private void updateResultList(ArrayList<RingSession> pausesDatas) {
-        dataModels.clear();
-        dataModels.addAll(pausesDatas);
-        adapter = new ListSearchAdapter(dataModels, getContext());
-        listView.setAdapter(adapter);
-    }
+
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        DbManager dbManager = MainActivity.getDbManager();
-
         Bundle bundle = this.getArguments();
 
-        String date_searched = bundle.getString("date_searched", "NOTHING");
+        String date_searched = bundle.getString("date_searched", null);
 
         Log.d(TAG, "date is " + date_searched);
-
-        ArrayList<RingSession> results = dbManager.searchEntryInDb(date_searched);
 
         TextView search_result = view.findViewById(R.id.no_result_found_search);
 
         listView = view.findViewById(R.id.result_search_listview);
 
-        if (results.size() > 0) {
-            getActivity().setTitle(String.format("%s: %d", getString(R.string.search_result), results.size()));
-            search_result.setVisibility(View.GONE);
-        } else {
-            getActivity().setTitle(R.string.search_result);
-            search_result.setText(R.string.no_entry_found_for_date);
-            listView.setVisibility(View.GONE);
-        }
+        searchViewModel = new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
 
-        dataModels = new ArrayList<>();
+        searchViewModel.searchResults.observe(getViewLifecycleOwner(), results -> {
+            if (results.size() > 0) {
+                getActivity().setTitle(String.format("%s: %d", getString(R.string.search_result), results.size()));
+                search_result.setVisibility(View.GONE);
+            } else {
+                getActivity().setTitle(R.string.search_result);
+                search_result.setText(R.string.no_entry_found_for_date);
+                listView.setVisibility(View.GONE);
+            }
+
+            adapter = new ListSearchAdapter(results, getContext());
+            listView.setAdapter(adapter);
+        });
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             RingSession dataModel = dataModels.get(position);
@@ -89,6 +84,6 @@ public class SearchFragment extends Fragment {
                     .addToBackStack(null).commit();
         });
 
-        updateResultList(results);
+        searchViewModel.search(date_searched);
     }
 }

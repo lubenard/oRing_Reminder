@@ -14,6 +14,7 @@ import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListSearchAdapter extends ArrayAdapter<RingSession> {
 
@@ -26,7 +27,7 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
         TextView weared_during;
     }
 
-    public ListSearchAdapter(ArrayList<RingSession> data, Context context) {
+    public ListSearchAdapter(List<RingSession> data, Context context) {
         super(context, R.layout.main_history_one_elem, data);
     }
 
