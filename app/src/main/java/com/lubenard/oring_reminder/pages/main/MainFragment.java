@@ -36,9 +36,9 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        bottom_navigation_view = view.findViewById(R.id.bottomNavigationView);
-
         Log.d(TAG, "onViewCreated()");
+
+        bottom_navigation_view = view.findViewById(R.id.bottomNavigationView);
 
         settingsManager = MainActivity.getSettingsManager();
         bottomNavigationViewCurrentIndex = settingsManager.getBottomNavigationViewCurrentIndex();

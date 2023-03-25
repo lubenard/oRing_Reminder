@@ -34,6 +34,7 @@ import com.lubenard.oring_reminder.pages.datas.DatasFragment;
 import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
 import com.lubenard.oring_reminder.pages.my_spermograms.MySpermogramsFragment;
 import com.lubenard.oring_reminder.pages.search.SearchFragment;
+import com.lubenard.oring_reminder.ui.fragments.CalculatorFragment;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
@@ -83,11 +84,11 @@ public class HomeFragment extends Fragment {
                             .replace(android.R.id.content, new MySpermogramsFragment(), null)
                             .addToBackStack(null).commit();
                     return true;
-                /*case R.id.action_calculators:
+                case R.id.action_calculators:
                     requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, new CalculatorsFragment(), null)
+                            .replace(android.R.id.content, new CalculatorFragment(), null)
                             .addToBackStack(null).commit();
-                    return true;*/
+                    return true;
                 case R.id.action_datas:
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new DatasFragment(), null)
@@ -303,7 +304,7 @@ public class HomeFragment extends Fragment {
 
                 if (!homeViewModel.sessionBreaks.getValue().isEmpty()
                         && homeViewModel.sessionBreaks.getValue().get(0).getIsRunning()) {
-                    text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for) ,DateUtils.getDateDiff(dbManager.getLastRunningPauseForId(currentSession.getId()).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                    text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for), DateUtils.getDateDiff(dbManager.getLastRunningPauseForId(currentSession.getId()).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                     text_view_break.setVisibility(View.VISIBLE);
                     button_start_break.setText(context.getString(R.string.widget_stop_break));
                     button_start_break.setOnClickListener(v -> homeViewModel.endBreak());
