@@ -1,20 +1,34 @@
 package com.lubenard.oring_reminder.pages.calculator;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.utils.Log;
 
-public class CalculatorsFragment extends Fragment {
+public class CalculatorsFragment extends DialogFragment {
 
     private final static String TAG = "CalculatorFragment";
 
@@ -25,19 +39,74 @@ public class CalculatorsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // Fix widget to bottom and makes the dialog take up the full width
+        Window window = requireDialog().getWindow();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(window.getAttributes());
+        lp.width = 1000;
+        lp.height = WRAP_CONTENT;
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setAttributes(lp);
+        window.setGravity(Gravity.BOTTOM);
 
-        getActivity().setTitle(R.string.calculators_title);
+        EditText editTextConcentration = view.findViewById(R.id.editTextConcentration);
+        EditText editTextPercentOfMobility = view.findViewById(R.id.editTextPercentMobility);
+        EditText editTextVolumeOfSperm = view.findViewById(R.id.editTextSpermVolume);
 
-        EditText numberOfSpermato = view.findViewById(R.id.editTextNumberOfSperma);
-        EditText percentOfMobility = view.findViewById(R.id.editTextPercentMobility);
-        Button computeFertility = view.findViewById(R.id.computeFertilityButton);
-        TextView answerFertility = view.findViewById(R.id.answerFertilityCompute);
+        ImageButton iconConcentration = view.findViewById(R.id.iconConcentration);
+        ImageButton iconPercentageMobility = view.findViewById(R.id.iconPercentageMobility);
 
-        computeFertility.setOnClickListener(view1 -> {
+        ImageButton close_fragment_button = view.findViewById(R.id.create_new_break_cancel);
+        close_fragment_button.setOnClickListener(v -> dismiss());
+
+        editTextConcentration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Log.d(TAG, "Editable is " + editable);
+                if (editable.length() != 0) {
+                    int concentration = Integer.parseInt(editable.toString());
+                    if (concentration == 0)
+                        iconConcentration.setBackgroundResource(R.drawable.check_calculator);
+                    else if (concentration > 0 && concentration < 100_000)
+                        iconConcentration.setBackgroundResource(R.drawable.warning_calculator);
+                }
+            }
+        });
+
+
+        editTextPercentOfMobility.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() != 0) {
+                    int mobilityPercentage = Integer.parseInt(editable.toString());
+                    if (mobilityPercentage > 32)
+                        iconPercentageMobility.setBackgroundResource(R.drawable.warning_calculator);
+                    else
+                        iconPercentageMobility.setBackgroundResource(R.drawable.check_calculator);
+                }
+            }
+        });
+
+        /*computeFertility.setOnClickListener(view1 -> {
             String numberOfSpermatoString = numberOfSpermato.getText().toString();
             String percentOfMobilityString = percentOfMobility.getText().toString();
             int computation;
@@ -56,6 +125,6 @@ public class CalculatorsFragment extends Fragment {
                     answerFertility.setText(getString(R.string.you_are_not_contracepted) + computation + getString(R.string.spermo_per_ml));
                 }
             }
-        });
+        });*/
     }
 }

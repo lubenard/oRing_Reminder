@@ -30,11 +30,11 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
+import com.lubenard.oring_reminder.pages.calculator.CalculatorsFragment;
 import com.lubenard.oring_reminder.pages.datas.DatasFragment;
 import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
 import com.lubenard.oring_reminder.pages.my_spermograms.MySpermogramsFragment;
 import com.lubenard.oring_reminder.pages.search.SearchFragment;
-import com.lubenard.oring_reminder.ui.fragments.CalculatorFragment;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
@@ -85,9 +85,7 @@ public class HomeFragment extends Fragment {
                             .addToBackStack(null).commit();
                     return true;
                 case R.id.action_calculators:
-                    requireActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, new CalculatorFragment(), null)
-                            .addToBackStack(null).commit();
+                    new CalculatorsFragment().show(requireActivity().getSupportFragmentManager(), null);
                     return true;
                 case R.id.action_datas:
                     requireActivity().getSupportFragmentManager().beginTransaction()
