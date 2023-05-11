@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -29,102 +30,161 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
     </LinearLayout>
 
-    <TextView
-        style="@style/base_text_all_wrap"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="20sp"
-        android:text="Concentration" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="20dp"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editTextConcentration"
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:text="Concentration (per ml):" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:inputType="number"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/iconConcentration"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="5dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/check_calculator"/>
+            <EditText
+                android:id="@+id/editTextConcentration"
+                android:layout_width="0dp"
+                android:inputType="number"
+                android:layout_weight="1"
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:id="@+id/iconConcentration"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:background="@drawable/check_calculator"/>
         
-    </LinearLayout>
+        </LinearLayout>
 
-    <TextView
-        style="@style/base_text_all_wrap"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="20sp"
-        android:text="Mobilitée" />
+        <TextView
+            android:id="@+id/contraception_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:background="@drawable/valid_calculator_text"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="Vous etes contracepté !"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="20dp"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/editTextPercentMobility"
-            android:layout_width="match_parent"
-            android:inputType="numberDecimal"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
-
-        <ImageButton
-            android:id="@+id/iconPercentageMobility"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="5dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/check_calculator"/>
-
-    </LinearLayout>
-
-    <TextView
-        style="@style/base_text_all_wrap"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:textSize="20sp"
-        android:text="Volume" />
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:text="Mobilitée (en %)" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editTextPercentMobility"
+                android:layout_width="0dp"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:id="@+id/iconPercentageMobility"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="5dp"
+                android:layout_gravity="center_vertical"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:background="@drawable/check_calculator"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/mobility_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:background="@drawable/warning_calculator_text"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="Vous etes contracepté !"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="15dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="20dp"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editTextSpermVolume"
+        <TextView
+            style="@style/base_text_all_wrap"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            android:text="Volume (en ml)" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            />
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
 
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="5dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/check_calculator"/>
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
+            <EditText
+                android:id="@+id/editTextSpermVolume"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:inputType="numberDecimal"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/iconVolume"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="5dp"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/check_calculator"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/volume_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:background="@drawable/error_calculator_text"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp"
+            tools:visibility="visible"
+            tools:text="Vous etes contracepté !"/>
     </LinearLayout>
 </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

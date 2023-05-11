@@ -13,7 +13,7 @@
 			android:id="@+id/calendarMonth"
 			android:layout_width="match_parent"
 			android:layout_height="50dp"
-			android:textColor="?android:textColor"
+			android:textColor="@color/black"
 			android:layout_marginHorizontal="10dp"
 			android:gravity="center"
 			tools:text="January 2022"/>

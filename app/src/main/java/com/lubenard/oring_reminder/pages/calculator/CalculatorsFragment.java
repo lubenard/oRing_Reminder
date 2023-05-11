@@ -58,6 +58,11 @@ public class CalculatorsFragment extends DialogFragment {
 
         ImageButton iconConcentration = view.findViewById(R.id.iconConcentration);
         ImageButton iconPercentageMobility = view.findViewById(R.id.iconPercentageMobility);
+        ImageButton iconVolume = view.findViewById(R.id.iconVolume);
+
+        TextView concentrationTips = view.findViewById(R.id.contraception_tips);
+        TextView mobilityTips = view.findViewById(R.id.mobility_tips);
+        TextView volumeTips = view.findViewById(R.id.volume_tips);
 
         ImageButton close_fragment_button = view.findViewById(R.id.create_new_break_cancel);
         close_fragment_button.setOnClickListener(v -> dismiss());
@@ -74,10 +79,28 @@ public class CalculatorsFragment extends DialogFragment {
                 Log.d(TAG, "Editable is " + editable);
                 if (editable.length() != 0) {
                     int concentration = Integer.parseInt(editable.toString());
-                    if (concentration == 0)
+                    iconConcentration.setVisibility(View.VISIBLE);
+                    concentrationTips.setVisibility(View.VISIBLE);
+                    if (concentration == 0) {
                         iconConcentration.setBackgroundResource(R.drawable.check_calculator);
-                    else if (concentration > 0 && concentration < 100_000)
+                        concentrationTips.setBackgroundResource(R.drawable.valid_calculator_text);
+                        concentrationTips.setText("Votre contraception est sure a 100%");
+                    } else if (concentration > 0 && concentration <= 100_000) {
                         iconConcentration.setBackgroundResource(R.drawable.warning_calculator);
+                        concentrationTips.setBackgroundResource(R.drawable.warning_calculator_text);
+                        concentrationTips.setText("Votre contraception est sure a ~99%");
+                    } else if (concentration > 100_000 && concentration < 1_000_000) {
+                        iconConcentration.setBackgroundResource(R.drawable.warning_calculator);
+                        concentrationTips.setBackgroundResource(R.drawable.warning_calculator_text);
+                        concentrationTips.setText("Votre contraception est sure à ~90%");
+                    } else if (concentration >= 1_000_000){
+                        iconConcentration.setBackgroundResource(R.drawable.exclamation_triangle_poly);
+                        concentrationTips.setBackgroundResource(R.drawable.error_calculator_text);
+                        concentrationTips.setText("Votre contraception n'est PAS sure, merci d'aller consulter un spécialiste en cas de doute");
+                    }
+                } else {
+                    iconConcentration.setVisibility(View.INVISIBLE);
+                    concentrationTips.setVisibility(View.GONE);
                 }
             }
         });
@@ -98,13 +121,65 @@ public class CalculatorsFragment extends DialogFragment {
             public void afterTextChanged(Editable editable) {
                 if (editable.length() != 0) {
                     int mobilityPercentage = Integer.parseInt(editable.toString());
-                    if (mobilityPercentage > 32)
-                        iconPercentageMobility.setBackgroundResource(R.drawable.warning_calculator);
-                    else
+                    iconPercentageMobility.setVisibility(View.VISIBLE);
+                    mobilityTips.setVisibility(View.VISIBLE);
+                    if (mobilityPercentage == 0) {
                         iconPercentageMobility.setBackgroundResource(R.drawable.check_calculator);
+                        mobilityTips.setBackgroundResource(R.drawable.valid_calculator_text);
+                        mobilityTips.setText("La mobilitée est parfaite");
+                    } else if (mobilityPercentage > 0 && mobilityPercentage < 15) {
+                        iconPercentageMobility.setBackgroundResource(R.drawable.check_calculator);
+                        mobilityTips.setBackgroundResource(R.drawable.valid_calculator_text);
+                        mobilityTips.setText("La mobilitée est très correcte");
+                    } else if (mobilityPercentage >= 15 && mobilityPercentage < 20) {
+                        iconPercentageMobility.setBackgroundResource(R.drawable.warning_calculator);
+                        mobilityTips.setBackgroundResource(R.drawable.valid_calculator_text);
+                        mobilityTips.setText("La mobilitée est correcte");
+                    } else if (mobilityPercentage >= 20 && mobilityPercentage < 32) {
+                        iconPercentageMobility.setBackgroundResource(R.drawable.warning_calculator);
+                        mobilityTips.setBackgroundResource(R.drawable.warning_calculator_text);
+                        mobilityTips.setText("Merci de consulter un spécialiste en cas de doute");
+                    } else if (mobilityPercentage >= 32) {
+                        iconPercentageMobility.setBackgroundResource(R.drawable.exclamation_triangle_poly);
+                        mobilityTips.setBackgroundResource(R.drawable.error_calculator_text);
+                        mobilityTips.setText("32% est la valeur indiquée par l'OMS pour quelqu'un de fertile");
+                    }
+                } else {
+                    iconPercentageMobility.setVisibility(View.INVISIBLE);
                 }
             }
         });
+
+        editTextVolumeOfSperm.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() != 0) {
+                    float volume = Float.parseFloat(editable.toString());
+                    iconVolume.setVisibility(View.VISIBLE);
+                    if (volume >= 1.5f && volume <= 6f) {
+                        iconVolume.setBackgroundResource(R.drawable.check_calculator);
+                    } else {
+                        iconVolume.setBackgroundResource(R.drawable.warning_calculator);
+                        volumeTips.setVisibility(View.VISIBLE);
+                        volumeTips.setBackgroundResource(R.drawable.warning_calculator_text);
+                        volumeTips.setText("Votre volume de sperme n'est pas dans les normes, merci d'aller consulter un spécialiste en cas de doute");
+                    }
+                } else {
+                    iconVolume.setVisibility(View.GONE);
+                }
+            }
+        });
+
 
         /*computeFertility.setOnClickListener(view1 -> {
             String numberOfSpermatoString = numberOfSpermato.getText().toString();
