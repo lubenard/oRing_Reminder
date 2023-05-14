@@ -224,6 +224,6 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void stopTimer() {
-        updateHandler.removeCallbacks(updateRunnable);
+        //updateHandler.removeCallbacks(updateRunnable);
     }
 }

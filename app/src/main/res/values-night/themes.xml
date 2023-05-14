@@ -13,7 +13,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="backgroundColor">#424242</item>
-        <!-- <item name="android:textColor">#FDFDFDFD</item> -->
+        <item name="android:textColor">#FDFDFDFD</item>
     </style>
     <style name="BottomNavTheme" parent="Theme.MaterialComponents.Light.Bridge">
         <item name="android:background">#292828</item>

@@ -636,6 +636,7 @@ public class DbManager extends SQLiteOpenHelper {
      * Close the db when finished using it.
      */
     public void closeDb() {
+        Log.d(TAG, "Close db");
         if (writableDB != null) { writableDB.close();}
         if (readableDB != null) { readableDB.close();}
     }

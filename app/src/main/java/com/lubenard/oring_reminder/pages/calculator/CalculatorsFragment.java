@@ -25,10 +25,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.utils.Log;
 
-public class CalculatorsFragment extends DialogFragment {
+public class CalculatorsFragment extends BottomSheetDialogFragment {
 
     private final static String TAG = "CalculatorFragment";
 
@@ -42,15 +43,8 @@ public class CalculatorsFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Fix widget to bottom and makes the dialog take up the full width
-        Window window = requireDialog().getWindow();
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(window.getAttributes());
-        lp.width = 1000;
-        lp.height = WRAP_CONTENT;
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        window.setAttributes(lp);
-        window.setGravity(Gravity.BOTTOM);
+        requireDialog().getWindow().setWindowAnimations(R.style.bottom_dialog_animation);
+        ((View) getView().getParent()).setBackgroundColor(Color.TRANSPARENT);
 
         EditText editTextConcentration = view.findViewById(R.id.editTextConcentration);
         EditText editTextPercentOfMobility = view.findViewById(R.id.editTextPercentMobility);
