@@ -1,0 +1,5 @@
+appId: com.lubenard.oring_reminder
+---
+- runFlow: home/launch_home.yaml
+- runFlow: home/start_session.yaml
+- runFlow: home/start_break.yaml
