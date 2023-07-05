@@ -1,6 +1,5 @@
 package com.lubenard.oring_reminder.managers;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,13 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
-
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
-import com.lubenard.oring_reminder.utils.Utils;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -200,14 +197,21 @@ public class DbManager extends SQLiteOpenHelper {
     public void updateDatesRing(long id, String datePut, String dateRemoved, int isRunning) {
         if (id <= 0)
             return;
+
         ContentValues cv = new ContentValues();
-        cv.put(ringTablePut, datePut);
-        cv.put(ringTableRemoved, dateRemoved);
-        if (dateRemoved.equals("NOT SET YET"))
+        if (datePut != null)
+            cv.put(ringTablePut, datePut);
+
+        if (dateRemoved != null)
+            cv.put(ringTableRemoved, dateRemoved);
+
+        if (dateRemoved != null && dateRemoved.equals("NOT SET YET"))
             cv.put(ringTableTimeWeared, dateRemoved);
-        else
+        else if (dateRemoved != null)
             cv.put(ringTableTimeWeared, DateUtils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES));
-        cv.put(ringTableIsRunning, isRunning);
+
+        if (isRunning != -1)
+            cv.put(ringTableIsRunning, isRunning);
 
         int u = writableDB.update(ringTable, cv, ringTableId + "=?", new String[]{String.valueOf(id)});
         if (u == 0) {
@@ -399,8 +403,8 @@ public class DbManager extends SQLiteOpenHelper {
     public RingSession getLastRunningEntry() {
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
-        Cursor cursor = readableDB.query(ringTable, columns,ringTableIsRunning + "=?",
-                new String[]{"1"}, null, null, pauseTableId + " DESC");
+        Cursor cursor = readableDB.query(ringTable, columns,ringTableIsRunning + "!= ?",
+                new String[]{"0"}, null, null, pauseTableId + " DESC");
 
         RingSession data = null;
         if (cursor.moveToFirst())

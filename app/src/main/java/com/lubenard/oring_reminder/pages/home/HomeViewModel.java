@@ -188,18 +188,23 @@ public class HomeViewModel extends ViewModel {
         currentSession.setValue(dbManager.getLastRunningEntry());
         if (currentSession.getValue() != null) {
             sessionBreaks.setValue(dbManager.getAllBreaksForId(currentSession.getValue().getId(), true));
-            updateHandler = new Handler();
-            updateRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "Updating wearing time");
-                    computeWearingTimeSinceMidnight();
-                    getLast24hWearingTime();
-                    // Every minute update the wearing time. No need to do it more often
-                    updateHandler.postDelayed(this, 60000);
-                }
-            };
-            updateRunnable.run();
+            Log.d(TAG, "getCurrentSession, currentSession isInBreak say" + currentSession.getValue().getIsInBreak() + " if it in in break");
+            isThereARunningBreak.setValue(currentSession.getValue().getIsInBreak());
+            if (updateHandler == null || updateRunnable == null) {
+                Log.d(TAG, "update Handler/Runnable is null, let's create one!");
+                updateHandler = new Handler();
+                updateRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "Updating wearing time");
+                        computeWearingTimeSinceMidnight();
+                        getLast24hWearingTime();
+                        // Every minute update the wearing time. No need to do it more often
+                        updateHandler.postDelayed(this, 60000);
+                    }
+                };
+                updateRunnable.run();
+            }
         }
     }
 
@@ -208,17 +213,22 @@ public class HomeViewModel extends ViewModel {
         currentSession.setValue(null);
     }
 
-    public void endBreak() {
+    // We use the status parameter because the break can be ended as well as the status
+    public void endBreak(RingSession.SessionStatus status) {
         dbManager.endPause(dbManager.getLastRunningEntry().getId());
+        dbManager.updateDatesRing(dbManager.getLastRunningEntry().getId(), null, null, status.ordinal());
+        isThereARunningBreak.setValue(false);
         getCurrentSession();
     }
 
     public void startBreak(Context context) {
-        if (isThereARunningBreak.getValue()) {
+        if (isThereARunningBreak.getValue() != null && isThereARunningBreak.getValue()) {
             Log.d(TAG, "Error: Already a running pause");
             Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (isThereARunningBreak.getValue() != null) {
             SessionsManager.startBreak(context);
+            sessionBreaks.setValue(dbManager.getAllBreaksForId(currentSession.getValue().getId(), true));
+            isThereARunningBreak.setValue(true);
             getCurrentSession();
         }
     }

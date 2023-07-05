@@ -1,5 +1,7 @@
 appId: com.lubenard.oring_reminder
 ---
-- runFlow: start_session.yaml
 - tapOn: "Start break"
-- assertVisible: "In break for: 0mn"
+- assertVisible: "In break for: 0 mn"
+- extendedWaitUntil:
+    visible: "In break for: 1 mn"
+    timeout: 80000

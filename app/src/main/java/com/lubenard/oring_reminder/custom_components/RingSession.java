@@ -1,7 +1,6 @@
 package com.lubenard.oring_reminder.custom_components;
 
 import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -86,5 +85,9 @@ public class RingSession {
 
     public int getTimeWeared() {
         return timeWeared;
+    }
+
+    public void setStatus(SessionStatus newStatus) {
+        status = newStatus;
     }
 }

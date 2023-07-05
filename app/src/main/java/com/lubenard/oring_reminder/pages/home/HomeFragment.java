@@ -300,17 +300,18 @@ public class HomeFragment extends Fragment {
                     progress_bar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
                 progress_bar.setProgress((int)progress_percentage);
 
-                if (!homeViewModel.sessionBreaks.getValue().isEmpty()
-                        && homeViewModel.sessionBreaks.getValue().get(0).getIsRunning()) {
-                    text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for), DateUtils.getDateDiff(dbManager.getLastRunningPauseForId(currentSession.getId()).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
-                    text_view_break.setVisibility(View.VISIBLE);
-                    button_start_break.setText(context.getString(R.string.widget_stop_break));
-                    button_start_break.setOnClickListener(v -> homeViewModel.endBreak());
-                } else {
-                    text_view_break.setVisibility(View.INVISIBLE);
-                    button_start_break.setText(context.getString(R.string.widget_start_break));
-                    button_start_break.setOnClickListener(v -> homeViewModel.startBreak(context));
-                }
+                homeViewModel.isThereARunningBreak.observe(getViewLifecycleOwner(), isThereARunningBreak -> {
+                    if (isThereARunningBreak) {
+                        text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for), DateUtils.getDateDiff(homeViewModel.sessionBreaks.getValue().get(0).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                        text_view_break.setVisibility(View.VISIBLE);
+                        button_start_break.setText(context.getString(R.string.widget_stop_break));
+                        button_start_break.setOnClickListener(v -> homeViewModel.endBreak(RingSession.SessionStatus.RUNNING));
+                    } else {
+                        text_view_break.setVisibility(View.INVISIBLE);
+                        button_start_break.setText(context.getString(R.string.widget_start_break));
+                        button_start_break.setOnClickListener(v -> homeViewModel.startBreak(context));
+                    }
+                });
             }
         });
 

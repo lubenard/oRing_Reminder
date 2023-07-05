@@ -2,20 +2,14 @@ package com.lubenard.oring_reminder.managers;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
 import android.widget.Toast;
-
-import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.ArrayList;
@@ -141,6 +135,7 @@ public class SessionsManager {
 
         Log.d(TAG, "No running pause");
         dbManager.createNewPause(lastRunningEntry.getId(), DateUtils.getdateFormatted(new Date()), "NOT SET YET", 1);
+        dbManager.updateDatesRing(lastRunningEntry.getId(), null, null, RingSession.SessionStatus.IN_BREAK.ordinal());
         // Cancel alarm until breaks are set as finished.
         // Only then set a new alarm date
         Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
