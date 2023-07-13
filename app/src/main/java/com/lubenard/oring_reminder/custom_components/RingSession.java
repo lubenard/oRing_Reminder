@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder.custom_components;
 
 import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -37,6 +38,7 @@ public class RingSession {
         this.datePutCalendar = calendarStart;
 
         this.status = SessionStatus.values()[isRunning];
+        Log.d("RingSession", "Creating Ring session with id " + id + " and status " + this.status);
 
         if (this.timeWeared == 0 && this.status == SessionStatus.NOT_RUNNING) {
             this.timeWeared = (int) DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);

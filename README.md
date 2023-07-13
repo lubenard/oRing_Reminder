@@ -44,6 +44,14 @@ For a debug version:
 ./gradlew assembleDebug
 ```
 
+# Unit tests
+You can run the unit tests using maestro (available here: https://maestro.mobile.dev/)
+Once installed and emulator running, run:
+```shell
+maestro test maestro_tests/tests/
+```
+
+
 ## Tech part
 This app is coded only in Java and support all the way to Android Lollipop (Api 21)
 

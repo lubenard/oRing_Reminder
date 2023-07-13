@@ -1,7 +1,14 @@
 appId: com.lubenard.oring_reminder
 ---
+- assertVisible: "Start break"
 - tapOn: "Start break"
 - assertVisible: "In break for: 0 mn"
+- assertNotVisible: "Start break"
+- assertVisible: "Stop break"
 - extendedWaitUntil:
     visible: "In break for: 1 mn"
-    timeout: 80000
+    timeout: 120000
+- tapOn: "Stop break"
+- assertNotVisible: "In break for: 1 mn"
+- assertNotVisible: "Stop break"
+- assertVisible: "Start break"

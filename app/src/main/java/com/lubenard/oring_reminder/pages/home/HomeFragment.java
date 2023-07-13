@@ -252,6 +252,7 @@ public class HomeFragment extends Fragment {
                     return true;
                 });
             } else {
+                Log.d(TAG, "Current Session loaded, currentSession is " + currentSession.getIsRunning());
                 activeSessionLayout.setVisibility(View.VISIBLE);
 
                 noActiveSessionLayout.setVisibility(View.GONE);

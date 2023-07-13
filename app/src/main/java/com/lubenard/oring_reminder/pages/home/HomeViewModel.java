@@ -105,8 +105,10 @@ public class HomeViewModel extends ViewModel {
             Log.d(TAG, "Session id: " + currentModel.getId()
                     + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
                     + ", getDatePut: " + currentModel.getDatePut()
-                    + ", datediff datePut: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
-            if (!currentModel.getIsRunning()) {
+                    + ", getDateRemoved: " + currentModel.getDateRemoved()
+                    + ", datediff datePut: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, "
+                    + ", status:  " + currentModel.getStatus());
+            if (!currentModel.getIsRunning() && !currentModel.getIsInBreak()) {
                 if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
                         DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
@@ -150,31 +152,33 @@ public class HomeViewModel extends ViewModel {
         String sinceMidnigt = DateUtils.getdateFormatted(calendar.getTime());
         Log.d(TAG, "Computing since midnight: interval is between: " + sinceMidnigt + " and " + todayDate);
 
-        RingSession currentModel;
+        RingSession currentSession;
+
+        // We estimate that looking at the last 5 sessions is enough to cover at more than 24h
         for (int i = 0; i != (Math.min(dataModels.size(), 5)); i++) {
-            currentModel = dataModels.get(i);
-            pauseTimeForThisEntry = computeTotalTimePauseForId(currentModel.getId(), sinceMidnigt, todayDate);
-            Log.d(TAG, "Session id: " + currentModel.getId()
+            currentSession = dataModels.get(i);
+            pauseTimeForThisEntry = computeTotalTimePauseForId(currentSession.getId(), sinceMidnigt, todayDate);
+            Log.d(TAG, "Session id: " + currentSession.getId()
                     + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
-                    + ", getDatePut: " + currentModel.getDatePut()
-                    + ", datediff datePut: " + DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
-            if (!currentModel.getIsRunning()) {
-                if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
+                    + ", getDatePut: " + currentSession.getDatePut()
+                    + ", datediff datePut: " + DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
+            if (!currentSession.getIsRunning() && !currentSession.getIsInBreak()) {
+                if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.getDateDiff(currentSession.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
                     Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
-                    totalTimeSinceMidnight += currentModel.getTimeWeared() - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
+                    totalTimeSinceMidnight += currentSession.getTimeWeared() - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.getDateDiff(sinceMidnigt, currentSession.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, currentSession.getDateRemoved(), TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, currentSession.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             } else {
-                if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(sinceMidnigt, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
+                if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentSession.getDatePut(), todayDate, TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += DateUtils.getDateDiff(currentSession.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) <= 0) {
                     Log.d(TAG, "running entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
                     totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
@@ -197,6 +201,7 @@ public class HomeViewModel extends ViewModel {
                     @Override
                     public void run() {
                         Log.d(TAG, "Updating wearing time");
+                        getCurrentSession();
                         computeWearingTimeSinceMidnight();
                         getLast24hWearingTime();
                         // Every minute update the wearing time. No need to do it more often
