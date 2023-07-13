@@ -1,0 +1,31 @@
+name: Android test
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Check cache
+        uses: gradle/gradle-build-action@v2
+
+      - name: Install Maestro
+        run: curl -Ls "https://get.maestro.mobile.dev" | zsh
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 32
+          ram-size: 4096M
+          emulator-boot-timeout: 12000
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: ./gradlew connectedCheck

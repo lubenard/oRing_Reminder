@@ -2,6 +2,6 @@ appId: com.lubenard.oring_reminder
 ---
 - tapOn: "New entry"
 - assertVisible: "Right now:"
-- assertVisible: "0h00m"
+- assertVisible: "0h00mn"
 - assertVisible: "Start break"
 - assertVisible: "See my session"

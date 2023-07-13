@@ -3,5 +3,5 @@ appId: com.lubenard.oring_reminder
 - runFlow: ../../utils/start_app_no_data.yaml
 - assertVisible: "Right now:"
 - assertVisible: "No active session"
-- assertVisible: "0h00m"
-- assertVisible: "0h00m"
+- assertVisible: "0h00mn"
+- assertVisible: "0h00mn"

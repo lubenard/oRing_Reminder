@@ -69,16 +69,14 @@ public class DateUtils {
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
-
     /**
      * Convert the timeWeared from a int into a readable hour:minutes format
      * @param timeWeared timeWeared is in minutes
      * @return a string containing the time the user weared the protection
      */
     public static String convertTimeWeared(int timeWeared) {
-        return String.format("%dh%02dm", timeWeared / 60, timeWeared % 60);
+        return String.format("%dh%02dmn", timeWeared / 60, timeWeared % 60);
     }
-
 
     /**
      * Convert date into readable one:
