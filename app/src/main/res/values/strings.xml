@@ -175,10 +175,10 @@
     <string name="total_break_this_session">Break number:</string>
     <string name="total_time_break">Total break time:</string>
     <string name="add_break">Add break</string>
-    <string name="example_hint_start_date">Ex: 2020–03–30</string>
-    <string name="example_hint_end_date">Ex: 2020–03–30</string>
-    <string name="example_hint_start_time">Ex: 10:04:20</string>
-    <string name="example_hint_end_hour">Ex: 13:37:00</string>
+    <string name="example_hint_start_date" translatable="false">Ex: 2020–03–30</string>
+    <string name="example_hint_end_date" translatable="false">Ex: 2020–03–30</string>
+    <string name="example_hint_start_time" translatable="false">Ex: 10:04:20</string>
+    <string name="example_hint_end_hour" translatable="false">Ex: 13:37:00</string>
     <string name="save_icon">Save icon</string>
     <string name="close_icon">close icon</string>
     <string name="calendar_icon">Calendar icon</string>
@@ -201,7 +201,17 @@
     <string name="manual_edit_icon">Manual edit icon</string>
     <string name="new_date">New date:</string>
     <string name="breaks">Breaks:</string>
-    <string name="link_garcon_website">garcon.link</string>
-    <string name="link_planning_familial_website">planning-familial.org</string>
-    <string name="link_love_health_website">https://www.love-health-center.org/media/ecrit/carnet-dobservation-cycles-masculins/</string>
+    <string name="link_garcon_website" translatable="false">garcon.link</string>
+    <string name="link_planning_familial_website" translatable="false">planning-familial.org</string>
+    <string name="link_love_health_website" translatable="false">https://www.love-health-center.org/media/ecrit/carnet-dobservation-cycles-masculins/</string>
+    <string name="calculator_contraception_sperm_quantity_consult_specialist">Votre volume de sperme n\'est pas dans les normes, merci d\'aller consulter un spécialiste en cas de doute</string>
+    <string name="calculator_contraception_100_safe">Your contraception is 100% safe</string>
+    <string name="calculator_contraception_99_safe">Your contraception is 99% safe</string>
+    <string name="calculator_contraception_90_safe">Your contraception is 90% safe</string>
+    <string name="calculator_contraception_NOT_safe">Your contraception is NOT safe, please consult specialist if you have any doubt</string>
+    <string name="calculator_contraception_perfect_mobility">Mobility is perfeft</string>
+    <string name="calculator_contraception_very_good">Mobility is very good</string>
+    <string name="calculator_contraception_correct_mobility">Mobility is correct</string>
+    <string name="calculator_contraception_consult_specialist_if_doubt">Please consult specialist if you have any doubt</string>
+    <string name="calculator_contraception_fertile">32% is the value given by WHO for someone fertile</string>
 </resources>

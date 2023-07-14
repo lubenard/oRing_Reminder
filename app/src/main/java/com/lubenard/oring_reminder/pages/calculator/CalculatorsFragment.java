@@ -1,29 +1,17 @@
 package com.lubenard.oring_reminder.pages.calculator;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.lubenard.oring_reminder.R;
@@ -78,19 +66,19 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
                     if (concentration == 0) {
                         iconConcentration.setBackgroundResource(R.drawable.check_calculator);
                         concentrationTips.setBackgroundResource(R.drawable.valid_calculator_text);
-                        concentrationTips.setText("Votre contraception est sure a 100%");
+                        concentrationTips.setText(R.string.calculator_contraception_100_safe);
                     } else if (concentration > 0 && concentration <= 100_000) {
                         iconConcentration.setBackgroundResource(R.drawable.warning_calculator);
                         concentrationTips.setBackgroundResource(R.drawable.warning_calculator_text);
-                        concentrationTips.setText("Votre contraception est sure a ~99%");
+                        concentrationTips.setText(R.string.calculator_contraception_99_safe);
                     } else if (concentration > 100_000 && concentration < 1_000_000) {
                         iconConcentration.setBackgroundResource(R.drawable.warning_calculator);
                         concentrationTips.setBackgroundResource(R.drawable.warning_calculator_text);
-                        concentrationTips.setText("Votre contraception est sure à ~90%");
+                        concentrationTips.setText(R.string.calculator_contraception_90_safe);
                     } else if (concentration >= 1_000_000){
                         iconConcentration.setBackgroundResource(R.drawable.exclamation_triangle_poly);
                         concentrationTips.setBackgroundResource(R.drawable.error_calculator_text);
-                        concentrationTips.setText("Votre contraception n'est PAS sure, merci d'aller consulter un spécialiste en cas de doute");
+                        concentrationTips.setText(R.string.calculator_contraception_NOT_safe);
                     }
                 } else {
                     iconConcentration.setVisibility(View.INVISIBLE);
@@ -120,23 +108,23 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
                     if (mobilityPercentage == 0) {
                         iconPercentageMobility.setBackgroundResource(R.drawable.check_calculator);
                         mobilityTips.setBackgroundResource(R.drawable.valid_calculator_text);
-                        mobilityTips.setText("La mobilitée est parfaite");
+                        mobilityTips.setText(R.string.calculator_contraception_perfect_mobility);
                     } else if (mobilityPercentage > 0 && mobilityPercentage < 15) {
                         iconPercentageMobility.setBackgroundResource(R.drawable.check_calculator);
                         mobilityTips.setBackgroundResource(R.drawable.valid_calculator_text);
-                        mobilityTips.setText("La mobilitée est très correcte");
+                        mobilityTips.setText(R.string.calculator_contraception_very_good);
                     } else if (mobilityPercentage >= 15 && mobilityPercentage < 20) {
                         iconPercentageMobility.setBackgroundResource(R.drawable.warning_calculator);
                         mobilityTips.setBackgroundResource(R.drawable.valid_calculator_text);
-                        mobilityTips.setText("La mobilitée est correcte");
+                        mobilityTips.setText(R.string.calculator_contraception_correct_mobility);
                     } else if (mobilityPercentage >= 20 && mobilityPercentage < 32) {
                         iconPercentageMobility.setBackgroundResource(R.drawable.warning_calculator);
                         mobilityTips.setBackgroundResource(R.drawable.warning_calculator_text);
-                        mobilityTips.setText("Merci de consulter un spécialiste en cas de doute");
+                        mobilityTips.setText(R.string.calculator_contraception_consult_specialist_if_doubt);
                     } else if (mobilityPercentage >= 32) {
                         iconPercentageMobility.setBackgroundResource(R.drawable.exclamation_triangle_poly);
                         mobilityTips.setBackgroundResource(R.drawable.error_calculator_text);
-                        mobilityTips.setText("32% est la valeur indiquée par l'OMS pour quelqu'un de fertile");
+                        mobilityTips.setText(R.string.calculator_contraception_fertile);
                     }
                 } else {
                     iconPercentageMobility.setVisibility(View.INVISIBLE);
@@ -166,7 +154,7 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
                         iconVolume.setBackgroundResource(R.drawable.warning_calculator);
                         volumeTips.setVisibility(View.VISIBLE);
                         volumeTips.setBackgroundResource(R.drawable.warning_calculator_text);
-                        volumeTips.setText("Votre volume de sperme n'est pas dans les normes, merci d'aller consulter un spécialiste en cas de doute");
+                        volumeTips.setText(R.string.calculator_contraception_sperm_quantity_consult_specialist);
                     }
                 } else {
                     iconVolume.setVisibility(View.GONE);

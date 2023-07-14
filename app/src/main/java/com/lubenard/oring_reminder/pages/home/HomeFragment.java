@@ -80,6 +80,7 @@ public class HomeFragment extends Fragment {
                     searchEntry();
                     return true;
                 case R.id.action_my_spermogramms:
+                    requireActivity().removeMenuProvider(menuProvider);
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new MySpermogramsFragment(), null)
                             .addToBackStack(null).commit();
@@ -88,6 +89,7 @@ public class HomeFragment extends Fragment {
                     new CalculatorsFragment().show(requireActivity().getSupportFragmentManager(), null);
                     return true;
                 case R.id.action_datas:
+                    requireActivity().removeMenuProvider(menuProvider);
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, new DatasFragment(), null)
                             .addToBackStack(null).commit();
@@ -126,6 +128,7 @@ public class HomeFragment extends Fragment {
                         dayString = "0" + dayString;
                     bundle.putString("date_searched", year + "-" + monthString + "-" + dayString);
                     fragment.setArguments(bundle);
+                    requireActivity().removeMenuProvider(menuProvider);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(android.R.id.content, fragment, null)
                             .addToBackStack(null).commit();

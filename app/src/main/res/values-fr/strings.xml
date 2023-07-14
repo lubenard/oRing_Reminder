@@ -174,5 +174,26 @@
     <string name="in_break_for">En pause depuis</string>
     <string name="start">Début:</string>
     <string name="estimated_end">Fin estimée :</string>
+    <string name="formatted_datetime">%s à %s</string>
+    <string name="total_break_this_session">Total des pauses:</string>
+    <string name="total_time_break">Temps de pause total:</string>
+    <string name="add_break">Ajouter une pause:</string>
     <string name="start_break">Commencer une pause:</string>
+    <string name="calculator_contraception_100_safe">Votre contraception est sûre a 100%</string>
+    <string name="calculator_contraception_99_safe">Votre contraception est sûre a ~99%</string>
+    <string name="calculator_contraception_90_safe">Votre contraception est sûre à ~90%</string>
+    <string name="calculator_contraception_NOT_safe">Votre contraception n\'est PAS sure, merci d\'aller consulter un spécialiste en cas de doute</string>
+    <string name="calculator_contraception_perfect_mobility">La mobilitée est parfaite</string>
+    <string name="calculator_contraception_very_good">La mobilitée est très correcte</string>
+    <string name="calculator_contraception_correct_mobility">La mobilitée est correcte</string>
+    <string name="calculator_contraception_consult_specialist_if_doubt">Merci de consulter un spécialiste en cas de doute</string>
+    <string name="calculator_contraception_fertile">32% est la valeur indiquée par l\'OMS pour quelqu\'un de fertile</string>
+    <string name="calculator_contraception_sperm_quantity_consult_specialist">Votre volume de sperme n\'est pas dans les normes, merci d\'aller consulter un spécialiste en cas de doute</string>
+    <string name="mon">LUN</string>
+    <string name="tue">MAR</string>
+    <string name="wed">MER</string>
+    <string name="thu">JEU</string>
+    <string name="fri">VEN</string>
+    <string name="sat">SAM</string>
+    <string name="sun">DIM</string>
 </resources>
