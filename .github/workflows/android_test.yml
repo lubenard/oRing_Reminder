@@ -21,6 +21,9 @@ jobs:
       - name: Install Maestro
         run: curl -Ls "https://get.maestro.mobile.dev" | zsh
 
+      - name: Export env variables
+        run: export MAESTRO_MONTHYEAR=$(date +"%B %Y")
+
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:

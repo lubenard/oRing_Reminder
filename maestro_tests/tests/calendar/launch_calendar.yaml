@@ -3,3 +3,11 @@ appId: com.lubenard.oring_reminder
 - runFlow: ../../utils/start_app_no_data.yaml
 - tapOn:
     text: "Calendar"
+- assertVisible: "MON"
+- assertVisible: "TUE"
+- assertVisible: "WED"
+- assertVisible: "THU"
+- assertVisible: "FRI"
+- assertVisible: "SAT"
+- assertVisible: "SUN"
+- assertVisible: ${MAESTRO_MONTHYEAR}
