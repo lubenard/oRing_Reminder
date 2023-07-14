@@ -1,0 +1,15 @@
+appId: com.lubenard.oring_reminder
+---
+- runFlow: ../../utils/start_session.yaml
+- runFlow: ../../utils/stop_session.yaml
+
+- runFlow: ../../utils/start_session.yaml
+- runFlow: ../../utils/stop_session.yaml
+
+- tapOn: "Search entry"
+- tapOn: "OK"
+- assertVisible: "Results: 3"
+- assertVisible: "Since:"
+- assertVisible: "To:"
+- assertVisible: "Worn for:"
+- assertVisible: "0h00mn"

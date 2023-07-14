@@ -3,9 +3,6 @@ package com.lubenard.oring_reminder.pages.calendar;
 import static androidx.core.content.ContextCompat.getDrawable;
 
 import android.os.Bundle;
-
-import com.lubenard.oring_reminder.pages.history.HistoryFragment;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,11 +19,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.DbManager;
+import com.lubenard.oring_reminder.pages.history.HistoryFragment;
 import com.lubenard.oring_reminder.ui.adapters.CalendarAdapter;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,7 +50,7 @@ public class CalendarFragment extends Fragment {
         @Override
         public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
             int id = menuItem.getItemId();
-            if (id == R.id.action_view_as_history) {
+            if (id == R.id.action_view_as_list) {
                 activity.removeMenuProvider(menuProvider);
                 activity.getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new HistoryFragment(), null)

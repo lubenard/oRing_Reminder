@@ -1,0 +1,6 @@
+appId: com.lubenard.oring_reminder
+---
+
+- extendedWaitUntil:
+    visible: "In break for: 1 mn"
+    timeout: 120000

@@ -1,8 +1,5 @@
 appId: com.lubenard.oring_reminder
 ---
-- tapOn: "New entry"
-- assertVisible: "Right now:"
-- assertVisible: "No active session"
 - assertVisible: "Since midnight, worn for:"
 - assertVisible:
     text: "0h01mn"
