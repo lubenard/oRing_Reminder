@@ -13,9 +13,6 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.lubenard.oring_reminder.pages.home.HomeViewModel;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.RequiresApi;
@@ -29,12 +26,16 @@ import androidx.preference.PreferenceManager;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
+import com.lubenard.oring_reminder.pages.home.HomeViewModel;
 import com.lubenard.oring_reminder.pages.main.MainFragment;
+import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.concurrent.Callable;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private SharedPreferences sharedPreferences;
     private static SettingsManager settingsManager;
@@ -134,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d(TAG, "onCreate()");
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Init log module
@@ -203,9 +206,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        Log.d(TAG,"onDestroy()");
         dbManager.closeDb();
         logManager.closeFile();
+        super.onDestroy();
     }
 
     /**

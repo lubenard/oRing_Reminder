@@ -38,6 +38,7 @@ public class HomeViewModel extends ViewModel {
     private Runnable updateRunnable;
 
     public HomeViewModel() {
+        Log.d(TAG, "HomeViewModel instanciated");
         dbManager = MainActivity.getDbManager();
     }
 

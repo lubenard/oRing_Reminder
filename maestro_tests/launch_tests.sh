@@ -1,4 +1,4 @@
 #!/bin/bash
 
 export MAESTRO_MONTHYEAR=$(date +"%B %Y")
-maestro test ./tests/
+maestro test maestro_tests/tests/

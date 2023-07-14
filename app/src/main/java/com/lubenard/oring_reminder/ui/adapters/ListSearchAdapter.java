@@ -13,7 +13,6 @@ import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListSearchAdapter extends ArrayAdapter<RingSession> {
@@ -60,7 +59,11 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
             viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         } else {
             String[] dateRemoved = dataModel.getDateRemoved().split(" ");
-            viewHolder.worn_date.setText(DateUtils.convertDateIntoReadable(datePut[0], false) + " -> " + DateUtils.convertDateIntoReadable(dateRemoved[0], false));
+            if (!datePut[0].equals(dateRemoved[0]))
+                viewHolder.worn_date.setText(String.format("%s -> %s", DateUtils.convertDateIntoReadable(datePut[0], false), DateUtils.convertDateIntoReadable(dateRemoved[0], false)));
+            else
+                viewHolder.worn_date.setText(DateUtils.convertDateIntoReadable(datePut[0], false));
+
             viewHolder.weared_to.setText(dateRemoved[1]);
 
             int totalTimePause = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());

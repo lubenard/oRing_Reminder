@@ -67,6 +67,7 @@ public class DbManager extends SQLiteOpenHelper {
         super(context, dbName , null, DATABASE_VERSION);
         this.writableDB = this.getWritableDatabase();
         this.readableDB = this.getReadableDatabase();
+        Log.d(TAG, "Instantiated new db at " + this);
     }
 
     /**
