@@ -34,10 +34,18 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<List<BreakSession>> sessionBreaks = new MutableLiveData<>(Collections.emptyList());
     public MutableLiveData<Boolean> isThereARunningBreak = new MutableLiveData<>();
 
+    public boolean shouldUpdateDbInstance = false;
+
     private Handler updateHandler;
     private Runnable updateRunnable;
 
     public HomeViewModel() {
+        Log.d(TAG, "New VM at " + this);
+        dbManager = MainActivity.getDbManager();
+    }
+
+    void updateDbManager() {
+        Log.d(TAG,"Updated DbManager");
         dbManager = MainActivity.getDbManager();
     }
 
@@ -225,5 +233,9 @@ public class HomeViewModel extends ViewModel {
 
     public void stopTimer() {
         //updateHandler.removeCallbacks(updateRunnable);
+    }
+
+    public void resetInstanceDB() {
+        shouldUpdateDbInstance = true;
     }
 }

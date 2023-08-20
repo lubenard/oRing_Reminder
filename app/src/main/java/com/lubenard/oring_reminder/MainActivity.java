@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("MainActivity", "onCreate()");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Init log module
@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("MainActivity", "OnDestroy()");
         dbManager.closeDb();
         logManager.closeFile();
     }

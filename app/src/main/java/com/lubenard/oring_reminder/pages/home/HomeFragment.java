@@ -205,6 +205,9 @@ public class HomeFragment extends Fragment {
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         Log.d(TAG, "vm is " + homeViewModel);
 
+        if (homeViewModel.shouldUpdateDbInstance)
+            homeViewModel.updateDbManager();
+
         progress_bar = view.findViewById(R.id.progress_bar_main);
 
         textview_progress = view.findViewById(R.id.text_view_progress);
@@ -322,6 +325,7 @@ public class HomeFragment extends Fragment {
         Log.d(TAG, "onDestroyView() called");
         Log.d(TAG, "onDestroy activity is " + activity.toString() + ", menuProvider: " + menuProvider);
         homeViewModel.stopTimer();
+        homeViewModel.resetInstanceDB();
         activity.removeMenuProvider(menuProvider);
         super.onDestroyView();
     }

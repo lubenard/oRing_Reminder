@@ -70,6 +70,7 @@ public class DbManager extends SQLiteOpenHelper {
         super(context, dbName , null, DATABASE_VERSION);
         this.writableDB = this.getWritableDatabase();
         this.readableDB = this.getReadableDatabase();
+        Log.d(TAG, "New Dbmanager is created at " + this);
     }
 
     /**
@@ -397,6 +398,7 @@ public class DbManager extends SQLiteOpenHelper {
      * Primarily used for widget
      */
     public RingSession getLastRunningEntry() {
+        Log.d(TAG, "DbManager is at " + this);
 
         String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
         Cursor cursor = readableDB.query(ringTable, columns,ringTableIsRunning + "=?",
