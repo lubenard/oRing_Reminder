@@ -134,9 +134,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d(TAG, "onCreate()");
-
+        Log.d("MainActivity", "onCreate()");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Init log module
