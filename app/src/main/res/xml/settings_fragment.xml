@@ -47,7 +47,7 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:inputType="numberDecimal"
-            android:digits="0123456789"
+            android:digits="0123456789:"
             android:title="@string/wering_time" />
 
         <SwitchPreference

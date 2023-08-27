@@ -1,12 +1,6 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
-
-import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
-import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
-import com.lubenard.oring_reminder.pages.search.SearchFragment;
-import com.lubenard.oring_reminder.utils.Log;
-
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -21,6 +15,10 @@ import androidx.fragment.app.FragmentActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SettingsManager;
+import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
+import com.lubenard.oring_reminder.pages.search.SearchFragment;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -100,7 +98,7 @@ public class CalendarItemAdapter extends BaseAdapter {
                     if (session.getIsRunning())
                         numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
                     else {
-                        if (session.getTimeWeared() >= (settingsManager.getWearingTimeInt() * 60))
+                        if (session.getTimeWeared() >= (settingsManager.getWearingTimeInt()))
                             numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
                         else
                             numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));

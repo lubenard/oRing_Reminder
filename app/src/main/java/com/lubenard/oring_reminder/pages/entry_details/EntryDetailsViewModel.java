@@ -31,7 +31,7 @@ public class EntryDetailsViewModel extends ViewModel {
     MutableLiveData<Integer> progressColor = new MutableLiveData<>();
     MutableLiveData<Integer> progressBarColor = new MutableLiveData<>();
     MutableLiveData<Boolean> isSessionRunning = new MutableLiveData<>();
-    Integer wearingTimePref;
+    int wearingTimePref;
     Boolean isThereARunningPause = false;
     Runnable updateRunnable;
     Handler updateHandler;
@@ -75,7 +75,7 @@ public class EntryDetailsViewModel extends ViewModel {
     }
 
     private void getPrefValues() {
-        wearingTimePref = MainActivity.getSettingsManager().getWearingTimeInt() * 60;
+        wearingTimePref = MainActivity.getSettingsManager().getWearingTimeInt();
     }
 
     public void deleteSession() {

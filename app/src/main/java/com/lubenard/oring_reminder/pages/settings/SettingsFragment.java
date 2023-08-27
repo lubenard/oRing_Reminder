@@ -11,10 +11,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.lubenard.oring_reminder.pages.about.AboutFragment;
-import com.lubenard.oring_reminder.pages.debug.DebugFragment;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +25,15 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import com.lubenard.oring_reminder.managers.BackupRestoreManager;
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBroadcastReceiver;
+import com.lubenard.oring_reminder.managers.BackupRestoreManager;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
+import com.lubenard.oring_reminder.pages.about.AboutFragment;
+import com.lubenard.oring_reminder.pages.debug.DebugFragment;
+import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
@@ -85,17 +84,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // wearing_time preference click listener
         Preference wearing_time = findPreference("myring_wearing_time");
         wearing_time.setOnPreferenceChangeListener((preference, newValue) -> {
-            if (newValue.toString().matches("\\d+")) {
-                int newTimeWeared = Integer.parseInt(newValue.toString());
-                if (newTimeWeared < 13 || newTimeWeared > 18) {
+            Log.d(TAG, "onPreferenceChangeListener: newValue is type of " + newValue.getClass().getName());
+            if (((String)newValue).matches("\\d+") || ((String)newValue).matches("\\d+:\\d+")) {
+                String[] splittedWearingTime = ((String)newValue).split(":");
+
+                int hoursWearing = Integer.parseInt(splittedWearingTime[0]);
+
+                if (hoursWearing < 13 || hoursWearing > 18) {
                     new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_dangerous_wearing_time)
                             .setMessage(R.string.alertdialog_dangerous_wearing_body)
                             .setPositiveButton(android.R.string.yes, null)
                             .setIcon(android.R.drawable.ic_dialog_alert).show();
                 }
-                settingsManager.setWearingTime(newValue.toString());
+                settingsManager.setWearingTime((String)newValue);
                 return true;
             } else {
+                Log.d(TAG, "Failed to parse Float: newValue is " + newValue);
                 new AlertDialog.Builder(getContext()).setTitle(R.string.alertdialog_please_enter_digits_title)
                         .setMessage(R.string.alertdialog_please_enter_digits_body)
                         .setPositiveButton(android.R.string.yes, null)

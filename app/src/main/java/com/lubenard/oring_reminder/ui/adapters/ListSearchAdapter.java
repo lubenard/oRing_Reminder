@@ -67,7 +67,7 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
             viewHolder.weared_to.setText(dateRemoved[1]);
 
             int totalTimePause = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
-            if (totalTimePause / 60 >= MainActivity.getSettingsManager().getWearingTimeInt())
+            if (totalTimePause >= MainActivity.getSettingsManager().getWearingTimeInt())
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));

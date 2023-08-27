@@ -19,6 +19,8 @@ public class RingSession {
     private Calendar datePutCalendar;
     private String dateRemoved;
     private SessionStatus status;
+
+    // This value is in MINUTES
     private int timeWeared;
 
     /**

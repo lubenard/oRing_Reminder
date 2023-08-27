@@ -283,8 +283,8 @@ public class HomeFragment extends Fragment {
 
                 long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(currentSession.getDatePut(), currentSession.getId(), null);
                 textview_progress.setText(DateUtils.convertTimeWeared((int)timeBeforeRemove));
-                time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt() * 60)));
-                float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt() * 60)) * 100;
+                time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt())));
+                float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt())) * 100;
 
                 String[] splittedDatePut = currentSession.getDatePut().split(" ");
 
@@ -292,7 +292,7 @@ public class HomeFragment extends Fragment {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(currentSession.getDatePutCalendar().getTime());
-                calendar.add(Calendar.HOUR_OF_DAY, MainActivity.getSettingsManager().getWearingTimeInt());
+                calendar.add(Calendar.MINUTE, MainActivity.getSettingsManager().getWearingTimeInt());
 
                 String[] splittedDateEstimatedEnd = DateUtils.getdateFormatted(calendar.getTime()).split(" ");
 

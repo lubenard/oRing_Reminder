@@ -13,7 +13,6 @@ import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
 import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
 
@@ -68,7 +67,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
             weared_to.setText(dateRemoved[1]);
 
             int totalTimePause = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
-            if (totalTimePause / 60 >= MainActivity.getSettingsManager().getWearingTimeInt())
+            if (totalTimePause >= MainActivity.getSettingsManager().getWearingTimeInt())
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
             else
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));

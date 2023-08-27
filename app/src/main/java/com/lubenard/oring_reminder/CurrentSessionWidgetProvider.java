@@ -10,13 +10,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.lubenard.oring_reminder.broadcast_receivers.AfterBootBroadcastReceiver;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
@@ -24,7 +20,8 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
-import com.lubenard.oring_reminder.utils.Utils;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -103,7 +100,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(lastEntry.getDatePutCalendar().getTime());
-                calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt());
+                calendar.add(Calendar.MINUTE, settingsManager.getWearingTimeInt());
 
                 int textResourceWhenGetItOff;
 

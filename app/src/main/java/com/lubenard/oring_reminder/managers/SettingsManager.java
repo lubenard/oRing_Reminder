@@ -2,14 +2,14 @@ package com.lubenard.oring_reminder.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.lubenard.oring_reminder.utils.Log;
 
 import androidx.preference.PreferenceManager;
+
+import com.lubenard.oring_reminder.utils.Log;
 
 public class SettingsManager {
 
     private SharedPreferences sharedPreferences;
-
 
     // Shared Preferences settings
     private String ui_home_action_fab;
@@ -64,7 +64,9 @@ public class SettingsManager {
     }
 
     public void setWearingTime(String newWearingTime) {
+        Log.d(TAG, "Set wearing time to " + newWearingTime);
         wearing_time = newWearingTime;
+        sharedPreferences.edit().putString("myring_wearing_time", newWearingTime).apply();
     }
 
     /**
@@ -75,10 +77,19 @@ public class SettingsManager {
     }
 
     /**
-     Return wearing time in HOURS
+     Return wearing time in MINUTES
      */
     public int getWearingTimeInt() {
-        return Integer.parseInt(wearing_time);
+        int wearingTimeInMinutes = 0;
+        if (wearing_time.contains(":")) {
+            String[] splittedWearingTime = wearing_time.split(":");
+            Log.d(TAG, "getting splittedWearingTimeLength " + splittedWearingTime.length);
+            wearingTimeInMinutes += Integer.parseInt(splittedWearingTime[0]) * 60;
+            wearingTimeInMinutes += Integer.parseInt(splittedWearingTime[1]);
+        } else
+            wearingTimeInMinutes += Integer.parseInt(wearing_time) * 60;
+
+        return wearingTimeInMinutes;
     }
 
     public String getTheme() {

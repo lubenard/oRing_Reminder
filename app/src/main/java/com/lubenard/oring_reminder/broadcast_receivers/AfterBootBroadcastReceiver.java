@@ -3,27 +3,17 @@ package com.lubenard.oring_reminder.broadcast_receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
-
-import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.managers.DbManager;
-import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
-import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
-import com.lubenard.oring_reminder.utils.Utils;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Start the app at boot, and re-set all alarms
@@ -40,15 +30,15 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
         int userSettingWearingTime = settingsManager.getWearingTimeInt();
         HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();
-        Calendar calendar = Calendar.getInstance();
 
         for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
             // Do not set a alarm if session has a running pause, because we do not know when this pause is going
             // to end.
             // Only set a new alarm when the end time of the pause is known
             if (!SessionsManager.doesSessionHaveRunningPause(dbManager, sessions.getKey())) {
+                Calendar calendar = Calendar.getInstance();
                 calendar.setTime(DateUtils.getdateParsed(sessions.getValue()));
-                calendar.add(Calendar.HOUR_OF_DAY, userSettingWearingTime);
+                calendar.add(Calendar.MINUTE, userSettingWearingTime);
                 calendar.add(Calendar.MINUTE, SessionsManager.computeTotalTimePause(dbManager, sessions.getKey()));
 
                 // Set alarms for session not finished
