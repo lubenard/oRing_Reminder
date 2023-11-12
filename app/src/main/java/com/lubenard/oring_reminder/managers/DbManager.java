@@ -409,9 +409,11 @@ public class DbManager extends SQLiteOpenHelper {
                 new String[]{"0"}, null, null, pauseTableId + " DESC");
 
         RingSession data = null;
-        if (cursor.moveToFirst())
+        if (cursor.moveToFirst()) {
             data = new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)), cursor.getString(cursor.getColumnIndex(ringTablePut)), cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
-                cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)), cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)), cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
+            data.setBreakList(getAllBreaksForId(cursor.getInt(cursor.getColumnIndex(ringTableId)), true));
+        }
         cursor.close();
         return data;
     }
@@ -452,11 +454,14 @@ public class DbManager extends SQLiteOpenHelper {
         Cursor cursor = readableDB.query(ringTable,  columns, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
-            datas.add(new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
+            RingSession session = new RingSession(cursor.getInt(cursor.getColumnIndex(ringTableId)),
                     cursor.getString(cursor.getColumnIndex(ringTablePut)),
                     cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
                     cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
-                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))));
+                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared)));
+            session.setBreakList(getAllBreaksForId(cursor.getInt(cursor.getColumnIndex(ringTableId)), true));
+
+            datas.add(session);
         }
         cursor.close();
         return datas;

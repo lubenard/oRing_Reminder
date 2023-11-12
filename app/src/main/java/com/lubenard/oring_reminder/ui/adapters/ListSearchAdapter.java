@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.SessionsUtils;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
         if (dataModel.getIsRunning()) {
             viewHolder.weared_to.setText("");
 
-            long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), null);
+            long timeBeforeRemove = dataModel.getSessionDuration() - dataModel.computeTotalTimePause();
             viewHolder.weared_during.setTextColor(getContext().getResources().getColor(R.color.yellow));
             viewHolder.weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         } else {
@@ -66,7 +66,7 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
 
             viewHolder.weared_to.setText(dateRemoved[1]);
 
-            int totalTimePause = SessionsManager.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
+            int totalTimePause = SessionsUtils.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
             if (totalTimePause >= MainActivity.getSettingsManager().getWearingTimeInt())
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else

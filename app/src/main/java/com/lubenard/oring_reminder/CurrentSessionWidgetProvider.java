@@ -94,7 +94,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 PendingIntent pendingIntent3 = PendingIntent.getBroadcast(context, 0, intent3, getIntentMutableFlag());
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_start_stop_break_session, pendingIntent3);
 
-                int totalTimePause = SessionsManager.computeTotalTimePause(dbManager, lastEntry.getId());
+                int totalTimePause = lastEntry.computeTotalTimePause();
                 long wornFor = DateUtils.getDateDiff(lastEntry.getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 wornFor -= totalTimePause;
 
@@ -166,7 +166,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, "onEnabled is called");
         dbManager = new DbManager(context);
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_MUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_MUTABLE);
         am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
         // 6000 millis is one minute
         am.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis(), 60000, pendingIntent);
@@ -178,7 +178,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
         isThereAWidget = false;
         Log.d(TAG, "onDisabled is called");
         Intent intent = new Intent(context, CurrentSessionWidgetProvider.class);
-        PendingIntent mPendingIntent = PendingIntent.getBroadcast(context, 1, intent, 0);
+        PendingIntent mPendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_MUTABLE);
         // Cancel alarm manager
         if (am == null)
             am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);

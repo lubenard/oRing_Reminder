@@ -39,7 +39,7 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(DateUtils.getdateParsed(sessions.getValue()));
                 calendar.add(Calendar.MINUTE, userSettingWearingTime);
-                calendar.add(Calendar.MINUTE, SessionsManager.computeTotalTimePause(dbManager, sessions.getKey()));
+                calendar.add(Calendar.MINUTE, computeTotalTimePause(dbManager, sessions.getKey()));
 
                 // Set alarms for session not finished
                 Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + DateUtils.getdateFormatted(calendar.getTime()));

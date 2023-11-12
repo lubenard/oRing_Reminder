@@ -120,8 +120,8 @@ public class HomeViewModel extends ViewModel {
                 if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
                         DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
-                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
-                    totalTimeLastDay += currentModel.getTimeWeared() - pauseTimeForThisEntry;
+                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWorn() + " to counter");
+                    totalTimeLastDay += currentModel.getTimeWorn() - pauseTimeForThisEntry;
                 } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
                         DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
@@ -174,8 +174,8 @@ public class HomeViewModel extends ViewModel {
                 if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) > 0 &&
                         DateUtils.getDateDiff(currentSession.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
-                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWeared() + " to counter");
-                    totalTimeSinceMidnight += currentSession.getTimeWeared() - pauseTimeForThisEntry;
+                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWorn() + " to counter");
+                    totalTimeSinceMidnight += currentSession.getTimeWorn() - pauseTimeForThisEntry;
                 } else if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) <= 0 &&
                         DateUtils.getDateDiff(sinceMidnigt, currentSession.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)

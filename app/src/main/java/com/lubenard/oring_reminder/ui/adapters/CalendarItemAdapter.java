@@ -98,7 +98,7 @@ public class CalendarItemAdapter extends BaseAdapter {
                     if (session.getIsRunning())
                         numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
                     else {
-                        if (session.getTimeWeared() >= (settingsManager.getWearingTimeInt()))
+                        if (session.getTimeWorn() >= (settingsManager.getWearingTimeInt()))
                             numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
                         else
                             numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));

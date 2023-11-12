@@ -32,6 +32,7 @@ public class SettingsManager {
     public SettingsManager(Context context) {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Log.d(TAG, "Init SettingsManager");
         reloadSettings();
     }
 

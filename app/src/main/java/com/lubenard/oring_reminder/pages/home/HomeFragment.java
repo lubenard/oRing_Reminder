@@ -38,6 +38,7 @@ import com.lubenard.oring_reminder.pages.search.SearchFragment;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
+import com.lubenard.oring_reminder.utils.SessionsUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -206,7 +207,6 @@ public class HomeFragment extends Fragment {
         dataModels = new ArrayList<>();
 
         homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        Log.d(TAG, "vm is " + homeViewModel);
 
         if (homeViewModel.shouldUpdateDbInstance)
             homeViewModel.updateDbManager();
@@ -260,15 +260,11 @@ public class HomeFragment extends Fragment {
             } else {
                 Log.d(TAG, "Current Session loaded, currentSession is " + currentSession.getIsRunning());
                 activeSessionLayout.setVisibility(View.VISIBLE);
-
                 noActiveSessionLayout.setVisibility(View.GONE);
 
                 fab.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(android.R.color.holo_red_dark)));
                 fab.setImageDrawable(context.getDrawable(R.drawable.outline_close_24));
-
-                fab.setOnClickListener(v -> {
-                    homeViewModel.endSession();
-                });
+                fab.setOnClickListener(v -> homeViewModel.endSession());
 
                 button_see_curr_session.setOnClickListener(v -> {
                     activity.removeMenuProvider(menuProvider);
@@ -281,7 +277,7 @@ public class HomeFragment extends Fragment {
                             .addToBackStack(null).commit();
                 });
 
-                long timeBeforeRemove = SessionsManager.getWearingTimeWithoutPause(currentSession.getDatePut(), currentSession.getId(), null);
+                long timeBeforeRemove = SessionsUtils.getWearingTimeWithoutPause(currentSession.getDatePut(), currentSession.getId(), null);
                 textview_progress.setText(DateUtils.convertTimeWeared((int)timeBeforeRemove));
                 time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt())));
                 float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt())) * 100;

@@ -145,57 +145,6 @@ public class SessionsManager {
     }
 
     /**
-     * Get the total time pause for one session
-     * @param datePut The datetime the user put the protection
-     * @param entryId the entry id of the session
-     * @param dateRemoved The datetime the user removed the protection
-     * @return the total time in Minutes of new wearing time
-     */
-    public static int getWearingTimeWithoutPause(String datePut, long entryId, String dateRemoved) {
-        long oldTimeBeforeRemove;
-        int newValue;
-        long totalTimePause;
-
-        if (dateRemoved == null)
-            oldTimeBeforeRemove = DateUtils.getDateDiff(datePut, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
-        else
-            oldTimeBeforeRemove = DateUtils.getDateDiff(datePut, dateRemoved, TimeUnit.MINUTES);
-
-        totalTimePause = computeTotalTimePause(MainActivity.getDbManager(), entryId);
-        newValue = (int) (oldTimeBeforeRemove - totalTimePause);
-        return Math.max(newValue, 0);
-    }
-
-    /**
-     * Compute the total pause time by adding each one
-     * @param dbManager dbManager
-     * @param entryId entry to check
-     * @return the int value of all pause time in minutes
-     */
-    public static int computeTotalTimePause(DbManager dbManager, long entryId) {
-        ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
-        int totalTimePause = 0;
-        for (int i = 0; i != allPauses.size(); i++) {
-            if (allPauses.get(i).getIsRunning())
-                totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
-            else
-                totalTimePause += allPauses.get(i).getTimeRemoved();
-        }
-        return totalTimePause;
-    }
-
-    public static int computeTotalTimePause(ArrayList<BreakSession> allBreaks) {
-        int totalTimePause = 0;
-        for (int i = 0; i != allBreaks.size(); i++) {
-            if (allBreaks.get(i).getIsRunning())
-                totalTimePause += DateUtils.getDateDiff(allBreaks.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
-            else
-                totalTimePause += allBreaks.get(i).getTimeRemoved();
-        }
-        return totalTimePause;
-    }
-
-    /**
      * Check if given session have running pause ongoing
      * @param dbManager dbManager
      * @param entryId entry to check

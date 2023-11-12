@@ -6,17 +6,17 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
-import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
+import com.lubenard.oring_reminder.utils.SessionsUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class EntryDetailsViewModel extends ViewModel {
@@ -43,6 +43,7 @@ public class EntryDetailsViewModel extends ViewModel {
 
     public void loadBreaks() {
         sessionBreaks.setValue(dbManager.getAllBreaksForId(entryId, true));
+        session.getValue().setBreakList(sessionBreaks.getValue());
     }
 
     public void loadSession() {
@@ -54,8 +55,8 @@ public class EntryDetailsViewModel extends ViewModel {
     public void loadCurrentSession(long entryId) {
         if (entryId > 0) {
             this.entryId = entryId;
+            wearingTimePref = MainActivity.getSettingsManager().getWearingTimeInt();
             loadSession();
-            getPrefValues();
             loadBreaks();
             computeWearingTime();
             computeProgressBarDatas();
@@ -74,36 +75,25 @@ public class EntryDetailsViewModel extends ViewModel {
         }
     }
 
-    private void getPrefValues() {
-        wearingTimePref = MainActivity.getSettingsManager().getWearingTimeInt();
-    }
-
     public void deleteSession() {
         Log.d(TAG, "Deleting entry with id " + entryId);
         dbManager.deleteEntry(entryId);
     }
 
     void computeProgressBarDatas() {
-        int progress_percentage = (int) (((float) wornTime.getValue() / (float) wearingTimePref) * 100);
+        HashMap<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(session.getValue(), wearingTimePref);
 
-        if (progress_percentage > 100f)
-            progressBarColor.setValue(R.color.green_main_bar);
-        else
-            progressBarColor.setValue(R.color.blue_main_bar);
-        progressPercentage.setValue(progress_percentage);
+        progressColor.setValue(SessionsUtils.computeTextColor(session.getValue(), wearingTimePref));
 
-        if (session.getValue().getIsRunning()) {
-            progressColor.setValue(R.color.yellow);
-        } else {
-            if ((session.getValue().getTimeWeared() - SessionsManager.computeTotalTimePause(dbManager, entryId)) / 60 >= wearingTimePref)
-                progressColor.setValue(android.R.color.holo_green_dark);
-            else
-                progressColor.setValue(android.R.color.holo_red_dark);
-        }
+        // As weird as it can sound, pbDatas only have one key value in it
+        for (Integer key: pbDatas.keySet()) { progressPercentage.setValue(key); }
+
+        // Same here
+        for (Integer value: pbDatas.values()) { progressBarColor.setValue(value); }
     }
 
     /**
-     * Compute when user an get it off according to breaks.
+     * Compute when user get it off according to breaks.
      * If the user made a 1h30 break, then he should wear it 1h30 more
      */
     void computeWearingTime() {
@@ -116,7 +106,7 @@ public class EntryDetailsViewModel extends ViewModel {
         else
             oldTimeWeared = DateUtils.getDateDiff(session.getValue().getDatePut(), session.getValue().getDateRemoved(), TimeUnit.MINUTES);
 
-        long totalTimePause = SessionsManager.computeTotalTimePause(sessionBreaks.getValue());
+        long totalTimePause = session.getValue().computeTotalTimePause();
         long newComputedTime;
 
         // Avoid having more time pause than weared time
@@ -129,7 +119,7 @@ public class EntryDetailsViewModel extends ViewModel {
 
         // Time is computed as:
         // Date of put + number_of_hour_defined_in_settings + total_time_in_pause
-        int newAlarmDate = (int) (newComputedTime * 60 + totalTimePause);
+        int newAlarmDate = (int) (newComputedTime + MainActivity.getSettingsManager().getWearingTimeInt() + totalTimePause);
         Log.d(TAG, "New alarm date = " + newAlarmDate);
 
         Calendar calendar = Calendar.getInstance();

@@ -28,7 +28,6 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
-import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.ui.fragments.EditBreakFragment;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
 import com.lubenard.oring_reminder.utils.DateUtils;
@@ -161,8 +160,10 @@ public class EntryDetailsFragment extends Fragment {
 
         entryDetailsViewModel.sessionBreaks.observe(getViewLifecycleOwner(), sessionBreaks -> {
             Log.d(TAG, "Break datas are size " + sessionBreaks.size());
+            entryDetailsViewModel.session.getValue().setBreakList(sessionBreaks);
+
             total_breaks.setText(String.valueOf(sessionBreaks.size()));
-            total_time_breaks.setText(DateUtils.convertTimeWeared(SessionsManager.computeTotalTimePause(sessionBreaks)));
+            total_time_breaks.setText(DateUtils.convertTimeWeared(entryDetailsViewModel.session.getValue().computeTotalTimePause()));
             updateBreakList(sessionBreaks);
         });
 
@@ -178,9 +179,9 @@ public class EntryDetailsFragment extends Fragment {
                 estimated_end.setVisibility(View.VISIBLE);
             } else {
                 removed.setText(DateUtils.convertDateIntoReadable(entryDetailsViewModel.session.getValue().getDateRemovedCalendar(), false) + "\n" + entryDetailsViewModel.session.getValue().getDateRemoved().split(" ")[1]);
-                int time_spent_wearing = entryDetailsViewModel.session.getValue().getTimeWeared();
+                int time_spent_wearing = entryDetailsViewModel.session.getValue().getTimeWorn();
                 if (time_spent_wearing < 60)
-                    textview_progress.setText(entryDetailsViewModel.session.getValue().getTimeWeared() + getString(R.string.minute_with_M_uppercase));
+                    textview_progress.setText(entryDetailsViewModel.session.getValue().getTimeWorn() + getString(R.string.minute_with_M_uppercase));
                 else
                     textview_progress.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
 

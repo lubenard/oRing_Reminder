@@ -3,6 +3,7 @@ package com.lubenard.oring_reminder.custom_components;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +20,8 @@ public class RingSession {
     private Calendar datePutCalendar;
     private String dateRemoved;
     private SessionStatus status;
+
+    private ArrayList<BreakSession> breakList;
 
     // This value is in MINUTES
     private int timeWeared;
@@ -87,8 +90,38 @@ public class RingSession {
         return status == SessionStatus.RUNNING;
     }
 
-    public int getTimeWeared() {
+    /**
+     * Get the time worn for the session
+     * Better use getSessionDuration, it update the timeWeared variable
+     * @return the session time worn in minute
+     */
+    @Deprecated
+    public int getTimeWorn() {
         return timeWeared;
+    }
+
+    public int getSessionDuration() {
+        if (getIsRunning()) {
+            timeWeared = (int) DateUtils.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES);
+            return timeWeared;
+        }
+        timeWeared = (int) DateUtils.getDateDiff(datePutCalendar.getTime(), getDateRemovedCalendar().getTime(), TimeUnit.MINUTES);
+        return timeWeared;
+    }
+
+    public void setBreakList(ArrayList<BreakSession> breakList) {
+        this.breakList = breakList;
+    }
+
+    public int computeTotalTimePause() {
+        int totalTimePause = 0;
+        for (int i = 0; i != breakList.size(); i++) {
+            if (breakList.get(i).getIsRunning())
+                totalTimePause += DateUtils.getDateDiff(breakList.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
+            else
+                totalTimePause += DateUtils.getDateDiff(breakList.get(i).getStartDateCalendar().getTime(), breakList.get(i).getEndDateCalendar().getTime(), TimeUnit.MINUTES);
+        }
+        return totalTimePause;
     }
 
     public void setStatus(SessionStatus newStatus) {

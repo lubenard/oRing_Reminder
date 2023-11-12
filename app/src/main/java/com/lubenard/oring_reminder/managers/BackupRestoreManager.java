@@ -7,10 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-
-import com.lubenard.oring_reminder.BuildConfig;
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,12 +14,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceManager;
 
+import com.lubenard.oring_reminder.BuildConfig;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.pages.settings.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
 import com.lubenard.oring_reminder.utils.XmlWriter;
 
@@ -239,7 +238,7 @@ public class BackupRestoreManager extends Activity{
                 xmlWriter.writeAttribute("dateTimePut", datas.get(i).getDatePut());
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getDateRemoved());
                 xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getIsRunning() ? 1 : 0));
-                xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWeared()));
+                xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getTimeWorn()));
                 ArrayList<BreakSession> pauses = dbManager.getAllBreaksForId(datas.get(i).getId(), true);
                 if (pauses.size() > 0) {
                     Log.d(TAG, "Break exist for session " + datas.get(i).getId() + ". There is " + pauses.size() + " breaks");
@@ -499,18 +498,18 @@ public class BackupRestoreManager extends Activity{
             for (int i = 0; i < rawDatas.size(); i++) {
                 String[] datePut = rawDatas.get(i).getDatePut().split(" ");
                 String[] dateRemoved = rawDatas.get(i).getDateRemoved().split(" ");
-                int totalTimePauses = SessionsManager.computeTotalTimePause(dbManager, rawDatas.get(i).getId());
+                int totalTimePauses = rawDatas.get(i).computeTotalTimePause();
                 formattedDatas.add(datePut[0]);
                 formattedDatas.add(datePut[1]);
                 formattedDatas.add(dateRemoved[0]);
                 formattedDatas.add(dateRemoved[1]);
                 if (!rawDatas.get(i).getIsRunning())
-                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared()));
+                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWorn()));
                 else
                     formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 formattedDatas.add(String.valueOf(totalTimePauses));
                 if (!rawDatas.get(i).getIsRunning())
-                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWeared() - totalTimePauses));
+                    formattedDatas.add(String.valueOf(rawDatas.get(i).getTimeWorn() - totalTimePauses));
                 else
                     formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
                 csvWriter.writeColumnsDatas(formattedDatas);
