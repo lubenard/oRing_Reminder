@@ -4,9 +4,6 @@ import static androidx.core.content.ContextCompat.getDrawable;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +14,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.DbManager;
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
 import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -54,9 +53,10 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
         getActivity().setTitle(R.string.history);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Context context = getContext();
+
         recyclerView = view.findViewById(R.id.main_list);
 
-        Context context = getContext();
 
         // Add dividers (like listView) to recyclerView
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(context,
@@ -75,8 +75,6 @@ public class HistoryFragment extends Fragment implements HistoryListAdapter.onLi
 
         dataModels = new ArrayList<>();
         dbManager = MainActivity.getDbManager();
-
-        Log.d(TAG, "DB version is: " + dbManager.getVersion());
     }
 
     /**

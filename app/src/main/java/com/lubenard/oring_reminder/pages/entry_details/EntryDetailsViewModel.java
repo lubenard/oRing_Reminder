@@ -82,6 +82,7 @@ public class EntryDetailsViewModel extends ViewModel {
         dbManager.endSession(entryId);
         session.getValue().setEndDate(new Date());
         session.getValue().setStatus(Session.SessionStatus.NOT_RUNNING);
+        computeProgressBarDatas();
         session.setValue(session.getValue());
     }
 
