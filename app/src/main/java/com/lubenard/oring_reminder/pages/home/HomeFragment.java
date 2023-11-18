@@ -43,6 +43,7 @@ import com.lubenard.oring_reminder.utils.SessionsUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment {
@@ -51,7 +52,6 @@ public class HomeFragment extends Fragment {
     private Button button_start_break;
     private static FloatingActionButton fab;
     private TextView text_view_break;
-    private View view;
     private Button button_see_curr_session;
     private TextView time_needed_to_complete_session;
 
@@ -235,11 +235,11 @@ public class HomeFragment extends Fragment {
         updateDesign();
 
         homeViewModel.wearingTimeSinceMidnight.observe(getViewLifecycleOwner(), wearingTimeSinceMidgnight -> {
-            home_since_midnight_data.setText(DateUtils.convertTimeWeared(wearingTimeSinceMidgnight));
+            home_since_midnight_data.setText(DateUtils.convertIntIntoReadableDate(wearingTimeSinceMidgnight));
         });
 
         homeViewModel.last24hWearingTime.observe(getViewLifecycleOwner(), last24hWearingTime -> {
-            home_last_24h_data.setText(DateUtils.convertTimeWeared(last24hWearingTime));
+            home_last_24h_data.setText(DateUtils.convertIntIntoReadableDate(last24hWearingTime));
         });
 
         homeViewModel.currentSession.observe(getViewLifecycleOwner(), currentSession -> {
@@ -277,10 +277,9 @@ public class HomeFragment extends Fragment {
                             .addToBackStack(null).commit();
                 });
 
-                long timeBeforeRemove = SessionsUtils.getWearingTimeWithoutPause(currentSession.getDatePut(), currentSession.getId(), null);
-                textview_progress.setText(DateUtils.convertTimeWeared((int)timeBeforeRemove));
-                time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertTimeWeared(MainActivity.getSettingsManager().getWearingTimeInt())));
-                float progress_percentage = ((float) timeBeforeRemove / (float) (MainActivity.getSettingsManager().getWearingTimeInt())) * 100;
+                long timeBeforeRemove = currentSession.getSessionDuration() - currentSession.computeTotalTimePause();
+                textview_progress.setText(DateUtils.convertIntIntoReadableDate((int) timeBeforeRemove));
+                time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertIntIntoReadableDate(MainActivity.getSettingsManager().getWearingTimeInt())));
 
                 String[] splittedDatePut = currentSession.getDatePut().split(" ");
 
@@ -294,14 +293,13 @@ public class HomeFragment extends Fragment {
 
                 estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
 
-                Log.d(TAG, "MainView percentage is " + progress_percentage);
-                if (progress_percentage < 1f)
-                    progress_percentage = 1f;
-                if (progress_percentage > 100f)
-                    progress_bar.setIndicatorColor(context.getResources().getColor(R.color.green_main_bar));
-                else
-                    progress_bar.setIndicatorColor(context.getResources().getColor(R.color.blue_main_bar));
-                progress_bar.setProgress((int)progress_percentage);
+                HashMap<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt());
+
+                // As weird as it can sound, pbDatas will only have one key value in it
+                for (Integer key: pbDatas.keySet()) { progress_bar.setProgress(key); }
+                Log.d(TAG, "MainView percentage is " + progress_bar.getProgress());
+
+                textview_progress.setTextColor(getResources().getColor(SessionsUtils.computeTextColor(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt())));
 
                 homeViewModel.isThereARunningBreak.observe(getViewLifecycleOwner(), isThereARunningBreak -> {
                     if (isThereARunningBreak) {
@@ -318,7 +316,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        this.view = view;
     }
 
     @Override

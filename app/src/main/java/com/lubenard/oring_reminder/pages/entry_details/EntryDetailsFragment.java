@@ -152,7 +152,7 @@ public class EntryDetailsFragment extends Fragment {
         entryDetailsViewModel = new ViewModelProvider(requireActivity()).get(EntryDetailsViewModel.class);
         entryDetailsViewModel.loadCurrentSession(entryId);
 
-        textview_total_time.setText(String.format("/ %s", DateUtils.convertTimeWeared(entryDetailsViewModel.wearingTimePref)));
+        textview_total_time.setText(String.format("/ %s", DateUtils.convertIntIntoReadableDate(entryDetailsViewModel.wearingTimePref)));
 
         entryDetailsViewModel.progressColor.observe(getViewLifecycleOwner(), progressColor -> {
             textview_progress.setTextColor(getResources().getColor(progressColor));
@@ -163,7 +163,7 @@ public class EntryDetailsFragment extends Fragment {
             entryDetailsViewModel.session.getValue().setBreakList(sessionBreaks);
 
             total_breaks.setText(String.valueOf(sessionBreaks.size()));
-            total_time_breaks.setText(DateUtils.convertTimeWeared(entryDetailsViewModel.session.getValue().computeTotalTimePause()));
+            total_time_breaks.setText(DateUtils.convertIntIntoReadableDate(entryDetailsViewModel.session.getValue().computeTotalTimePause()));
             updateBreakList(sessionBreaks);
         });
 
@@ -287,7 +287,7 @@ public class EntryDetailsFragment extends Fragment {
                 if (!dateRemoved[0].equals(datePut[0]))
                     textView_date.setText(DateUtils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + DateUtils.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                textView_worn_for.setText(DateUtils.convertTimeWeared(sessionBreaks.get(i).getTimeRemoved()));
+                textView_worn_for.setText(DateUtils.convertIntIntoReadableDate(sessionBreaks.get(i).getTimeRemoved()));
             } else {
                 long timeworn = DateUtils.getDateDiff(sessionBreaks.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));

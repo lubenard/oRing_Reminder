@@ -11,7 +11,6 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.SessionsUtils;
 
 import java.util.List;
 
@@ -66,12 +65,12 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
 
             viewHolder.weared_to.setText(dateRemoved[1]);
 
-            int totalTimePause = SessionsUtils.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
+            int totalTimePause = dataModel.getSessionDuration();
             if (totalTimePause >= MainActivity.getSettingsManager().getWearingTimeInt())
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(DateUtils.convertTimeWeared(totalTimePause));
+            viewHolder.weared_during.setText(DateUtils.convertIntIntoReadableDate(totalTimePause));
         }
         return convertView;
     }

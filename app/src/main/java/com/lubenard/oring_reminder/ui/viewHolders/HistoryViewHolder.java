@@ -12,7 +12,6 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
 import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.SessionsUtils;
 
 import java.util.Calendar;
 
@@ -58,20 +57,19 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
 
         if (dataModel.getIsRunning()) {
             weared_to.setText("");
-
-            long timeBeforeRemove = SessionsUtils.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), null);
+            long timeBeforeRemove = dataModel.getSessionDuration() - dataModel.computeTotalTimePause();
             weared_during.setTextColor(context.getResources().getColor(R.color.yellow));
             weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         } else {
             String[] dateRemoved = dataModel.getDateRemoved().split(" ");
             weared_to.setText(dateRemoved[1]);
 
-            int totalTimePause = SessionsUtils.getWearingTimeWithoutPause(dataModel.getDatePut(), dataModel.getId(), dataModel.getDateRemoved());
+            int totalTimePause = dataModel.getSessionDuration();
             if (totalTimePause >= MainActivity.getSettingsManager().getWearingTimeInt())
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
             else
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));
-            weared_during.setText(DateUtils.convertTimeWeared(totalTimePause));
+            weared_during.setText(DateUtils.convertIntIntoReadableDate(totalTimePause));
         }
     }
 

@@ -109,6 +109,8 @@ public class EntryDetailsViewModel extends ViewModel {
         long totalTimePause = session.getValue().computeTotalTimePause();
         long newComputedTime;
 
+        Log.d(TAG, "oldTimeWeared is:" + oldTimeWeared + " ,totalTimePause is:" + totalTimePause);
+
         // Avoid having more time pause than weared time
         if (totalTimePause > oldTimeWeared)
             totalTimePause = oldTimeWeared;
@@ -118,8 +120,8 @@ public class EntryDetailsViewModel extends ViewModel {
         wornTime.setValue(newComputedTime);
 
         // Time is computed as:
-        // Date of put + number_of_hour_defined_in_settings + total_time_in_pause
-        int newAlarmDate = (int) (newComputedTime + MainActivity.getSettingsManager().getWearingTimeInt() + totalTimePause);
+        // number_of_hour_defined_in_settings + total_time_in_pause
+        int newAlarmDate = (int) (MainActivity.getSettingsManager().getWearingTimeInt() + totalTimePause);
         Log.d(TAG, "New alarm date = " + newAlarmDate);
 
         Calendar calendar = Calendar.getInstance();

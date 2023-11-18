@@ -12,13 +12,16 @@ public class SessionsUtils {
      * Compute percentage & color for progressBar
      * @param session The session used
      * @param wearingTimePref the user pref for time wearing in Minutes.
-     * @return Hashmap containing <ProgressPercentage, ProgressColor>
+     * @return Hashmap containing 'ProgressPercentage, ProgressColor'
      */
     @NonNull
     static public HashMap<Integer, Integer> computeProgressBarDatas(RingSession session, float wearingTimePref) {
         HashMap<Integer, Integer> progressDatas = new HashMap<>();
         int progressColor;
         int progressPercentage = (int) (session.getSessionDuration() / wearingTimePref * 100);
+
+        if (progressPercentage < 1f)
+            progressPercentage = 1;
 
         if (session.getIsRunning()) {
             progressColor = R.color.yellow;

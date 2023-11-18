@@ -70,19 +70,20 @@ public class DateUtils {
     }
 
     /**
-     * Convert the timeWeared from a int into a readable hour:minutes format
+     * Convert from int in Minute into a readable 'hour:minutes' format
      * @param timeWeared timeWeared is in minutes
      * @return a string containing the time the user weared the protection
      */
-    public static String convertTimeWeared(int timeWeared) {
+    public static String convertIntIntoReadableDate(int timeWeared) {
         return String.format("%dh%02dmn", timeWeared / 60, timeWeared % 60);
     }
 
     /**
      * Convert date into readable one:
      * Example : 2021-10-12 -> 12 October 2021
-     * @param s
-     * @return
+     * @param s the 'raw' date
+     * @param shorterVersion If true, return under format: '12 Oct 2021'
+     * @return A 'readable' date
      */
     public static String convertDateIntoReadable(String s, boolean shorterVersion) {
         Date date = null;

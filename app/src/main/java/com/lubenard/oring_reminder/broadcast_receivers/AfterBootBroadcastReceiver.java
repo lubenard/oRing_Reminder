@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
@@ -11,9 +12,12 @@ import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Start the app at boot, and re-set all alarms
@@ -21,6 +25,18 @@ import java.util.Map;
 public class AfterBootBroadcastReceiver extends BroadcastReceiver {
 
     public static final String TAG = "AfterBootBroadcast";
+
+    private static int computeTotalTimePause(DbManager dbManager, long entryId) {
+        ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
+        int totalTimePause = 0;
+        for (int i = 0; i != allPauses.size(); i++) {
+            if (allPauses.get(i).getIsRunning())
+                totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
+            else
+                totalTimePause += allPauses.get(i).getTimeRemoved();
+        }
+        return totalTimePause;
+    }
 
     public void onReceive(Context context, Intent arg1) {
         // Set all alarms for running sessions, because they have been erased after reboot
