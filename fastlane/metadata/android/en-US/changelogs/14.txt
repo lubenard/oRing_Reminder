@@ -1,0 +1,6 @@
+V2.0.4 - Urgent patch
+
+Hello, this patch is urgently applied, due to a concern the calculation was not correct.
+
+This feature will come back later, when fixed.
+If you used this tool to compute your fertility, please check yourself.
