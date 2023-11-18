@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.ui.adapters.HistoryListAdapter;
 import com.lubenard.oring_reminder.utils.DateUtils;
 
@@ -42,34 +43,34 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
     public void updateElementDatas(RingSession dataModel, Context context) {
         this.context = context;
 
-        String[] datePut = dataModel.getDatePut().split(" ");
+        String[] datePut = dataModel.getStartDate().split(" ");
 
         weared_from.setText(datePut[1]);
 
-        if (dataModel.getIsRunning())
+        if (dataModel.getStatus() == Session.SessionStatus.RUNNING)
             worn_date.setText(DateUtils.convertDateIntoReadable(dataModel.getDatePutCalendar(), false));
         else if (dataModel.getDatePutCalendar().get(Calendar.YEAR) == dataModel.getDateRemovedCalendar().get(Calendar.YEAR) &&
             dataModel.getDatePutCalendar().get(Calendar.MONTH) == dataModel.getDateRemovedCalendar().get(Calendar.MONTH) &&
             dataModel.getDatePutCalendar().get(Calendar.DAY_OF_MONTH) == dataModel.getDateRemovedCalendar().get(Calendar.DAY_OF_MONTH))
             worn_date.setText(DateUtils.convertDateIntoReadable(dataModel.getDatePutCalendar(), false));
-        else if (!dataModel.getIsRunning())
-            worn_date.setText(DateUtils.convertDateIntoReadable(dataModel.getDatePutCalendar(), false) + " -> " + DateUtils.convertDateIntoReadable(dataModel.getDateRemoved().split(" ")[0], false));
+        else if (!(dataModel.getStatus() == Session.SessionStatus.RUNNING))
+            worn_date.setText(DateUtils.convertDateIntoReadable(dataModel.getDatePutCalendar(), false) + " -> " + DateUtils.convertDateIntoReadable(dataModel.getEndDate().split(" ")[0], false));
 
-        if (dataModel.getIsRunning()) {
+        if (dataModel.getStatus() == Session.SessionStatus.RUNNING) {
             weared_to.setText("");
             long timeBeforeRemove = dataModel.getSessionDuration() - dataModel.computeTotalTimePause();
             weared_during.setTextColor(context.getResources().getColor(R.color.yellow));
             weared_during.setText(String.format("%dh%02dm", timeBeforeRemove / 60, timeBeforeRemove % 60));
         } else {
-            String[] dateRemoved = dataModel.getDateRemoved().split(" ");
+            String[] dateRemoved = dataModel.getEndDate().split(" ");
             weared_to.setText(dateRemoved[1]);
 
-            int totalTimePause = dataModel.getSessionDuration();
+            long totalTimePause = dataModel.getSessionDuration();
             if (totalTimePause >= MainActivity.getSettingsManager().getWearingTimeInt())
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
             else
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));
-            weared_during.setText(DateUtils.convertIntIntoReadableDate(totalTimePause));
+            weared_during.setText(DateUtils.convertIntIntoReadableDate((int)totalTimePause));
         }
     }
 

@@ -10,10 +10,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,10 +28,12 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
-import com.lubenard.oring_reminder.managers.SettingsManager;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.UiUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -100,7 +98,7 @@ public class EditBreakFragment extends DialogFragment {
 
                 pause_beginning_date.setText(startDateSplitted[0]);
                 pause_beginning_time.setText(startDateSplitted[1]);
-                if (!pausesDatas.getIsRunning()) {
+                if (!(pausesDatas.getStatus() == Session.SessionStatus.RUNNING)) {
                     pause_ending_date.setText(endDateSplitted[0]);
                     pause_ending_time.setText(endDateSplitted[1]);
                 }
@@ -195,8 +193,8 @@ public class EditBreakFragment extends DialogFragment {
                 // Break inserted successfully
 
                 // Only recompute alarm if session is running, else cancel it.
-                if (session.getIsRunning()) {
-                    if (newBreakSession.getIsRunning()) {
+                if (session.getStatus() == Session.SessionStatus.RUNNING) {
+                    if (newBreakSession.getStatus() == Session.SessionStatus.RUNNING) {
                         Log.d(TAG, "Cancelling alarm for entry: " + session.getId());
                         SessionsAlarmsManager.cancelAlarm(context, session.getId());
                     } else {

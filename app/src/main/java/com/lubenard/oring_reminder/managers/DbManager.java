@@ -9,6 +9,7 @@ import android.net.Uri;
 
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
@@ -343,7 +344,7 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     public long createNewPause(BreakSession breakSession) {
-        return createNewPause(breakSession.getSessionId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getIsRunning()) ? 1 : 0);
+        return createNewPause(breakSession.getSessionId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getStatus() == Session.SessionStatus.RUNNING) ? 1 : 0);
     }
 
     /**
@@ -374,7 +375,7 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     public long updatePause(BreakSession breakSession) {
-        return updatePause(breakSession.getId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getIsRunning()) ? 1 : 0);
+        return updatePause(breakSession.getId(), breakSession.getStartDate(), breakSession.getEndDate(), (breakSession.getStatus() == Session.SessionStatus.RUNNING) ? 1 : 0);
     }
 
     public ArrayList<RingSession> searchEntryInDb(String date) {

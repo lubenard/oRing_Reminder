@@ -1,22 +1,14 @@
 package com.lubenard.oring_reminder.custom_components;
 
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Utils;
+import static com.lubenard.oring_reminder.custom_components.Session.SessionStatus.NOT_RUNNING;
+import static com.lubenard.oring_reminder.custom_components.Session.SessionStatus.RUNNING;
 
-import java.util.Calendar;
+import com.lubenard.oring_reminder.utils.DateUtils;
+
 import java.util.concurrent.TimeUnit;
 
-public class BreakSession {
-    enum BreakStatus {
-        RUNNING,
-        FINISHED
-    }
+public class BreakSession extends Session {
 
-    private final long id;
-    private String datePut;
-    private String dateRemoved;
-    private BreakStatus status;
-    private int timeRemoved;
     private final long sessionId;
 
     /**
@@ -26,54 +18,16 @@ public class BreakSession {
      * Normal session: id: 1, datePut 2021-04-10 11:42:00, dateRemoved 2021-04-11 02:42:00, isRunning 0, time worn 900 (15h in Minutes)
      * Break:          id: 3, datePut 2021-04-10 16:36:00, dateRemoved 2021-04-10 14:21:00, isRunning 0, time worn 135 (2h15 in Minutes)
      */
-    public BreakSession(long id, String dateRemoved, String datePut, int isRunning, int timeRemoved, long sessionId) {
-        this.id = id;
-        this.dateRemoved = dateRemoved;
-        this.datePut = datePut;
-        this.timeRemoved = timeRemoved;
+    public BreakSession(long id, String dateRemoved, String datePut, int isRunning, long timeRemoved, long sessionId) {
+        super(
+              id,
+              dateRemoved,
+              datePut,
+              (isRunning == 1) ?  RUNNING : NOT_RUNNING,
+              (timeRemoved == 0 && isRunning == 0) ? DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES) : timeRemoved
+        );
         this.sessionId = sessionId;
-
-        if (isRunning == 1)
-            this.status = BreakStatus.RUNNING;
-        else
-            this.status = BreakStatus.FINISHED;
-
-        if (this.timeRemoved == 0 && this.status == BreakStatus.FINISHED) {
-            this.timeRemoved = (int) DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES);
-        }
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getStartDate() {
-        return dateRemoved;
-    }
-
-    public String getEndDate() {
-        return datePut;
-    }
-
-    public Calendar getStartDateCalendar() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(DateUtils.getdateParsed(dateRemoved));
-        return calendar;
-    }
-
-    public Calendar getEndDateCalendar() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(DateUtils.getdateParsed(datePut));
-        return calendar;
     }
 
     public long getSessionId() { return sessionId; }
-
-    public boolean getIsRunning() {
-        return status == BreakStatus.RUNNING;
-    }
-
-    public int getTimeRemoved() {
-        return timeRemoved;
-    }
 }

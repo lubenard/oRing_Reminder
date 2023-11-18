@@ -9,10 +9,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -53,10 +53,10 @@ public class DatasFragment extends Fragment {
         String timeBetweenLastAndFirstData;
 
         if (datas.size() > 0) {
-            lastEntryData = datas.get(datas.size() - 1).getDatePut().split(" ")[0];
-            firstEntryData = datas.get(0).getDatePut().split(" ")[0];
+            lastEntryData = datas.get(datas.size() - 1).getStartDate().split(" ")[0];
+            firstEntryData = datas.get(0).getEndDate().split(" ")[0];
 
-            int seconds = (int) DateUtils.getDateDiff(datas.get(0).getDatePut(), datas.get(datas.size() - 1).getDatePut(), TimeUnit.SECONDS);
+            int seconds = (int) DateUtils.getDateDiff(datas.get(0).getStartDate(), datas.get(datas.size() - 1).getStartDate(), TimeUnit.SECONDS);
             int weeks = seconds / 604800;
             int days = (seconds % 604800) / 86400;
             int hours = ((seconds % 604800) % 86400) / 3600;

@@ -8,6 +8,7 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
@@ -85,19 +86,19 @@ public class SessionsManager {
             //Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if (DateUtils.getDateDiff(session.getDatePut(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
+        else if (DateUtils.getDateDiff(session.getStartDate(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!breakSession.getIsRunning() && DateUtils.getDateDiff(session.getDatePut(), breakSession.getEndDate(), TimeUnit.SECONDS) <= 0) {
+        } else if (!(breakSession.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.getDateDiff(session.getStartDate(), breakSession.getEndDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: End of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!breakSession.getIsRunning() && !session.getIsRunning() && DateUtils.getDateDiff(breakSession.getEndDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+        } else if (!(breakSession.getStatus() == Session.SessionStatus.RUNNING) && !(session.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.getDateDiff(breakSession.getEndDate(), session.getEndDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: End of pause > end of entry");
             Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!session.getIsRunning() && DateUtils.getDateDiff(breakSession.getStartDate(), session.getDateRemoved(), TimeUnit.SECONDS) <= 0) {
+        } else if (!(session.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.getDateDiff(breakSession.getStartDate(), session.getEndDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause > end of entry");
             Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
             return false;
@@ -113,7 +114,7 @@ public class SessionsManager {
 
                 //pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
                 // Cancel the break notification if it is set as finished.
-                if (!breakSession.getIsRunning()) {
+                if (!(breakSession.getStatus() == Session.SessionStatus.RUNNING)) {
                     SessionsAlarmsManager.cancelBreakAlarm(context, breakSession.getId());
                 } else {
                     SessionsAlarmsManager.cancelAlarm(context, session.getId());
@@ -153,7 +154,7 @@ public class SessionsManager {
     public static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
         ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
         for (int i = 0; i != allPauses.size(); i++) {
-            if (allPauses.get(i).getIsRunning())
+            if (allPauses.get(i).getStatus() == Session.SessionStatus.RUNNING)
                 return true;
         }
         return false;

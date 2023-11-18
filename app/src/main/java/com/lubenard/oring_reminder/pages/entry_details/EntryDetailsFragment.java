@@ -27,6 +27,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.ui.fragments.EditBreakFragment;
 import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
@@ -173,15 +174,15 @@ public class EntryDetailsFragment extends Fragment {
 
         entryDetailsViewModel.isSessionRunning.observe(getViewLifecycleOwner(), isSessionRunning -> {
             if (isSessionRunning) {
-                removed.setText(entryDetailsViewModel.session.getValue().getDateRemoved());
+                removed.setText(entryDetailsViewModel.session.getValue().getEndDate());
                 stopSessionButton.setVisibility(View.VISIBLE);
                 end_session.setVisibility(View.GONE);
                 estimated_end.setVisibility(View.VISIBLE);
             } else {
-                removed.setText(DateUtils.convertDateIntoReadable(entryDetailsViewModel.session.getValue().getDateRemovedCalendar(), false) + "\n" + entryDetailsViewModel.session.getValue().getDateRemoved().split(" ")[1]);
-                int time_spent_wearing = entryDetailsViewModel.session.getValue().getTimeWorn();
+                removed.setText(DateUtils.convertDateIntoReadable(entryDetailsViewModel.session.getValue().getDateRemovedCalendar(), false) + "\n" + entryDetailsViewModel.session.getValue().getEndDate().split(" ")[1]);
+                long time_spent_wearing = entryDetailsViewModel.session.getValue().getRingSessionDuration();
                 if (time_spent_wearing < 60)
-                    textview_progress.setText(entryDetailsViewModel.session.getValue().getTimeWorn() + getString(R.string.minute_with_M_uppercase));
+                    textview_progress.setText(entryDetailsViewModel.session.getValue().getRingSessionDuration() + getString(R.string.minute_with_M_uppercase));
                 else
                     textview_progress.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
 
@@ -195,7 +196,7 @@ public class EntryDetailsFragment extends Fragment {
         });
 
         entryDetailsViewModel.session.observe(getViewLifecycleOwner(), session -> {
-            put.setText(DateUtils.convertDateIntoReadable(session.getDatePutCalendar(), false) + "\n" + session.getDatePut().split(" ")[1]);
+            put.setText(DateUtils.convertDateIntoReadable(session.getDatePutCalendar(), false) + "\n" + session.getStartDate().split(" ")[1]);
         });
 
         entryDetailsViewModel.estimatedEnd.observe(getViewLifecycleOwner(), estimatedEnd-> {
@@ -234,7 +235,7 @@ public class EntryDetailsFragment extends Fragment {
             if (entryDetailsViewModel.isThereARunningPause) {
                 Log.d(TAG, "Error: Already a running pause");
                 Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
-            } else if (entryDetailsViewModel.session.getValue().getIsRunning()) {
+            } else if (entryDetailsViewModel.session.getValue().getStatus() == Session.SessionStatus.RUNNING) {
                 String date = DateUtils.getdateFormatted(new Date());
                 long id = MainActivity.getDbManager().createNewPause(entryId, date, "NOT SET YET", 1);
                 // Cancel alarm until breaks are set as finished.
@@ -254,7 +255,7 @@ public class EntryDetailsFragment extends Fragment {
     /**
      * Update the listView by fetching all elements from the db
      * Yes i thought i could use a ListView or RecyclerView, but they do not fit inside of a scrollView
-     * https://stackoverflow.com/a/3496042
+     * <a href="https://stackoverflow.com/a/3496042">https://stackoverflow.com/a/3496042</a>
      */
     private void updateBreakList(ArrayList<BreakSession> sessionBreaks) {
         break_layout.removeAllViews();
@@ -281,13 +282,13 @@ public class EntryDetailsFragment extends Fragment {
 
             TextView textView_worn_for = breakLayout.findViewById(R.id.custom_view_date_time_weared);
 
-            if (!sessionBreaks.get(i).getIsRunning()) {
+            if (!(sessionBreaks.get(i).getStatus() == Session.SessionStatus.RUNNING)) {
                 String[] datePut = sessionBreaks.get(i).getEndDate().split(" ");
                 textView_hour_to.setText(datePut[1]);
                 if (!dateRemoved[0].equals(datePut[0]))
                     textView_date.setText(DateUtils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + DateUtils.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                textView_worn_for.setText(DateUtils.convertIntIntoReadableDate(sessionBreaks.get(i).getTimeRemoved()));
+                textView_worn_for.setText(DateUtils.convertIntIntoReadableDate((int) sessionBreaks.get(i).getSessionDuration()));
             } else {
                 long timeworn = DateUtils.getDateDiff(sessionBreaks.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));

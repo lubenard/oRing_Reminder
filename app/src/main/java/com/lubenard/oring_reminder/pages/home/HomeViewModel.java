@@ -11,6 +11,7 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
@@ -63,11 +64,11 @@ public class HomeViewModel extends ViewModel {
         for (int i = 0; i < pausesDatas.size(); i++) {
             BreakSession currentBreak = pausesDatas.get(i);
             Log.d(TAG, "BreakSession is " + currentBreak);
-            if (!pausesDatas.get(i).getIsRunning()) {
+            if (!(pausesDatas.get(i).getStatus() == Session.SessionStatus.RUNNING)) {
                 if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
                         DateUtils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getTimeRemoved());
-                    totalTimePause += currentBreak.getTimeRemoved();
+                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getStartDate());
+                    totalTimePause += currentBreak.getSessionDuration();
                 } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
                         DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
@@ -112,27 +113,27 @@ public class HomeViewModel extends ViewModel {
             pauseTimeForThisEntry = computeTotalTimePauseForId(currentModel.getId(), oneDayEarlier, todayDate);
             Log.d(TAG, "Session id: " + currentModel.getId()
                     + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
-                    + ", getDatePut: " + currentModel.getDatePut()
-                    + ", getDateRemoved: " + currentModel.getDateRemoved()
-                    + ", datediff datePut: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) + " seconds, "
+                    + ", getDatePut: " + currentModel.getStartDate()
+                    + ", getEndDate: " + currentModel.getEndDate()
+                    + ", datediff datePut: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getStartDate(), TimeUnit.SECONDS) + " seconds, "
                     + ", status:  " + currentModel.getStatus());
-            if (!currentModel.getIsRunning() && !currentModel.getIsInBreak()) {
-                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        DateUtils.getDateDiff(currentModel.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
+            if (!(currentModel.getStatus() == Session.SessionStatus.RUNNING) && !currentModel.getIsInBreak()) {
+                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getStartDate(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.getDateDiff(currentModel.getEndDate(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
-                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWorn() + " to counter");
-                    totalTimeLastDay += currentModel.getTimeWorn() - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getRingSessionDuration() + " to counter");
+                    totalTimeLastDay += currentModel.getRingSessionDuration() - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getStartDate(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.getDateDiff(oneDayEarlier, currentModel.getEndDate(),  TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeLastDay += DateUtils.getDateDiff(oneDayEarlier, currentModel.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(oneDayEarlier, currentModel.getEndDate(), TimeUnit.SECONDS));
+                    totalTimeLastDay += DateUtils.getDateDiff(oneDayEarlier, currentModel.getEndDate(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             } else {
-                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeLastDay += DateUtils.getDateDiff(currentModel.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getDatePut(), TimeUnit.SECONDS) <= 0) {
+                if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getStartDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentModel.getStartDate(), todayDate, TimeUnit.SECONDS));
+                    totalTimeLastDay += DateUtils.getDateDiff(currentModel.getStartDate(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(oneDayEarlier, currentModel.getStartDate(), TimeUnit.SECONDS) <= 0) {
                     Log.d(TAG, "running entry at index " + i + " is between the born: " + DateUtils.getDateDiff(oneDayEarlier, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
                     totalTimeLastDay += DateUtils.getDateDiff(oneDayEarlier, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
@@ -168,25 +169,25 @@ public class HomeViewModel extends ViewModel {
             pauseTimeForThisEntry = computeTotalTimePauseForId(currentSession.getId(), sinceMidnigt, todayDate);
             Log.d(TAG, "Session id: " + currentSession.getId()
                     + ", pauseTimeForThisEntry " + pauseTimeForThisEntry
-                    + ", getDatePut: " + currentSession.getDatePut()
-                    + ", datediff datePut: " + DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) + " seconds, ");
-            if (!currentSession.getIsRunning() && !currentSession.getIsInBreak()) {
-                if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) > 0 &&
-                        DateUtils.getDateDiff(currentSession.getDateRemoved(), todayDate, TimeUnit.SECONDS) > 0) {
+                    + ", getStartDate: " + currentSession.getStartDate()
+                    + ", datediff datePut: " + DateUtils.getDateDiff(sinceMidnigt, currentSession.getStartDate(), TimeUnit.SECONDS) + " seconds, ");
+            if (!(currentSession.getStatus() == Session.SessionStatus.RUNNING) && !currentSession.getIsInBreak()) {
+                if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getStartDate(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.getDateDiff(currentSession.getEndDate(), todayDate, TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is fully in the last 24h (start and end inside 'now' and 'now - 24h')
-                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getTimeWorn() + " to counter");
-                    totalTimeSinceMidnight += currentSession.getTimeWorn() - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) <= 0 &&
-                        DateUtils.getDateDiff(sinceMidnigt, currentSession.getDateRemoved(),  TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "entry at index " + i + " added " + dataModels.get(i).getRingSessionDuration() + " to counter");
+                    totalTimeSinceMidnight += currentSession.getRingSessionDuration() - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getStartDate(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.getDateDiff(sinceMidnigt, currentSession.getEndDate(),  TimeUnit.SECONDS) > 0) {
                     // This case happens if the session is half beetween interval (start before before 24h ago and end after interval start)
-                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, currentSession.getDateRemoved(), TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, currentSession.getDateRemoved(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                    Log.d(TAG, "entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, currentSession.getEndDate(), TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, currentSession.getEndDate(), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }
             } else {
-                if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentSession.getDatePut(), todayDate, TimeUnit.SECONDS));
-                    totalTimeSinceMidnight += DateUtils.getDateDiff(currentSession.getDatePut(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
-                } else if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getDatePut(), TimeUnit.SECONDS) <= 0) {
+                if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getStartDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running entry at index " + i + " is added: " + DateUtils.getDateDiff(currentSession.getStartDate(), todayDate, TimeUnit.SECONDS));
+                    totalTimeSinceMidnight += DateUtils.getDateDiff(currentSession.getStartDate(), todayDate, TimeUnit.MINUTES) - pauseTimeForThisEntry;
+                } else if (DateUtils.getDateDiff(sinceMidnigt, currentSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
                     Log.d(TAG, "running entry at index " + i + " is between the born: " + DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
                     totalTimeSinceMidnight += DateUtils.getDateDiff(sinceMidnigt, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - pauseTimeForThisEntry;
                 }

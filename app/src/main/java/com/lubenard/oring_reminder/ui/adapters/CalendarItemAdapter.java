@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
 import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
@@ -95,10 +96,10 @@ public class CalendarItemAdapter extends BaseAdapter {
                 Log.d(TAG, "session found is " + session);
 
                 if (session != null) {
-                    if (session.getIsRunning())
+                    if (session.getStatus() == Session.SessionStatus.RUNNING)
                         numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_yellow));
                     else {
-                        if (session.getTimeWorn() >= (settingsManager.getWearingTimeInt()))
+                        if (session.getRingSessionDuration() >= (settingsManager.getWearingTimeInt()))
                             numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_green));
                         else
                             numberTextView.setBackground(context.getResources().getDrawable(R.drawable.calendar_circle_red));

@@ -16,6 +16,7 @@ import android.widget.RemoteViews;
 import com.lubenard.oring_reminder.broadcast_receivers.NotificationSenderBreaksBroadcastReceiver;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
@@ -76,7 +77,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 ArrayList<BreakSession> session_breaks = dbManager.getAllBreaksForId(dbManager.getLastRunningEntry().getId(), true);
 
                 if (session_breaks.size() > 0) {
-                    if (session_breaks.get(0).getIsRunning()) {
+                    if (session_breaks.get(0).getStatus() == Session.SessionStatus.RUNNING) {
                         remoteViews.setTextViewText(R.id.widget_button_start_stop_break_session, context.getString(R.string.widget_stop_break));
                         intent3.setAction(WIDGET_BUTTON_STOP_BREAK);
                     } else {
@@ -95,7 +96,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                 remoteViews.setOnClickPendingIntent(R.id.widget_button_start_stop_break_session, pendingIntent3);
 
                 int totalTimePause = lastEntry.computeTotalTimePause();
-                long wornFor = DateUtils.getDateDiff(lastEntry.getDatePut(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                long wornFor = DateUtils.getDateDiff(lastEntry.getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 wornFor -= totalTimePause;
 
                 Calendar calendar = Calendar.getInstance();
@@ -114,7 +115,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
                     timeBeforeRemove *= -1;
                 }
 
-                String[] lastEntrySplitted = lastEntry.getDatePut().split(" ");
+                String[] lastEntrySplitted = lastEntry.getStartDate().split(" ");
 
                 String timeRemoval = context.getString(R.string.at) + DateUtils.getdateFormatted(calendar.getTime()).split(" ")[1];
 

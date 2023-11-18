@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
@@ -48,7 +49,7 @@ public class EntryDetailsViewModel extends ViewModel {
 
     public void loadSession() {
         session.setValue(dbManager.getEntryDetails(entryId));
-        isSessionRunning.setValue(session.getValue().getIsRunning());
+        isSessionRunning.setValue(session.getValue().getStatus() == Session.SessionStatus.RUNNING);
         isThereARunningPause = session.getValue().getIsInBreak();
     }
 
@@ -101,10 +102,10 @@ public class EntryDetailsViewModel extends ViewModel {
         // If session is running,
         // OldTimeWeared is the time in minute between the starting of the entry and the current Date
         // Else, oldTimeWeared is the time between the start of the entry and it's pause
-        if (session.getValue().getIsRunning())
+        if (session.getValue().getStatus() == Session.SessionStatus.RUNNING)
             oldTimeWeared = DateUtils.getDateDiff(session.getValue().getDatePutCalendar().getTime(), new Date(), TimeUnit.MINUTES);
         else
-            oldTimeWeared = DateUtils.getDateDiff(session.getValue().getDatePut(), session.getValue().getDateRemoved(), TimeUnit.MINUTES);
+            oldTimeWeared = DateUtils.getDateDiff(session.getValue().getStartDate(), session.getValue().getEndDate(), TimeUnit.MINUTES);
 
         long totalTimePause = session.getValue().computeTotalTimePause();
         long newComputedTime;

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.lubenard.oring_reminder.custom_components.BreakSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
@@ -30,10 +31,10 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
         int totalTimePause = 0;
         for (int i = 0; i != allPauses.size(); i++) {
-            if (allPauses.get(i).getIsRunning())
+            if (allPauses.get(i).getStatus() == Session.SessionStatus.RUNNING)
                 totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
             else
-                totalTimePause += allPauses.get(i).getTimeRemoved();
+                totalTimePause += allPauses.get(i).getSessionDuration();
         }
         return totalTimePause;
     }

@@ -161,27 +161,5 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
                 }
             }
         });
-
-
-        /*computeFertility.setOnClickListener(view1 -> {
-            String numberOfSpermatoString = numberOfSpermato.getText().toString();
-            String percentOfMobilityString = percentOfMobility.getText().toString();
-            int computation;
-            // YES, we need to to this, because parseInt cannot convert a number if there is spaces in them...
-            numberOfSpermatoString = numberOfSpermatoString.replace(" ", "");
-            percentOfMobilityString = percentOfMobilityString.replace(" ", "");
-            if (numberOfSpermatoString.isEmpty() || percentOfMobilityString.isEmpty())
-                Toast.makeText(getContext(), getString(R.string.please_fill_required_infos), Toast.LENGTH_LONG).show();
-            else {
-                computation = (int) (Integer.parseInt(numberOfSpermatoString) * (Integer.parseInt(percentOfMobilityString) * 0.01));
-                if (computation < 1000000) {
-                    answerFertility.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                    answerFertility.setText(getString(R.string.you_are_contracepted) + computation + getString(R.string.spermo_per_ml));
-                } else {
-                    answerFertility.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-                    answerFertility.setText(getString(R.string.you_are_not_contracepted) + computation + getString(R.string.spermo_per_ml));
-                }
-            }
-        });*/
     }
 }

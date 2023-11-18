@@ -25,6 +25,7 @@ import androidx.fragment.app.DialogFragment;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
@@ -197,12 +198,12 @@ public class EditEntryFragment extends DialogFragment {
         if (entryId != -1) {
             RingSession data = dbManager.getEntryDetails(entryId);
 
-            new_entry_date_from.setText(data.getDatePut().split(" ")[0]);
-            new_entry_time_from.setText(data.getDatePut().split(" ")[1]);
+            new_entry_date_from.setText(data.getStartDate().split(" ")[0]);
+            new_entry_time_from.setText(data.getStartDate().split(" ")[1]);
 
-            if (!data.getIsRunning()) {
-                new_entry_date_to.setText(data.getDateRemoved().split(" ")[0]);
-                new_entry_time_to.setText(data.getDateRemoved().split(" ")[1]);
+            if (!(data.getStatus() == Session.SessionStatus.RUNNING)) {
+                new_entry_date_to.setText(data.getEndDate().split(" ")[0]);
+                new_entry_time_to.setText(data.getEndDate().split(" ")[1]);
             }
         } else {
             preFillStartDatas();

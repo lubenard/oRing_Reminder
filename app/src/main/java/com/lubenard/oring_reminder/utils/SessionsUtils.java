@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
+import com.lubenard.oring_reminder.custom_components.Session;
 
 import java.util.HashMap;
 
@@ -23,7 +24,7 @@ public class SessionsUtils {
         if (progressPercentage < 1f)
             progressPercentage = 1;
 
-        if (session.getIsRunning()) {
+        if (session.getStatus() == Session.SessionStatus.RUNNING) {
             progressColor = R.color.yellow;
         } else {
             if (progressPercentage >= 100f) {
@@ -40,10 +41,10 @@ public class SessionsUtils {
     // TODO: Change behavior of this function.
     // Simplify [SessionsManager.computeTotalTimePause..] expression
     static public int computeTextColor(RingSession session, float wearingTimePref) {
-        if (session.getIsRunning()) {
+        if (session.getStatus() == Session.SessionStatus.RUNNING) {
             return R.color.yellow;
         } else {
-            if ((session.getTimeWorn() - session.computeTotalTimePause()) / 60 >= wearingTimePref)
+            if ((session.getRingSessionDuration() - session.computeTotalTimePause()) / 60 >= wearingTimePref)
                 return android.R.color.holo_green_dark;
             else
                 return android.R.color.holo_red_dark;

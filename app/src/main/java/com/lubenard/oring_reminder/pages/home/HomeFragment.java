@@ -258,7 +258,7 @@ public class HomeFragment extends Fragment {
                     return true;
                 });
             } else {
-                Log.d(TAG, "Current Session loaded, currentSession is " + currentSession.getIsRunning());
+                Log.d(TAG, "Current Session loaded, currentSession is " + currentSession.getStatus());
                 activeSessionLayout.setVisibility(View.VISIBLE);
                 noActiveSessionLayout.setVisibility(View.GONE);
 
@@ -281,7 +281,7 @@ public class HomeFragment extends Fragment {
                 textview_progress.setText(DateUtils.convertIntIntoReadableDate((int) timeBeforeRemove));
                 time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertIntIntoReadableDate(MainActivity.getSettingsManager().getWearingTimeInt())));
 
-                String[] splittedDatePut = currentSession.getDatePut().split(" ");
+                String[] splittedDatePut = currentSession.getStartDate().split(" ");
 
                 start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
 
