@@ -216,7 +216,6 @@ public class EditBreakFragment extends DialogFragment {
                 }
                 if (isRunning == 1)
                     SessionsAlarmsManager.setBreakAlarm(context, pause_beginning_date.getText().toString(), session.getId());
-                //updatePauseList();
                 Utils.updateWidget(getContext());
 
                 Bundle result = new Bundle();

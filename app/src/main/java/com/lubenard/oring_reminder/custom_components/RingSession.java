@@ -57,6 +57,11 @@ public class RingSession extends Session {
         return getStatus() == SessionStatus.IN_BREAK;
     }
 
+    /**
+     * Get and update the ring session duration
+     * TODO: Does not include breaks if present
+     * @return the updated session duration
+     */
     public long getRingSessionDuration() {
         if (getStatus() == SessionStatus.RUNNING) {
             setSessionDuration(DateUtils.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES));
@@ -84,4 +89,6 @@ public class RingSession extends Session {
         }
         return totalTimePause;
     }
+
+    public ArrayList<BreakSession> getBreakList() { return breakList; }
 }

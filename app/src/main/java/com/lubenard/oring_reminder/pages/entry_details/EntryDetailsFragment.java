@@ -76,9 +76,9 @@ public class EntryDetailsFragment extends Fragment {
             switch (id) {
                 case R.id.action_edit_entry:
                     EditEntryFragment fragment = new EditEntryFragment();
-                    Bundle bundle2 = new Bundle();
-                    bundle2.putLong("entryId", entryId);
-                    fragment.setArguments(bundle2);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("entryId", entryId);
+                    fragment.setArguments(bundle);
                     getChildFragmentManager().setFragmentResultListener("EditEntryFragmentResult", getViewLifecycleOwner(), (requestKey, bundle1) -> {
                         boolean result = bundle1.getBoolean("shouldUpdateParent", true);
                         Log.d(TAG, "got result from fragment: " + result);
@@ -155,37 +155,24 @@ public class EntryDetailsFragment extends Fragment {
 
         textview_total_time.setText(String.format("/ %s", DateUtils.convertIntIntoReadableDate(entryDetailsViewModel.wearingTimePref)));
 
-        entryDetailsViewModel.progressColor.observe(getViewLifecycleOwner(), progressColor -> {
-            textview_progress.setTextColor(getResources().getColor(progressColor));
+        // Progress bar related
+        entryDetailsViewModel.progressPercentage.observe(getViewLifecycleOwner(), progressPercentage -> {
+            Log.d(TAG, "Progress is supposed to be at " + progressPercentage);
+            progressBar.setIndicatorColor(context.getResources().getColor(entryDetailsViewModel.progressColor));
+            textview_progress.setTextColor(getResources().getColor(entryDetailsViewModel.progressColor));
+            progressBar.setProgress(progressPercentage);
+            textview_percentage_progression.setText(String.format("%d%%", progressPercentage));
         });
 
-        entryDetailsViewModel.sessionBreaks.observe(getViewLifecycleOwner(), sessionBreaks -> {
-            Log.d(TAG, "Break datas are size " + sessionBreaks.size());
-            entryDetailsViewModel.session.getValue().setBreakList(sessionBreaks);
-
-            total_breaks.setText(String.valueOf(sessionBreaks.size()));
-            total_time_breaks.setText(DateUtils.convertIntIntoReadableDate(entryDetailsViewModel.session.getValue().computeTotalTimePause()));
-            updateBreakList(sessionBreaks);
-        });
-
-        entryDetailsViewModel.wornTime.observe(getViewLifecycleOwner(), wornTime -> {
-            textview_progress.setText(String.format("%dh%02dm", wornTime / 60, wornTime % 60));
-        });
-
-        entryDetailsViewModel.isSessionRunning.observe(getViewLifecycleOwner(), isSessionRunning -> {
-            if (isSessionRunning) {
+        // Session related
+        entryDetailsViewModel.session.observe(getViewLifecycleOwner(), session -> {
+            if (session.getStatus() == Session.SessionStatus.RUNNING) {
                 removed.setText(entryDetailsViewModel.session.getValue().getEndDate());
                 stopSessionButton.setVisibility(View.VISIBLE);
                 end_session.setVisibility(View.GONE);
                 estimated_end.setVisibility(View.VISIBLE);
             } else {
                 removed.setText(DateUtils.convertDateIntoReadable(entryDetailsViewModel.session.getValue().getDateRemovedCalendar(), false) + "\n" + entryDetailsViewModel.session.getValue().getEndDate().split(" ")[1]);
-                long time_spent_wearing = entryDetailsViewModel.session.getValue().getRingSessionDuration();
-                if (time_spent_wearing < 60)
-                    textview_progress.setText(entryDetailsViewModel.session.getValue().getRingSessionDuration() + getString(R.string.minute_with_M_uppercase));
-                else
-                    textview_progress.setText(String.format("%dh%02dm", time_spent_wearing / 60, time_spent_wearing % 60));
-
                 // If the session is finished, no need to show the ableToGetItOff textView.
                 // This textview is only used to warn user when he will be able to get it off
                 whenGetItOff.setVisibility(View.GONE);
@@ -193,9 +180,16 @@ public class EntryDetailsFragment extends Fragment {
                 estimated_end.setVisibility(View.GONE);
                 end_session.setVisibility(View.VISIBLE);
             }
-        });
 
-        entryDetailsViewModel.session.observe(getViewLifecycleOwner(), session -> {
+            if (session.getRingSessionDuration() < 60)
+                textview_progress.setText(entryDetailsViewModel.session.getValue().getRingSessionDuration() + getString(R.string.minute_with_M_uppercase));
+            else
+                textview_progress.setText(String.format("%dh%02dm", session.getRingSessionDuration() / 60, session.getRingSessionDuration() % 60));
+            Log.d(TAG, "Break datas are size " + session.getBreakList().size());
+
+            total_breaks.setText(String.valueOf(session.getBreakList().size()));
+            total_time_breaks.setText(DateUtils.convertIntIntoReadableDate(entryDetailsViewModel.session.getValue().computeTotalTimePause()));
+            updateBreakList(session.getBreakList());
             put.setText(DateUtils.convertDateIntoReadable(session.getDatePutCalendar(), false) + "\n" + session.getStartDate().split(" ")[1]);
         });
 
@@ -216,17 +210,10 @@ public class EntryDetailsFragment extends Fragment {
             whenGetItOff.setText(String.format(getString(texteResourceWhenGetItOff), timeBeforeRemove / 60, timeBeforeRemove % 60));
         });
 
-        entryDetailsViewModel.progressPercentage.observe(getViewLifecycleOwner(), progressPercentage -> {
-            Log.d(TAG, "Progress is supposed to be at " + progressPercentage);
-            progressBar.setIndicatorColor(context.getResources().getColor(entryDetailsViewModel.progressBarColor.getValue()));
-            progressBar.setProgress(progressPercentage);
-            textview_percentage_progression.setText(String.format("%d%%", progressPercentage));
-        });
-
+        // UI related
         stopSessionButton.setOnClickListener(view13 -> {
             entryDetailsViewModel.endSession();
-            MainActivity.getDbManager().endSession(entryId);
-            //updateAllFragmentDatas(false);
+
             Utils.updateWidget(context);
         });
 
@@ -243,7 +230,6 @@ public class EntryDetailsFragment extends Fragment {
                 Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
                 SessionsAlarmsManager.setBreakAlarm(context ,DateUtils.getdateFormatted(new Date()), entryId);
-                //updatePauseList();
                 Utils.updateWidget(getContext());
             } else
                 Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
@@ -306,16 +292,6 @@ public class EntryDetailsFragment extends Fragment {
                             sessionBreaks.remove(object);
                             Log.d(TAG, "pauseDatas size " + sessionBreaks.size());
                             Log.d(TAG, "delete pause with id: " + object.getId() + " and index " + position);
-                            // dbManager.deletePauseEntry(object.getId());
-                            //updatePauseList();
-                            //entryDetailsViewModel.recomputeWearingTime();
-                            /*if (entryDetailsViewModel.session.getValue().getIsRunning()) {
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(entryDetailsViewModel.session.getValue().getDatePutCalendar().getTime());
-                                calendar.add(Calendar.MINUTE, newAlarmDate);
-                                Log.d(TAG, "Setting alarm for entry: " + entryId + " At: " + DateUtils.getdateFormatted(calendar.getTime()));
-                                SessionsAlarmsManager.setAlarm(context, calendar, entryId, true);
-                            }*/
                         })
                         .setNegativeButton(android.R.string.no, null)
                         .setIcon(android.R.drawable.ic_dialog_alert).show();
@@ -345,7 +321,7 @@ public class EntryDetailsFragment extends Fragment {
                 boolean result = bundle1.getBoolean("shouldUpdateBreakList", true);
                 Log.d(TAG, "got result from fragment: " + result);
                 if (result)
-                    entryDetailsViewModel.loadBreaks();
+                    entryDetailsViewModel.loadSession();
             });
             fragment.show(getChildFragmentManager(), null);
         }
@@ -356,7 +332,7 @@ public class EntryDetailsFragment extends Fragment {
             int position = Integer.parseInt(v.getTag().toString());
             Log.d(TAG, "Clicked item at position: " + position);
 
-            showPauseEditBreakFragment(entryDetailsViewModel.sessionBreaks.getValue().get(position));
+            showPauseEditBreakFragment(entryDetailsViewModel.session.getValue().getBreakList().get(position));
         };
     }
 

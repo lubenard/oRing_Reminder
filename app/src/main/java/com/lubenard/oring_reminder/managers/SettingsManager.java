@@ -37,7 +37,7 @@ public class SettingsManager {
     }
 
     public void reloadSettings() {
-        Log.d(TAG, "Reloading settings");
+        Log.d(TAG, "(Re)loading settings");
 
         theme = sharedPreferences.getString("ui_theme", "dark");
         language = sharedPreferences.getString("ui_language", "system");
@@ -60,9 +60,7 @@ public class SettingsManager {
         isLoggingEnabled = sharedPreferences.getBoolean("debug_is_logging_enabled", false);
     }
 
-    public String getActionUIFab() {
-        return ui_home_action_fab;
-    }
+    public String getActionUIFab() { return ui_home_action_fab; }
 
     public void setWearingTime(String newWearingTime) {
         Log.d(TAG, "Set wearing time to " + newWearingTime);
@@ -93,46 +91,25 @@ public class SettingsManager {
         return wearingTimeInMinutes;
     }
 
-    public String getTheme() {
-        return theme;
-    }
+    public String getTheme() { return theme; }
 
-    public String getLanguage() {
-        return language;
-    }
+    public String getLanguage() { return language; }
 
-    public boolean getIsNotifChannelCreated() {
-        return isNotifChannelCreated;
-    }
+    public boolean getIsNotifChannelCreated() { return isNotifChannelCreated; }
 
-    public boolean getShouldSendNotifWhenSessionIsOver() {
-        return shouldSendNotifWhenSessionIsOver;
-    }
+    public boolean getShouldSendNotifWhenSessionIsOver() { return shouldSendNotifWhenSessionIsOver; }
 
-    public boolean getShouldSendNotifWhenBreakTooLong() {
-        return shouldSendNotifWhenBreakTooLong;
-    }
+    public boolean getShouldSendNotifWhenBreakTooLong() { return shouldSendNotifWhenBreakTooLong; }
 
-    public int getShouldSendNotifWhenBreakTooLongDate() {
-        return shouldSendNotifWhenBreakTooLongDate;
-    }
+    public int getShouldSendNotifWhenBreakTooLongDate() { return shouldSendNotifWhenBreakTooLongDate; }
 
-    public boolean getShouldPreventIfNoSessionStartedToday() {
-        return shouldPreventIfNoSessionStartedToday;
-    }
+    public boolean getShouldPreventIfNoSessionStartedToday() { return shouldPreventIfNoSessionStartedToday; }
 
-    public String getShouldPreventIfNoSessionStartedTodayDate() {
-        return shouldPreventIfNoSessionStartedTodayDate;
-    }
+    public String getShouldPreventIfNoSessionStartedTodayDate() { return shouldPreventIfNoSessionStartedTodayDate; }
 
+    public void setBottomNavigationViewCurrentIndex(int newStatus) { bottomNavigationViewCurrentIndex = newStatus; }
 
-    public void setBottomNavigationViewCurrentIndex(int newStatus) {
-        bottomNavigationViewCurrentIndex = newStatus;
-    }
-
-    public int getBottomNavigationViewCurrentIndex() {
-        return bottomNavigationViewCurrentIndex;
-    }
+    public int getBottomNavigationViewCurrentIndex() { return bottomNavigationViewCurrentIndex; }
 
     public void setIsLoggingEnabled(Boolean newValue) {
         isLoggingEnabled = newValue;

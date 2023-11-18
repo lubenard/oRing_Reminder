@@ -6,19 +6,15 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lubenard.oring_reminder.MainActivity;
-import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.custom_components.Session;
 import com.lubenard.oring_reminder.managers.DbManager;
-import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.SessionsUtils;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 public class EntryDetailsViewModel extends ViewModel {
     private static final String TAG = "EntryDetailsViewModel";
@@ -27,11 +23,8 @@ public class EntryDetailsViewModel extends ViewModel {
     MutableLiveData<RingSession> session = new MutableLiveData<>();
     MutableLiveData<Long> wornTime = new MutableLiveData<>();
     MutableLiveData<Calendar> estimatedEnd = new MutableLiveData<>();
-    MutableLiveData<ArrayList<BreakSession>> sessionBreaks = new MutableLiveData<>();
     MutableLiveData<Integer> progressPercentage = new MutableLiveData<>();
-    MutableLiveData<Integer> progressColor = new MutableLiveData<>();
-    MutableLiveData<Integer> progressBarColor = new MutableLiveData<>();
-    MutableLiveData<Boolean> isSessionRunning = new MutableLiveData<>();
+    int progressColor;
     int wearingTimePref;
     Boolean isThereARunningPause = false;
     Runnable updateRunnable;
@@ -42,31 +35,27 @@ public class EntryDetailsViewModel extends ViewModel {
         dbManager = MainActivity.getDbManager();
     }
 
-    public void loadBreaks() {
-        sessionBreaks.setValue(dbManager.getAllBreaksForId(entryId, true));
-        session.getValue().setBreakList(sessionBreaks.getValue());
-    }
 
     public void loadSession() {
         session.setValue(dbManager.getEntryDetails(entryId));
-        isSessionRunning.setValue(session.getValue().getStatus() == Session.SessionStatus.RUNNING);
+        session.getValue().setBreakList(dbManager.getAllBreaksForId(entryId, true));
         isThereARunningPause = session.getValue().getIsInBreak();
     }
 
     public void loadCurrentSession(long entryId) {
-        if (entryId > 0) {
+        if (entryId >= 0) {
             this.entryId = entryId;
             wearingTimePref = MainActivity.getSettingsManager().getWearingTimeInt();
             loadSession();
-            loadBreaks();
-            computeWearingTime();
             computeProgressBarDatas();
+            wornTime.setValue(SessionsUtils.computeWornTime(session.getValue()));
+            estimatedEnd.setValue(SessionsUtils.computeEstimatedEnd(session.getValue()));
             updateHandler = new Handler();
             updateRunnable = new Runnable() {
                 @Override
                 public void run() {
                     Log.d(TAG, "Updating wearing time");
-                    computeWearingTime();
+                    wornTime.setValue(SessionsUtils.computeWornTime(session.getValue()));
                     computeProgressBarDatas();
                     // Every minute update the wearing time. No need to do it more often
                     updateHandler.postDelayed(this, 60000);
@@ -84,56 +73,16 @@ public class EntryDetailsViewModel extends ViewModel {
     void computeProgressBarDatas() {
         HashMap<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(session.getValue(), wearingTimePref);
 
-        progressColor.setValue(SessionsUtils.computeTextColor(session.getValue(), wearingTimePref));
-
-        // As weird as it can sound, pbDatas only have one key value in it
+        // As weird as it can sound, pbDatas only have one <key, value> in it
+        for (Integer value: pbDatas.values()) { progressColor = value; }
         for (Integer key: pbDatas.keySet()) { progressPercentage.setValue(key); }
-
-        // Same here
-        for (Integer value: pbDatas.values()) { progressBarColor.setValue(value); }
-    }
-
-    /**
-     * Compute when user get it off according to breaks.
-     * If the user made a 1h30 break, then he should wear it 1h30 more
-     */
-    void computeWearingTime() {
-        long oldTimeWeared;
-        // If session is running,
-        // OldTimeWeared is the time in minute between the starting of the entry and the current Date
-        // Else, oldTimeWeared is the time between the start of the entry and it's pause
-        if (session.getValue().getStatus() == Session.SessionStatus.RUNNING)
-            oldTimeWeared = DateUtils.getDateDiff(session.getValue().getDatePutCalendar().getTime(), new Date(), TimeUnit.MINUTES);
-        else
-            oldTimeWeared = DateUtils.getDateDiff(session.getValue().getStartDate(), session.getValue().getEndDate(), TimeUnit.MINUTES);
-
-        long totalTimePause = session.getValue().computeTotalTimePause();
-        long newComputedTime;
-
-        Log.d(TAG, "oldTimeWeared is:" + oldTimeWeared + " ,totalTimePause is:" + totalTimePause);
-
-        // Avoid having more time pause than weared time
-        if (totalTimePause > oldTimeWeared)
-            totalTimePause = oldTimeWeared;
-
-        newComputedTime = oldTimeWeared - totalTimePause;
-        Log.d(TAG, "Compute newWearingTime = " + oldTimeWeared + " - " + totalTimePause + " = " + newComputedTime);
-        wornTime.setValue(newComputedTime);
-
-        // Time is computed as:
-        // number_of_hour_defined_in_settings + total_time_in_pause
-        int newAlarmDate = (int) (MainActivity.getSettingsManager().getWearingTimeInt() + totalTimePause);
-        Log.d(TAG, "New alarm date = " + newAlarmDate);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(session.getValue().getDatePutCalendar().getTime());
-        calendar.add(Calendar.MINUTE, newAlarmDate);
-        estimatedEnd.setValue(calendar);
     }
 
     public void endSession() {
         dbManager.endSession(entryId);
-        isSessionRunning.setValue(false);
+        session.getValue().setEndDate(new Date());
+        session.getValue().setStatus(Session.SessionStatus.NOT_RUNNING);
+        session.setValue(session.getValue());
     }
 
     public void stopTimer() {
