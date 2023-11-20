@@ -146,6 +146,42 @@ public class SessionsManager {
     }
 
     /**
+     * Compute all pause time into interval
+     * @param entryId entry for the wanted session
+     * @param date24HoursAgo oldest boundaries
+     * @param dateNow interval newest boundaries
+     * @return the time in Minutes of pauses between the interval
+     */
+    public static int computeTotalTimePauseForId(DbManager dbManager, long entryId, String date24HoursAgo, String dateNow) {
+        ArrayList<BreakSession> pausesDatas = dbManager.getAllBreaksForId(entryId, true);
+        int totalTimePause = 0;
+        for (int i = 0; i < pausesDatas.size(); i++) {
+            BreakSession currentBreak = pausesDatas.get(i);
+            Log.d(TAG, "BreakSession is " + currentBreak);
+            if (!(pausesDatas.get(i).getStatus() == Session.SessionStatus.RUNNING)) {
+                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getStartDate());
+                    totalTimePause += currentBreak.getSessionDuration();
+                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
+                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
+                }
+            } else {
+                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running pause at index " + i + " is added: " + DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
+                    totalTimePause += DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
+                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                }
+            }
+        }
+        return totalTimePause;
+    }
+
+    /**
      * Check if given session have running pause ongoing
      * @param dbManager dbManager
      * @param entryId entry to check

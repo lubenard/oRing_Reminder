@@ -76,8 +76,6 @@ public class CalendarItemAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridItem = inflater.inflate(R.layout.calendar_grid_item, null);
 
-        //Log.d(TAG, "Iterate over " + dayList.get(position) + " with position " + position);
-
         if (!dayList.get(position).equals("0")) {
 
             TextView numberTextView = gridItem.findViewById(R.id.calendar_grid_item_layout);
@@ -85,8 +83,6 @@ public class CalendarItemAdapter extends BaseAdapter {
             numberTextView.setText(dayList.get(position));
 
             List<RingSession> sessions = filterSessions(monthEntries, Integer.parseInt(dayList.get(position)));
-
-            //Log.d(TAG, "Sessions for " + dayList.get(position) + " are size " + sessions.size());
 
             if (todayIndex != -1 && todayIndex == Integer.parseInt(dayList.get(position)))
                 numberTextView.setTextColor(context.getResources().getColor(android.R.color.holo_blue_light));
