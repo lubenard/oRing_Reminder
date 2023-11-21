@@ -1,6 +1,7 @@
 package com.lubenard.oring_reminder.utils;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
@@ -26,8 +27,8 @@ public class SessionsUtils {
      * @return Hashmap containing 'ProgressPercentage, ProgressColor'
      */
     @NonNull
-    static public HashMap<Integer, Integer> computeProgressBarDatas(RingSession session, float wearingTimePref) {
-        HashMap<Integer, Integer> progressDatas = new HashMap<>();
+    static public Pair<Integer, Integer> computeProgressBarDatas(RingSession session, float wearingTimePref) {
+
         int progressColor;
         int progressPercentage = (int) (session.getSessionDuration() / wearingTimePref * 100);
 
@@ -44,7 +45,8 @@ public class SessionsUtils {
             }
         }
 
-        progressDatas.put(progressPercentage, progressColor);
+        Pair<Integer, Integer> progressDatas = new Pair<>(progressPercentage, progressColor);
+        Log.d(TAG,"Computed progressBarDatas with: " + progressDatas);
         return progressDatas;
     }
 

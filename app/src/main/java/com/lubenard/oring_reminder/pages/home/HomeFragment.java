@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.util.Pair;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -293,10 +294,10 @@ public class HomeFragment extends Fragment {
 
                 estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
 
-                HashMap<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt());
+                Pair<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt());
 
-                // As weird as it can sound, pbDatas will only have one key value in it
-                for (Integer key: pbDatas.keySet()) { progress_bar.setProgress(key); }
+                progress_bar.setProgress(pbDatas.first);
+
                 Log.d(TAG, "MainView percentage is " + progress_bar.getProgress());
 
                 textview_progress.setTextColor(getResources().getColor(SessionsUtils.computeTextColor(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt())));

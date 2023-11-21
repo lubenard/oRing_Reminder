@@ -2,6 +2,7 @@ package com.lubenard.oring_reminder.pages.entry_details;
 
 import android.os.Handler;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -71,11 +72,10 @@ public class EntryDetailsViewModel extends ViewModel {
     }
 
     void computeProgressBarDatas() {
-        HashMap<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(session.getValue(), wearingTimePref);
+        Pair<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(session.getValue(), wearingTimePref);
 
-        // As weird as it can sound, pbDatas only have one <key, value> in it
-        for (Integer value: pbDatas.values()) { progressColor = value; }
-        for (Integer key: pbDatas.keySet()) { progressPercentage.setValue(key); }
+         progressColor = pbDatas.first;
+         progressPercentage.setValue(pbDatas.second);
     }
 
     public void endSession() {
