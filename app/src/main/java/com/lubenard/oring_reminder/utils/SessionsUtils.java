@@ -61,18 +61,6 @@ public class SessionsUtils {
         }
     }
 
-    public static int computeTotalTimePause(DbManager dbManager, long entryId) {
-        ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
-        int totalTimePause = 0;
-        for (int i = 0; i != allPauses.size(); i++) {
-            if (allPauses.get(i).getStatus() == Session.SessionStatus.RUNNING)
-                totalTimePause += DateUtils.getDateDiff(allPauses.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
-            else
-                totalTimePause += allPauses.get(i).getSessionDuration();
-        }
-        return totalTimePause;
-    }
-
     /**
      * Compute when user get it off according to breaks.
      * If the user made a 1h30 break, then he should wear it 1h30 more
@@ -105,15 +93,21 @@ public class SessionsUtils {
         return wornTime;
     }
 
+    /**
+     * Compute the estimated end (based on started date & session breaks)
+     * @param session The session should include the breaks or the computeTotalTimePause will not take
+     *                them into account
+     * @return Calendar set on the time of estimated end
+     */
     public static Calendar computeEstimatedEnd(RingSession session) {
         // Time is computed as:
         // number_of_hour_defined_in_settings + total_time_in_pause
-        int newAlarmDate = MainActivity.getSettingsManager().getWearingTimeInt() + session.computeTotalTimePause();
-        Log.d(TAG, "New alarm date = " + newAlarmDate);
+        int estimatedEnd = MainActivity.getSettingsManager().getWearingTimeInt() + session.computeTotalTimePause();
+        Log.d(TAG, "Estimated end is = " + estimatedEnd + " for session with id " + session.getId());
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(session.getDatePutCalendar().getTime());
-        calendar.add(Calendar.MINUTE, newAlarmDate);
+        calendar.add(Calendar.MINUTE, estimatedEnd);
         return calendar;
     }
 }

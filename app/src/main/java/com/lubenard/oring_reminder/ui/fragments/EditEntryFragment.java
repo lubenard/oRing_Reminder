@@ -144,7 +144,7 @@ public class EditEntryFragment extends DialogFragment {
             // If entry already exist in the db.
             if (entryId != -1) {
                 if (isDateRemovedEmpty) {
-                    if (Utils.isDateSane(formattedDatePut)) {
+                    if (DateUtils.isDateSane(formattedDatePut)) {
                         Log.d(TAG, "Okay 1");
                         dbManager.updateDatesRing(entryId, formattedDatePut, "NOT SET YET", 1);
                         // Recompute alarm if the entry already exist, but has no ending time
@@ -157,7 +157,7 @@ public class EditEntryFragment extends DialogFragment {
                         UiUtils.showToastBadFormattedDate(context);
                     }
                 } else {
-                    if (Utils.isDateSane(formattedDatePut) && Utils.isDateSane(formattedDateRemoved)) {
+                    if (DateUtils.isDateSane(formattedDatePut) && DateUtils.isDateSane(formattedDateRemoved)) {
                         Log.d(TAG, "Okay 2");
                         dbManager.updateDatesRing(entryId, formattedDatePut, formattedDateRemoved, 0);
                         dbManager.endPause(entryId);
@@ -171,7 +171,7 @@ public class EditEntryFragment extends DialogFragment {
                 }
             } else {
                 if (isDateRemovedEmpty) {
-                    if (Utils.isDateSane(formattedDatePut)) {
+                    if (DateUtils.isDateSane(formattedDatePut)) {
                         Log.d(TAG, "Okay 3");
                         SessionsManager.insertNewEntry(context, formattedDatePut);
                         dismissDialog();
@@ -180,7 +180,7 @@ public class EditEntryFragment extends DialogFragment {
                         UiUtils.showToastBadFormattedDate(context);
                     }
                 } else if (DateUtils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
-                    if (Utils.isDateSane(formattedDatePut) && Utils.isDateSane(formattedDateRemoved)) {
+                    if (DateUtils.isDateSane(formattedDatePut) && DateUtils.isDateSane(formattedDateRemoved)) {
                         Log.d(TAG, "Okay 4");
                         dbManager.createNewEntry(formattedDatePut, formattedDateRemoved, 0);
                         dismissDialog();
@@ -291,12 +291,12 @@ public class EditEntryFragment extends DialogFragment {
 
         Log.d(TAG, "datetime_from is " + datetime_from + " datetime_to is " + datetime_to);
 
-        boolean is_new_entry_datetime_to_valid = Utils.isDateSane(datetime_to);
+        boolean is_new_entry_datetime_to_valid = DateUtils.isDateSane(datetime_to);
 
         SettingsManager settingsManager = new SettingsManager(context);
 
         // If new_entry_datetime_from is valid but new_entry_datetime_to is not valid
-        if (!is_new_entry_datetime_to_valid && Utils.isDateSane(datetime_from)) {
+        if (!is_new_entry_datetime_to_valid && DateUtils.isDateSane(datetime_from)) {
             calendar.setTime(DateUtils.getdateParsed(datetime_from));
             //Todo: fix this
             //calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt() + 9);

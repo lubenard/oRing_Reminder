@@ -137,4 +137,16 @@ public class DateUtils {
             return null;
         }
     }
+
+    /**
+     * Check if the input string is valid
+     * @param text the given input string
+     * @return 1 if the string is valid, else 0
+     */
+    //TODO: Refactor this method to make return boolean
+    public static boolean isDateSane(String text) {
+        if (text.equals("") || text.equals("NOT SET YET") || getdateParsed(text) == null)
+            return false;
+        return true;
+    }
 }

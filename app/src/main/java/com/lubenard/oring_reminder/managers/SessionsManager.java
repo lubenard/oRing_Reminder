@@ -26,7 +26,7 @@ public class SessionsManager {
 
     /**
      * Used by UI to check if a session has already started and if we should prevent the user.
-     * If no session is already, running, save the entry into db.
+     * If no session is already started, running, save the entry into db.
      * @param formattedDatePut formatted using utils tools string from date
      */
     public static void insertNewEntry(Context context, String formattedDatePut) {

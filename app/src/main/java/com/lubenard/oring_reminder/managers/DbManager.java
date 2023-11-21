@@ -425,7 +425,7 @@ public class DbManager extends SQLiteOpenHelper {
     }
 
     /**
-     * Get the last running entry
+     * Get the last running break for specified id
      * @return A ringModel containing last Running entry.
      * Primarily used for widget
      */

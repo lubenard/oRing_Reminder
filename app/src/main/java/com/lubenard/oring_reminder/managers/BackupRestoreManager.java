@@ -24,7 +24,6 @@ import com.lubenard.oring_reminder.pages.settings.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
-import com.lubenard.oring_reminder.utils.Utils;
 import com.lubenard.oring_reminder.utils.XmlWriter;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -282,7 +281,7 @@ public class BackupRestoreManager extends Activity{
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("session")) {
                     // Check if we have the minimum infos about the session to recreate
                     if (myParser.getAttributeValue(null, "dateTimePut") != null && myParser.getAttributeValue(null, "dateTimeRemoved") != null
-                    && Utils.isDateSane(myParser.getAttributeValue(null, "dateTimePut"))) {
+                    && DateUtils.isDateSane(myParser.getAttributeValue(null, "dateTimePut"))) {
                         isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
                         lastEntryInsertedId = dbManager.createNewEntry(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
                         if (isRunning == 1) {

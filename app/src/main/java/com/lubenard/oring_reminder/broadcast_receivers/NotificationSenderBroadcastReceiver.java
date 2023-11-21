@@ -9,7 +9,6 @@ import com.lubenard.oring_reminder.utils.Log;
 
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.utils.Utils;
 
 public class NotificationSenderBroadcastReceiver extends BroadcastReceiver {
     @Override
@@ -23,7 +22,7 @@ public class NotificationSenderBroadcastReceiver extends BroadcastReceiver {
         } else if (action == 2) {
             Log.d("NotificationSenderBroad", "Check if there is a session running");
             if (new DbManager(context).getAllRunningSessions().size() == 0) {
-                Utils.sendNotification(context, context.getString(R.string.have_you_start_session_today_title),
+                SessionsAlarmsManager.sendNotification(context, context.getString(R.string.have_you_start_session_today_title),
                         context.getString(R.string.have_you_start_session_today_body),
                         android.R.drawable.ic_dialog_alert);
             }
