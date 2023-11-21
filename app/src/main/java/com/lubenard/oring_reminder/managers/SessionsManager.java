@@ -32,15 +32,16 @@ public class SessionsManager {
     public static void insertNewEntry(Context context, String formattedDatePut) {
         DbManager dbManager = MainActivity.getDbManager();
 
-        HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();
+        ArrayList<RingSession> runningSessions = dbManager.getAllRunningSessions();
 
         if (!runningSessions.isEmpty()) {
             new AlertDialog.Builder(context).setTitle(R.string.alertdialog_multiple_running_session_title)
                     .setMessage(R.string.alertdialog_multiple_running_session_body)
                     .setPositiveButton(R.string.alertdialog_multiple_running_session_choice1, (dialog, which) -> {
-                        for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
-                            Log.d(TAG, "Set session " + sessions.getKey() + " to finished");
-                            dbManager.updateDatesRing(sessions.getKey(), sessions.getValue(), DateUtils.getdateFormatted(new Date()), 0);
+                        for (int i = 0; i < runningSessions.size(); i++) {
+                            RingSession session = runningSessions.get(i);
+                            Log.d(TAG, "Set session " + session.getId() + " to finished");
+                            dbManager.updateDatesRing(session.getId(), session.getStartDate(), DateUtils.getdateFormatted(new Date()), 0);
                         }
                         saveEntry(context, formattedDatePut);
                     })
@@ -179,20 +180,5 @@ public class SessionsManager {
             }
         }
         return totalTimePause;
-    }
-
-    /**
-     * Check if given session have running pause ongoing
-     * @param dbManager dbManager
-     * @param entryId entry to check
-     * @return true if running break has been found, else false
-     */
-    public static boolean doesSessionHaveRunningPause(DbManager dbManager, long entryId) {
-        ArrayList<BreakSession> allPauses = dbManager.getAllBreaksForId(entryId, false);
-        for (int i = 0; i != allPauses.size(); i++) {
-            if (allPauses.get(i).getStatus() == Session.SessionStatus.RUNNING)
-                return true;
-        }
-        return false;
     }
 }

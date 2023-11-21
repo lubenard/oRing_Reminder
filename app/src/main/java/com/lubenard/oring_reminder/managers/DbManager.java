@@ -173,18 +173,23 @@ public class DbManager extends SQLiteOpenHelper {
     /**
      * Check if there is running sessions.
      * Return the one running
-     * @return
+     * @return Hashmap containing ringTableId and DatePut of all Sessions considered running
      */
-    public HashMap<Integer, String> getAllRunningSessions() {
-        HashMap <Integer, String> entryDatas = new HashMap<>();
+    public ArrayList<RingSession> getAllRunningSessions() {
+        ArrayList<RingSession> entryDatas = new ArrayList<>();
 
-        String[] columns = new String[]{ringTableId, ringTablePut};
+        String[] columns = new String[]{ringTableId, ringTablePut, ringTableRemoved, ringTableTimeWeared, ringTableIsRunning};
         Cursor cursor = readableDB.query(ringTable,  columns, ringTableIsRunning + "=?",
                 new String[]{"1"}, null, null, null);
 
         while (cursor.moveToNext())
-            entryDatas.put(cursor.getInt(cursor.getColumnIndex(ringTableId)),
-                            cursor.getString(cursor.getColumnIndex(ringTablePut)));
+            entryDatas.add(new RingSession(
+                    cursor.getInt(cursor.getColumnIndex(ringTableId)),
+                    cursor.getString(cursor.getColumnIndex(ringTablePut)),
+                    cursor.getString(cursor.getColumnIndex(ringTableRemoved)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableIsRunning)),
+                    cursor.getInt(cursor.getColumnIndex(ringTableTimeWeared))
+            ));
         cursor.close();
         return entryDatas;
     }

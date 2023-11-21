@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.lubenard.oring_reminder.custom_components.BreakSession;
+import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.managers.SessionsManager;
@@ -12,6 +14,7 @@ import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.SessionsUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,21 +33,22 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
         SettingsManager settingsManager = new SettingsManager(context);
 
         int userSettingWearingTime = settingsManager.getWearingTimeInt();
-        HashMap<Integer, String> runningSessions = dbManager.getAllRunningSessions();
+        ArrayList<RingSession> runningSessions = dbManager.getAllRunningSessions();
 
-        for (Map.Entry<Integer, String> sessions : runningSessions.entrySet()) {
+        for (int i = 0; i < runningSessions.size(); i++) {
+            RingSession session = runningSessions.get(i);
+            session.setBreakList(dbManager.getAllBreaksForId(session.getId(), false));
             // Do not set a alarm if session has a running pause, because we do not know when this pause is going
             // to end.
             // Only set a new alarm when the end time of the pause is known
-            if (!SessionsManager.doesSessionHaveRunningPause(dbManager, sessions.getKey())) {
+            if (session.getIsInBreak()) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(DateUtils.getdateParsed(sessions.getValue()));
-                calendar.add(Calendar.MINUTE, userSettingWearingTime);
-                calendar.add(Calendar.MINUTE, SessionsUtils.computeTotalTimePause(dbManager, sessions.getKey()));
+                calendar.setTime(DateUtils.getdateParsed(session.getStartDate()));
+                calendar.add(Calendar.MINUTE, userSettingWearingTime + session.computeTotalTimePause());
 
                 // Set alarms for session not finished
-                Log.d(TAG, "(re) set alarm for session " + sessions.getKey() + " at " + DateUtils.getdateFormatted(calendar.getTime()));
-                SessionsAlarmsManager.setAlarm(context, calendar, sessions.getKey(), true);
+                Log.d(TAG, "(re) set alarm for session " + session.getId() + " at " + DateUtils.getdateFormatted(calendar.getTime()));
+                SessionsAlarmsManager.setAlarm(context, calendar, session.getId(), true);
             }
         }
     }

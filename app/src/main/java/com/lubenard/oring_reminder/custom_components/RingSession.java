@@ -59,7 +59,6 @@ public class RingSession extends Session {
 
     /**
      * Get and update the ring session duration
-     * TODO: Does not include breaks if present
      * @return the updated session duration
      */
     public long getRingSessionDuration() {
@@ -82,6 +81,10 @@ public class RingSession extends Session {
         this.breakList = breakList;
     }
 
+    /**
+     * Compute total time break for all breaks registered in the session
+     * @return the total time in MINUTES
+     */
     public int computeTotalTimePause() {
         int totalTimePause = 0;
         for (int i = 0; i != breakList.size(); i++) {
@@ -93,5 +96,9 @@ public class RingSession extends Session {
         return totalTimePause;
     }
 
+    /**
+     * Return the break list
+     * @return An ArrayList of BreakSessions
+     */
     public ArrayList<BreakSession> getBreakList() { return breakList; }
 }
