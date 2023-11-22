@@ -33,6 +33,7 @@ import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.pages.about.AboutFragment;
 import com.lubenard.oring_reminder.pages.debug.DebugFragment;
+import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
 
@@ -83,6 +84,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // wearing_time preference click listener
         Preference wearing_time = findPreference("myring_wearing_time");
+        wearing_time.setSummary(DateUtils.convertIntIntoReadableDate(settingsManager.getWearingTimeInt()));
         wearing_time.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "onPreferenceChangeListener: newValue is type of " + newValue.getClass().getName());
             if (((String)newValue).matches("\\d+") || ((String)newValue).matches("\\d+:\\d+")) {

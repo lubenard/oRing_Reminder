@@ -10,7 +10,12 @@ import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.R;
 
+/**
+ * Broadcast receiver used to send notifs
+ */
 public class NotificationSenderBroadcastReceiver extends BroadcastReceiver {
+    private static final String TAG = "NotificationSenderBroadcastReceiver";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         // Launch a notification
@@ -20,7 +25,7 @@ public class NotificationSenderBroadcastReceiver extends BroadcastReceiver {
                     context.getString(R.string.notif_get_it_off_body),
                     R.drawable.baseline_done_24, intent.getLongExtra("entryId", -1));
         } else if (action == 2) {
-            Log.d("NotificationSenderBroad", "Check if there is a session running");
+            Log.d("NotificationSenderBroadcastReceiver", "Check if there is a session running");
             if (new DbManager(context).getAllRunningSessions().size() == 0) {
                 SessionsAlarmsManager.sendNotification(context, context.getString(R.string.have_you_start_session_today_title),
                         context.getString(R.string.have_you_start_session_today_body),

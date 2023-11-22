@@ -14,6 +14,9 @@ import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
 
+/**
+ *
+ */
 public class NotificationReceiverBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
