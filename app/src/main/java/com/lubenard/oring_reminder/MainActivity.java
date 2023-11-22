@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,9 +15,11 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    public static final String NOTIF_CHANNEL_ID = "NORMAL_CHANNEL";
     private SharedPreferences sharedPreferences;
     private static SettingsManager settingsManager;
     private static DbManager dbManager;
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 return true;
-            } else if (activity.shouldShowRequestPermissionRationale(permRequired)) {
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permRequired)) {
                 // In an educational UI, explain to the user why your app requires this
                 // permission for a specific feature to behave as expected. In this UI,
                 // include a "cancel" or "no thanks" button that allows the user to
@@ -86,8 +90,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {// If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted. Continue the action or workflow
                 // in your app.
                 try {
@@ -148,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         applyUserConfig();
         createNotifChannel();
-
+        askPermissions();
         // Create dynamical quick shortcut
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
         //    createQuickShortcut();
@@ -170,9 +173,17 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void initViewModels() {
-        new ViewModelProvider(this).get(HomeViewModel.class);
-        //new ViewModelProvider(this).get(HomeViewModel.class);
+    private void askPermissions() {
+        if (!settingsManager.getIsNotifPermGranted() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkOrRequestPerm(this, this, Manifest.permission.SCHEDULE_EXACT_ALARM, () -> null, () -> null);
+            checkOrRequestPerm(this, this, Manifest.permission.POST_NOTIFICATIONS, () -> {
+                sharedPreferences.edit().putBoolean("is_notif_perm_granted", true).apply();
+                return null;
+            }, () -> {
+                Toast.makeText(this, getString(R.string.no_access_to_notif), Toast.LENGTH_LONG).show();
+                return null;
+            });
+        }
     }
 
     /**
@@ -214,18 +225,14 @@ public class MainActivity extends AppCompatActivity {
      * Create notif channel if no one exist
      */
     private void createNotifChannel() {
-        if (!settingsManager.getIsNotifChannelCreated()) {
-            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel("NORMAL_CHANNEL",
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel(NOTIF_CHANNEL_ID,
                         getString(R.string.notif_channel_name), NotificationManager.IMPORTANCE_DEFAULT);
                 channel.setDescription(getString(R.string.notif_normal_channel_desc));
                 // Do not show badge
                 channel.setShowBadge(false);
-                mNotificationManager.createNotificationChannel(channel);
-                sharedPreferences.edit().putBoolean("has_notif_channel_created", true).apply();
-            }
+                notificationManager.createNotificationChannel(channel);
         }
     }
 }

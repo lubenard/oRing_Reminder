@@ -29,6 +29,44 @@ public class SessionsAlarmsManager {
 
     private static final String TAG = "SessionsAlarmsManager";
 
+    // Schedule Alarms
+    /**
+     * This will set a alarm that will trigger a notification at given date
+     * @param calendarAlarmDate The date as a Calendar
+     * @param entryId the id entry of the entry to update
+     */
+    public static void setAlarm(Context context, Calendar calendarAlarmDate, long entryId, boolean cancelOldAlarm) {
+        // From the doc, just create the exact same intent, and cancel it.
+        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
+        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
+                .putExtra("action", (entryId == -1) ? 0 : 1)
+                .putExtra("entryId", entryId);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, Utils.getIntentMutableFlag());
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+
+        if (cancelOldAlarm)
+            am.cancel(pendingIntent);
+
+        Log.d(TAG, "Setting alarm for " + DateUtils.getCalendarParsed(calendarAlarmDate));
+
+        am.setAlarmClock(new AlarmManager.AlarmClockInfo(calendarAlarmDate.getTimeInMillis(), pendingIntent), pendingIntent);
+    }
+
+    /**
+     * Only cancel alarm for given entryId
+     */
+    public static void cancelAlarm(Context context, long entryId) {
+        // From the doc, just create the exact same intent, and cancel it.
+        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
+        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
+                .putExtra("action", 1)
+                .putExtra("entryId", entryId);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, Utils.getIntentMutableFlag());
+        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        am.cancel(pendingIntent);
+    }
+
     /**
      * Add alarm if break is too long (only if break is running and option enabled in settings)
      * @param pauseBeginning
@@ -60,6 +98,29 @@ public class SessionsAlarmsManager {
         am.cancel(pendingIntent);
     }
 
+    // Actually display notification
+     /**
+     * Send a notification on the 'normal' channel
+     * @param context current Context
+     * @param title Notification title
+     * @param content notification body
+     * @param drawable drawable icon
+     */
+    public static void sendNotification(Context context, String title, String content, int drawable) {
+        // First let's create the intent
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), Utils.getIntentMutableFlag());
+
+        // Get the notification manager and build it
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(context, MainActivity.NOTIF_CHANNEL_ID);
+        notifBuilder.setSmallIcon(drawable)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pi);
+        notificationManager.notify(0, notifBuilder.build());
+    }
+
     /**
      * Send a notification on the 'normal' channel
      * @param context current Context
@@ -87,69 +148,12 @@ public class SessionsAlarmsManager {
 
         // Get the notification manager and build it
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, "NORMAL_CHANNEL");
+        NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, MainActivity.NOTIF_CHANNEL_ID);
         permNotifBuilder.setSmallIcon(drawable)
                 .setContentTitle(title)
                 .setContentText(content)
                 .addAction(android.R.drawable.checkbox_on_background, context.getString(R.string.notif_choice_do_it), removedProtection)
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_choice_dismiss), dismissedNotif)
-                .setContentIntent(pi);
-        mNotificationManager.notify(0, permNotifBuilder.build());
-    }
-
-    /**
-     * This will set a alarm that will trigger a notification at alarmDate + time wearing setting
-     * @param calendarAlarmDate The date of the alarm in the form 2020-12-30 10:42:00
-     * @param entryId the id entry of the entry to update
-     */
-    public static void setAlarm(Context context, Calendar calendarAlarmDate, long entryId, boolean cancelOldAlarm) {
-        // From the doc, just create the exact same intent, and cancel it.
-        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
-        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
-                .putExtra("action", 1)
-                .putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, Utils.getIntentMutableFlag());
-        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-
-        if (cancelOldAlarm)
-            am.cancel(pendingIntent);
-
-        Log.d(TAG, "Setting alarm for " + DateUtils.getCalendarParsed(calendarAlarmDate));
-
-        am.setAlarmClock(new AlarmManager.AlarmClockInfo(calendarAlarmDate.getTimeInMillis(), pendingIntent), pendingIntent);
-    }
-
-    /**
-     * Only cancel alarm for given entryId
-     */
-    public static void cancelAlarm(Context context, long entryId) {
-        // From the doc, just create the exact same intent, and cancel it.
-        // https://developer.android.com/reference/android/app/AlarmManager.html#cancel(android.app.PendingIntent)
-        Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
-                .putExtra("action", 1)
-                .putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, Utils.getIntentMutableFlag());
-        AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-        am.cancel(pendingIntent);
-    }
-
-    /**
-     * Send a notification on the 'normal' channel
-     * @param context current Context
-     * @param title Notification title
-     * @param content notification body
-     * @param drawable drawable icon
-     */
-    public static void sendNotification(Context context, String title, String content, int drawable) {
-        // First let's create the intent
-        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Get the notification manager and build it
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder permNotifBuilder = new NotificationCompat.Builder(context, "NORMAL_CHANNEL");
-        permNotifBuilder.setSmallIcon(drawable)
-                .setContentTitle(title)
-                .setContentText(content)
                 .setContentIntent(pi);
         mNotificationManager.notify(0, permNotifBuilder.build());
     }

@@ -135,6 +135,7 @@
     <string name="last_entry">The last entry is:&#160;</string>
     <string name="first_entry">The first entry is:&#160;</string>
     <string name="no_access_to_storage">Please allow access to storage to export / import data.</string>
+    <string name="no_access_to_notif">Please allow access to notifications to receive end session notifications.</string>
     <string name="create_new_session">New session</string>
     <string name="stop_active_session">Stop session</string>
     <string name="settings_other_useful_links_title">Useful links:</string>

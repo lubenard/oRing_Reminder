@@ -69,7 +69,6 @@ public class SessionsManager {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(DateUtils.getdateParsed(formattedDatePut));
                 calendar.add(Calendar.MINUTE, weared_time);
-                Log.d(TAG, "New entry: setting alarm at " + calendar.getTimeInMillis());
                 SessionsAlarmsManager.setAlarm(context, calendar, newlyInsertedEntry, false);
             }
     }

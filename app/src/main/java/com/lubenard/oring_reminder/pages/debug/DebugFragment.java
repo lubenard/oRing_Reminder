@@ -15,6 +15,9 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class DebugFragment extends Fragment {
 
     @Override
@@ -32,7 +35,6 @@ public class DebugFragment extends Fragment {
         getActivity().setTitle(R.string.debug_menu_title);
 
         Button buttonSendNotif = view.findViewById(R.id.debug_send_notif);
-
         Switch enableLogSwitch = view.findViewById(R.id.debug_enable_logs);
 
         enableLogSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -40,10 +42,9 @@ public class DebugFragment extends Fragment {
         });
 
         buttonSendNotif.setOnClickListener(view1 -> {
-            SessionsAlarmsManager.sendNotificationWithQuickAnswer(getContext(), "This is a test notification",
-                    "No entry is affected by this notification",
-                    R.drawable.baseline_done_24, -1);
-            Toast.makeText(getContext(), "Just sent a manual notif. Do not worry, no entry will be affected.", Toast.LENGTH_SHORT).show();
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.SECOND, 15);
+            SessionsAlarmsManager.setAlarm(getContext(), cal, -1, false);
         });
     }
 }

@@ -31,6 +31,10 @@ public class NotificationSenderBroadcastReceiver extends BroadcastReceiver {
                         context.getString(R.string.have_you_start_session_today_body),
                         android.R.drawable.ic_dialog_alert);
             }
+        } else if (action == 0) {
+            SessionsAlarmsManager.sendNotificationWithQuickAnswer(context, "This is a test notification",
+                    "No entry is affected by this notification",
+                    R.drawable.baseline_done_24, -1);
         }
     }
 }

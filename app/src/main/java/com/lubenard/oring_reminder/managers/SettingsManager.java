@@ -16,7 +16,7 @@ public class SettingsManager {
     private String wearing_time;
     private String theme;
     private String language;
-    private Boolean isNotifChannelCreated;
+    private Boolean isNotifPermGranted;
     private Boolean shouldPreventIfNoSessionStartedToday;
     private String shouldPreventIfNoSessionStartedTodayDate;
     private Boolean shouldSendNotifWhenSessionIsOver;
@@ -42,7 +42,7 @@ public class SettingsManager {
         theme = sharedPreferences.getString("ui_theme", "dark");
         language = sharedPreferences.getString("ui_language", "system");
 
-        isNotifChannelCreated = sharedPreferences.getBoolean("has_notif_channel_created", false);
+        isNotifPermGranted = sharedPreferences.getBoolean("is_notif_perm_granted", false);
 
         ui_home_action_fab = sharedPreferences.getString("ui_action_on_plus_button", "default");
 
@@ -95,7 +95,7 @@ public class SettingsManager {
 
     public String getLanguage() { return language; }
 
-    public boolean getIsNotifChannelCreated() { return isNotifChannelCreated; }
+    public boolean getIsNotifPermGranted() { return isNotifPermGranted; }
 
     public boolean getShouldSendNotifWhenSessionIsOver() { return shouldSendNotifWhenSessionIsOver; }
 
