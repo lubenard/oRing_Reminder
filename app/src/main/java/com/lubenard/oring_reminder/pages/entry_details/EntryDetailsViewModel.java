@@ -74,8 +74,8 @@ public class EntryDetailsViewModel extends ViewModel {
     void computeProgressBarDatas() {
         Pair<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(session.getValue(), wearingTimePref);
 
-         progressColor = pbDatas.first;
-         progressPercentage.setValue(pbDatas.second);
+        progressPercentage.setValue(pbDatas.first);
+        progressColor = pbDatas.second;
     }
 
     public void endSession() {

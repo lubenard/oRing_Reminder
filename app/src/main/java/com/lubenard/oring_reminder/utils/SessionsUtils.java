@@ -5,15 +5,11 @@ import androidx.core.util.Pair;
 
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.custom_components.Session;
-import com.lubenard.oring_reminder.managers.DbManager;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class SessionsUtils {
@@ -30,6 +26,7 @@ public class SessionsUtils {
     static public Pair<Integer, Integer> computeProgressBarDatas(RingSession session, float wearingTimePref) {
 
         int progressColor;
+        Log.d(TAG, "session getSessionDuration is at " + session.getSessionDuration() + " wearingTimePref: " + wearingTimePref);
         int progressPercentage = (int) (session.getSessionDuration() / wearingTimePref * 100);
 
         if (progressPercentage < 1f)
@@ -56,7 +53,7 @@ public class SessionsUtils {
         if (session.getStatus() == Session.SessionStatus.RUNNING) {
             return R.color.yellow;
         } else {
-            if ((session.getRingSessionDuration() - session.computeTotalTimePause()) / 60 >= wearingTimePref)
+            if ((session.getSessionDuration() - session.computeTotalTimePause()) / 60 >= wearingTimePref)
                 return android.R.color.holo_green_dark;
             else
                 return android.R.color.holo_red_dark;

@@ -57,20 +57,17 @@ public class RingSession extends Session {
         return getStatus() == SessionStatus.IN_BREAK;
     }
 
-    /**
-     * Get and update the ring session duration
-     * @return the updated session duration
-     */
-    public long getRingSessionDuration() {
+    @Override
+    public long getSessionDuration() {
         if (getStatus() == SessionStatus.RUNNING) {
             if (breakList.isEmpty())
                 setSessionDuration(DateUtils.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES));
             else
                 setSessionDuration(DateUtils.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES) - computeTotalTimePause());
-            return getSessionDuration();
+            return super.getSessionDuration();
         }
         setSessionDuration(DateUtils.getDateDiff(datePutCalendar.getTime(), getDateRemovedCalendar().getTime(), TimeUnit.MINUTES));
-        return getSessionDuration();
+        return super.getSessionDuration();
     }
 
     /**

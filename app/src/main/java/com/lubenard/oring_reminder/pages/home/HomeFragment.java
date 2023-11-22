@@ -44,7 +44,6 @@ import com.lubenard.oring_reminder.utils.SessionsUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment {
@@ -278,7 +277,7 @@ public class HomeFragment extends Fragment {
                             .addToBackStack(null).commit();
                 });
 
-                long timeBeforeRemove = currentSession.getRingSessionDuration() - currentSession.computeTotalTimePause();
+                long timeBeforeRemove = currentSession.getSessionDuration() - currentSession.computeTotalTimePause();
                 textview_progress.setText(DateUtils.convertIntIntoReadableDate((int) timeBeforeRemove));
                 time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertIntIntoReadableDate(MainActivity.getSettingsManager().getWearingTimeInt())));
 

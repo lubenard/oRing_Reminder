@@ -181,10 +181,10 @@ public class EntryDetailsFragment extends Fragment {
                 end_session.setVisibility(View.VISIBLE);
             }
 
-            if (session.getRingSessionDuration() < 60)
-                textview_progress.setText(entryDetailsViewModel.session.getValue().getRingSessionDuration() + getString(R.string.minute_with_M_uppercase));
+            if (session.getSessionDuration() < 60)
+                textview_progress.setText(entryDetailsViewModel.session.getValue().getSessionDuration() + getString(R.string.minute_with_M_uppercase));
             else
-                textview_progress.setText(String.format("%dh%02dm", session.getRingSessionDuration() / 60, session.getRingSessionDuration() % 60));
+                textview_progress.setText(String.format("%dh%02dm", session.getSessionDuration() / 60, session.getSessionDuration() % 60));
             Log.d(TAG, "Break datas are size " + session.getBreakList().size());
 
             total_breaks.setText(String.valueOf(session.getBreakList().size()));

@@ -206,7 +206,7 @@ public class CurrentSessionWidgetProvider extends AppWidgetProvider {
             switch (intent.getAction()) {
                 // Clicked on the 'Start Session' button
                 case WIDGET_BUTTON_START:
-                    SessionsManager.saveEntry(context, DateUtils.getdateFormatted(new Date()));
+                    SessionsManager.saveEntry(context, dbManager, settingsManager, DateUtils.getdateFormatted(new Date()));
                     break;
                 // Clicked on the 'Stop Session' button
                 case WIDGET_BUTTON_STOP:

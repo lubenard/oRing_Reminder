@@ -16,8 +16,6 @@ import com.lubenard.oring_reminder.utils.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class SessionsManager {
@@ -31,6 +29,7 @@ public class SessionsManager {
      */
     public static void insertNewEntry(Context context, String formattedDatePut) {
         DbManager dbManager = MainActivity.getDbManager();
+        SettingsManager settingsManager = MainActivity.getSettingsManager();
 
         ArrayList<RingSession> runningSessions = dbManager.getAllRunningSessions();
 
@@ -43,12 +42,12 @@ public class SessionsManager {
                             Log.d(TAG, "Set session " + session.getId() + " to finished");
                             dbManager.updateDatesRing(session.getId(), session.getStartDate(), DateUtils.getdateFormatted(new Date()), 0);
                         }
-                        saveEntry(context, formattedDatePut);
+                        saveEntry(context, dbManager, settingsManager, formattedDatePut);
                     })
-                    .setNegativeButton(R.string.alertdialog_multiple_running_session_choice2, (dialog, which) -> saveEntry(context, formattedDatePut))
+                    .setNegativeButton(R.string.alertdialog_multiple_running_session_choice2, (dialog, which) -> saveEntry(context, dbManager, settingsManager, formattedDatePut))
                     .setIcon(android.R.drawable.ic_dialog_alert).show();
         } else {
-            saveEntry(context, formattedDatePut);
+            saveEntry(context, dbManager, settingsManager, formattedDatePut);
         }
     }
 
@@ -56,15 +55,11 @@ public class SessionsManager {
      * Save entry into db
      * @param formattedDatePut DatePut
      */
-    public static void saveEntry(Context context, String formattedDatePut) {
-        DbManager dbManager = MainActivity.getDbManager();
-
-        SettingsManager settingsManager = new SettingsManager(context);
-
+    public static void saveEntry(Context context, DbManager dbManager, SettingsManager settingsManager, String formattedDatePut) {
         int weared_time = settingsManager.getWearingTimeInt();
 
         long newlyInsertedEntry = dbManager.createNewEntry(formattedDatePut, "NOT SET YET", 1);
-        // Set alarm only for new entry
+        // Set alarm if setting is enabled
         if (settingsManager.getShouldSendNotifWhenSessionIsOver()) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(DateUtils.getdateParsed(formattedDatePut));

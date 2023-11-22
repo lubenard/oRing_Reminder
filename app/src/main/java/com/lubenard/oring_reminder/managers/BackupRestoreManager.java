@@ -238,7 +238,7 @@ public class BackupRestoreManager extends Activity{
                 xmlWriter.writeAttribute("dateTimePut", datas.get(i).getStartDate());
                 xmlWriter.writeAttribute("dateTimeRemoved", datas.get(i).getEndDate());
                 xmlWriter.writeAttribute("isRunning", String.valueOf(datas.get(i).getStatus() == Session.SessionStatus.RUNNING ? 1 : 0));
-                xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getRingSessionDuration()));
+                xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getSessionDuration()));
 
                 ArrayList<BreakSession> pauses = dbManager.getAllBreaksForId(datas.get(i).getId(), true);
                 if (pauses.size() > 0) {
@@ -505,12 +505,12 @@ public class BackupRestoreManager extends Activity{
                 formattedDatas.add(dateRemoved[0]);
                 formattedDatas.add(dateRemoved[1]);
                 if (!(rawDatas.get(i).getStatus() == Session.SessionStatus.RUNNING))
-                    formattedDatas.add(String.valueOf(rawDatas.get(i).getRingSessionDuration()));
+                    formattedDatas.add(String.valueOf(rawDatas.get(i).getSessionDuration()));
                 else
                     formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 formattedDatas.add(String.valueOf(totalTimePauses));
                 if (!(rawDatas.get(i).getStatus() == Session.SessionStatus.RUNNING))
-                    formattedDatas.add(String.valueOf(rawDatas.get(i).getRingSessionDuration() - totalTimePauses));
+                    formattedDatas.add(String.valueOf(rawDatas.get(i).getSessionDuration() - totalTimePauses));
                 else
                     formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
                 csvWriter.writeColumnsDatas(formattedDatas);
