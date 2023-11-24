@@ -53,6 +53,12 @@ public class Log {
         writeToFile(tag, message);
     }
 
+    public static void e(String tag, String message, Throwable error) {
+        if (BuildConfig.DEBUG)
+            android.util.Log.e(tag, message, error);
+        writeToFile(tag, message);
+    }
+
     public static void wtf(String tag, String message) {
         if (BuildConfig.DEBUG)
             android.util.Log.wtf(tag, message);

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RingSession extends Session {
 
-    private Calendar datePutCalendar;
+    private final Calendar datePutCalendar;
 
     private ArrayList<BreakSession> breakList;
 

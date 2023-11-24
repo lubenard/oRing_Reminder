@@ -300,7 +300,7 @@ public class EditEntryFragment extends DialogFragment {
             calendar.setTime(DateUtils.getdateParsed(datetime_from));
             //Todo: fix this
             //calendar.add(Calendar.HOUR_OF_DAY, settingsManager.getWearingTimeInt() + 9);
-            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + "????? " + DateUtils.getdateFormatted(calendar.getTime()));
+            getItOnBeforeTextView.setText(getString(R.string.get_it_on_before) + " ????? " + DateUtils.getdateFormatted(calendar.getTime()));
         } else if (is_new_entry_datetime_to_valid) {
             // Only if new_entry_datetime_to is valid (meaning a session is supposed to have a end date)
             calendar.setTime(DateUtils.getdateParsed(datetime_to));
