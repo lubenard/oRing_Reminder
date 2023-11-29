@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +24,7 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
+import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsViewModel;
 import com.lubenard.oring_reminder.pages.history.HistoryFragment;
 import com.lubenard.oring_reminder.ui.adapters.CalendarAdapter;
 import com.lubenard.oring_reminder.utils.Log;
@@ -36,7 +38,7 @@ public class CalendarFragment extends Fragment {
 
     private RecyclerView calendarRecyclerView;
     private CalendarAdapter adapter;
-    private DbManager dbManager;
+    private CalendarViewModel calendarViewModel;
     private static FragmentActivity activity;
 
     private LinearLayoutManager linearLayoutManager;
@@ -64,22 +66,17 @@ public class CalendarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.calendar_fragment, container, false);
-
         Log.d(TAG, "onCreateView()");
-        return view;
+        return inflater.inflate(R.layout.calendar_fragment, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle(R.string.calendar_fragment_title);
-
         Log.d(TAG, "onViewCreated()");
-
         activity = requireActivity();
-
+        activity.setTitle(R.string.calendar_fragment_title);
         ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         activity.addMenuProvider(menuProvider);
 
@@ -91,9 +88,8 @@ public class CalendarFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getContext());
         calendarRecyclerView.setLayoutManager(linearLayoutManager);
 
-        dbManager = MainActivity.getDbManager();
-
-        ArrayList<RingSession> entries = dbManager.getAllDatasForAllEntrys();
+        calendarViewModel = new ViewModelProvider(requireActivity()).get(CalendarViewModel.class);
+        calendarViewModel.loadCalendarInfos();
 
         // Add dividers (like listView) to recyclerView
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(requireContext(),
@@ -101,13 +97,15 @@ public class CalendarFragment extends Fragment {
         dividerItemDecoration.setDrawable(getDrawable(requireContext(), R.drawable.empty_tall_divider_calendar));
         calendarRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        if (entries.size() > 0)
-            adapter = new CalendarAdapter(activity, this, entries.get(0).getDatePutCalendar());
-        else
-            adapter = new CalendarAdapter(activity, this, Calendar.getInstance());
-        calendarRecyclerView.setAdapter(adapter);
+        calendarViewModel.allSessions.observe(getViewLifecycleOwner(), entries -> {
+            if (entries.size() > 0)
+                adapter = new CalendarAdapter(activity, this, entries.get(0).getDatePutCalendar());
+            else
+                adapter = new CalendarAdapter(activity, this, Calendar.getInstance());
+            calendarRecyclerView.setAdapter(adapter);
+            Log.d(TAG, "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");
+        });
 
-        Log.d(TAG, "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");
     }
 
     public void removeMenuProvider() {

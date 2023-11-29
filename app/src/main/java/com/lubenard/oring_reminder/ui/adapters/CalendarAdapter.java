@@ -42,9 +42,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
         int diffYear = todayDate.get(Calendar.YEAR) - firstSession.get(Calendar.YEAR);
         Log.d(TAG, "diffYear is " + diffYear);
-        int diffMonth = diffYear * 12 + todayDate.get(Calendar.MONTH) - firstSession.get(Calendar.MONTH);
-
-        diffMonth++;
+        int diffMonth = (diffYear * 12 + todayDate.get(Calendar.MONTH) - firstSession.get(Calendar.MONTH)) + 1;
 
         Log.d(TAG, "diffMonth is " + diffMonth);
 
@@ -59,7 +57,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
                 monthDiffCounter = 0;
                 yearCounter++;
             }
-            Log.d(TAG, "Creating item with datas " + (monthDiffCounter + 1) + "/" + yearCounter);
+            Log.d(TAG, "Creating calendarItem with datas " + (monthDiffCounter + 1) + "/" + yearCounter);
             Calendar calendarItem = Calendar.getInstance();
             calendarItem.set(yearCounter, monthDiffCounter, 1);
             monthList.add(calendarItem);

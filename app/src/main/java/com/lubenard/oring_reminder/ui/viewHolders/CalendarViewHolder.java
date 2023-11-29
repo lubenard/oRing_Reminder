@@ -52,6 +52,9 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
     public void updateDatas(Calendar date, ArrayList<RingSession> sessions, Context context) {
         Log.d(TAG, "Received date" + date);
 
+        Calendar calendar = Calendar.getInstance();
+        Calendar todayDate = Calendar.getInstance();
+
         calendarMonth.setText(String.format("%s %d", date.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()), date.get(Calendar.YEAR)));
 
         int calendarOffset = getIndexOfFirstDayInMonth(context, date);
@@ -67,7 +70,6 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
         } else {
             calendarGridDays.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 210, context.getResources().getDisplayMetrics());
         }
-        Calendar calendar = Calendar.getInstance();
 
         List<Pair<Integer, RingSession>> mappedSessions = new ArrayList<>();
 
@@ -79,8 +81,6 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
             Log.d(TAG, "calendar time is now " + calendar.getTime().getTime());
             mappedSessions.add(new Pair<>(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i)));
         }
-
-        Calendar todayDate = Calendar.getInstance();
 
         Log.d(TAG, "Lubenard: date say: " + DateUtils.getdateFormatted(date.getTime()) + ", todayDate say: " + DateUtils.getdateFormatted(todayDate.getTime()));
 
