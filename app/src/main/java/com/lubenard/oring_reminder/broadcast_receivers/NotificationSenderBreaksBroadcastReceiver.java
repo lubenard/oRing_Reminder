@@ -4,11 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
 import com.lubenard.oring_reminder.utils.Log;
 
-import com.lubenard.oring_reminder.R;
-
+/**
+ * Send notifs in case of too long break
+ */
 public class NotificationSenderBreaksBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

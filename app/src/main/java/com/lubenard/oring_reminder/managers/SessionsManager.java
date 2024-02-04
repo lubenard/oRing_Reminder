@@ -18,6 +18,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Utils made to handle session more easily
+ */
 public class SessionsManager {
 
     private static final String TAG = "SessionManager";

@@ -47,7 +47,7 @@ public class DatasFragment extends Fragment {
         TextView firstEntry = view.findViewById(R.id.first_entry);
         TextView timeBetweenFirstAndLastEntry = view.findViewById(R.id.converted_time_between_first_and_last_entries);
 
-        numberOfEntries.setText(getString(R.string.number_of_entries)+ datas.size());
+        numberOfEntries.setText(getString(R.string.number_of_entries) + datas.size());
         String lastEntryData;
         String firstEntryData;
         String timeBetweenLastAndFirstData;

@@ -20,16 +20,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.managers.DbManager;
-import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsViewModel;
 import com.lubenard.oring_reminder.pages.history.HistoryFragment;
 import com.lubenard.oring_reminder.ui.adapters.CalendarAdapter;
 import com.lubenard.oring_reminder.utils.Log;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CalendarFragment extends Fragment {
@@ -40,8 +35,6 @@ public class CalendarFragment extends Fragment {
     private CalendarAdapter adapter;
     private CalendarViewModel calendarViewModel;
     private static FragmentActivity activity;
-
-    private LinearLayoutManager linearLayoutManager;
 
     private final MenuProvider menuProvider = new MenuProvider() {
         @Override
@@ -85,7 +78,7 @@ public class CalendarFragment extends Fragment {
         // this is used for optimization
         calendarRecyclerView.setHasFixedSize(true);
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         calendarRecyclerView.setLayoutManager(linearLayoutManager);
 
         calendarViewModel = new ViewModelProvider(requireActivity()).get(CalendarViewModel.class);
@@ -103,7 +96,7 @@ public class CalendarFragment extends Fragment {
             else
                 adapter = new CalendarAdapter(activity, this, Calendar.getInstance());
             calendarRecyclerView.setAdapter(adapter);
-            Log.d(TAG, "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " childs");
+            Log.d(TAG, "calendarRecyclerView has " + calendarRecyclerView.getChildCount() + " children");
         });
 
     }

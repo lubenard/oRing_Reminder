@@ -18,13 +18,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Handle the DB used to save datas.
- * Theses datas are sent to Musk in order to build Skynet.
+ * Theses datas might be sent to Musk in order to build Skynet.
  */
 public class DbManager extends SQLiteOpenHelper {
 

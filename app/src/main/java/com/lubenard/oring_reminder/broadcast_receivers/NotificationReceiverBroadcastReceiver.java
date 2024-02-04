@@ -6,16 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.R;
-import com.lubenard.oring_reminder.ui.fragments.EditEntryFragment;
+import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Utils;
 
 import java.util.Calendar;
 
 /**
- *
+ * Notification handler: Decide what action to take based on quick answer clicked by user
  */
 public class NotificationReceiverBroadcastReceiver extends BroadcastReceiver {
     @Override

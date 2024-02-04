@@ -7,6 +7,12 @@ public class Spermograms {
     private Uri fileAddr;
     private String dateAdded;
 
+    /**
+     * Class used to represent a Spermogram
+     * @param id internal id
+     * @param dateAdded date of the Spermogram
+     * @param fileAddr Local file address (e.g: file:///sdcard/0/Documents/Spermo123.pdf)
+     */
     public Spermograms(int id, String dateAdded, Uri fileAddr) {
         this.id = id;
         this.dateAdded = dateAdded;

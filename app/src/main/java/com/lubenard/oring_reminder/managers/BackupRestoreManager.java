@@ -39,6 +39,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Used for Backup & Restore of User Datas
+ */
 public class BackupRestoreManager extends Activity{
 
     public static final String TAG = "BackupAndRestore";

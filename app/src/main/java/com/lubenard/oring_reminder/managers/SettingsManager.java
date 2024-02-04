@@ -7,6 +7,9 @@ import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.utils.Log;
 
+/**
+ * Settings Manager. Handle all user choices made in settings
+ */
 public class SettingsManager {
 
     private SharedPreferences sharedPreferences;
