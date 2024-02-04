@@ -105,26 +105,6 @@ public class CalendarFragment extends Fragment {
         activity.removeMenuProvider(menuProvider);
     }
 
-    /**
-     * Each time the app is resumed, fetch new entry
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        Log.d(TAG, "onPause()");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        Log.d(TAG, "onStop()");
-        super.onStop();
-    }
-
     @Override
     public void onDestroyView() {
         Log.d(TAG, "onDestroyView()");

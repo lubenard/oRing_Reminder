@@ -131,9 +131,9 @@
     <string name="operation_compute_contraception">Anzahl der Spermien pro ml * (Progressive Mobilität * 0.01)</string>
     <string name="action_datas">Daten</string>
     <string name="data_fragment_title">Daten</string>
-    <string name="number_of_entries">Anzahl der Einträge:&#160;</string>
-    <string name="last_entry">Der letzte Eintrag ist:&#160;</string>
-    <string name="first_entry">Der erste Eintrag ist:&#160;</string>
+    <string name="number_of_entries">Anzahl der Einträge: %d</string>
+    <string name="last_entry">Der letzte Eintrag ist:\n%s</string>
+    <string name="first_entry">Der erste Eintrag ist:\n%s</string>
     <string name="no_access_to_storage">Bitte erlauben Sie den Zugriff auf den Speicher, um Daten zu exportieren/importieren.</string>
     <string name="create_new_session">Neue Sitzung</string>
     <string name="stop_active_session">Sitzung stoppen</string>

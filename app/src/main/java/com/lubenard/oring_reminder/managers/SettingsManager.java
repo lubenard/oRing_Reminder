@@ -12,7 +12,7 @@ import com.lubenard.oring_reminder.utils.Log;
  */
 public class SettingsManager {
 
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
 
     // Shared Preferences settings
     private String ui_home_action_fab;

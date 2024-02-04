@@ -1,10 +1,6 @@
 package com.lubenard.oring_reminder.ui.adapters;
 
 import android.content.Context;
-
-import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
-import com.lubenard.oring_reminder.utils.DateUtils;
-import com.lubenard.oring_reminder.utils.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
+import com.lubenard.oring_reminder.managers.DbManager;
+import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
 import com.lubenard.oring_reminder.ui.viewHolders.CalendarViewHolder;
+import com.lubenard.oring_reminder.utils.DateUtils;
+import com.lubenard.oring_reminder.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +26,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private final ArrayList <Calendar> monthList;
     private Context context;
     private final FragmentActivity activity;
-    private CalendarFragment calendarFragment;
+    private final CalendarFragment calendarFragment;
 
     public CalendarAdapter(FragmentActivity activity, CalendarFragment calendarFragment, Calendar firstSession) {
 

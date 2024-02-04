@@ -23,13 +23,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.lubenard.oring_reminder.managers.DbManager;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.pages.entry_details.EntryDetailsFragment;
-import com.lubenard.oring_reminder.pages.home.HomeViewModel;
 import com.lubenard.oring_reminder.pages.main.MainFragment;
 import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;

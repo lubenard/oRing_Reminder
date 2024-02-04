@@ -34,5 +34,4 @@
         <item name="android:windowExitAnimation">@anim/bottom_dialog_slide_down</item>
     </style>
 
-    <style name="bottom_dialog_style"></style>
 </resources>

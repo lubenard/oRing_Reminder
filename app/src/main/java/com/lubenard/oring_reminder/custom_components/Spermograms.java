@@ -3,9 +3,9 @@ package com.lubenard.oring_reminder.custom_components;
 import android.net.Uri;
 
 public class Spermograms {
-    private long id;
-    private Uri fileAddr;
-    private String dateAdded;
+    private final long id;
+    private final Uri fileAddr;
+    private final String dateAdded;
 
     /**
      * Class used to represent a Spermogram

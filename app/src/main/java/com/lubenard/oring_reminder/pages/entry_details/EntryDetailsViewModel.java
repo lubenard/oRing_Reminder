@@ -15,7 +15,6 @@ import com.lubenard.oring_reminder.utils.SessionsUtils;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 public class EntryDetailsViewModel extends ViewModel {
     private static final String TAG = "EntryDetailsViewModel";

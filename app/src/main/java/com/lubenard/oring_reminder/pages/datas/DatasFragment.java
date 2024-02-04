@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -22,8 +23,6 @@ public class DatasFragment extends Fragment {
 
     private static final String TAG = "DataFragment";
 
-    private DbManager dbManager;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,14 +30,14 @@ public class DatasFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getActivity().setTitle(R.string.data_fragment_title);
+        requireActivity().setTitle(R.string.data_fragment_title);
 
-        dbManager = MainActivity.getDbManager();
+        DbManager dbManager = MainActivity.getDbManager();
 
         ArrayList<RingSession> datas = dbManager.getAllDatasForAllEntrys();
 
@@ -47,7 +46,7 @@ public class DatasFragment extends Fragment {
         TextView firstEntry = view.findViewById(R.id.first_entry);
         TextView timeBetweenFirstAndLastEntry = view.findViewById(R.id.converted_time_between_first_and_last_entries);
 
-        numberOfEntries.setText(getString(R.string.number_of_entries) + datas.size());
+        numberOfEntries.setText(String.format(getString(R.string.number_of_entries), datas.size()));
         String lastEntryData;
         String firstEntryData;
         String timeBetweenLastAndFirstData;
@@ -68,8 +67,8 @@ public class DatasFragment extends Fragment {
             timeBetweenLastAndFirstData = getString(R.string.not_set_yet);
         }
 
-        lastEntry.setText(getString(R.string.last_entry) + "\n" + lastEntryData);
-        firstEntry.setText(getString(R.string.first_entry) + "\n" + firstEntryData);
+        lastEntry.setText(String.format(getString(R.string.last_entry), lastEntryData));
+        firstEntry.setText(String.format(getString(R.string.first_entry), firstEntryData));
         timeBetweenFirstAndLastEntry.setText(timeBetweenLastAndFirstData);
     }
 }

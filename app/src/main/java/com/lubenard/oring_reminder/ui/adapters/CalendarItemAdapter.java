@@ -29,17 +29,17 @@ public class CalendarItemAdapter extends BaseAdapter {
 
     private static final String TAG = "CalendarItemAdapter";
 
-    private ArrayList<String> dayList;
-    private Context context;
-    private FragmentActivity activity;
-    private SettingsManager settingsManager;
+    private final ArrayList<String> dayList;
+    private final Context context;
+    private final FragmentActivity activity;
+    private final SettingsManager settingsManager;
     private int calendarOffset;
     // Variables used to display today mark if today is in current month.
     // It's value is either -1 if not present, or [1..31] if present
-    private int todayIndex;
-    private Calendar date;
-    private CalendarFragment calendarFragment;
-    private List<Pair<Integer, RingSession>> monthEntries;
+    private final int todayIndex;
+    private final Calendar date;
+    private final CalendarFragment calendarFragment;
+    private final List<Pair<Integer, RingSession>> monthEntries;
 
     public CalendarItemAdapter(FragmentActivity activity, CalendarFragment calendarFragment, Context context, ArrayList<String> dayList, List<Pair<Integer, RingSession>> monthEntries, int calendarOffset, int todayCounter, Calendar date) {
         this.dayList = dayList;

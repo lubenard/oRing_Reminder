@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.RingSession;
-import com.lubenard.oring_reminder.ui.adapters.CalendarItemAdapter;
 import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
+import com.lubenard.oring_reminder.ui.adapters.CalendarItemAdapter;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 
@@ -29,11 +29,11 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TAG = "CalendarViewHolder";
 
-    private GridView calendarGridDays;
-    private TextView calendarMonth;
+    private final GridView calendarGridDays;
+    private final TextView calendarMonth;
     private int todayIndex = -1;
-    private FragmentActivity activity;
-    private CalendarFragment calendarFragment;
+    private final FragmentActivity activity;
+    private final CalendarFragment calendarFragment;
 
     public CalendarViewHolder(@NonNull View itemView, FragmentActivity activity, Context context, CalendarFragment calendarFragment) {
         super(itemView);

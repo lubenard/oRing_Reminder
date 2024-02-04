@@ -133,9 +133,9 @@
     <string name="operation_compute_contraception">Nombre de spermatozoïdes par ml * (Mobilité progressive * 0.01)</string>
     <string name="action_datas">Données</string>
     <string name="data_fragment_title">Données</string>
-    <string name="number_of_entries">Nombre d\'entrées :&#160;</string>
-    <string name="last_entry">La dernière entrée est le :&#160;</string>
-    <string name="first_entry">La première entrée est le :&#160;</string>
+    <string name="number_of_entries">Nombre d\'entrées : %d</string>
+    <string name="last_entry">La dernière entrée est le :\n%s</string>
+    <string name="first_entry">La première entrée est le :\n%s</string>
     <string name="no_access_to_storage">Merci d\'autoriser l\'accès au stockage pour exporter / importer.</string>
     <string name="create_new_session">Nouvelle session</string>
     <string name="settings_other_useful_links_title">Liens utiles</string>

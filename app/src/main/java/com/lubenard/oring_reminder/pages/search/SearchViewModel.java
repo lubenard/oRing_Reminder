@@ -7,7 +7,6 @@ import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.managers.DbManager;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
