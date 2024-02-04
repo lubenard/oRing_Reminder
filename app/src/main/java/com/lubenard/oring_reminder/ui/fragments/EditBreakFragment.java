@@ -207,7 +207,7 @@ public class EditBreakFragment extends DialogFragment {
                         if (MainActivity.getSettingsManager().getShouldSendNotifWhenBreakTooLong()) {
                             Intent intent = new Intent(getContext(), NotificationSenderBreaksBroadcastReceiver.class)
                                     .putExtra("action", 1);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) session.getId(), intent, 0);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) session.getId(), intent, PendingIntent.FLAG_MUTABLE);
                             AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                             am.cancel(pendingIntent);
                         }

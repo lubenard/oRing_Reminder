@@ -84,7 +84,7 @@
     <string name="settings_alertdialog_erase_datas_body">Êtes-vous sûr de vouloir supprimer toutes vos données ? Toute perte est définitive. Une fois completée, cette app va s\'éteindre.</string>
     <string name="notif_choice_do_it">Okay, je l\'ai fait</string>
     <string name="notif_choice_dismiss">Nettoyer</string>
-    <string name="please_wait">Merci d\'attendre...</string>
+    <string name="please_wait">Merci d\'attendre…</string>
     <string name="toast_session_bad_id">Il y a eu une erreur : impossible de finir la session avec l\'id :</string>
     <string name="in_about_entry_details">dans environ %dh%02dm</string>
     <string name="ordered_by_desc">Les entrées sont triées de la plus récente à la plus ancienne</string>
@@ -196,4 +196,19 @@
     <string name="fri">VEN</string>
     <string name="sat">SAM</string>
     <string name="sun">DIM</string>
+    <string name="no_access_to_notif">Merci d\'autoriser les notifications afin de recevoir les notifictions de fin de session.</string>
+    <string name="save_icon">Icone de sauvegarde</string>
+    <string name="close_icon">Icon de fermeture</string>
+    <string name="calendar_icon">Icone du calendrier</string>
+    <string name="clock_icon">Icone de l\'horloge</string>
+    <string name="no_entry_found_for_date">Aucune entrée trouvée pour cette date</string>
+    <string name="action_view_as_list">Voir en liste</string>
+    <string name="bottom_menu_home">Acceuil</string>
+    <string name="bottom_menu_calendar">Calendrier</string>
+    <string name="bottom_menu_settings">Paramètres</string>
+    <string name="manual_mode_enabled">Mode manuel activé</string>
+    <string name="manual_mode_disabled">Mode manuel désactivé</string>
+    <string name="manual_edit_icon">Icone d\'édition manuelle</string>
+    <string name="new_date">Nouvelle dates</string>
+    <string name="breaks">Pauses :</string>
 </resources>

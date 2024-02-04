@@ -5,11 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Switch;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.lubenard.oring_reminder.MainActivity;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.managers.SessionsAlarmsManager;
@@ -25,15 +26,15 @@ public class DebugFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getActivity().setTitle(R.string.debug_menu_title);
+        requireActivity().setTitle(R.string.debug_menu_title);
 
         Button buttonSendNotif = view.findViewById(R.id.debug_send_notif);
-        Switch enableLogSwitch = view.findViewById(R.id.debug_enable_logs);
+        SwitchMaterial enableLogSwitch = view.findViewById(R.id.debug_enable_logs);
 
         enableLogSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             MainActivity.getSettingsManager().setIsLoggingEnabled(isChecked);

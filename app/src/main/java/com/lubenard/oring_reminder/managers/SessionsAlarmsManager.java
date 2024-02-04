@@ -83,7 +83,7 @@ public class SessionsAlarmsManager {
             Log.d(TAG, "Setting break alarm at " + DateUtils.getdateFormatted(calendar.getTime()));
             Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
                     .putExtra("action", 1);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);
             AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
             if (SDK_INT < Build.VERSION_CODES.M)

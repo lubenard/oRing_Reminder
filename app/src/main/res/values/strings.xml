@@ -215,4 +215,6 @@
     <string name="calculator_contraception_correct_mobility">Mobility is correct</string>
     <string name="calculator_contraception_consult_specialist_if_doubt">Please consult specialist if you have any doubt</string>
     <string name="calculator_contraception_fertile">32% is the value given by WHO for someone fertile</string>
+    <string name="debug_send_a_notification_manually">Send a notification manually</string>
+    <string name="debug_enable_file_logging">Enable file logging ?</string>
 </resources>

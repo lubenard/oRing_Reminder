@@ -80,18 +80,22 @@
                 android:id="@+id/edittext_beginning_pause"
                 android:layout_width="145dp"
                 android:layout_height="match_parent"
+                android:inputType="numberDecimal"
                 android:ems="6"
                 android:digits="0123456789-"
-                android:hint="@string/example_hint_start_date" />
+                android:hint="@string/example_hint_start_date"
+                android:autofillHints="" />
 
             <EditText
                 android:id="@+id/new_entry_hour_from"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="numberDecimal"
                 android:layout_marginStart="10dp"
                 android:ems="6"
                 android:hint="@string/example_hint_start_time"
-                android:digits="0123456789:"/>
+                android:digits="0123456789:"
+                android:autofillHints="" />
 
             <ImageView
                 android:id="@+id/new_entry_timepicker_from"
@@ -143,19 +147,23 @@
                 android:id="@+id/edittext_finish_pause"
                 android:layout_width="145dp"
                 android:layout_height="match_parent"
+                android:inputType="numberDecimal"
                 android:ems="6"
                 android:layout_weight="1"
                 android:digits="0123456789-"
-                android:hint="@string/example_hint_end_date" />
+                android:hint="@string/example_hint_end_date"
+                android:autofillHints="" />
 
             <EditText
                 android:id="@+id/new_entry_hour_to"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="numberDecimal"
                 android:ems="6"
                 android:layout_marginStart="10dp"
                 android:digits="0123456789:"
-                android:hint="@string/example_hint_end_hour" />
+                android:hint="@string/example_hint_end_hour"
+                android:autofillHints="" />
 
             <ImageView
                 android:id="@+id/new_entry_timepicker_to"

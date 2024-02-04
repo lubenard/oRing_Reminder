@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         String dynamicIntent = "com.lubenard.oring_reminder.android.action.broadcast";
 
         IntentFilter intentFilter = new IntentFilter(dynamicIntent);
-        registerReceiver(new com.lubenard.oring_reminder.managers.ShortcutManager(), intentFilter);
+        registerReceiver(new com.lubenard.oring_reminder.managers.ShortcutManager(), intentFilter, Context.RECEIVER_NOT_EXPORTED);
 
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
         ShortcutInfo manageSessionShortcut = new ShortcutInfo.Builder(this, "manage_session")

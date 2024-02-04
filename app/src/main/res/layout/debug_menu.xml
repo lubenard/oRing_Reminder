@@ -10,14 +10,14 @@
         android:layout_width="match_parent"
         android:layout_marginHorizontal="5dp"
         android:layout_height="wrap_content"
-        android:text="Send a notification manually" />
+        android:text="@string/debug_send_a_notification_manually" />
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/debug_enable_logs"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="5dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="Enable file logging ?"
+        android:text="@string/debug_enable_file_logging"
         android:textSize="24sp"/>
 </LinearLayout>

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
@@ -49,16 +50,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private FragmentManager fragmentManager;
     private SettingsManager settingsManager;
 
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.settings_fragment, rootKey);
-        activity = getActivity();
-        fragmentManager = getActivity().getSupportFragmentManager();
+        activity = requireActivity();
+        fragmentManager = requireActivity().getSupportFragmentManager();
         settingsManager = MainActivity.getSettingsManager();
 
         ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -124,7 +126,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (!((boolean) newValue)) {
                 Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
                         .putExtra("action", 2);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_MUTABLE);
                 AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                 // We cancel the old repetitive alarm
                 am.cancel(pendingIntent);
@@ -169,7 +171,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
                         .putExtra("action", 2);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_MUTABLE);
                 AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
                 // We cancel the old repetitive alarm
                 am.cancel(pendingIntent);
