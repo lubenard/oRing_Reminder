@@ -56,7 +56,7 @@ public class SettingsManager {
         shouldSendNotifWhenBreakTooLongDate = sharedPreferences.getInt("myring_prevent_me_when_pause_too_long_date", 0);
 
         shouldPreventIfNoSessionStartedToday = sharedPreferences.getBoolean("myring_prevent_me_when_no_session_started_for_today", false);
-        shouldPreventIfNoSessionStartedTodayDate = sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "Not set");
+        shouldPreventIfNoSessionStartedTodayDate = sharedPreferences.getString("myring_prevent_me_when_no_session_started_date", "");
 
         shouldSendNotifWhenSessionIsOver = sharedPreferences.getBoolean("myring_send_notif_when_session_over", true);
 

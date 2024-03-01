@@ -112,11 +112,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return false;
         });
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         Preference choosingAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_date");
         choosingAlarmIfNoSessionStarted.setEnabled(settingsManager.getShouldPreventIfNoSessionStartedToday());
-        choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) + settingsManager.getShouldPreventIfNoSessionStartedTodayDate());
+
+        String savedDate = settingsManager.getShouldPreventIfNoSessionStartedTodayDate();
+        if (savedDate.equals(""))
+            savedDate = "Not Set";
+        choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) + savedDate);
 
         // Boolean if prevented about session not started for the day preference click listener
         Preference optionAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_for_today");
@@ -143,6 +147,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             TimePicker timePicker = customLayout.findViewById(R.id.time_picker);
             timePicker.setIs24HourView(true);
             String oldTime = settingsManager.getShouldPreventIfNoSessionStartedTodayDate();
+            if (oldTime.equals("")) {
+                Calendar date = Calendar.getInstance();
+                oldTime = String.format("%02d:%02d", date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE));
+            }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 timePicker.setCurrentHour(Integer.parseInt(oldTime.split(":")[0]));
                 timePicker.setCurrentMinute(Integer.parseInt(oldTime.split(":")[1]));
