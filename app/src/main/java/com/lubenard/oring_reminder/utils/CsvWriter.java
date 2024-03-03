@@ -13,7 +13,7 @@ public class CsvWriter {
 
     /**
      * Constructor
-     * @param outputFileStream
+     * @param outputFileStream stream to output to
      */
     public CsvWriter(OutputStream outputFileStream) {
         fileWriter = new OutputStreamWriter(outputFileStream, StandardCharsets.UTF_8);
@@ -22,7 +22,7 @@ public class CsvWriter {
     /**
      * Write colum names
      * @param names column's name
-     * @throws IOException
+     * @throws IOException if error happens during write
      */
     public void writeColumnsName(String[] names) throws IOException {
         if (fileWriter != null) {

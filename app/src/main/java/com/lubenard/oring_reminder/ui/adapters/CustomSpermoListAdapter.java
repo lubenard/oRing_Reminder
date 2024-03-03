@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class CustomSpermoListAdapter extends RecyclerView.Adapter<SpermoListViewHolder> {
 
-    private ArrayList<Spermograms> entryList;
+    private final ArrayList<Spermograms> entryList;
 
     private Context context;
     private onListItemClickListener onListItemClickListener;

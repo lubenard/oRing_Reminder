@@ -77,7 +77,7 @@ public class BackupRestoreManager extends Activity {
 
     /**
      * Start the file chooser intent
-     * @param dataToFileChooser
+     * @param dataToFileChooser launch given intent. Might be to create new file / select existing file
      */
     private void launchIntent(Intent dataToFileChooser) {
         try {
