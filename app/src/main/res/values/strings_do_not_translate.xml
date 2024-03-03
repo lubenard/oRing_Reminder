@@ -56,4 +56,12 @@
         See the License for the specific language governing permissions and\n
         limitations under the License.
     </string>
+    <string name="template_hour_min" translatable="false">%02d:%02d</string>
+    <string name="example_hint_start_date" translatable="false">Ex: 2020–03–30</string>
+    <string name="example_hint_end_date" translatable="false">Ex: 2020–03–30</string>
+    <string name="example_hint_start_time" translatable="false">Ex: 10:04:20</string>
+    <string name="example_hint_end_hour" translatable="false">Ex: 13:37:00</string>
+    <string name="link_garcon_website" translatable="false">garcon.link</string>
+    <string name="link_planning_familial_website" translatable="false">planning-familial.org</string>
+    <string name="link_love_health_website" translatable="false">https://www.love-health-center.org/media/ecrit/carnet-dobservation-cycles-masculins/</string>
 </resources>

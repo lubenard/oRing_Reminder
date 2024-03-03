@@ -1,22 +1,22 @@
 package com.lubenard.oring_reminder.pages.main;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.lubenard.oring_reminder.MainActivity;
+import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.managers.SettingsManager;
 import com.lubenard.oring_reminder.pages.calendar.CalendarFragment;
 import com.lubenard.oring_reminder.pages.home.HomeFragment;
 import com.lubenard.oring_reminder.pages.settings.SettingsFragment;
 import com.lubenard.oring_reminder.utils.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.lubenard.oring_reminder.R;
 
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
@@ -33,7 +33,7 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Log.d(TAG, "onViewCreated()");
@@ -47,7 +47,7 @@ public class MainFragment extends Fragment {
             // Avoid recreating new fragment each time, we record the current fragment
             settingsManager.setBottomNavigationViewCurrentIndex(R.id.bottom_nav_bar_home);
 
-            Log.d(TAG, "No Fragment found in settingsManager, creating homeFragment");
+            Log.d(TAG, "No Fragment found, creating homeFragment");
 
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_fragment, HomeFragment.class, null).commit();

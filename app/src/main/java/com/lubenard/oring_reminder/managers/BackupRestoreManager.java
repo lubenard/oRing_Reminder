@@ -20,7 +20,6 @@ import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.BreakSession;
 import com.lubenard.oring_reminder.custom_components.RingSession;
 import com.lubenard.oring_reminder.custom_components.Session;
-import com.lubenard.oring_reminder.pages.settings.SettingsFragment;
 import com.lubenard.oring_reminder.utils.CsvWriter;
 import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
@@ -42,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Used for Backup & Restore of User Datas
  */
-public class BackupRestoreManager extends Activity{
+public class BackupRestoreManager extends Activity {
 
     public static final String TAG = "BackupAndRestore";
     private AlertDialog dialog;
@@ -114,7 +113,7 @@ public class BackupRestoreManager extends Activity{
                 try {
                     f1.createNewFile();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Impossible to create the backup.xml file: ", e);
                 }
             }
         }
@@ -138,7 +137,6 @@ public class BackupRestoreManager extends Activity{
 
     /**
      * Start Import from XML
-     * @return
      */
     private void startRestoreFromXML() {
         Log.d(TAG, "startRestoreFromXML");
@@ -169,7 +167,7 @@ public class BackupRestoreManager extends Activity{
 
     /**
      * Export settings in XML
-     * @param xmlWriter
+     * @param xmlWriter to write to
      */
     private void saveSettingsIntoXml(XmlWriter xmlWriter) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -221,20 +219,20 @@ public class BackupRestoreManager extends Activity{
 
             xmlWriter.endEntity();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Impossible to save the settings to XML: ", e);
         }
     }
 
     /**
      * Export datas in XML
-     * @param xmlWriter
+     * @param xmlWriter to write to
      */
     private void saveDatasIntoXml(XmlWriter xmlWriter) {
         DbManager dbManager = MainActivity.getDbManager();
         // Datas containing all saved datas
         try {
             xmlWriter.writeEntity("datas");
-            // Contain all entrys
+            // Contain all entry's
             ArrayList<RingSession> datas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < datas.size(); i++) {
                 xmlWriter.writeEntity("session");
@@ -244,7 +242,7 @@ public class BackupRestoreManager extends Activity{
                 xmlWriter.writeAttribute("timeWeared", String.valueOf(datas.get(i).getSessionDuration()));
 
                 ArrayList<BreakSession> pauses = dbManager.getAllBreaksForId(datas.get(i).getId(), true);
-                if (pauses.size() > 0) {
+                if (!pauses.isEmpty()) {
                     Log.d(TAG, "Break exist for session " + datas.get(i).getId() + ". There is " + pauses.size() + " breaks");
                     for (int j = 0; j != pauses.size(); j++) {
                         Log.d(TAG, "Looping through the break of session " + datas.get(i).getId());
@@ -260,13 +258,13 @@ public class BackupRestoreManager extends Activity{
             }
             xmlWriter.endEntity();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to save datas into XML: ", e);
         }
     }
 
     /**
      * Restore datas from XML
-     * @param inputStream
+     * @param inputStream to read from
      */
     private void restoreDatasFromXml(InputStream inputStream) {
         try {
@@ -300,7 +298,7 @@ public class BackupRestoreManager extends Activity{
                     }
                 }
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("pause")) {
-                    Log.d(TAG, "Restauring pause for entryId: " + lastEntryInsertedId);
+                    Log.d(TAG, "Restoring pause for entryId: " + lastEntryInsertedId);
                     if (myParser.getAttributeValue(null, "dateTimeRemoved") != null && myParser.getAttributeValue(null, "dateTimePut") != null && lastEntryInsertedId != -1) {
                         isRunning = myParser.getAttributeValue(null, "dateTimePut").equals("NOT SET YET") ? 1 : 0;
                         if (lastEntryInsertedId != 0) {
@@ -314,13 +312,13 @@ public class BackupRestoreManager extends Activity{
                 eventType = myParser.next();
             }
         } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while restoring datas form XML: ", e);
         }
     }
 
     /**
      * Restore settings from XML
-     * @param inputStream
+     * @param inputStream to read from
      */
     private void restoreSettingsFromXml(InputStream inputStream) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -389,10 +387,9 @@ public class BackupRestoreManager extends Activity{
                 eventType = myParser.next();
             }
         } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while restoring settings from XML", e);
         }
-        // Recreate activity once all settings have been restored
-        SettingsFragment.restartActivity();
+        // TODO: Recreate activity once all settings have been restored
     }
 
     private void checkAppVersion(InputStream inputStream) {
@@ -412,14 +409,14 @@ public class BackupRestoreManager extends Activity{
                     Log.d(TAG, "Not same app version ! " + myParser.getText() + "/" + BuildConfig.VERSION_NAME);
             }
         } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while checking app version: ", e);
         }
     }
 
     /**
      * Actually launch the backup system depending on what to do.
      * This function is executed when we now everything is ready for export
-     * @param filePath
+     * @param filePath file path to export to
      */
     private void launchBackupRestore(String filePath) {
         createAlertDialog();
@@ -444,8 +441,7 @@ public class BackupRestoreManager extends Activity{
                     saveSettingsIntoXml(xmlWriter);
                 xmlWriter.close();
             } catch (IOException e) {
-                Log.e(TAG, "Error: something failed during the save of the datas");
-                e.printStackTrace();
+                Log.e(TAG, "Error: something failed during the save of the datas: ", e);
             }
             Toast.makeText(this, getString(R.string.toast_success_save_datas), Toast.LENGTH_LONG).show();
         } else if (typeOfDatas == 2) {
@@ -462,8 +458,7 @@ public class BackupRestoreManager extends Activity{
                 if (shouldBackupRestoreSettings)
                     restoreSettingsFromXml(inputStream);
             } catch (IOException e) {
-                Log.e(TAG, "Error: something failed during the restore of the datas");
-                e.printStackTrace();
+                Log.e(TAG, "Error: something failed during the restore of the datas", e);
             }
             Toast.makeText(this, getString(R.string.toast_success_restore_datas), Toast.LENGTH_LONG).show();
         } else if (typeOfDatas == 3) {
@@ -474,8 +469,7 @@ public class BackupRestoreManager extends Activity{
                 saveDatasIntoCsv(csvWriter);
                 csvWriter.close();
             } catch (IOException e) {
-                Log.e(TAG, "Error: something failed during the save of the datas");
-                e.printStackTrace();
+                Log.e(TAG, "Error: something failed during the save of the datas: ", e);
             }
             Toast.makeText(this, getString(R.string.toast_success_save_datas), Toast.LENGTH_LONG).show();
         }
@@ -485,7 +479,7 @@ public class BackupRestoreManager extends Activity{
 
     /**
      * Export datas into CSV
-     * @param csvWriter
+     * @param csvWriter to write to
      */
     private void saveDatasIntoCsv(CsvWriter csvWriter) {
         DbManager dbManager = MainActivity.getDbManager();
@@ -497,7 +491,7 @@ public class BackupRestoreManager extends Activity{
                                                     "Total break time", "Time worn (with breaks)"});
 
             ArrayList<String> formattedDatas = new ArrayList<>();
-            // Contain all entrys
+            // Contain all entry's
             ArrayList<RingSession> rawDatas = dbManager.getAllDatasForAllEntrys();
             for (int i = 0; i < rawDatas.size(); i++) {
                 String[] datePut = rawDatas.get(i).getStartDate().split(" ");
@@ -520,7 +514,7 @@ public class BackupRestoreManager extends Activity{
                 formattedDatas.clear();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while saving datas into CSV: ", e);
         }
     }
 

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -46,7 +45,7 @@ import java.util.Calendar;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     private static final String TAG = "SettingsFragment";
-    private static Activity activity;
+    private Activity activity;
     private FragmentManager fragmentManager;
     private SettingsManager settingsManager;
 
@@ -69,6 +68,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Language change listener
         Preference language = findPreference("ui_language");
+        assert language != null;
         language.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "Language value has changed for " + newValue);
             Utils.applyLanguage(getContext(), newValue.toString());
@@ -77,15 +77,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Theme change listener
         Preference theme = findPreference("ui_theme");
+        assert theme != null;
         theme.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "Theme value has changed for " + newValue);
             Utils.applyTheme(newValue.toString());
-            restartActivity();
+            activity.recreate();
             return true;
         });
 
         // wearing_time preference click listener
         Preference wearing_time = findPreference("myring_wearing_time");
+        assert wearing_time != null;
         wearing_time.setSummary(DateUtils.convertIntIntoReadableDate(settingsManager.getWearingTimeInt()));
         wearing_time.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "onPreferenceChangeListener: newValue is type of " + newValue.getClass().getName());
@@ -115,15 +117,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         Preference choosingAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_date");
+        assert choosingAlarmIfNoSessionStarted != null;
         choosingAlarmIfNoSessionStarted.setEnabled(settingsManager.getShouldPreventIfNoSessionStartedToday());
 
         String savedDate = settingsManager.getShouldPreventIfNoSessionStartedTodayDate();
-        if (savedDate.equals(""))
+        if (savedDate.isEmpty())
             savedDate = "Not Set";
         choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) + savedDate);
 
         // Boolean if prevented about session not started for the day preference click listener
         Preference optionAlarmIfNoSessionStarted = findPreference("myring_prevent_me_when_no_session_started_for_today");
+        assert optionAlarmIfNoSessionStarted != null;
         optionAlarmIfNoSessionStarted.setOnPreferenceChangeListener((preference, newValue) -> {
             choosingAlarmIfNoSessionStarted.setEnabled((boolean) newValue);
             Log.d(TAG, "Alarm if no session started set : " + newValue);
@@ -131,7 +135,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
                         .putExtra("action", 2);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_MUTABLE);
-                AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+                AlarmManager am = (AlarmManager) requireContext().getSystemService(Activity.ALARM_SERVICE);
                 // We cancel the old repetitive alarm
                 am.cancel(pendingIntent);
             } else {
@@ -147,9 +151,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             TimePicker timePicker = customLayout.findViewById(R.id.time_picker);
             timePicker.setIs24HourView(true);
             String oldTime = settingsManager.getShouldPreventIfNoSessionStartedTodayDate();
-            if (oldTime.equals("")) {
+            if (oldTime.isEmpty()) {
                 Calendar date = Calendar.getInstance();
-                oldTime = String.format("%02d:%02d", date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE));
+                oldTime = String.format(requireContext().getString(R.string.template_hour_min), date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE));
             }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 timePicker.setCurrentHour(Integer.parseInt(oldTime.split(":")[0]));
@@ -172,7 +176,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     timePickerMinutes = timePicker.getMinute();
                 }
 
-                alarmTime = String.format("%02d:%02d", timePickerHour, timePickerMinutes);
+                alarmTime = String.format(requireContext().getString(R.string.template_hour_min), timePickerHour, timePickerMinutes);
 
                 sharedPreferences.edit().putString("myring_prevent_me_when_no_session_started_date", alarmTime).apply();
                 choosingAlarmIfNoSessionStarted.setSummary(getString(R.string.settings_around) + alarmTime);
@@ -180,7 +184,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Intent intent = new Intent(getContext(), NotificationSenderBroadcastReceiver.class)
                         .putExtra("action", 2);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_MUTABLE);
-                AlarmManager am = (AlarmManager) getContext().getSystemService(Activity.ALARM_SERVICE);
+                AlarmManager am = (AlarmManager) requireContext().getSystemService(Activity.ALARM_SERVICE);
                 // We cancel the old repetitive alarm
                 am.cancel(pendingIntent);
 
@@ -201,12 +205,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         Preference choosingAlarmIfPauseTooLong = findPreference("myring_prevent_me_when_pause_too_long_date");
+        assert choosingAlarmIfPauseTooLong != null;
         choosingAlarmIfPauseTooLong.setEnabled(settingsManager.getShouldSendNotifWhenBreakTooLong());
         choosingAlarmIfPauseTooLong.setSummary(getString(R.string.settings_around) +
                 settingsManager.getShouldSendNotifWhenBreakTooLongDate() + getString(R.string.minute_with_M_uppercase));
 
         // Boolean if prevented about session not started for the day preference click listener
         Preference optionAlarmIfPauseTooLong = findPreference("myring_prevent_me_when_pause_too_long");
+        assert optionAlarmIfPauseTooLong != null;
         optionAlarmIfPauseTooLong.setOnPreferenceChangeListener((preference, newValue) -> {
             choosingAlarmIfPauseTooLong.setEnabled((boolean) newValue);
             return true;
@@ -233,6 +239,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         Preference exportXML = findPreference("datas_export_data_xml");
+        assert exportXML != null;
         exportXML.setOnPreferenceClickListener(preference -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(R.string.custom_backup_title_alertdialog);
@@ -266,6 +273,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         Preference exportCSV = findPreference("datas_export_data_csv");
+        assert exportCSV != null;
         exportCSV.setOnPreferenceClickListener(preference -> {
             MainActivity.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE, () -> null, () -> {
                 Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
@@ -278,6 +286,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         Preference importXML = findPreference("datas_import_data_xml");
+        assert importXML != null;
         importXML.setOnPreferenceClickListener(preference -> {
             MainActivity.checkOrRequestPerm(getActivity(), getContext(), Manifest.permission.READ_EXTERNAL_STORAGE, () -> null, () -> {
                 Toast.makeText(getContext(), getString(R.string.no_access_to_storage), Toast.LENGTH_LONG).show();
@@ -291,24 +300,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).setText(R.string.custom_restore_alertdialog_save_settings);
 
             builder.setView(customLayout);
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getContext(), BackupRestoreManager.class);
-                    intent.putExtra("mode", 2);
+            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                Intent intent = new Intent(getContext(), BackupRestoreManager.class);
+                intent.putExtra("mode", 2);
 
-                    boolean isDatasChecked =
-                            ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_datas)).isChecked();
-                    boolean isSettingsChecked =
-                            ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).isChecked();
+                boolean isDatasChecked =
+                        ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_datas)).isChecked();
+                boolean isSettingsChecked =
+                        ((CheckBox)customLayout.findViewById(R.id.custom_backup_restore_alertdialog_settings)).isChecked();
 
-                    if (!isDatasChecked && !isSettingsChecked)
-                        return;
+                if (!isDatasChecked && !isSettingsChecked)
+                    return;
 
-                    intent.putExtra("shouldBackupRestoreDatas", isDatasChecked);
-                    intent.putExtra("shouldBackupRestoreSettings", isSettingsChecked);
-                    startActivity(intent);
-                }
+                intent.putExtra("shouldBackupRestoreDatas", isDatasChecked);
+                intent.putExtra("shouldBackupRestoreSettings", isSettingsChecked);
+                startActivity(intent);
             });
             builder.setNegativeButton(android.R.string.cancel,null);
             AlertDialog dialog = builder.create();
@@ -318,16 +324,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // reset preference click listener
         Preference reset = findPreference("datas_erase_data");
+        assert reset != null;
         reset.setOnPreferenceClickListener(preference -> {
             new AlertDialog.Builder(getContext())
                     .setTitle(R.string.settings_alertdialog_erase_title)
                     .setMessage(R.string.settings_alertdialog_erase_datas_body)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Delete DB
-                            getContext().deleteDatabase(DbManager.getDBName());
-                            getActivity().finish();
-                        }
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        // Delete DB
+                        requireContext().deleteDatabase(DbManager.getDBName());
+                        activity.finish();
                     })
                     .setNegativeButton(android.R.string.no, null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -337,6 +342,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // debug menu preference click listener
         Preference debugMenu = findPreference("other_debug_menu");
+        assert debugMenu != null;
         debugMenu.setOnPreferenceClickListener(preference -> {
             fragmentManager.beginTransaction()
                     .replace(android.R.id.content, new DebugFragment(), null)
@@ -346,6 +352,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // useful links menu preference click listener
         Preference usefulLinks = findPreference("other_useful_links");
+        assert usefulLinks != null;
         usefulLinks.setOnPreferenceClickListener(preference -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(R.string.custom_useful_links);
@@ -359,6 +366,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // feedback preference click listener
         Preference feedback = findPreference("other_feedback");
+        assert feedback != null;
         feedback.setOnPreferenceClickListener(preference -> {
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                     "mailto","escatrag@gmail.com", null));
@@ -370,16 +378,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // licenses preference click listener
         Preference aboutLicenses = findPreference("other_about_licenses");
+        assert aboutLicenses != null;
         aboutLicenses.setOnPreferenceClickListener(preference -> {
             fragmentManager.beginTransaction()
                     .replace(android.R.id.content, new AboutFragment(), null)
                     .addToBackStack(null).commit();
             return true;
         });
-    }
-
-    public static void restartActivity() {
-        activity.recreate();
     }
 }
 

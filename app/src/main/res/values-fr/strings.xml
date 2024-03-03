@@ -211,4 +211,6 @@
     <string name="manual_edit_icon">Icone d\'édition manuelle</string>
     <string name="new_date">Nouvelle dates</string>
     <string name="breaks">Pauses :</string>
+    <string name="debug_send_a_notification_manually">Envoyer une notification manuelle</string>
+    <string name="debug_enable_file_logging">Activer le logging ?</string>
 </resources>

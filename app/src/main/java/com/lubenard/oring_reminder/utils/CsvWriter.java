@@ -37,7 +37,7 @@ public class CsvWriter {
     /**
      * Write column datas
      * @param datas datas to write
-     * @throws IOException
+     * @throws IOException IOException thrown if error happens
      */
     public void writeColumnsDatas(ArrayList<String> datas) throws IOException {
         if (fileWriter != null) {

@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Check the requested permission, and if not already gave, ask for it
      * @param permRequired
-     * @return
+     * @return true if perm is already given
      */
     public static boolean checkOrRequestPerm(Activity activity, Context context, String permRequired, Callable onSucess, Callable onError) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -150,8 +150,8 @@ public class MainActivity extends AppCompatActivity {
         applyUserConfig();
         createNotifChannel();
         askPermissions();
-        // Create dynamical quick shortcut
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
+        // TODO: Create dynamical quick shortcut
+        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1)
         //    createQuickShortcut();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
