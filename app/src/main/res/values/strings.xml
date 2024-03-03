@@ -210,4 +210,5 @@
     <string name="calculator_contraception_fertile">32% is the value given by WHO for someone fertile</string>
     <string name="debug_send_a_notification_manually">Send a notification manually</string>
     <string name="debug_enable_file_logging">Enable file logging ?</string>
+    <string name="no_spermo_registered">No spermogram imported !</string>
 </resources>

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -32,11 +33,15 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         requireDialog().getWindow().setWindowAnimations(R.style.bottom_dialog_animation);
-        ((View) getView().getParent()).setBackgroundColor(Color.TRANSPARENT);
+        ((View) requireView().getParent()).setBackgroundColor(Color.TRANSPARENT);
 
         EditText editTextConcentration = view.findViewById(R.id.editTextConcentration);
         EditText editTextPercentOfMobility = view.findViewById(R.id.editTextPercentMobility);
         EditText editTextVolumeOfSperm = view.findViewById(R.id.editTextSpermVolume);
+
+        ImageButton infosConcentration = view.findViewById(R.id.additional_infos_concentration);
+        ImageButton infosMobility = view.findViewById(R.id.additional_infos_mobility);
+        ImageButton infosVolume = view.findViewById(R.id.additional_infos_volume);
 
         ImageButton iconConcentration = view.findViewById(R.id.iconConcentration);
         ImageButton iconPercentageMobility = view.findViewById(R.id.iconPercentageMobility);
@@ -86,7 +91,6 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
                 }
             }
         });
-
 
         editTextPercentOfMobility.addTextChangedListener(new TextWatcher() {
             @Override
@@ -161,5 +165,27 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
                 }
             }
         });
+
+        // TODO: Find library with info bulles & implement it with thoses infos
+        infosConcentration.setOnClickListener(v -> Toast.makeText(requireContext(),
+                """
+                        Excellent   -> 0 ~ 100 000
+                        Careful    -> 100 000 ~ 1 000 000
+                        Concerning -> > 1 000 000"""
+                , Toast.LENGTH_LONG).show());
+
+        infosMobility.setOnClickListener(v -> Toast.makeText(requireContext(),
+                """
+                        Excellent   -> 0 ~ 100 000
+                        Careful    -> 100 000 ~ 1 000 000
+                        Concerning -> > 1 000 000"""
+                , Toast.LENGTH_LONG).show());
+
+        infosVolume.setOnClickListener(v -> Toast.makeText(requireContext(),
+                """
+                        Excellent   -> 0 ~ 100 000
+                        Careful    -> 100 000 ~ 1 000 000
+                        Concerning -> > 1 000 000"""
+                , Toast.LENGTH_LONG).show());
     }
 }

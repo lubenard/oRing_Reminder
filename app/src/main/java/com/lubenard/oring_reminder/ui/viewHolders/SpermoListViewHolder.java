@@ -1,4 +1,4 @@
-package com.lubenard.oring_reminder.pages.my_spermograms;
+package com.lubenard.oring_reminder.ui.viewHolders;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
+import com.lubenard.oring_reminder.ui.adapters.CustomSpermoListAdapter;
 import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
 

@@ -2,13 +2,35 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/spermo_list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_marginHorizontal="7dp"/>
+
+	<TextView
+		android:id="@+id/spermo_list_no_data_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:textAlignment="center"
+		android:textSize="23sp"
+		android:text="@string/no_spermo_registered"
+		android:visibility="gone"
+		tools:visibility="visible"
+	/>
+
+	<ProgressBar
+		android:id="@+id/spermo_list_spinner"
+		android:layout_width="50dp"
+		android:layout_height="50dp"
+		android:layout_gravity="bottom|start"
+		android:layout_margin="@dimen/fab_margin"
+		android:indeterminate="true"
+	/>
 
 	<com.google.android.material.floatingactionbutton.FloatingActionButton
 		android:id="@+id/fab"

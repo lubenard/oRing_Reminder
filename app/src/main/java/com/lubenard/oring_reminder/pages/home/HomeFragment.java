@@ -108,87 +108,6 @@ public class HomeFragment extends Fragment {
         return inflater.inflate(R.layout.home_fragment, container, false);
     }
 
-    private void searchEntry() {
-        // Get Current Date
-        final Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                (view, year, monthOfYear, dayOfMonth) -> {
-                    SearchFragment fragment = new SearchFragment();
-                    Bundle bundle = new Bundle();
-                    String monthString = String.valueOf(monthOfYear + 1);
-                    String dayString = String.valueOf(dayOfMonth);
-
-                    if (monthOfYear < 10)
-                        monthString = "0" + monthString;
-
-                    if (dayOfMonth < 10)
-                        dayString = "0" + dayString;
-                    bundle.putString("date_searched", year + "-" + monthString + "-" + dayString);
-                    fragment.setArguments(bundle);
-                    requireActivity().removeMenuProvider(menuProvider);
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(android.R.id.content, fragment, null)
-                            .addToBackStack(null).commit();
-                }, mYear, mMonth, mDay);
-        datePickerDialog.show();
-    }
-
-    /**
-     * Launch the new Entry fragment, and specify we do not want to update a entry
-     */
-    private void startEditEntryFragment() {
-        EditEntryFragment fragment = new EditEntryFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong("entryId", -1);
-        fragment.setArguments(bundle);
-        getChildFragmentManager().setFragmentResultListener("EditEntryFragmentResult", this, (requestKey, bundle1) -> {
-            boolean result = bundle1.getBoolean("shouldUpdateParent", true);
-            Log.d(TAG, "got result from fragment: " + result);
-            if (result)
-                updateDesign();
-        });
-        fragment.show(getChildFragmentManager(), null);
-    }
-
-    /**
-     * Define what action should be done on longClick on the '+' button
-     * @param isLongClick act if it is a long click or not
-     */
-    private void actionOnPlusButton(boolean isLongClick) {
-        String action = MainActivity.getSettingsManager().getActionUIFab();
-
-        if (isLongClick) {
-            if (action.equals("default")) {
-                startEditEntryFragment();
-            } else {
-                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
-                updateDesign();
-            }
-        } else {
-            if (action.equals("default")) {
-                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
-                updateDesign();
-            } else {
-                startEditEntryFragment();
-            }
-        }
-    }
-
-    /**
-     * Update whole design on MainFragment, including fab
-     */
-    public void updateDesign() {
-        homeViewModel.getCurrentSession();
-        homeViewModel.computeWearingTimeSinceMidnight();
-        homeViewModel.getLast24hWearingTime();
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -198,10 +117,9 @@ public class HomeFragment extends Fragment {
 
         activity.setTitle(R.string.app_name);
         ((AppCompatActivity)activity).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        Log.d(TAG, "onCreate activity is " + activity.toString() + ", menuProvider: " + menuProvider);
-        activity.addMenuProvider(menuProvider);
-
         Log.d(TAG, "onViewCreated()");
+        Log.d(TAG, "Activity is " + activity.toString() + ", menuProvider: " + menuProvider);
+        activity.addMenuProvider(menuProvider);
 
         dbManager = MainActivity.getDbManager();
         dataModels = new ArrayList<>();
@@ -234,13 +152,9 @@ public class HomeFragment extends Fragment {
 
         updateDesign();
 
-        homeViewModel.wearingTimeSinceMidnight.observe(getViewLifecycleOwner(), wearingTimeSinceMidgnight -> {
-            home_since_midnight_data.setText(DateUtils.convertIntIntoReadableDate(wearingTimeSinceMidgnight));
-        });
+        homeViewModel.wearingTimeSinceMidnight.observe(getViewLifecycleOwner(), wearingTimeSinceMidgnight -> home_since_midnight_data.setText(DateUtils.convertIntIntoReadableDate(wearingTimeSinceMidgnight)));
 
-        homeViewModel.last24hWearingTime.observe(getViewLifecycleOwner(), last24hWearingTime -> {
-            home_last_24h_data.setText(DateUtils.convertIntIntoReadableDate(last24hWearingTime));
-        });
+        homeViewModel.last24hWearingTime.observe(getViewLifecycleOwner(), last24hWearingTime -> home_last_24h_data.setText(DateUtils.convertIntIntoReadableDate(last24hWearingTime)));
 
         homeViewModel.currentSession.observe(getViewLifecycleOwner(), currentSession -> {
             if (currentSession == null) {
@@ -303,7 +217,7 @@ public class HomeFragment extends Fragment {
 
                 homeViewModel.isThereARunningBreak.observe(getViewLifecycleOwner(), isThereARunningBreak -> {
                     if (isThereARunningBreak) {
-                        text_view_break.setText(String.format("%s: %d mn", context.getString(R.string.in_break_for), DateUtils.getDateDiff(homeViewModel.sessionBreaks.getValue().get(0).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                        text_view_break.setText(String.format(context.getString(R.string.template_in_break_for), context.getString(R.string.in_break_for), DateUtils.getDateDiff(homeViewModel.sessionBreaks.getValue().get(0).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                         text_view_break.setVisibility(View.VISIBLE);
                         button_start_break.setText(context.getString(R.string.widget_stop_break));
                         button_start_break.setOnClickListener(v -> homeViewModel.endBreak(RingSession.SessionStatus.RUNNING));
@@ -326,5 +240,86 @@ public class HomeFragment extends Fragment {
         homeViewModel.resetInstanceDB();
         activity.removeMenuProvider(menuProvider);
         super.onDestroyView();
+    }
+
+    private void searchEntry() {
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    SearchFragment fragment = new SearchFragment();
+                    Bundle bundle = new Bundle();
+                    String monthString = String.valueOf(monthOfYear + 1);
+                    String dayString = String.valueOf(dayOfMonth);
+
+                    if (monthOfYear < 10)
+                        monthString = "0" + monthString;
+
+                    if (dayOfMonth < 10)
+                        dayString = "0" + dayString;
+                    bundle.putString("date_searched", year + "-" + monthString + "-" + dayString);
+                    fragment.setArguments(bundle);
+                    requireActivity().removeMenuProvider(menuProvider);
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(android.R.id.content, fragment, null)
+                            .addToBackStack(null).commit();
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+    }
+
+    /**
+     * Launch the new Entry fragment, and specify we do not want to update a entry
+     */
+    private void startEditEntryFragment() {
+        EditEntryFragment fragment = new EditEntryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong("entryId", -1);
+        fragment.setArguments(bundle);
+        getChildFragmentManager().setFragmentResultListener("EditEntryFragmentResult", this, (requestKey, bundle1) -> {
+            boolean result = bundle1.getBoolean("shouldUpdateParent", true);
+            Log.d(TAG, "got result from fragment: " + result);
+            if (result)
+                updateDesign();
+        });
+        fragment.show(getChildFragmentManager(), null);
+    }
+
+    /**
+     * Define what action should be done on longClick on the '+' button
+     * @param isLongClick act if it is a long click or not
+     */
+    private void actionOnPlusButton(boolean isLongClick) {
+        String action = MainActivity.getSettingsManager().getActionUIFab();
+
+        if (isLongClick) {
+            if (action.equals("default")) {
+                startEditEntryFragment();
+            } else {
+                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
+                updateDesign();
+            }
+        } else {
+            if (action.equals("default")) {
+                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
+                updateDesign();
+            } else {
+                startEditEntryFragment();
+            }
+        }
+    }
+
+    /**
+     * Update whole design on MainFragment, including fab
+     */
+    public void updateDesign() {
+        homeViewModel.getCurrentSession();
+        homeViewModel.computeWearingTimeSinceMidnight();
+        homeViewModel.getLast24hWearingTime();
     }
 }

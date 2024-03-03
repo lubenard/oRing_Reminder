@@ -40,12 +40,24 @@
         android:layout_marginEnd="20dp"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/base_text_all_wrap"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"
-            android:text="Concentration (per ml):" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
+            <TextView
+                style="@style/base_text_all_wrap"
+                android:textSize="20sp"
+                android:text="Concentration (per ml):" />
+
+            <ImageButton
+                android:id="@+id/additional_infos_concentration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/outline_info_24"
+                android:contentDescription="Infos about concentration per ml" />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -92,11 +104,24 @@
         android:layout_marginEnd="20dp"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
         <TextView
             style="@style/base_text_all_wrap"
-            android:layout_marginTop="10dp"
             android:textSize="20sp"
-            android:text="Mobilitée (en %)" />
+            android:text="Mobilitée (en %):" />
+
+        <ImageButton
+            android:id="@+id/additional_infos_mobility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/outline_info_24"
+            android:contentDescription="Infos about concentration per ml" />
+    </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -143,11 +168,25 @@
         android:layout_marginEnd="20dp"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
             style="@style/base_text_all_wrap"
-            android:layout_marginTop="10dp"
             android:textSize="20sp"
-            android:text="Volume (en ml)" />
+            android:text="Volume (en ml):" />
+
+            <!-- TODO: Make the icon smaller + rename icons with ic_ prefix -->
+            <ImageButton
+                android:id="@+id/additional_infos_volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/outline_info_24"
+                android:contentDescription="Infos about concentration per ml" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

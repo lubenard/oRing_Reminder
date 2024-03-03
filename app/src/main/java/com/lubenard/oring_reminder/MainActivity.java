@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -47,95 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private static Callable onPermissionSuccess;
     private static Callable onPermissionError;
 
-    /**
-     * Check the requested permission, and if not already gave, ask for it
-     * @param permRequired
-     * @return true if perm is already given
-     */
-    public static boolean checkOrRequestPerm(Activity activity, Context context, String permRequired, Callable onSucess, Callable onError) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context, permRequired) == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    onSucess.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return true;
-            } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permRequired)) {
-                // In an educational UI, explain to the user why your app requires this
-                // permission for a specific feature to behave as expected. In this UI,
-                // include a "cancel" or "no thanks" button that allows the user to
-                // continue using your app without granting the permission.
-                try {
-                    onError.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return false;
-            } else {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-                onPermissionSuccess = onSucess;
-                onPermissionError = onError;
-                activity.requestPermissions(new String[]{permRequired}, 1);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {// If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted. Continue the action or workflow
-                // in your app.
-                try {
-                    onPermissionSuccess.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                // Explain to the user that the feature is unavailable because
-                // the features requires a permission that the user has denied.
-                // At the same time, respect the user's decision. Don't link to
-                // system settings in an effort to convince the user to change
-                // their decision.
-                try {
-                    onPermissionError.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * Apply config at app startup
-     */
-    private void applyUserConfig() {
-        String theme = settingsManager.getTheme();
-        Utils.applyTheme(theme);
-
-        String language_option = settingsManager.getLanguage();
-        Utils.applyLanguage(this, language_option);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Respond to the action bar's Up/Home button
-        if (item.getItemId() == android.R.id.home) {
-            getSupportFragmentManager().popBackStack();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("MainActivity", "onCreate()");
+        Log.d(TAG, "onCreate()");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Init log module
@@ -144,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
         // Check the UI config (Theme and language) and apply them
         settingsManager = new SettingsManager(this);
         dbManager = new DbManager(this);
-
-        //initViewModels();
 
         applyUserConfig();
         createNotifChannel();
@@ -171,6 +85,99 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG,"onDestroy()");
+        dbManager.closeDb();
+        logManager.closeFile();
+        super.onDestroy();
+    }
+
+    /**
+     * Check the requested permission, and if not already gave, ask for it
+     * @param permRequired permission string
+     * @return true if perm is already given
+     */
+    public static boolean checkOrRequestPerm(Activity activity, Context context, String permRequired, Callable onSuccess, Callable onError) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context, permRequired) == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    onSuccess.call();
+                } catch (Exception e) {
+                    Log.e(TAG, "checkOrRequestPerm: Error while calling onSuccess: ", e);
+                }
+                return true;
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permRequired)) {
+                // In an educational UI, explain to the user why your app requires this
+                // permission for a specific feature to behave as expected. In this UI,
+                // include a "cancel" or "no thanks" button that allows the user to
+                // continue using your app without granting the permission.
+                try {
+                    onError.call();
+                } catch (Exception e) {
+                    Log.e(TAG, "checkOrRequestPerm: Error while calling onError: ", e);
+                }
+                return false;
+            } else {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                onPermissionSuccess = onSuccess;
+                onPermissionError = onError;
+                activity.requestPermissions(new String[]{permRequired}, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted. Continue the action or workflow
+                // in your app.
+                try {
+                    onPermissionSuccess.call();
+                } catch (Exception e) {
+                    Log.e(TAG, "checkOrRequestPerm: Error while calling onPermissionSuccess: ", e);
+                }
+            } else {
+                // Explain to the user that the feature is unavailable because
+                // the features requires a permission that the user has denied.
+                // At the same time, respect the user's decision. Don't link to
+                // system settings in an effort to convince the user to change
+                // their decision.
+                try {
+                    onPermissionError.call();
+                } catch (Exception e) {
+                    Log.e(TAG, "checkOrRequestPerm: Error while calling onPermissionError: ", e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Respond to the action bar's Up/Home button
+        if (item.getItemId() == android.R.id.home) {
+            getSupportFragmentManager().popBackStack();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Apply config at app startup
+     */
+    private void applyUserConfig() {
+        String theme = settingsManager.getTheme();
+        Utils.applyTheme(theme);
+
+        String language_option = settingsManager.getLanguage();
+        Utils.applyLanguage(this, language_option);
+    }
+
     private void askPermissions() {
         if (!settingsManager.getIsNotifPermGranted() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             checkOrRequestPerm(this, this, Manifest.permission.SCHEDULE_EXACT_ALARM, () -> null, () -> null);
@@ -187,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Not used for now
      */
-    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void createQuickShortcut() {
         String dynamicIntent = "com.lubenard.oring_reminder.android.action.broadcast";
 
@@ -209,14 +216,6 @@ public class MainActivity extends AppCompatActivity {
     }
     public static SettingsManager getSettingsManager() {
         return settingsManager;
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG,"onDestroy()");
-        dbManager.closeDb();
-        logManager.closeFile();
-        super.onDestroy();
     }
 
     /**

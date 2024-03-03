@@ -64,4 +64,5 @@
     <string name="link_garcon_website" translatable="false">garcon.link</string>
     <string name="link_planning_familial_website" translatable="false">planning-familial.org</string>
     <string name="link_love_health_website" translatable="false">https://www.love-health-center.org/media/ecrit/carnet-dobservation-cycles-masculins/</string>
+    <string name="template_in_break_for" translatable="false">%s: %d mn</string>
 </resources>

@@ -20,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.lubenard.oring_reminder.R;
 import com.lubenard.oring_reminder.custom_components.Spermograms;
 import com.lubenard.oring_reminder.pages.spermograms_details.SpermogramsDetailsFragment;
+import com.lubenard.oring_reminder.ui.adapters.CustomSpermoListAdapter;
 import com.lubenard.oring_reminder.utils.Log;
 
 
@@ -58,6 +59,8 @@ public class MySpermogramsFragment extends Fragment implements CustomSpermoListA
         mySpermogramsViewModel = new ViewModelProvider(requireActivity()).get(MySpermogramsViewModel.class);
 
         mySpermogramsViewModel.spermoList.observe(getViewLifecycleOwner(), spermoList -> {
+            view.findViewById(R.id.spermo_list_spinner).setVisibility(View.GONE);
+            if (spermoList.isEmpty()) view.findViewById(R.id.spermo_list_no_data_text).setVisibility(View.VISIBLE);
             adapter = new CustomSpermoListAdapter(spermoList, onListItemClickListener);
             recyclerView.setAdapter(adapter);
         });
