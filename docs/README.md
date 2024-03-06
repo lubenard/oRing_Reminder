@@ -31,7 +31,7 @@ and relaunch the tests.
 ## How to (re)compile the javadoc:
 
 ```
-javadoc -protected -splitindex -d ~/test_doc $(find app/src/main/java/com/lubenard/digital_wellbeing/ -name '*.java' -print) -bootclasspath ~/<Path_to>/Android/Sdk/platforms/android-29/android.jar -Xdoclint:none
+javadoc -protected -splitindex -d ~/test_doc $(find app/src/main/java/com/lubenard/oring_reminder/ -name '*.java' -print) -bootclasspath ~/<Path_to>/Android/Sdk/platforms/android-29/android.jar -Xdoclint:none
 ```
 
 

@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -167,6 +166,7 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
         });
 
         // TODO: Find library with info bulles & implement it with thoses infos
+        /*
         infosConcentration.setOnClickListener(v -> Toast.makeText(requireContext(),
                 """
                         Excellent   -> 0 ~ 100 000
@@ -187,5 +187,7 @@ public class CalculatorsFragment extends BottomSheetDialogFragment {
                         Careful    -> 100 000 ~ 1 000 000
                         Concerning -> > 1 000 000"""
                 , Toast.LENGTH_LONG).show());
+
+         */
     }
 }
