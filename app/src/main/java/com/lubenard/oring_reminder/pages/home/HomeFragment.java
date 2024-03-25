@@ -207,13 +207,13 @@ public class HomeFragment extends Fragment {
 
                 estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
 
-                Pair<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt());
+                Pair<Integer, Integer> pbDatas = SessionsUtils.Companion.computeProgressBarDatas(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt());
 
                 progress_bar.setProgress(pbDatas.first);
 
                 Log.d(TAG, "MainView percentage is " + progress_bar.getProgress());
 
-                textview_progress.setTextColor(getResources().getColor(SessionsUtils.computeTextColor(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt())));
+                textview_progress.setTextColor(getResources().getColor(SessionsUtils.Companion.computeTextColor(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt())));
 
                 homeViewModel.isThereARunningBreak.observe(getViewLifecycleOwner(), isThereARunningBreak -> {
                     if (isThereARunningBreak) {

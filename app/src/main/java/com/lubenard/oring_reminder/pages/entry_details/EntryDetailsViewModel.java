@@ -48,14 +48,14 @@ public class EntryDetailsViewModel extends ViewModel {
             wearingTimePref = MainActivity.getSettingsManager().getWearingTimeInt();
             loadSession();
             computeProgressBarDatas();
-            wornTime.setValue(SessionsUtils.computeWornTime(session.getValue()));
-            estimatedEnd.setValue(SessionsUtils.computeEstimatedEnd(session.getValue()));
+            wornTime.setValue(SessionsUtils.Companion.computeWornTime(session.getValue()));
+            estimatedEnd.setValue(SessionsUtils.Companion.computeEstimatedEnd(session.getValue()));
             updateHandler = new Handler();
             updateRunnable = new Runnable() {
                 @Override
                 public void run() {
                     Log.d(TAG, "Updating wearing time");
-                    wornTime.setValue(SessionsUtils.computeWornTime(session.getValue()));
+                    wornTime.setValue(SessionsUtils.Companion.computeWornTime(session.getValue()));
                     computeProgressBarDatas();
                     // Every minute update the wearing time. No need to do it more often
                     updateHandler.postDelayed(this, 60000);
@@ -71,7 +71,7 @@ public class EntryDetailsViewModel extends ViewModel {
     }
 
     void computeProgressBarDatas() {
-        Pair<Integer, Integer> pbDatas = SessionsUtils.computeProgressBarDatas(session.getValue(), wearingTimePref);
+        Pair<Integer, Integer> pbDatas = SessionsUtils.Companion.computeProgressBarDatas(session.getValue(), wearingTimePref);
 
         progressPercentage.setValue(pbDatas.first);
         progressColor = pbDatas.second;
