@@ -105,15 +105,15 @@ public class EditBreakFragment extends DialogFragment {
             }
         }
 
-        UiUtils.disableEditText(pause_beginning_date);
-        UiUtils.disableEditText(pause_ending_date);
-        UiUtils.disableEditText(pause_beginning_time);
-        UiUtils.disableEditText(pause_ending_time);
+        UiUtils.Companion.disableEditText(pause_beginning_date);
+        UiUtils.Companion.disableEditText(pause_ending_date);
+        UiUtils.Companion.disableEditText(pause_beginning_time);
+        UiUtils.Companion.disableEditText(pause_ending_time);
 
-        pause_beginning_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_beginning_date, true));
-        pause_beginning_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_beginning_time, true));
-        pause_ending_date.setOnClickListener(v -> UiUtils.openCalendarPicker(context, pause_ending_date, true));
-        pause_ending_time.setOnClickListener(v -> UiUtils.openTimePicker(context, pause_ending_time, true));
+        pause_beginning_date.setOnClickListener(v -> UiUtils.Companion.openCalendarPicker(context, pause_beginning_date, true));
+        pause_beginning_time.setOnClickListener(v -> UiUtils.Companion.openTimePicker(context, pause_beginning_time, true));
+        pause_ending_date.setOnClickListener(v -> UiUtils.Companion.openCalendarPicker(context, pause_ending_date, true));
+        pause_ending_time.setOnClickListener(v -> UiUtils.Companion.openTimePicker(context, pause_ending_time, true));
 
         Button fill_beginning = view.findViewById(R.id.prefill_beginning_pause);
         fill_beginning.setOnClickListener(v -> {
@@ -141,19 +141,19 @@ public class EditBreakFragment extends DialogFragment {
         manualEditButton.setOnClickListener(v -> {
             if (isManualEditEnabled) {
                 Log.d(TAG, "Disabling editTexts");
-                UiUtils.disableEditText(pause_beginning_date);
-                UiUtils.disableEditText(pause_ending_date);
-                UiUtils.disableEditText(pause_beginning_time);
-                UiUtils.disableEditText(pause_ending_time);
+                UiUtils.Companion.disableEditText(pause_beginning_date);
+                UiUtils.Companion.disableEditText(pause_ending_date);
+                UiUtils.Companion.disableEditText(pause_beginning_time);
+                UiUtils.Companion.disableEditText(pause_ending_time);
                 Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
                 Utils.hideKbd(context, getView().getRootView().getWindowToken());
                 isManualEditEnabled = false;
             } else {
                 Log.d(TAG, "Enabling editTexts");
-                UiUtils.enableEditText(pause_beginning_date);
-                UiUtils.enableEditText(pause_ending_date);
-                UiUtils.enableEditText(pause_beginning_time);
-                UiUtils.enableEditText(pause_ending_time);
+                UiUtils.Companion.enableEditText(pause_beginning_date);
+                UiUtils.Companion.enableEditText(pause_ending_date);
+                UiUtils.Companion.enableEditText(pause_beginning_time);
+                UiUtils.Companion.enableEditText(pause_ending_time);
                 Toast.makeText(requireContext(), R.string.manual_mode_enabled, Toast.LENGTH_SHORT).show();
                 isManualEditEnabled = true;
             }

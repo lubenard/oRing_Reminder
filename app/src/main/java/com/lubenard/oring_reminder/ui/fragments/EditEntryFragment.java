@@ -1,5 +1,6 @@
 package com.lubenard.oring_reminder.ui.fragments;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.lubenard.oring_reminder.MainActivity;
@@ -70,7 +72,7 @@ public class EditEntryFragment extends DialogFragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle bundle = this.getArguments();
@@ -100,33 +102,33 @@ public class EditEntryFragment extends DialogFragment {
             dismiss();
         });
 
-        UiUtils.disableEditText(new_entry_date_from);
-        UiUtils.disableEditText(new_entry_time_from);
-        UiUtils.disableEditText(new_entry_date_to);
-        UiUtils.disableEditText(new_entry_time_to);
+        UiUtils.Companion.disableEditText(new_entry_date_from);
+        UiUtils.Companion.disableEditText(new_entry_time_from);
+        UiUtils.Companion.disableEditText(new_entry_date_to);
+        UiUtils.Companion.disableEditText(new_entry_time_to);
 
-        new_entry_date_from.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_from, true));
-        new_entry_time_from.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_from, true));
-        new_entry_date_to.setOnClickListener(v -> UiUtils.openCalendarPicker(context, new_entry_date_to, true));
-        new_entry_time_to.setOnClickListener(v -> UiUtils.openTimePicker(context, new_entry_time_to, true));
+        new_entry_date_from.setOnClickListener(v -> UiUtils.Companion.openCalendarPicker(context, new_entry_date_from, true));
+        new_entry_time_from.setOnClickListener(v -> UiUtils.Companion.openTimePicker(context, new_entry_time_from, true));
+        new_entry_date_to.setOnClickListener(v -> UiUtils.Companion.openCalendarPicker(context, new_entry_date_to, true));
+        new_entry_time_to.setOnClickListener(v -> UiUtils.Companion.openTimePicker(context, new_entry_time_to, true));
 
         ImageButton manualEditButton = view.findViewById(R.id.manual_edit_session);
         manualEditButton.setOnClickListener(v -> {
             if (isManualEditEnabled) {
                 Log.d(TAG, "Disabling editTexts");
-                UiUtils.disableEditText(new_entry_date_from);
-                UiUtils.disableEditText(new_entry_time_from);
-                UiUtils.disableEditText(new_entry_date_to);
-                UiUtils.disableEditText(new_entry_time_to);
+                UiUtils.Companion.disableEditText(new_entry_date_from);
+                UiUtils.Companion.disableEditText(new_entry_time_from);
+                UiUtils.Companion.disableEditText(new_entry_date_to);
+                UiUtils.Companion.disableEditText(new_entry_time_to);
                 Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
                 Utils.hideKbd(context, getView().getRootView().getWindowToken());
                 isManualEditEnabled = false;
             } else {
                 Log.d(TAG, "Enabling editTexts");
-                UiUtils.enableEditText(new_entry_date_from);
-                UiUtils.enableEditText(new_entry_time_from);
-                UiUtils.enableEditText(new_entry_date_to);
-                UiUtils.enableEditText(new_entry_time_to);
+                UiUtils.Companion.enableEditText(new_entry_date_from);
+                UiUtils.Companion.enableEditText(new_entry_time_from);
+                UiUtils.Companion.enableEditText(new_entry_date_to);
+                UiUtils.Companion.enableEditText(new_entry_time_to);
                 Toast.makeText(requireContext(), R.string.manual_mode_enabled, Toast.LENGTH_SHORT).show();
                 isManualEditEnabled = true;
             }
@@ -154,7 +156,7 @@ public class EditEntryFragment extends DialogFragment {
                         dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 1");
-                        UiUtils.showToastBadFormattedDate(context);
+                        UiUtils.Companion.showToastBadFormattedDate(context);
                     }
                 } else {
                     if (DateUtils.isDateSane(formattedDatePut) && DateUtils.isDateSane(formattedDateRemoved)) {
@@ -166,7 +168,7 @@ public class EditEntryFragment extends DialogFragment {
                         dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 2");
-                        UiUtils.showToastBadFormattedDate(context);
+                        UiUtils.Companion.showToastBadFormattedDate(context);
                     }
                 }
             } else {
@@ -177,7 +179,7 @@ public class EditEntryFragment extends DialogFragment {
                         dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 3");
-                        UiUtils.showToastBadFormattedDate(context);
+                        UiUtils.Companion.showToastBadFormattedDate(context);
                     }
                 } else if (DateUtils.getDateDiff(formattedDatePut, formattedDateRemoved, TimeUnit.MINUTES) > 0) {
                     if (DateUtils.isDateSane(formattedDatePut) && DateUtils.isDateSane(formattedDateRemoved)) {
@@ -186,7 +188,7 @@ public class EditEntryFragment extends DialogFragment {
                         dismissDialog();
                     } else {
                         Log.d(TAG, "DateFormat wrong check 4");
-                        UiUtils.showToastBadFormattedDate(context);
+                        UiUtils.Companion.showToastBadFormattedDate(context);
                     }
                 } else
                     // If the diff time is too short, trigger this error
@@ -246,7 +248,7 @@ public class EditEntryFragment extends DialogFragment {
         lp.copyFrom(window.getAttributes());
 
         //This makes the dialog take up the full width
-        lp.width = 1000;
+        lp.width = MATCH_PARENT;
         lp.height = WRAP_CONTENT;
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         window.setAttributes(lp);
