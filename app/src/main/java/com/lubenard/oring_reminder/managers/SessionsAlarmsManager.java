@@ -44,7 +44,7 @@ public class SessionsAlarmsManager {
                 .putExtra("action", (entryId == -1) ? 0 : 1)
                 .putExtra("entryId", entryId);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, Utils.getIntentMutableFlag());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, Utils.Companion.getIntentMutableFlag());
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
 
         if (cancelOldAlarm)
@@ -64,7 +64,7 @@ public class SessionsAlarmsManager {
         Intent intent = new Intent(context, NotificationSenderBroadcastReceiver.class)
                 .putExtra("action", 1)
                 .putExtra("entryId", entryId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, Utils.getIntentMutableFlag());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, Utils.Companion.getIntentMutableFlag());
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
         am.cancel(pendingIntent);
     }
@@ -110,7 +110,7 @@ public class SessionsAlarmsManager {
      */
     public static void sendNotification(Context context, String title, String content, int drawable) {
         // First let's create the intent
-        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), Utils.getIntentMutableFlag());
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), Utils.Companion.getIntentMutableFlag());
 
         // Get the notification manager and build it
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -132,21 +132,21 @@ public class SessionsAlarmsManager {
      */
     public static void sendNotificationWithQuickAnswer(Context context, String title, String content, int drawable, long entryId) {
         // First let's create the intent
-        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), Utils.getIntentMutableFlag());
+        PendingIntent pi = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), Utils.Companion.getIntentMutableFlag());
 
         //Pending intent for a notification button when user removed protection
         PendingIntent removedProtection =
                 PendingIntent.getBroadcast(context, 1, new Intent(context, NotificationReceiverBroadcastReceiver.class)
                                 .putExtra("action", 1)
                                 .putExtra("entryId", entryId),
-                        Utils.getIntentMutableFlag());
+                        Utils.Companion.getIntentMutableFlag());
 
         //Pending intent for a notification button when user dismissed notification
         PendingIntent dismissedNotif =
                 PendingIntent.getBroadcast(context, 2, new Intent(context, NotificationReceiverBroadcastReceiver.class)
                                 .putExtra("action", 0)
                                 .putExtra("entryId", entryId),
-                        Utils.getIntentMutableFlag());
+                        Utils.Companion.getIntentMutableFlag());
 
         // Get the notification manager and build it
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);

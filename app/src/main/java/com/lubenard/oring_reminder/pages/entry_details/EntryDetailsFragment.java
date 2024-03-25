@@ -214,7 +214,7 @@ public class EntryDetailsFragment extends Fragment {
         stopSessionButton.setOnClickListener(view13 -> {
             entryDetailsViewModel.endSession();
 
-            Utils.updateWidget(context);
+            Utils.Companion.updateWidget(context);
         });
 
         pauseButton.setOnClickListener(view1 -> showPauseEditBreakFragment(null));
@@ -230,7 +230,7 @@ public class EntryDetailsFragment extends Fragment {
                 Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
                 SessionsAlarmsManager.setBreakAlarm(context ,DateUtils.getdateFormatted(new Date()), entryId);
-                Utils.updateWidget(getContext());
+                Utils.Companion.updateWidget(getContext());
             } else
                 Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
             return true;

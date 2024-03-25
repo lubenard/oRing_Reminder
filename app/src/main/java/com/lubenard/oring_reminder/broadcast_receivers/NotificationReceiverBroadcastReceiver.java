@@ -34,7 +34,7 @@ public class NotificationReceiverBroadcastReceiver extends BroadcastReceiver {
                 calendar.add(Calendar.HOUR_OF_DAY, 9);
                 Toast.makeText(context, context.getString(R.string.you_can_get_it_on_again) +
                         DateUtils.getdateFormatted(calendar.getTime()), Toast.LENGTH_LONG).show();
-                Utils.updateWidget(context);
+                Utils.Companion.updateWidget(context);
             }
         }
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);

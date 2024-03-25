@@ -146,7 +146,7 @@ public class EditBreakFragment extends DialogFragment {
                 UiUtils.Companion.disableEditText(pause_beginning_time);
                 UiUtils.Companion.disableEditText(pause_ending_time);
                 Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
-                Utils.hideKbd(context, getView().getRootView().getWindowToken());
+                Utils.Companion.hideKbd(context, getView().getRootView().getWindowToken());
                 isManualEditEnabled = false;
             } else {
                 Log.d(TAG, "Enabling editTexts");
@@ -216,7 +216,7 @@ public class EditBreakFragment extends DialogFragment {
                 }
                 if (isRunning == 1)
                     SessionsAlarmsManager.setBreakAlarm(context, pause_beginning_date.getText().toString(), session.getId());
-                Utils.updateWidget(getContext());
+                Utils.Companion.updateWidget(getContext());
 
                 Bundle result = new Bundle();
                 result.putBoolean("shouldUpdateBreakList", true);

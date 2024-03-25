@@ -10,6 +10,12 @@ import java.util.Date;
 
 public class Log {
 
+    // Warning: This File is NOT made to be converted in kotlin.
+    // Converting this file to Kotlin would break the "Log override"
+    // This class is playing with the static / non static methods, and if converted to KT, would mean
+    // make a companion object and thus unable to get variables. If you have any solution on how to
+    // convert this class into KT, please raise a issue / Merge Request
+
     static OutputStreamWriter outputStreamWriter;
     static Boolean isLogEnabled = false;
 

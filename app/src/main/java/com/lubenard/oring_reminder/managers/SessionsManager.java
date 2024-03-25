@@ -117,7 +117,7 @@ public class SessionsManager {
                 } else {
                     SessionsAlarmsManager.cancelAlarm(context, session.getId());
                     SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), breakSession.getId());
-                    Utils.updateWidget(context);
+                    Utils.Companion.updateWidget(context);
                 }
             }
             return true;
@@ -140,7 +140,7 @@ public class SessionsManager {
         Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
         SessionsAlarmsManager.cancelAlarm(context, lastRunningEntry.getId());
         SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), lastRunningEntry.getId());
-        Utils.updateWidget(context);
+        Utils.Companion.updateWidget(context);
     }
 
     /**

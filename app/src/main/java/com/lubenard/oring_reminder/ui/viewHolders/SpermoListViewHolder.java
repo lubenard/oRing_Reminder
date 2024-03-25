@@ -45,7 +45,7 @@ public class SpermoListViewHolder extends RecyclerView.ViewHolder implements Vie
         Log.d("Pdf View", "Looking for " + dataModel.getFileAddr() + ".jpg");
         if (!fileUri.exists()) {
             Log.d("PDF View", "Thumbnail does not exist ! for file addr : " + dataModel.getFileAddr().toString().substring(7));
-            Utils.generatePdfThumbnail(context, dataModel.getFileAddr().toString().substring(7));
+            Utils.Companion.generatePdfThumbnail(context, dataModel.getFileAddr().toString().substring(7));
         }
 
         pdfView.setImageURI(Uri.parse(dataModel.getFileAddr() + ".jpg"));

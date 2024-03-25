@@ -51,7 +51,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate()");
+
+        // This is on purpose to avoid calling our log system and at leat get a log if logManager
+        // Fails to init
+        android.util.Log.d(TAG, "onCreate()");
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Init log module
@@ -87,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG,"onDestroy()");
+        logManager.d(TAG,"onDestroy()");
         dbManager.closeDb();
         logManager.closeFile();
         super.onDestroy();
@@ -172,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void applyUserConfig() {
         String theme = settingsManager.getTheme();
-        Utils.applyTheme(theme);
+        Utils.Companion.applyTheme(theme);
 
         String language_option = settingsManager.getLanguage();
-        Utils.applyLanguage(this, language_option);
+        Utils.Companion.applyLanguage(this, language_option);
     }
 
     private void askPermissions() {

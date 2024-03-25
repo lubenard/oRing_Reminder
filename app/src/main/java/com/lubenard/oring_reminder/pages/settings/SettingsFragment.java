@@ -71,7 +71,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert language != null;
         language.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "Language value has changed for " + newValue);
-            Utils.applyLanguage(getContext(), newValue.toString());
+            Utils.Companion.applyLanguage(getContext(), newValue.toString());
             return true;
         });
 
@@ -80,7 +80,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert theme != null;
         theme.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "Theme value has changed for " + newValue);
-            Utils.applyTheme(newValue.toString());
+            Utils.Companion.applyTheme(newValue.toString());
             activity.recreate();
             return true;
         });

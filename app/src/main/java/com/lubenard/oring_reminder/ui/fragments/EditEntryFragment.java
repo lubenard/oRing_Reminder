@@ -121,7 +121,7 @@ public class EditEntryFragment extends DialogFragment {
                 UiUtils.Companion.disableEditText(new_entry_date_to);
                 UiUtils.Companion.disableEditText(new_entry_time_to);
                 Toast.makeText(requireContext(), R.string.manual_mode_disabled, Toast.LENGTH_SHORT).show();
-                Utils.hideKbd(context, getView().getRootView().getWindowToken());
+                Utils.Companion.hideKbd(context, getView().getRootView().getWindowToken());
                 isManualEditEnabled = false;
             } else {
                 Log.d(TAG, "Enabling editTexts");
@@ -256,7 +256,7 @@ public class EditEntryFragment extends DialogFragment {
     }
 
     private void dismissDialog() {
-        Utils.updateWidget(context);
+        Utils.Companion.updateWidget(context);
         Bundle result = new Bundle();
         result.putBoolean("shouldUpdateParent", true);
         getParentFragmentManager().setFragmentResult("EditEntryFragmentResult", result);

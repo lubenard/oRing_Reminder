@@ -37,8 +37,8 @@ public class MySpermogramsViewModel extends ViewModel {
 
     public void saveSpermoOnLocalStorage(Context context, Intent data) {
         String filename = new SimpleDateFormat("/dd-MM-yyyy_HH-mm-ss").format(new Date()) + ".pdf";
-        Utils.writeFileOnInternalStorage(context, filename, data.getData());
+        Utils.Companion.writeFileOnInternalStorage(context, filename, data.getData());
         dbManager.importNewSpermo("file://" + context.getFilesDir().getAbsolutePath() + filename);
-        Utils.generatePdfThumbnail(context, context.getFilesDir().getAbsolutePath() + filename);
+        Utils.Companion.generatePdfThumbnail(context, context.getFilesDir().getAbsolutePath() + filename);
     }
 }
