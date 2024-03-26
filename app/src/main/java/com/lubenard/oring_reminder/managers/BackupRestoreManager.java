@@ -36,6 +36,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -486,9 +487,9 @@ public class BackupRestoreManager extends Activity {
         // Datas containing all saved datas
         try {
 
-            csvWriter.writeColumnsName(new String[]{"All times are computed in minutes."});
-            csvWriter.writeColumnsName(new String[]{"Date put", "Hour put", "Date removed", "Hour removed", "Time worn (without breaks)",
-                                                    "Total break time", "Time worn (with breaks)"});
+            csvWriter.writeColumnsName(List.of("All times are computed in minutes."));
+            csvWriter.writeColumnsName(List.of("Date put", "Hour put", "Date removed", "Hour removed", "Time worn (without breaks)",
+                                                    "Total break time", "Time worn (with breaks)"));
 
             ArrayList<String> formattedDatas = new ArrayList<>();
             // Contain all entry's
@@ -513,7 +514,7 @@ public class BackupRestoreManager extends Activity {
                 csvWriter.writeColumnsDatas(formattedDatas);
                 formattedDatas.clear();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error while saving datas into CSV: ", e);
         }
     }
