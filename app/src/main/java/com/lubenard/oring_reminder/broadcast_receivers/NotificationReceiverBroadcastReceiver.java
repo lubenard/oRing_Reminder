@@ -33,7 +33,7 @@ public class NotificationReceiverBroadcastReceiver extends BroadcastReceiver {
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.HOUR_OF_DAY, 9);
                 Toast.makeText(context, context.getString(R.string.you_can_get_it_on_again) +
-                        DateUtils.getdateFormatted(calendar.getTime()), Toast.LENGTH_LONG).show();
+                        DateUtils.Companion.getdateFormatted(calendar.getTime()), Toast.LENGTH_LONG).show();
                 Utils.Companion.updateWidget(context);
             }
         }

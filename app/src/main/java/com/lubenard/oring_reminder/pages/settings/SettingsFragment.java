@@ -88,7 +88,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // wearing_time preference click listener
         Preference wearing_time = findPreference("myring_wearing_time");
         assert wearing_time != null;
-        wearing_time.setSummary(DateUtils.convertIntIntoReadableDate(settingsManager.getWearingTimeInt()));
+        wearing_time.setSummary(DateUtils.Companion.convertIntIntoReadableDate(settingsManager.getWearingTimeInt()));
         wearing_time.setOnPreferenceChangeListener((preference, newValue) -> {
             Log.d(TAG, "onPreferenceChangeListener: newValue is type of " + newValue.getClass().getName());
             if (((String)newValue).matches("\\d+") || ((String)newValue).matches("\\d+:\\d+")) {

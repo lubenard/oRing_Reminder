@@ -48,13 +48,13 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
         weared_from.setText(datePut[1]);
 
         if (dataModel.getStatus() == Session.SessionStatus.RUNNING)
-            worn_date.setText(DateUtils.convertDateIntoReadable(dataModel.getDatePutCalendar(), false));
+            worn_date.setText(DateUtils.Companion.convertDateIntoReadable(dataModel.getDatePutCalendar(), false));
         else if (dataModel.getDatePutCalendar().get(Calendar.YEAR) == dataModel.getDateRemovedCalendar().get(Calendar.YEAR) &&
             dataModel.getDatePutCalendar().get(Calendar.MONTH) == dataModel.getDateRemovedCalendar().get(Calendar.MONTH) &&
             dataModel.getDatePutCalendar().get(Calendar.DAY_OF_MONTH) == dataModel.getDateRemovedCalendar().get(Calendar.DAY_OF_MONTH))
-            worn_date.setText(DateUtils.convertDateIntoReadable(dataModel.getDatePutCalendar(), false));
+            worn_date.setText(DateUtils.Companion.convertDateIntoReadable(dataModel.getDatePutCalendar(), false));
         else if (!(dataModel.getStatus() == Session.SessionStatus.RUNNING))
-            worn_date.setText(DateUtils.convertDateIntoReadable(dataModel.getDatePutCalendar(), false) + " -> " + DateUtils.convertDateIntoReadable(dataModel.getEndDate().split(" ")[0], false));
+            worn_date.setText(DateUtils.Companion.convertDateIntoReadable(dataModel.getDatePutCalendar(), false) + " -> " + DateUtils.Companion.convertDateIntoReadable(dataModel.getEndDate().split(" ")[0], false));
 
         if (dataModel.getStatus() == Session.SessionStatus.RUNNING) {
             weared_to.setText("");
@@ -70,7 +70,7 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder implements View.O
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
             else
                 weared_during.setTextColor(context.getResources().getColor(android.R.color.holo_red_dark));
-            weared_during.setText(DateUtils.convertIntIntoReadableDate((int)totalTimePause));
+            weared_during.setText(DateUtils.Companion.convertIntIntoReadableDate((int)totalTimePause));
         }
     }
 

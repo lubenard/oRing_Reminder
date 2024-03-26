@@ -48,7 +48,7 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
 
         // Forced to split with a space because the date format is YYYY-MM-dd hh:MM:ss
         String[] datePut = dataModel.getStartDate().split(" ");
-        viewHolder.worn_date.setText(DateUtils.convertDateIntoReadable(datePut[0], false));
+        viewHolder.worn_date.setText(DateUtils.Companion.convertDateIntoReadable(datePut[0], false));
         viewHolder.weared_from.setText(datePut[1]);
 
         if (dataModel.getStatus() == Session.SessionStatus.RUNNING) {
@@ -60,9 +60,9 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
         } else {
             String[] dateRemoved = dataModel.getEndDate().split(" ");
             if (!datePut[0].equals(dateRemoved[0]))
-                viewHolder.worn_date.setText(String.format("%s -> %s", DateUtils.convertDateIntoReadable(datePut[0], false), DateUtils.convertDateIntoReadable(dateRemoved[0], false)));
+                viewHolder.worn_date.setText(String.format("%s -> %s", DateUtils.Companion.convertDateIntoReadable(datePut[0], false), DateUtils.Companion.convertDateIntoReadable(dateRemoved[0], false)));
             else
-                viewHolder.worn_date.setText(DateUtils.convertDateIntoReadable(datePut[0], false));
+                viewHolder.worn_date.setText(DateUtils.Companion.convertDateIntoReadable(datePut[0], false));
 
             viewHolder.weared_to.setText(dateRemoved[1]);
 
@@ -71,7 +71,7 @@ public class ListSearchAdapter extends ArrayAdapter<RingSession> {
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
             else
                 viewHolder.weared_during.setTextColor(getContext().getResources().getColor(android.R.color.holo_red_dark));
-            viewHolder.weared_during.setText(DateUtils.convertIntIntoReadableDate((int)totalTimePause));
+            viewHolder.weared_during.setText(DateUtils.Companion.convertIntIntoReadableDate((int)totalTimePause));
         }
         return convertView;
     }

@@ -41,6 +41,12 @@ public class Log {
         writeToFile(tag, message);
     }
 
+    public static void d(String tag, String message, Throwable throwable) {
+        if (BuildConfig.DEBUG)
+            android.util.Log.d(tag, message, throwable);
+        writeToFile(tag, message);
+    }
+
     public static void i(String tag, String message) {
         if (BuildConfig.DEBUG)
             android.util.Log.i(tag, message);
@@ -52,6 +58,7 @@ public class Log {
             android.util.Log.w(tag, message);
         writeToFile(tag, message);
     }
+
 
     public static void e(String tag, String message) {
         if (BuildConfig.DEBUG)
@@ -75,7 +82,7 @@ public class Log {
         try {
             outputStreamWriter = new OutputStreamWriter(context.openFileOutput("logs.txt", Context.MODE_PRIVATE));
             if (isLogEnabled)
-                outputStreamWriter.write(String.format("---------- App Start at %s ----------", DateUtils.getdateFormatted(new Date())));
+                outputStreamWriter.write(String.format("---------- App Start at %s ----------", DateUtils.Companion.getdateFormatted(new Date())));
         } catch (Exception e) {
             android.util.Log.e("Exception", "File opening failed: " + e);
         }
@@ -84,7 +91,7 @@ public class Log {
     private static void writeToFile(String tag, String data) {
         if (isLogEnabled) {
             try {
-                outputStreamWriter.write(String.format("%s [%s] %s\n", DateUtils.getdateFormatted(new Date()), tag, data));
+                outputStreamWriter.write(String.format("%s [%s] %s\n", DateUtils.Companion.getdateFormatted(new Date()), tag, data));
                 outputStreamWriter.flush();
             } catch (Exception e) {
                 android.util.Log.e("Exception", "File write failed: " + e);

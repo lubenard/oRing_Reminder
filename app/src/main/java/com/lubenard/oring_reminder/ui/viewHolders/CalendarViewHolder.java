@@ -82,7 +82,7 @@ public class CalendarViewHolder extends RecyclerView.ViewHolder {
             mappedSessions.add(new Pair<>(calendar.get(Calendar.DAY_OF_MONTH), sessions.get(i)));
         }
 
-        Log.d(TAG, "Lubenard: date say: " + DateUtils.getdateFormatted(date.getTime()) + ", todayDate say: " + DateUtils.getdateFormatted(todayDate.getTime()));
+        Log.d(TAG, "Lubenard: date say: " + DateUtils.Companion.getdateFormatted(date.getTime()) + ", todayDate say: " + DateUtils.Companion.getdateFormatted(todayDate.getTime()));
 
         if (date.get(Calendar.YEAR) == todayDate.get(Calendar.YEAR)
                 && date.get(Calendar.MONTH) == todayDate.get(Calendar.MONTH)) {

@@ -30,7 +30,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     public CalendarAdapter(FragmentActivity activity, CalendarFragment calendarFragment, Calendar firstSession) {
 
-        Log.d(TAG, "firstSession say is " + DateUtils.getdateFormatted(firstSession.getTime()));
+        Log.d(TAG, "firstSession say is " + DateUtils.Companion.getdateFormatted(firstSession.getTime()));
 
         monthList = new ArrayList<>();
 

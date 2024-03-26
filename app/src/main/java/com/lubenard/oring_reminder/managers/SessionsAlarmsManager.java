@@ -50,7 +50,7 @@ public class SessionsAlarmsManager {
         if (cancelOldAlarm)
             am.cancel(pendingIntent);
 
-        Log.d(TAG, "Setting alarm for " + DateUtils.getCalendarParsed(calendarAlarmDate));
+        Log.d(TAG, "Setting alarm for " + DateUtils.Companion.getCalendarParsed(calendarAlarmDate));
 
         am.setAlarmClock(new AlarmManager.AlarmClockInfo(calendarAlarmDate.getTimeInMillis(), pendingIntent), pendingIntent);
     }
@@ -78,9 +78,9 @@ public class SessionsAlarmsManager {
 
         if (settingsManager.getShouldSendNotifWhenBreakTooLong()) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(DateUtils.getdateParsed(pauseBeginning));
+            calendar.setTime(DateUtils.Companion.getdateParsed(pauseBeginning));
             calendar.add(Calendar.MINUTE, settingsManager.getShouldSendNotifWhenBreakTooLongDate());
-            Log.d(TAG, "Setting break alarm at " + DateUtils.getdateFormatted(calendar.getTime()));
+            Log.d(TAG, "Setting break alarm at " + DateUtils.Companion.getdateFormatted(calendar.getTime()));
             Intent intent = new Intent(context, NotificationSenderBreaksBroadcastReceiver.class)
                     .putExtra("action", 1);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) entryId, intent, PendingIntent.FLAG_MUTABLE);

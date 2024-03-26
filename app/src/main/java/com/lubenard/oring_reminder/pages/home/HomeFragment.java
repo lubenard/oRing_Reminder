@@ -152,9 +152,9 @@ public class HomeFragment extends Fragment {
 
         updateDesign();
 
-        homeViewModel.wearingTimeSinceMidnight.observe(getViewLifecycleOwner(), wearingTimeSinceMidgnight -> home_since_midnight_data.setText(DateUtils.convertIntIntoReadableDate(wearingTimeSinceMidgnight)));
+        homeViewModel.wearingTimeSinceMidnight.observe(getViewLifecycleOwner(), wearingTimeSinceMidgnight -> home_since_midnight_data.setText(DateUtils.Companion.convertIntIntoReadableDate(wearingTimeSinceMidgnight)));
 
-        homeViewModel.last24hWearingTime.observe(getViewLifecycleOwner(), last24hWearingTime -> home_last_24h_data.setText(DateUtils.convertIntIntoReadableDate(last24hWearingTime)));
+        homeViewModel.last24hWearingTime.observe(getViewLifecycleOwner(), last24hWearingTime -> home_last_24h_data.setText(DateUtils.Companion.convertIntIntoReadableDate(last24hWearingTime)));
 
         homeViewModel.currentSession.observe(getViewLifecycleOwner(), currentSession -> {
             if (currentSession == null) {
@@ -192,20 +192,20 @@ public class HomeFragment extends Fragment {
                 });
 
                 long timeBeforeRemove = currentSession.getSessionDuration() - currentSession.computeTotalTimePause();
-                textview_progress.setText(DateUtils.convertIntIntoReadableDate((int) timeBeforeRemove));
-                time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.convertIntIntoReadableDate(MainActivity.getSettingsManager().getWearingTimeInt())));
+                textview_progress.setText(DateUtils.Companion.convertIntIntoReadableDate((int) timeBeforeRemove));
+                time_needed_to_complete_session.setText(String.format("/ %s", DateUtils.Companion.convertIntIntoReadableDate(MainActivity.getSettingsManager().getWearingTimeInt())));
 
                 String[] splittedDatePut = currentSession.getStartDate().split(" ");
 
-                start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
+                start_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.Companion.convertDateIntoReadable(splittedDatePut[0], false), splittedDatePut[1]));
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(currentSession.getDatePutCalendar().getTime());
                 calendar.add(Calendar.MINUTE, MainActivity.getSettingsManager().getWearingTimeInt());
 
-                String[] splittedDateEstimatedEnd = DateUtils.getdateFormatted(calendar.getTime()).split(" ");
+                String[] splittedDateEstimatedEnd = DateUtils.Companion.getdateFormatted(calendar.getTime()).split(" ");
 
-                estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
+                estimated_end_session_data.setText(String.format(context.getString(R.string.formatted_datetime), DateUtils.Companion.convertDateIntoReadable(splittedDateEstimatedEnd[0], false), splittedDateEstimatedEnd[1]));
 
                 Pair<Integer, Integer> pbDatas = SessionsUtils.Companion.computeProgressBarDatas(currentSession, (float) MainActivity.getSettingsManager().getWearingTimeInt());
 
@@ -217,7 +217,7 @@ public class HomeFragment extends Fragment {
 
                 homeViewModel.isThereARunningBreak.observe(getViewLifecycleOwner(), isThereARunningBreak -> {
                     if (isThereARunningBreak) {
-                        text_view_break.setText(String.format(context.getString(R.string.template_in_break_for), context.getString(R.string.in_break_for), DateUtils.getDateDiff(homeViewModel.sessionBreaks.getValue().get(0).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                        text_view_break.setText(String.format(context.getString(R.string.template_in_break_for), context.getString(R.string.in_break_for), DateUtils.Companion.getDateDiff(homeViewModel.sessionBreaks.getValue().get(0).getStartDate(), DateUtils.Companion.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                         text_view_break.setVisibility(View.VISIBLE);
                         button_start_break.setText(context.getString(R.string.widget_stop_break));
                         button_start_break.setOnClickListener(v -> homeViewModel.endBreak(RingSession.SessionStatus.RUNNING));
@@ -299,14 +299,14 @@ public class HomeFragment extends Fragment {
             if (action.equals("default")) {
                 startEditEntryFragment();
             } else {
-                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
+                Toast.makeText(context, "Session started at: " + DateUtils.Companion.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, DateUtils.Companion.getdateFormatted(new Date()));
                 updateDesign();
             }
         } else {
             if (action.equals("default")) {
-                Toast.makeText(context, "Session started at: " + DateUtils.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
-                SessionsManager.insertNewEntry(context, DateUtils.getdateFormatted(new Date()));
+                Toast.makeText(context, "Session started at: " + DateUtils.Companion.getdateFormatted(new Date()), Toast.LENGTH_SHORT).show();
+                SessionsManager.insertNewEntry(context, DateUtils.Companion.getdateFormatted(new Date()));
                 updateDesign();
             } else {
                 startEditEntryFragment();

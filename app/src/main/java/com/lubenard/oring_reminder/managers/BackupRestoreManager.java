@@ -282,13 +282,13 @@ public class BackupRestoreManager extends Activity {
                 if (eventType == XmlPullParser.START_TAG && myParser.getName().equals("session")) {
                     // Check if we have the minimum infos about the session to recreate
                     if (myParser.getAttributeValue(null, "dateTimePut") != null && myParser.getAttributeValue(null, "dateTimeRemoved") != null
-                    && DateUtils.isDateSane(myParser.getAttributeValue(null, "dateTimePut"))) {
+                    && DateUtils.Companion.isDateSane(myParser.getAttributeValue(null, "dateTimePut"))) {
                         isRunning = myParser.getAttributeValue(null, "dateTimeRemoved").equals("NOT SET YET") ? 1 : 0;
                         lastEntryInsertedId = dbManager.createNewEntry(myParser.getAttributeValue(null, "dateTimePut"), myParser.getAttributeValue(null, "dateTimeRemoved"), isRunning);
                         if (isRunning == 1) {
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(DateUtils.getdateParsed(myParser.getAttributeValue(null, "dateTimePut")));
+                            calendar.setTime(DateUtils.Companion.getdateParsed(myParser.getAttributeValue(null, "dateTimePut")));
                             calendar.add(Calendar.HOUR_OF_DAY, Integer.parseInt(preferences.getString("myring_wearing_time", "15")));
                             SessionsAlarmsManager.setAlarm(this, calendar, lastEntryInsertedId, true);
                         }
@@ -504,12 +504,12 @@ public class BackupRestoreManager extends Activity {
                 if (!(rawDatas.get(i).getStatus() == Session.SessionStatus.RUNNING))
                     formattedDatas.add(String.valueOf(rawDatas.get(i).getSessionDuration()));
                 else
-                    formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES)));
+                    formattedDatas.add(String.valueOf(DateUtils.Companion.getDateDiff(rawDatas.get(i).getStartDate(), DateUtils.Companion.getdateFormatted(new Date()), TimeUnit.MINUTES)));
                 formattedDatas.add(String.valueOf(totalTimePauses));
                 if (!(rawDatas.get(i).getStatus() == Session.SessionStatus.RUNNING))
                     formattedDatas.add(String.valueOf(rawDatas.get(i).getSessionDuration() - totalTimePauses));
                 else
-                    formattedDatas.add(String.valueOf(DateUtils.getDateDiff(rawDatas.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
+                    formattedDatas.add(String.valueOf(DateUtils.Companion.getDateDiff(rawDatas.get(i).getStartDate(), DateUtils.Companion.getdateFormatted(new Date()), TimeUnit.MINUTES) - totalTimePauses));
                 csvWriter.writeColumnsDatas(formattedDatas);
                 formattedDatas.clear();
             }

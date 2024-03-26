@@ -27,11 +27,11 @@ public class RingSession extends Session {
               datePut,
               dateRemoved,
               SessionStatus.values()[isRunning],
-              (timeWeared == 0 && isRunning == 0) ? DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES) : timeWeared
+              (timeWeared == 0 && isRunning == 0) ? DateUtils.Companion.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES) : timeWeared
         );
 
         Calendar calendarStart = Calendar.getInstance();
-        calendarStart.setTime(DateUtils.getdateParsed(datePut));
+        calendarStart.setTime(DateUtils.Companion.getdateParsed(datePut));
         this.datePutCalendar = calendarStart;
 
         Log.d("RingSession", "Creating Ring session with id " + id + " and status " + getStatus());
@@ -48,7 +48,7 @@ public class RingSession extends Session {
             date.setTime(0);
             calendar.setTime(date);
         } else if (getStatus() == SessionStatus.NOT_RUNNING){
-            calendar.setTime(DateUtils.getdateParsed(getEndDate()));
+            calendar.setTime(DateUtils.Companion.getdateParsed(getEndDate()));
         }
         return calendar;
     }
@@ -61,12 +61,12 @@ public class RingSession extends Session {
     public long getSessionDuration() {
         if (getStatus() == SessionStatus.RUNNING) {
             if (breakList.isEmpty())
-                setSessionDuration(DateUtils.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES));
+                setSessionDuration(DateUtils.Companion.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES));
             else
-                setSessionDuration(DateUtils.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES) - computeTotalTimePause());
+                setSessionDuration(DateUtils.Companion.getDateDiff(datePutCalendar.getTime(), new Date(), TimeUnit.MINUTES) - computeTotalTimePause());
             return super.getSessionDuration();
         }
-        setSessionDuration(DateUtils.getDateDiff(datePutCalendar.getTime(), getDateRemovedCalendar().getTime(), TimeUnit.MINUTES));
+        setSessionDuration(DateUtils.Companion.getDateDiff(datePutCalendar.getTime(), getDateRemovedCalendar().getTime(), TimeUnit.MINUTES));
         return super.getSessionDuration();
     }
 
@@ -86,9 +86,9 @@ public class RingSession extends Session {
         int totalTimePause = 0;
         for (int i = 0; i != breakList.size(); i++) {
             if (breakList.get(i).getStatus() == SessionStatus.RUNNING)
-                totalTimePause += DateUtils.getDateDiff(breakList.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
+                totalTimePause += DateUtils.Companion.getDateDiff(breakList.get(i).getStartDateCalendar().getTime(), new Date(), TimeUnit.MINUTES);
             else
-                totalTimePause += DateUtils.getDateDiff(breakList.get(i).getStartDateCalendar().getTime(), breakList.get(i).getEndDateCalendar().getTime(), TimeUnit.MINUTES);
+                totalTimePause += DateUtils.Companion.getDateDiff(breakList.get(i).getStartDateCalendar().getTime(), breakList.get(i).getEndDateCalendar().getTime(), TimeUnit.MINUTES);
         }
         return totalTimePause;
     }

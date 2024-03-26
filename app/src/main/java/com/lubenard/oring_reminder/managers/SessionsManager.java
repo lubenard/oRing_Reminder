@@ -43,7 +43,7 @@ public class SessionsManager {
                         for (int i = 0; i < runningSessions.size(); i++) {
                             RingSession session = runningSessions.get(i);
                             Log.d(TAG, "Set session " + session.getId() + " to finished");
-                            dbManager.updateDatesRing(session.getId(), session.getStartDate(), DateUtils.getdateFormatted(new Date()), 0);
+                            dbManager.updateDatesRing(session.getId(), session.getStartDate(), DateUtils.Companion.getdateFormatted(new Date()), 0);
                         }
                         saveEntry(context, dbManager, settingsManager, formattedDatePut);
                     })
@@ -65,7 +65,7 @@ public class SessionsManager {
         // Set alarm if setting is enabled
         if (settingsManager.getShouldSendNotifWhenSessionIsOver()) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(DateUtils.getdateParsed(formattedDatePut));
+                calendar.setTime(DateUtils.Companion.getdateParsed(formattedDatePut));
                 calendar.add(Calendar.MINUTE, weared_time);
                 SessionsAlarmsManager.setAlarm(context, calendar, newlyInsertedEntry, false);
             }
@@ -84,19 +84,19 @@ public class SessionsManager {
             //Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if (DateUtils.getDateDiff(session.getStartDate(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
+        else if (DateUtils.Companion.getDateDiff(session.getStartDate(), breakSession.getStartDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_beginning_to_small), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!(breakSession.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.getDateDiff(session.getStartDate(), breakSession.getEndDate(), TimeUnit.SECONDS) <= 0) {
+        } else if (!(breakSession.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.Companion.getDateDiff(session.getStartDate(), breakSession.getEndDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: End of pause < start of entry");
             Toast.makeText(context, context.getString(R.string.pause_ending_too_small), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!(breakSession.getStatus() == Session.SessionStatus.RUNNING) && !(session.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.getDateDiff(breakSession.getEndDate(), session.getEndDate(), TimeUnit.SECONDS) <= 0) {
+        } else if (!(breakSession.getStatus() == Session.SessionStatus.RUNNING) && !(session.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.Companion.getDateDiff(breakSession.getEndDate(), session.getEndDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: End of pause > end of entry");
             Toast.makeText(context, context.getString(R.string.pause_ending_too_big), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!(session.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.getDateDiff(breakSession.getStartDate(), session.getEndDate(), TimeUnit.SECONDS) <= 0) {
+        } else if (!(session.getStatus() == Session.SessionStatus.RUNNING) && DateUtils.Companion.getDateDiff(breakSession.getStartDate(), session.getEndDate(), TimeUnit.SECONDS) <= 0) {
             Log.w(TAG, "Error: Start of pause > end of entry");
             Toast.makeText(context, context.getString(R.string.pause_starting_too_big), Toast.LENGTH_SHORT).show();
             return false;
@@ -108,7 +108,7 @@ public class SessionsManager {
             } else {
                 long id = dbManager.updatePause(breakSession);
                 Log.d(TAG, "Break with id: " + id + " has been successfully updated");
-                long timeWorn = DateUtils.getDateDiff(breakSession.getStartDate(), breakSession.getEndDate(), TimeUnit.MINUTES);
+                long timeWorn = DateUtils.Companion.getDateDiff(breakSession.getStartDate(), breakSession.getEndDate(), TimeUnit.MINUTES);
 
                 //pausesDatas.set(position, new RingSession((int)id, pauseEndingText, pauseBeginningText, isRunning, (int)timeWorn));
                 // Cancel the break notification if it is set as finished.
@@ -116,7 +116,7 @@ public class SessionsManager {
                     SessionsAlarmsManager.cancelBreakAlarm(context, breakSession.getId());
                 } else {
                     SessionsAlarmsManager.cancelAlarm(context, session.getId());
-                    SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), breakSession.getId());
+                    SessionsAlarmsManager.setBreakAlarm(context, DateUtils.Companion.getdateFormatted(new Date()), breakSession.getId());
                     Utils.Companion.updateWidget(context);
                 }
             }
@@ -133,13 +133,13 @@ public class SessionsManager {
         RingSession lastRunningEntry = dbManager.getLastRunningEntry();
 
         Log.d(TAG, "No running pause");
-        dbManager.createNewPause(lastRunningEntry.getId(), DateUtils.getdateFormatted(new Date()), "NOT SET YET", 1);
+        dbManager.createNewPause(lastRunningEntry.getId(), DateUtils.Companion.getdateFormatted(new Date()), "NOT SET YET", 1);
         dbManager.updateDatesRing(lastRunningEntry.getId(), null, null, RingSession.SessionStatus.IN_BREAK.ordinal());
         // Cancel alarm until breaks are set as finished.
         // Only then set a new alarm date
         Log.d(TAG, "Cancelling alarm for entry: " + lastRunningEntry.getId());
         SessionsAlarmsManager.cancelAlarm(context, lastRunningEntry.getId());
-        SessionsAlarmsManager.setBreakAlarm(context, DateUtils.getdateFormatted(new Date()), lastRunningEntry.getId());
+        SessionsAlarmsManager.setBreakAlarm(context, DateUtils.Companion.getdateFormatted(new Date()), lastRunningEntry.getId());
         Utils.Companion.updateWidget(context);
     }
 
@@ -157,22 +157,22 @@ public class SessionsManager {
             BreakSession currentBreak = pausesDatas.get(i);
             Log.d(TAG, "BreakSession is " + currentBreak);
             if (!(pausesDatas.get(i).getStatus() == Session.SessionStatus.RUNNING)) {
-                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
-                        DateUtils.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
+                if (DateUtils.Companion.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0 &&
+                        DateUtils.Companion.getDateDiff(currentBreak.getEndDate(), dateNow, TimeUnit.SECONDS) > 0) {
                     Log.d(TAG, "pause at index " + i + " is added: " + pausesDatas.get(i).getStartDate());
                     totalTimePause += currentBreak.getSessionDuration();
-                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
-                        DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
-                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
+                } else if (DateUtils.Companion.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0 &&
+                        DateUtils.Companion.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "pause at index " + i + " is between the born: " + DateUtils.Companion.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.SECONDS));
+                    totalTimePause += DateUtils.Companion.getDateDiff(date24HoursAgo, currentBreak.getEndDate(), TimeUnit.MINUTES);
                 }
             } else {
-                if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
-                    Log.d(TAG, "running pause at index " + i + " is added: " + DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
-                    totalTimePause += DateUtils.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
-                } else if (DateUtils.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
-                    Log.d(TAG, "running pause at index " + i + " is between the born: " + DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES));
-                    totalTimePause += DateUtils.getDateDiff(date24HoursAgo, DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                if (DateUtils.Companion.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) > 0) {
+                    Log.d(TAG, "running pause at index " + i + " is added: " + DateUtils.Companion.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.SECONDS));
+                    totalTimePause += DateUtils.Companion.getDateDiff(currentBreak.getStartDate(), dateNow, TimeUnit.MINUTES);
+                } else if (DateUtils.Companion.getDateDiff(date24HoursAgo, currentBreak.getStartDate(), TimeUnit.SECONDS) <= 0) {
+                    Log.d(TAG, "running pause at index " + i + " is between the born: " + DateUtils.Companion.getDateDiff(date24HoursAgo, DateUtils.Companion.getdateFormatted(new Date()), TimeUnit.MINUTES));
+                    totalTimePause += DateUtils.Companion.getDateDiff(date24HoursAgo, DateUtils.Companion.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 }
             }
         }

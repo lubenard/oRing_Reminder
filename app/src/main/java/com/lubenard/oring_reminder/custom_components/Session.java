@@ -42,7 +42,7 @@ public class Session {
 
     public Calendar getStartDateCalendar() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(DateUtils.getdateParsed(dateStart));
+        calendar.setTime(DateUtils.Companion.getdateParsed(dateStart));
         return calendar;
     }
 
@@ -51,12 +51,12 @@ public class Session {
 
     public Calendar getEndDateCalendar() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(DateUtils.getdateParsed(dateEnd));
+        calendar.setTime(DateUtils.Companion.getdateParsed(dateEnd));
         return calendar;
     }
 
     public void setEndDate(Date date) {
-        dateEnd = DateUtils.getdateFormatted(date);
+        dateEnd = DateUtils.Companion.getdateFormatted(date);
     }
 
     // Session duration

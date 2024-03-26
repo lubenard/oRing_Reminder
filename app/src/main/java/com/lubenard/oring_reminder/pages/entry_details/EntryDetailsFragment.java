@@ -153,7 +153,7 @@ public class EntryDetailsFragment extends Fragment {
         entryDetailsViewModel = new ViewModelProvider(requireActivity()).get(EntryDetailsViewModel.class);
         entryDetailsViewModel.loadCurrentSession(entryId);
 
-        textview_total_time.setText(String.format("/ %s", DateUtils.convertIntIntoReadableDate(entryDetailsViewModel.wearingTimePref)));
+        textview_total_time.setText(String.format("/ %s", DateUtils.Companion.convertIntIntoReadableDate(entryDetailsViewModel.wearingTimePref)));
 
         // Progress bar related
         entryDetailsViewModel.progressPercentage.observe(getViewLifecycleOwner(), progressPercentage -> {
@@ -172,7 +172,7 @@ public class EntryDetailsFragment extends Fragment {
                 end_session.setVisibility(View.GONE);
                 estimated_end.setVisibility(View.VISIBLE);
             } else {
-                removed.setText(DateUtils.convertDateIntoReadable(entryDetailsViewModel.session.getValue().getDateRemovedCalendar(), false) + "\n" + entryDetailsViewModel.session.getValue().getEndDate().split(" ")[1]);
+                removed.setText(DateUtils.Companion.convertDateIntoReadable(entryDetailsViewModel.session.getValue().getDateRemovedCalendar(), false) + "\n" + entryDetailsViewModel.session.getValue().getEndDate().split(" ")[1]);
                 // If the session is finished, no need to show the ableToGetItOff textView.
                 // This textview is only used to warn user when he will be able to get it off
                 whenGetItOff.setVisibility(View.GONE);
@@ -188,18 +188,18 @@ public class EntryDetailsFragment extends Fragment {
             Log.d(TAG, "Break datas are size " + session.getBreakList().size());
 
             total_breaks.setText(String.valueOf(session.getBreakList().size()));
-            total_time_breaks.setText(DateUtils.convertIntIntoReadableDate(entryDetailsViewModel.session.getValue().computeTotalTimePause()));
+            total_time_breaks.setText(DateUtils.Companion.convertIntIntoReadableDate(entryDetailsViewModel.session.getValue().computeTotalTimePause()));
             updateBreakList(session.getBreakList());
-            put.setText(DateUtils.convertDateIntoReadable(session.getDatePutCalendar(), false) + "\n" + session.getStartDate().split(" ")[1]);
+            put.setText(DateUtils.Companion.convertDateIntoReadable(session.getDatePutCalendar(), false) + "\n" + session.getStartDate().split(" ")[1]);
         });
 
         entryDetailsViewModel.estimatedEnd.observe(getViewLifecycleOwner(), estimatedEnd-> {
             int texteResourceWhenGetItOff;
 
-            String[] ableToGetItOffStringDate = DateUtils.getdateFormatted(estimatedEnd.getTime()).split(" ");
-            estimated_end_date.setText(DateUtils.convertDateIntoReadable(ableToGetItOffStringDate[0], false) + "\n" + ableToGetItOffStringDate[1]);
+            String[] ableToGetItOffStringDate = DateUtils.Companion.getdateFormatted(estimatedEnd.getTime()).split(" ");
+            estimated_end_date.setText(DateUtils.Companion.convertDateIntoReadable(ableToGetItOffStringDate[0], false) + "\n" + ableToGetItOffStringDate[1]);
 
-            long timeBeforeRemove = DateUtils.getDateDiff(new Date(), estimatedEnd.getTime(), TimeUnit.MINUTES);
+            long timeBeforeRemove = DateUtils.Companion.getDateDiff(new Date(), estimatedEnd.getTime(), TimeUnit.MINUTES);
 
             if (timeBeforeRemove >= 0)
                 texteResourceWhenGetItOff = R.string.in_about_entry_details;
@@ -223,13 +223,13 @@ public class EntryDetailsFragment extends Fragment {
                 Log.d(TAG, "Error: Already a running pause");
                 Toast.makeText(context, context.getString(R.string.already_running_pause), Toast.LENGTH_SHORT).show();
             } else if (entryDetailsViewModel.session.getValue().getStatus() == Session.SessionStatus.RUNNING) {
-                String date = DateUtils.getdateFormatted(new Date());
+                String date = DateUtils.Companion.getdateFormatted(new Date());
                 long id = MainActivity.getDbManager().createNewPause(entryId, date, "NOT SET YET", 1);
                 // Cancel alarm until breaks are set as finished.
                 // Only then set a new alarm date
                 Log.d(TAG, "Cancelling alarm for entry: " + entryId);
                 SessionsAlarmsManager.cancelAlarm(context, entryId);
-                SessionsAlarmsManager.setBreakAlarm(context ,DateUtils.getdateFormatted(new Date()), entryId);
+                SessionsAlarmsManager.setBreakAlarm(context ,DateUtils.Companion.getdateFormatted(new Date()), entryId);
                 Utils.Companion.updateWidget(getContext());
             } else
                 Toast.makeText(context, R.string.no_pause_session_is_not_running, Toast.LENGTH_SHORT).show();
@@ -259,7 +259,7 @@ public class EntryDetailsFragment extends Fragment {
             wornForTextView.setText(R.string.removed_during);
 
             TextView textView_date = breakLayout.findViewById(R.id.main_history_date);
-            textView_date.setText(DateUtils.convertDateIntoReadable(dateRemoved[0], false));
+            textView_date.setText(DateUtils.Companion.convertDateIntoReadable(dateRemoved[0], false));
 
             TextView textView_hour_from = breakLayout.findViewById(R.id.custom_view_date_weared_from);
             textView_hour_from.setText(dateRemoved[1]);
@@ -272,11 +272,11 @@ public class EntryDetailsFragment extends Fragment {
                 String[] datePut = sessionBreaks.get(i).getEndDate().split(" ");
                 textView_hour_to.setText(datePut[1]);
                 if (!dateRemoved[0].equals(datePut[0]))
-                    textView_date.setText(DateUtils.convertDateIntoReadable(dateRemoved[0], false) + " -> " + DateUtils.convertDateIntoReadable(datePut[0], false));
+                    textView_date.setText(DateUtils.Companion.convertDateIntoReadable(dateRemoved[0], false) + " -> " + DateUtils.Companion.convertDateIntoReadable(datePut[0], false));
                 textView_worn_for.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
-                textView_worn_for.setText(DateUtils.convertIntIntoReadableDate((int) sessionBreaks.get(i).getSessionDuration()));
+                textView_worn_for.setText(DateUtils.Companion.convertIntIntoReadableDate((int) sessionBreaks.get(i).getSessionDuration()));
             } else {
-                long timeworn = DateUtils.getDateDiff(sessionBreaks.get(i).getStartDate(), DateUtils.getdateFormatted(new Date()), TimeUnit.MINUTES);
+                long timeworn = DateUtils.Companion.getDateDiff(sessionBreaks.get(i).getStartDate(), DateUtils.Companion.getdateFormatted(new Date()), TimeUnit.MINUTES);
                 textView_worn_for.setTextColor(getContext().getResources().getColor(R.color.yellow));
                 textView_worn_for.setText(String.format("%dh%02dm", timeworn / 60, timeworn % 60));
             }

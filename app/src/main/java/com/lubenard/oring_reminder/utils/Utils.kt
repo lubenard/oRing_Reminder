@@ -55,7 +55,8 @@ class Utils {
          * @param localeCode localCode to apply
          */
         fun setAppLocale(context: Context, localeCode: String) {
-            DateUtils.setAppLocale(localeCode)
+            // TODO: Broken due to change to KT
+            DateUtils.Companion.setAppLocale(localeCode)
             val myLocale = Locale(localeCode)
             val res = context.resources
             val displayMetrics = res.displayMetrics

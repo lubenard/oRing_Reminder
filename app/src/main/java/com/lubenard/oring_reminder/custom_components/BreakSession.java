@@ -24,7 +24,7 @@ public class BreakSession extends Session {
               dateRemoved,
               datePut,
               (isRunning == 1) ?  RUNNING : NOT_RUNNING,
-              (timeRemoved == 0 && isRunning == 0) ? DateUtils.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES) : timeRemoved
+              (timeRemoved == 0 && isRunning == 0) ? DateUtils.Companion.getDateDiff(dateRemoved, datePut, TimeUnit.MINUTES) : timeRemoved
         );
         this.sessionId = sessionId;
     }

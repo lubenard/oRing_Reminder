@@ -38,11 +38,11 @@ public class AfterBootBroadcastReceiver extends BroadcastReceiver {
             // Only set a new alarm when the end time of the pause is known
             if (session.getIsInBreak()) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(DateUtils.getdateParsed(session.getStartDate()));
+                calendar.setTime(DateUtils.Companion.getdateParsed(session.getStartDate()));
                 calendar.add(Calendar.MINUTE, userSettingWearingTime + session.computeTotalTimePause());
 
                 // Set alarms for session not finished
-                Log.d(TAG, "(re) set alarm for session " + session.getId() + " at " + DateUtils.getdateFormatted(calendar.getTime()));
+                Log.d(TAG, "(re) set alarm for session " + session.getId() + " at " + DateUtils.Companion.getdateFormatted(calendar.getTime()));
                 SessionsAlarmsManager.setAlarm(context, calendar, session.getId(), true);
             }
         }
