@@ -32,7 +32,7 @@ class SessionsUtils {
             if (progressPercentage < 1f)
                 progressPercentage = 1F
 
-            progressColor = if (session.status == Session.SessionStatus.RUNNING) {
+            progressColor = if (session.getStatus() == Session.SessionStatus.RUNNING) {
                 R.color.yellow
             } else {
                 if (progressPercentage >= 100f) {
@@ -50,7 +50,7 @@ class SessionsUtils {
         // TODO: Change behavior of this function.
         // Simplify [SessionsManager.computeTotalTimePause..] expression
         fun computeTextColor(session: RingSession, wearingTimePref: Float): Int {
-            return if (session.status == Session.SessionStatus.RUNNING) {
+            return if (session.getStatus() == Session.SessionStatus.RUNNING) {
                 R.color.yellow
             } else {
                 if ((session.getSessionDuration() - session.computeTotalTimePause()) / 60 >= wearingTimePref)
@@ -72,12 +72,12 @@ class SessionsUtils {
             // If session is running,
             // OldTimeWeared is the time in minute between the starting of the entry and the current Date
             // Else, oldTimeWeared is the time between the start of the entry and it's pause
-            if (session.status == Session.SessionStatus.RUNNING) {
+            if (session.getStatus() == Session.SessionStatus.RUNNING) {
                 timeWorn =
-                    DateUtils.getDateDiff(session.datePutCalendar.time, Date(), TimeUnit.MINUTES)
+                    DateUtils.getDateDiff(session.getDatePutCalendar().time, Date(), TimeUnit.MINUTES)
             } else {
                 timeWorn =
-                    DateUtils.getDateDiff(session.startDate, session.endDate, TimeUnit.MINUTES)
+                    DateUtils.getDateDiff(session.getStartDate(), session.getEndDate(), TimeUnit.MINUTES)
             }
 
             totalTimePause = session.computeTotalTimePause().toLong()
@@ -102,12 +102,11 @@ class SessionsUtils {
         fun computeEstimatedEnd(session: RingSession): Calendar {
             // Time is computed as:
             // number_of_hour_defined_in_settings + total_time_in_pause
-            val estimatedEnd = MainActivity.getSettingsManager()
-                .getWearingTimeInt() + session.computeTotalTimePause()
-            Log.d(TAG, "Estimated end is = " + estimatedEnd + " for session with id " + session.id)
+            val estimatedEnd = MainActivity.getSettingsManager().getWearingTimeInt() + session.computeTotalTimePause()
+            Log.d(TAG, "Estimated end is = " + estimatedEnd + " for session with id " + session.getId())
 
             val calendar = Calendar.getInstance()
-            calendar.time = session.datePutCalendar.time
+            calendar.time = session.getDatePutCalendar().time
             calendar.add(Calendar.MINUTE, estimatedEnd)
             return calendar
         }

@@ -35,8 +35,8 @@ import com.lubenard.oring_reminder.utils.DateUtils;
 import com.lubenard.oring_reminder.utils.Log;
 import com.lubenard.oring_reminder.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class EntryDetailsFragment extends Fragment {
@@ -243,7 +243,7 @@ public class EntryDetailsFragment extends Fragment {
      * Yes i thought i could use a ListView or RecyclerView, but they do not fit inside of a scrollView
      * <a href="https://stackoverflow.com/a/3496042">https://stackoverflow.com/a/3496042</a>
      */
-    private void updateBreakList(ArrayList<BreakSession> sessionBreaks) {
+    private void updateBreakList(List<BreakSession> sessionBreaks) {
         break_layout.removeAllViews();
 
         LayoutInflater inflater = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
